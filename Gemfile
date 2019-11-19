@@ -10,3 +10,7 @@ gemspec
 group :development, :test do
   gem 'byebug'
 end
+
+group :development do
+  gem 'rubocop', '~> 0.76.0', require: false
+end
