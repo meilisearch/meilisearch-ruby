@@ -11,8 +11,8 @@ module MeiliSearch
         get "/indexes/#{index_uid}"
       end
 
-      def create_index(index_name, schema = nil)
-        post '/indexes', name: index_name, schema: schema
+      def create_index(schema_name, schema)
+        post "/indexes/#{schema_name}", schema
       end
 
       def clear_index(index_uid)
