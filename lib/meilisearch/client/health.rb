@@ -3,7 +3,7 @@
 module MeiliSearch
   class Client
     module Health
-      def health?
+      def is_healthy?
         get '/health'
         true
       rescue StandardError
