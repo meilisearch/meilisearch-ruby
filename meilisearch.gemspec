@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require File.join(File.dirname(__FILE__), 'lib', 'meilisearch', 'version')
 
 Gem::Specification.new do |s|
@@ -23,9 +25,8 @@ Gem::Specification.new do |s|
     'lib/meilisearch/client/keys.rb',
     'lib/meilisearch/client/objects.rb',
     'lib/meilisearch/client/prepare.rb',
-    'lib/meilisearch/client/stats.rb',
+    'lib/meilisearch/client/stats.rb'
   ]
 
   s.add_dependency 'httparty', '~> 0.17.1'
-
 end

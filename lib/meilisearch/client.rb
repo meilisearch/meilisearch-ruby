@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'httparty'
 
 require 'meilisearch/error'
@@ -66,7 +68,10 @@ module MeiliSearch
     private
 
     def validate(response)
-      raise ClientError.new(response.message, response.code) unless response.success?
+      unless response.success?
+        raise ClientError.new(response.message, response.code)
+      end
+
       response.parsed_response
     end
   end

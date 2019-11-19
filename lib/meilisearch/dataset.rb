@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MeiliSearch
   # This class represents the dataset we can index
   class Dataset

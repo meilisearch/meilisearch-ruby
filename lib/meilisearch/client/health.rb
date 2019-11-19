@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module MeiliSearch
   class Client
     module Health
-
       def health?
         get '/health'
         true
@@ -16,7 +17,6 @@ module MeiliSearch
       def update_health(bool)
         put '/health', health: bool
       end
-
     end
   end
 end

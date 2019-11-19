@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MeiliSearch
   class Client
     module Indexes
@@ -10,7 +12,7 @@ module MeiliSearch
       end
 
       def create_index(index_name, schema = nil)
-        post '/indexes', { name: index_name, schema: schema }
+        post '/indexes', name: index_name, schema: schema
       end
 
       def clear_index(index_uid)
