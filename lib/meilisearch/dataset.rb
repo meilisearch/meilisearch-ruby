@@ -44,7 +44,7 @@ module MeiliSearch
 
     def schema
       schema = headers.map do |attribute|
-        [attribute, %i[indexed displayed]]
+        [attribute, [:indexed, :displayed]]
       end.to_h
 
       # Find first attribute containing id
