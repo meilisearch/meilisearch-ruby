@@ -38,10 +38,9 @@ RSpec.describe MeiliSearch::Client::Search do
   end
 
   it 'does a custom search in index' do
-    response = @client.search(index_name, 'the', { limit: 1 })
+    response = @client.search(index_name, 'the', limit: 1)
     expect(response).to be_a(Hash)
     expect(response).to have_key('hits')
     expect(response['hits'].count).to eq(1)
   end
-
 end
