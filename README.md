@@ -6,7 +6,7 @@
 The ruby client for the MeiliSearch API.
 
 MeiliSearch provides an ultra relevant and instant full-text search. Our solution is open-source and you can check out [our repository here](https://github.com/meilisearch/MeiliDB).</br>
-Also, you can use MeiliSearch as a service by registering to [meilisearch.com](https://www.meilisearch.com/) and use our hosted solution.
+You can also use MeiliSearch as a service by registering on [meilisearch.com](https://www.meilisearch.com/) and use our hosted solution.
 
 
 ## 🔧 Installation
