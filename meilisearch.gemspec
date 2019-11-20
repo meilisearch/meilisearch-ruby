@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
     'lib/meilisearch/client/keys.rb',
     'lib/meilisearch/client/objects.rb',
     'lib/meilisearch/client/prepare.rb',
-    'lib/meilisearch/client/stats.rb'
+    'lib/meilisearch/client/stats.rb',
     'lib/meilisearch/client/search.rb'
   ]
 
