@@ -9,6 +9,8 @@ gemspec
 
 group :development, :test do
   gem 'byebug'
+  gem 'rspec', '~> 3.0'
+  gem 'simplecov'
 end
 
 group :development do
