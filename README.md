@@ -1,4 +1,4 @@
-# ruby-meili-api
+# Meilisearch Ruby Client
 
 [![Gem Version](https://badge.fury.io/rb/meilisearch.svg)](https://badge.fury.io/rb/meilisearch)
 [![Licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://img.shields.io/badge/licence-MIT-blue.svg)
