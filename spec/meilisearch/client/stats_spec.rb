@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require './lib/meilisearch/client'
 
 RSpec.describe MeiliSearch::Client::Stats do
-
   before(:all) do
     @client = MeiliSearch::Client.new('http://localhost:8080', 'apiKey')
   end
@@ -52,7 +53,6 @@ RSpec.describe MeiliSearch::Client::Stats do
     # let(:client) { @client }
     let(:name)      { @index_name }
     let(:documents) { @documents }
-
 
     it 'has a number of documents in index' do
       response = client.number_of_documents_in_index(name)

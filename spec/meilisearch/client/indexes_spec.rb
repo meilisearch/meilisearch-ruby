@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require './lib/meilisearch/client'
 
 RSpec.describe MeiliSearch::Client::Indexes do
-
   before(:all) do
     @client = MeiliSearch::Client.new('http://localhost:8080', 'apiKey')
     @index_name1 = SecureRandom.hex(4)
@@ -11,12 +12,12 @@ RSpec.describe MeiliSearch::Client::Indexes do
   let(:client) { @client }
   let(:name1)  { @index_name1 }
   let(:name2)  { @index_name2 }
-  let(:schema) {
+  let(:schema) do
     {
       objectId: [:displayed, :indexed, :identifier],
-      title:    [:displayed, :indexed]
+      title: [:displayed, :indexed]
     }
-  }
+  end
 
   it 'creates an index without schema' do
     response = client.create_index(name1)
@@ -48,7 +49,7 @@ RSpec.describe MeiliSearch::Client::Indexes do
   it 'updates schema of index' do
     new_schema = {
       objectId: [:indexed, :identifier],
-      title:    [:displayed, :indexed]
+      title: [:displayed, :indexed]
     }
     response = client.update_index(name2, new_schema)
     expect(response).to be_a(Hash)
