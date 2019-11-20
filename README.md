@@ -25,7 +25,7 @@ gem 'meilisearch'
 
 ## 🚀 Getting started
 
-Here is a quickstart for to create an index and add documents.
+Here is a quickstart to create an index and add documents.
 
 ```ruby
 require 'meilisearch'
