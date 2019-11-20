@@ -32,12 +32,12 @@ require 'meilisearch'
 
 index_uid = 'yourIndexUid'
 documents = [
-  { objectId: 123,  title: 'Pride and Prejudice' },
-  { objectId: 456,  title: 'Le Petit Prince' },
-  { objectId: 1,    title: 'Alice In Wonderland' },
-  { objectId: 1344, title: 'The Hobbit' },
-  { objectId: 4,    title: 'Harry Potter and the Half-Blood Prince' },
-  { objectId: 42,   title: 'The Hitchhiker\'s Guide to the Galaxy' }
+  { id: 123,  title: 'Pride and Prejudice' },
+  { id: 456,  title: 'Le Petit Prince' },
+  { id: 1,    title: 'Alice In Wonderland' },
+  { id: 1344, title: 'The Hobbit' },
+  { id: 4,    title: 'Harry Potter and the Half-Blood Prince' },
+  { id: 42,   title: 'The Hitchhiker\'s Guide to the Galaxy' }
 ]
 
 client = MeiliSearch::Client.new('yourUrl', 'yourApiKey')
@@ -62,18 +62,18 @@ puts response
 {
     "hits": [
         {
-            "objectId": 456,
+            "id": 456,
             "title": "Le Petit Prince",
             "_formatted": {
-                "objectId": 456,
+                "id": 456,
                 "title": "Le Petit Prince"
             }
         },
         {
-            "objectId": 4,
+            "id": 4,
             "title": "Harry Potter and the Half-Blood Prince",
             "_formatted": {
-                "objectId": 4,
+                "id": 4,
                 "title": "Harry Potter and the Half-Blood Prince"
             }
         }
@@ -98,10 +98,10 @@ puts response
 {
     "hits": [
         {
-            "objectId": 456,
+            "id": 456,
             "title": "Le Petit Prince",
             "_formatted": {
-                "objectId": 456,
+                "id": 456,
                 "title": "Le Petit Prince"
             }
         }
