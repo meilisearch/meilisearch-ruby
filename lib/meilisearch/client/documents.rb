@@ -4,16 +4,16 @@ module MeiliSearch
   class Client
     module Documents
       def add_documents(index_name, documents)
-        documents.each_slice(1000) do |slice|
+        documents.each_slice(1000).map do |slice|
           post "/indexes/#{index_name}/documents", slice
         end
       end
 
-      def document(index_name, document_identifier)
-        get "/indexes/#{index_name}/documents/#{document_identifier}"
+      def document(index_name, document_uid)
+        get "/indexes/#{index_name}/documents/#{document_uid}"
       end
 
-      def browse(index_name)
+      def get_all_documents(index_name)
         get "/indexes/#{index_name}/documents"
       end
 
@@ -25,8 +25,16 @@ module MeiliSearch
         raise NotImplementedError
       end
 
-      def delete_documents(index_name, document_ids)
-        delete "/indexes/#{index_name}/documents", document_ids
+      def delete_one_document(index_name, document_uid)
+        delete "/indexes/#{index_name}/documents/#{document_uid}"
+      end
+
+      def delete_multiple_documents(index_name, document_uids)
+        post "/indexes/#{index_name}/documents/delete", document_uids
+      end
+
+      def clear_all_documents(index_name)
+        delete "/indexes/#{index_name}/documents"
       end
     end
   end

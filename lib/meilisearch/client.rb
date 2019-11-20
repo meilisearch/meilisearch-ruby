@@ -38,21 +38,19 @@ module MeiliSearch
       validate(response)
     end
 
-    def post(path = '', body = {})
-      response = self.class.post(
-        (@base_url + path),
-        body: body.to_json,
-        headers: @headers
-      )
-      validate(response)
-    end
-
-    def delete(path = '', body = {})
-      response = self.class.delete(
-        (@base_url + path),
-        body: body.to_json,
-        headers: @headers
-      )
+    def post(path = '', body = nil)
+      if body.nil?
+        response = self.class.post(
+          (@base_url + path),
+          headers: @headers
+        )
+      else
+        response = self.class.post(
+          (@base_url + path),
+          body: body.to_json,
+          headers: @headers
+        )
+      end
       validate(response)
     end
 
@@ -65,11 +63,19 @@ module MeiliSearch
       validate(response)
     end
 
+    def delete(path = '')
+      response = self.class.delete(
+        (@base_url + path),
+        headers: @headers
+      )
+      validate(response)
+    end
+
     private
 
     def validate(response)
       unless response.success?
-        raise ClientError.new(response.message, response.code)
+        raise ClientError, "#{response.code}: #{response.message}\n#{response.body}"
       end
 
       response.parsed_response

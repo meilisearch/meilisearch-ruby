@@ -11,12 +11,16 @@ module MeiliSearch
         get "/indexes/#{index_uid}"
       end
 
-      def create_index(schema_name, schema)
-        post "/indexes/#{schema_name}", schema
+      def create_index(index_uid, schema = nil)
+        if schema.nil?
+          post "/indexes/#{index_uid}"
+        else
+          post "/indexes/#{index_uid}", schema
+        end
       end
 
-      def clear_index(index_uid)
-        post "/indexes/#{index_uid}/documents/clear"
+      def update_index(index_uid, schema = nil)
+        put "/indexes/#{index_uid}", schema
       end
 
       def delete_index(index_uid)
