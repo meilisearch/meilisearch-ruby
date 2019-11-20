@@ -9,6 +9,7 @@ require 'meilisearch/client/health'
 require 'meilisearch/client/indexes'
 require 'meilisearch/client/documents'
 require 'meilisearch/client/prepare'
+require 'meilisearch/client/search'
 
 module MeiliSearch
   class Client
@@ -20,6 +21,7 @@ module MeiliSearch
     include MeiliSearch::Client::Indexes
     include MeiliSearch::Client::Documents
     include MeiliSearch::Client::Prepare
+    include MeiliSearch::Client::Search
 
     def initialize(url, api_key = nil)
       # api_key is is for basic api authorization

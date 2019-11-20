@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
     'lib/meilisearch/client/objects.rb',
     'lib/meilisearch/client/prepare.rb',
     'lib/meilisearch/client/stats.rb'
+    'lib/meilisearch/client/search.rb'
   ]
 
   s.add_dependency 'httparty', '~> 0.17.1'
