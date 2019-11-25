@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require './lib/meilisearch/client'
-
 RSpec.describe MeiliSearch::Client::Keys do
   let(:client) { MeiliSearch::Client.new('http://localhost:8080', 'apiKey') }
 

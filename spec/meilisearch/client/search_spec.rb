@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require './lib/meilisearch/client'
-
 RSpec.describe MeiliSearch::Client::Search do
   before(:all) do
     schema = {
