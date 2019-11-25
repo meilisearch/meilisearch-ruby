@@ -26,7 +26,7 @@ module MeiliSearch
     def initialize(url, api_key = nil)
       # api_key is is for basic api authorization
       @headers = {}
-      @headers['X-Meili-Api-Key'] = api_key if api_key
+      @headers['X-Meili-API-Key'] = api_key if api_key
       @headers['Content-Type'] = 'application/json'
       @base_url = url
     end
