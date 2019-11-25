@@ -22,6 +22,8 @@ require 'simplecov'
 
 SimpleCov.start
 
+Dir["#{Dir.pwd}/spec/support/**/*.rb"].each { |file| require file }
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
@@ -104,4 +106,13 @@ RSpec.configure do |config|
   #   # test failures related to randomization by passing the same `--seed` value
   #   # as the one that triggered the failure.
   #   Kernel.srand config.seed
+
+  # Globals for all tests
+  $URL = 'http://localhost:7700'
+  $API_KEY = 'apiKey'
+
+  # Helpers
+  config.include IndexesHelpers
+  config.include KeysHelpers
+  config.include ExceptionsHelpers
 end
