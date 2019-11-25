@@ -7,10 +7,8 @@ RSpec.describe MeiliSearch::Client::Stats do
     @client = MeiliSearch::Client.new('http://localhost:8080', 'apiKey')
   end
 
-  let(:client) { @client }
-
   it 'has version of server' do
-    response = client.version
+    response = @client.version
     expect(response).to be_a(Hash)
     expect(response).to have_key('commitSha')
     expect(response).to have_key('buildDate')
@@ -18,7 +16,7 @@ RSpec.describe MeiliSearch::Client::Stats do
   end
 
   it 'has sys-info' do
-    response = client.sysinfo
+    response = @client.sysinfo
     expect(response).to be_a(Hash)
     expect(response).to have_key('memoryUsage')
     expect(response).to have_key('processorUsage')
@@ -26,51 +24,42 @@ RSpec.describe MeiliSearch::Client::Stats do
   end
 
   it 'has stats' do
-    response = client.stats
+    response = @client.stats
     expect(response).to have_key('databaseSize')
   end
 
   context 'stats for a specific index' do
     before(:all) do
-      @index_name = 'index_de_test'
       schema = {
         objectId: [:displayed, :indexed, :identifier],
         title: [:displayed, :indexed]
       }
-      @client.create_index(@index_name, schema)
+      response = @client.create_index('index_de_test', schema)
+      @index_uid = response['uid']
       @documents = [
         { objectId: 123,  title: 'Pride and Prejudice' },
         { objectId: 456,  title: 'Le Petit Prince' }
       ]
-      @client.add_documents(@index_name, @documents)
+      @client.add_documents(@index_uid, @documents)
       sleep(0.1)
     end
 
     after(:all) do
-      @client.delete_index(@index_name)
+      @client.delete_index(@index_uid)
     end
-
-    # let(:client) { @client }
-    let(:name)      { @index_name }
-    let(:documents) { @documents }
 
     it 'has a number of documents in index' do
-      response = client.number_of_documents_in_index(name)
-      expect(response).to eq(documents.count)
-    end
-
-    it 'has a last update date for specific index' do
-      response = client.index_last_update(name)
-      expect(Date.parse(response)).to be_a(Date)
+      response = @client.number_of_documents_in_index(@index_uid)
+      expect(response).to eq(@documents.count)
     end
 
     it 'has the frequency of fields in index' do
-      response = client.index_fields_frequency(name)
+      response = @client.index_fields_frequency(@index_uid)
       expect(response).to be_a(Hash)
     end
 
     it 'knows when index is indexing' do
-      expect(@client.index_is_indexing?(@index_name)).to be_falsy
+      expect(@client.index_is_indexing?(@index_uid)).to be_falsy
     end
   end
 end
