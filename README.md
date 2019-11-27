@@ -30,7 +30,9 @@ Here is a quickstart to create an index and add documents.
 ```ruby
 require 'meilisearch'
 
-index_uid = 'yourIndexUid'
+client = MeiliSearch::Client.new('myUrl', 'myApiKey')
+index = client.index('myIndexUid')
+
 documents = [
   { id: 123,  title: 'Pride and Prejudice' },
   { id: 456,  title: 'Le Petit Prince' },
@@ -39,10 +41,16 @@ documents = [
   { id: 4,    title: 'Harry Potter and the Half-Blood Prince' },
   { id: 42,   title: 'The Hitchhiker\'s Guide to the Galaxy' }
 ]
+index.add_documents(documents)
+index.add_synonyms(['harry potter', 'hp'])
+index.search('hp')
+```
 
-client = MeiliSearch::Client.new('yourUrl', 'yourApiKey')
-client.create_index(index_uid)
-client.add_documents(index_uid, documents)
+If you don't have any index yet, you can create one with:
+
+```ruby
+index = client.create_index('Books')
+puts index.uid
 ```
 
 ## 🎬 Examples
@@ -54,7 +62,7 @@ You can check out [the API documentation](https://docs.meilisearch.com/reference
 #### Basic search
 
 ```ruby
-response = client.search(index_uid, 'prince')
+response = client.index(index_uid).search('prince')
 puts response
 ```
 
@@ -90,7 +98,7 @@ puts response
 All the supported options are described in [this documentation section](https://docs.meilisearch.com/references/search.html#search-in-an-index).
 
 ```ruby
-response = client.search(index_uid, 'prince', { limit: 1 })
+response = client.index(index_uid).search('prince', { limit: 1 })
 puts response
 ```
 
