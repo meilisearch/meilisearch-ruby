@@ -16,7 +16,6 @@ Gem::Specification.new do |s|
   s.files       = [
     'lib/meilisearch.rb',
     'lib/meilisearch/client.rb',
-    'lib/meilisearch/dataset.rb',
     'lib/meilisearch/error.rb',
     'lib/meilisearch/version.rb',
     'lib/meilisearch/client/documents.rb',
