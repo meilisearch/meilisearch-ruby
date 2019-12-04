@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module MeiliSearch
-  class Client
+  class Client < HTTPRequest
     module Prepare
       def rollout
-        put '/prepare/rollout'
+        http_put '/prepare/rollout'
       end
     end
   end

@@ -18,7 +18,7 @@ module MeiliSearch
       end
 
       def delete_index(index_uid)
-        http_delete "/indexes/#{index_uid}"
+        Index.new(index_uid, @base_url, @api_key).delete
       end
 
       # Usage:
@@ -36,7 +36,7 @@ module MeiliSearch
       private
 
       def index_object(uid)
-        MeiliSearch::Index.new(uid, @base_url, @api_key)
+        Index.new(uid, @base_url, @api_key)
       end
 
       def get_index_uid(identifier)
