@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe MeiliSearch::Client::Search do
+RSpec.describe MeiliSearch::Index::Search do
   before(:all) do
-    schema = {
-      objectId: [:displayed, :indexed, :identifier],
-      title: [:displayed, :indexed]
-    }
     documents = [
       { objectId: 123,  title: 'Pride and Prejudice' },
       { objectId: 456,  title: 'Le Petit Prince' },
@@ -14,26 +10,25 @@ RSpec.describe MeiliSearch::Client::Search do
       { objectId: 4,    title: 'Harry Potter and the Half-Blood Prince' },
       { objectId: 42,   title: 'The Hitchhiker\'s Guide to the Galaxy' }
     ]
-    @client = MeiliSearch::Client.new('http://localhost:8080', 'apiKey')
-    response = @client.create_index('index_name', schema)
-    @index_uid = response['uid']
-    @client.add_documents(@index_uid, documents)
+    client = MeiliSearch::Client.new($URL, $API_KEY)
+    @index = client.create_index('Index name')
+    @index.add_documents(documents)
     sleep(0.1)
   end
 
   after(:all) do
-    @client.delete_index(@index_uid)
+    @index.delete
   end
 
   it 'does a basic search in index' do
-    response = @client.search(@index_uid, 'prince')
+    response = @index.search('prince')
     expect(response).to be_a(Hash)
     expect(response).to have_key('hits')
     expect(response['hits']).not_to be_empty
   end
 
   it 'does a custom search in index' do
-    response = @client.search(@index_uid, 'the', limit: 1)
+    response = @index.search('the', limit: 1)
     expect(response).to be_a(Hash)
     expect(response).to have_key('hits')
     expect(response['hits'].count).to eq(1)
