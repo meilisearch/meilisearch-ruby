@@ -8,7 +8,7 @@ module MeiliSearch
       end
 
       def show_index(index_uid)
-        http_get "/indexes/#{index_uid}"
+        index_object(index_uid).show
       end
 
       def create_index(index_name, schema = nil)
@@ -18,7 +18,7 @@ module MeiliSearch
       end
 
       def delete_index(index_uid)
-        Index.new(index_uid, @base_url, @api_key).delete
+        index_object(index_uid).delete
       end
 
       # Usage:
