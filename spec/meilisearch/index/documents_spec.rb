@@ -7,7 +7,7 @@ RSpec.describe MeiliSearch::Index::Documents do
       title: [:displayed, :indexed]
     }
     client = MeiliSearch::Client.new($URL, $API_KEY)
-    @index = client.create_index('Index name', schema)
+    @index = client.create_index(name: 'Index name', schema: schema)
   end
 
   after(:all) do
@@ -104,7 +104,7 @@ RSpec.describe MeiliSearch::Index::Documents do
     expect(response).to be_a(Hash)
     expect(response).to have_key('updateId')
     expect(@index.documents.size).to eq(documents.count - 1)
-    expect { @index.document(id) }.to raise_exception(MeiliSearch::HTTPError)
+    expect { @index.document(id) }.to raise_meilisearch_http_error_with(404)
   end
 
   it 'does nothing when trying to delete a document which does not exist' do
@@ -114,7 +114,7 @@ RSpec.describe MeiliSearch::Index::Documents do
     expect(response).to be_a(Hash)
     expect(response).to have_key('updateId')
     expect(@index.documents.size).to eq(documents.count - 1)
-    expect { @index.document(id) }.to raise_exception(MeiliSearch::HTTPError)
+    expect { @index.document(id) }.to raise_meilisearch_http_error_with(404)
   end
 
   it 'deletes one document from index (with delete_multiple_documents routes)' do
@@ -124,7 +124,7 @@ RSpec.describe MeiliSearch::Index::Documents do
     expect(response).to be_a(Hash)
     expect(response).to have_key('updateId')
     expect(@index.documents.size).to eq(documents.count - 2)
-    expect { @index.document(id) }.to raise_exception(MeiliSearch::HTTPError)
+    expect { @index.document(id) }.to raise_meilisearch_http_error_with(404)
   end
 
   it 'deletes one document from index (with delete_multiple_documents routes as an array of one uid)' do
@@ -134,7 +134,7 @@ RSpec.describe MeiliSearch::Index::Documents do
     expect(response).to be_a(Hash)
     expect(response).to have_key('updateId')
     expect(@index.documents.size).to eq(documents.count - 3)
-    expect { @index.document(id) }.to raise_exception(MeiliSearch::HTTPError)
+    expect { @index.document(id) }.to raise_meilisearch_http_error_with(404)
   end
 
   it 'deletes multiples documents from index' do

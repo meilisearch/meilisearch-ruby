@@ -11,6 +11,10 @@ module MeiliSearch
         http_get '/sys-info'
       end
 
+      def pretty_sysinfo
+        http_get '/sys-info/pretty'
+      end
+
       def stats
         http_get '/stats'
       end

@@ -29,12 +29,7 @@ module MeiliSearch
     private
 
     def get_index_name_from_uid
-      index = show
-      if index.nil?
-        raise IndexIdentifierError
-      else
-        index['name']
-      end
+      show['name']
     end
 
   end

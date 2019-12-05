@@ -10,7 +10,7 @@ RSpec.describe MeiliSearch::Index::Base do
     @index_name1 = SecureRandom.hex(4)
     @index_name2 = SecureRandom.hex(4)
     @index1 = client.create_index(@index_name1)
-    @index2 = client.create_index(@index_name2, @schema)
+    @index2 = client.create_index(name: @index_name2, schema: @schema)
   end
 
   it 'shows the index' do
@@ -55,8 +55,17 @@ RSpec.describe MeiliSearch::Index::Base do
 
   it 'deletes index' do
     @index1.delete
-    expect { @index1.show }.to raise_exception(MeiliSearch::HTTPError)
+    expect { @index1.show }.to raise_meilisearch_http_error_with(404)
     @index2.delete
-    expect { @index2.show }.to raise_exception(MeiliSearch::HTTPError)
+    expect { @index2.show }.to raise_meilisearch_http_error_with(404)
+  end
+
+  it 'fails to manipulate index object after deletion' do
+    expect { @index2.name }.to raise_meilisearch_http_error_with(404)
+    expect { @index2.schema }.to raise_meilisearch_http_error_with(404)
+    expect { @index2.show }.to raise_meilisearch_http_error_with(404)
+    expect { @index2.update_name('test') }.to raise_meilisearch_http_error_with(404)
+    expect { @index2.update_schema({}) }.to raise_meilisearch_http_error_with(404)
+    expect { @index2.delete }.to raise_meilisearch_http_error_with(404)
   end
 end

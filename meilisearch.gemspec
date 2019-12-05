@@ -23,7 +23,6 @@ Gem::Specification.new do |s|
     'lib/meilisearch/client/health.rb',
     'lib/meilisearch/client/stats.rb',
     'lib/meilisearch/client/keys.rb',
-    'lib/meilisearch/client/prepare.rb',
     'lib/meilisearch/client/indexes.rb',
     'lib/meilisearch/index/base.rb',
     'lib/meilisearch/index/search.rb',

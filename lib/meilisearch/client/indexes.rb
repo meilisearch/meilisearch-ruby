@@ -11,8 +11,23 @@ module MeiliSearch
         index_object(index_uid).show
       end
 
-      def create_index(index_name, schema = nil)
-        body = { name: index_name, schema: schema }.compact
+      # def create_index(index_name, schema = nil)
+      #   body = { name: index_name, schema: schema }.compact
+      #   res = http_post '/indexes', body
+      #   index_object(res['uid'])
+      # end
+
+      def create_index(attributes)
+        if attributes.is_a?(Hash)
+          # body = {
+          #   uid: attributes[:uid],
+          #   name: attributes[:name],
+          #   schema: attributes[:schema]
+          # }.compact
+          body = attributes
+        else
+          body = { name: attributes }
+        end
         res = http_post '/indexes', body
         index_object(res['uid'])
       end
