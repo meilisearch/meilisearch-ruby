@@ -6,6 +6,7 @@ require 'meilisearch/index/documents'
 require 'meilisearch/index/search'
 require 'meilisearch/index/stats'
 require 'meilisearch/index/settings'
+require 'meilisearch/index/updates'
 
 module MeiliSearch
   class Index < HTTPRequest
@@ -15,6 +16,7 @@ module MeiliSearch
     include MeiliSearch::Index::Search
     include MeiliSearch::Index::Stats
     include MeiliSearch::Index::Settings
+    include MeiliSearch::Index::Updates
 
     attr_reader :uid
 

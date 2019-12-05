@@ -27,7 +27,8 @@ Gem::Specification.new do |s|
     'lib/meilisearch/index/base.rb',
     'lib/meilisearch/index/search.rb',
     'lib/meilisearch/index/documents.rb',
-    'lib/meilisearch/index/stats.rb'
+    'lib/meilisearch/index/stats.rb',
+    'lib/meilisearch/index/updates.rb',
     'lib/meilisearch/index/settings.rb'
   ]
 
