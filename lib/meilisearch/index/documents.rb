@@ -20,8 +20,8 @@ module MeiliSearch
         documents = [ documents ] if documents.is_a?(Hash)
         http_post "/indexes/#{@uid}/documents", documents
       end
-      alias_method :update_documents,           :add_documents
-      alias_method :update_or_update_documents, :add_documents
+      alias_method :update_documents,        :add_documents
+      alias_method :add_or_update_documents, :add_documents
 
       def clear_documents
         http_delete "/indexes/#{@uid}/documents"

@@ -43,7 +43,7 @@ RSpec.describe MeiliSearch::Index::Documents do
   end
 
   it 'gets all documents' do
-    response = @index.get_all_documents
+    response = @index.documents
     expect(response).to be_a(Array)
     expect(response.size).to eq(documents.count)
     expected_titles = documents.map { |doc| doc[:title] }
@@ -153,5 +153,17 @@ RSpec.describe MeiliSearch::Index::Documents do
     expect(response).to have_key('updateId')
     expect(@index.documents).to be_empty
     expect(@index.documents.size).to eq(0)
+  end
+
+  it 'works with method aliases' do
+    expect(@index.method(:document) == @index.method(:get_document)).to be_truthy
+    expect(@index.method(:document) == @index.method(:get_one_document)).to be_truthy
+    expect(@index.method(:documents) == @index.method(:get_documents)).to be_truthy
+    expect(@index.method(:documents) == @index.method(:get_all_documents)).to be_truthy
+    expect(@index.method(:add_documents) == @index.method(:update_documents)).to be_truthy
+    expect(@index.method(:add_documents) == @index.method(:add_or_update_documents)).to be_truthy
+    expect(@index.method(:clear_documents) == @index.method(:clear_all_documents)).to be_truthy
+    expect(@index.method(:delete_documents) == @index.method(:delete_multiple_documents)).to be_truthy
+    expect(@index.method(:delete_document) == @index.method(:delete_one_document)).to be_truthy
   end
 end

@@ -20,9 +20,8 @@ RSpec.describe MeiliSearch::Index::Base do
     expect(response['uid']).to eq(@index1.uid)
   end
 
-  # NB: alias between 'schema' and 'get_schema'
   it 'successfully gets the schema' do
-    response = @index2.get_schema
+    response = @index2.schema
     expect(response).to be_a(Hash)
     expect(response['objectId']).to contain_exactly(*@schema[:objectId].map(&:to_s))
     expect(response['title']).to contain_exactly(*@schema[:title].map(&:to_s))
@@ -67,5 +66,13 @@ RSpec.describe MeiliSearch::Index::Base do
     expect { @index2.update_name('test') }.to raise_meilisearch_http_error_with(404)
     expect { @index2.update_schema({}) }.to raise_meilisearch_http_error_with(404)
     expect { @index2.delete }.to raise_meilisearch_http_error_with(404)
+  end
+
+  it 'works with method aliases' do
+    expect(@index1.method(:show) == @index1.method(:show_index)).to be_truthy
+    expect(@index1.method(:schema) == @index1.method(:get_schema)).to be_truthy
+    expect(@index1.method(:update_name) == @index1.method(:update_index_name)).to be_truthy
+    expect(@index1.method(:update_schema) == @index1.method(:update_index_schema)).to be_truthy
+    expect(@index1.method(:delete) == @index1.method(:delete_index)).to be_truthy
   end
 end

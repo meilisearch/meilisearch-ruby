@@ -107,4 +107,8 @@ RSpec.describe MeiliSearch::Client::Indexes do
     @client.delete_index(@uid2)
     expect { @client.show_index(@uid2) }.to raise_meilisearch_http_error_with(404)
   end
+
+  it 'works with method aliases' do
+    expect(@client.method(:index) == @client.method(:get_index)).to be_truthy
+  end
 end

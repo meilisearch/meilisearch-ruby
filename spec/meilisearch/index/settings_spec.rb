@@ -42,4 +42,10 @@ RSpec.describe MeiliSearch::Index::Settings do
     # expect(search['hits'][0]['objectId] < search['hits'][1]['objectId])
   end
 
+  it 'works with method aliases' do
+    expect(@index.method(:settings) == @index.method(:get_settings)).to be_truthy
+    expect(@index.method(:add_or_update_settings) == @index.method(:add_settings)).to be_truthy
+    expect(@index.method(:add_or_update_settings) == @index.method(:update_settings)).to be_truthy
+  end
+
 end
