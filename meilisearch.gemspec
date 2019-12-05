@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.version     = MeiliSearch::VERSION
   s.authors     = ['Meili']
   s.email       = 'bonjour@meilisearch.com'
-  s.summary     = 'A simple ruby client for Meilisearch API'
-  s.description = 'A simple ruby client for Meilisearch API. See https://github.com/meilisearch/MeiliDB'
-  s.homepage    = 'https://github.com/meilisearch/ruby-meili-api'
+  s.summary     = 'An easy-to-use ruby client for Meilisearch API'
+  s.description = 'An easy-to-use ruby client for Meilisearch API. See https://github.com/meilisearch/MeiliSearch'
+  s.homepage    = 'https://github.com/meilisearch/meilisearch-ruby'
   s.licenses    = ['MIT']
   s.date        = Time.now
 
@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
     'lib/meilisearch/index/search.rb',
     'lib/meilisearch/index/documents.rb',
     'lib/meilisearch/index/stats.rb'
+    'lib/meilisearch/index/settings.rb'
   ]
 
   s.add_dependency 'httparty', '~> 0.17.1'

@@ -28,7 +28,7 @@ RSpec.describe MeiliSearch::Index::Documents do
 
   it 'adds documents (as a array of documents)' do
     response = @index.add_documents(documents)
-    sleep(0.1)
+    sleep(0.2)
     expect(response).to be_a(Hash)
     expect(response).to have_key('updateId')
     expect(@index.documents.count).to eq(documents.count)
