@@ -7,6 +7,7 @@ require 'meilisearch/index/search'
 require 'meilisearch/index/stats'
 require 'meilisearch/index/settings'
 require 'meilisearch/index/updates'
+require 'meilisearch/index/stop_words'
 
 module MeiliSearch
   class Index < HTTPRequest
@@ -17,6 +18,7 @@ module MeiliSearch
     include MeiliSearch::Index::Stats
     include MeiliSearch::Index::Settings
     include MeiliSearch::Index::Updates
+    include MeiliSearch::Index::StopWords
 
     attr_reader :uid
 

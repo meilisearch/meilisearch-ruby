@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
     'lib/meilisearch/index/documents.rb',
     'lib/meilisearch/index/stats.rb',
     'lib/meilisearch/index/updates.rb',
+    'lib/meilisearch/index/stop_words.rb',
     'lib/meilisearch/index/settings.rb'
   ]
 
