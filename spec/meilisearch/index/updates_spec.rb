@@ -16,8 +16,6 @@ RSpec.describe MeiliSearch::Index::Updates do
     }
     client = MeiliSearch::Client.new($URL, $API_KEY)
     @index = client.create_index('Index name')
-    # @index.add_documents(documents)
-    # sleep(0.1)
   end
 
   after(:all) do
@@ -33,7 +31,7 @@ RSpec.describe MeiliSearch::Index::Updates do
   it 'gets update status after adding documents' do
     response = @index.add_documents(@documents)
     update_id = response['updateId']
-    sleep(0.1)
+    sleep(0.2)
     response = @index.get_update_status(update_id)
     expect(response).to be_a(Hash)
     expect(response['updateId']).to eq(update_id)
