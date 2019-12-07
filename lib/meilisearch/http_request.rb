@@ -48,6 +48,15 @@ module MeiliSearch
       validate(response)
     end
 
+    def http_patch(path = '', body = {})
+      response = self.class.patch(
+        (@base_url + path),
+        body: body.to_json,
+        headers: @headers
+      )
+      validate(response)
+    end
+
     def http_delete(path = '')
       response = self.class.delete(
         (@base_url + path),
