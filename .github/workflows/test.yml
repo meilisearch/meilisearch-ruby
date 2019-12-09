@@ -1,0 +1,21 @@
+name: Test
+
+on: [pull_request]
+
+jobs:
+  rspec:
+    name: Rspec against latest docker image
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Ruby 2.6
+      uses: actions/setup-ruby@v1
+      with:
+        version: 2.6.x
+    - name: Docker setup
+      run: docker run -d -p 7700:7700 getmeili/meilisearch:v0.8.4 ./meilisearch --api-key=apiKey --no-analytics=true
+    - name: Install ruby dependencies
+      run: bundle install
+    - name: Run test suite
+      run: rspec
