@@ -53,9 +53,9 @@ RSpec.describe MeiliSearch::Index::Base do
   end
 
   it 'deletes index' do
-    @index1.delete
+    expect(@index1.delete).to be_nil
     expect { @index1.show }.to raise_meilisearch_http_error_with(404)
-    @index2.delete
+    expect(@index2.delete).to be_nil
     expect { @index2.show }.to raise_meilisearch_http_error_with(404)
   end
 

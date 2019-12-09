@@ -102,9 +102,9 @@ RSpec.describe MeiliSearch::Client::Indexes do
   end
 
   it 'deletes index' do
-    @client.delete_index(@uid1)
+    expect(@client.delete_index(@uid1)).to be_nil
     expect { @client.show_index(@uid1) }.to raise_meilisearch_http_error_with(404)
-    @client.delete_index(@uid2)
+    expect(@client.delete_index(@uid2)).to be_nil
     expect { @client.show_index(@uid2) }.to raise_meilisearch_http_error_with(404)
   end
 
