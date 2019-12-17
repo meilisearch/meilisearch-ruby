@@ -12,14 +12,14 @@ Here is the [MeiliSearch documentation](https://docs.meilisearch.com/).
 
 ## Table of Contents <!-- omit in toc -->
 
-- [🔧 Installation](#%f0%9f%94%a7-installation)
-- [🚀 Getting started](#%f0%9f%9a%80-getting-started)
-- [🎬 Examples](#%f0%9f%8e%ac-examples)
+- [🔧 Installation](#-installation)
+- [🚀 Getting started](#-getting-started)
+- [🎬 Examples](#-examples)
   - [Indexes](#indexes)
   - [Documents](#documents)
   - [Update status](#update-status)
   - [Search](#search)
-- [🤖 Compatibility with MeiliSearch](#%f0%9f%a4%96-compatibility-with-meilisearch)
+- [🤖 Compatibility with MeiliSearch](#-compatibility-with-meilisearch)
 
 ## 🔧 Installation
 
@@ -60,7 +60,7 @@ documents = [
 index.add_documents(documents) # asynchronous
 ```
 
-/!\ The method `add_documents` is **[asynchronous](https://docs.meilisearch.com/advanced_guides/asynchronous_updates.html)**.<br/>
+⚠️ The method `add_documents` is **[asynchronous](https://docs.meilisearch.com/advanced_guides/asynchronous_updates.html)**.<br/>
 It means that your new documents addition will not be taken into account if you do a request *right after* your addition in the same ruby script.
 
 #### Search in index <!-- omit in toc -->
