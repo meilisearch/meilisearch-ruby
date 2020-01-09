@@ -1,4 +1,4 @@
-# Meilisearch Ruby Client <!-- omit in toc -->
+# MeiliSearch Ruby Client <!-- omit in toc -->
 
 [![Gem Version](https://badge.fury.io/rb/meilisearch.svg)](https://badge.fury.io/rb/meilisearch)
 [![Licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://img.shields.io/badge/licence-MIT-blue.svg)
@@ -8,7 +8,7 @@ The ruby client for MeiliSearch API.
 
 MeiliSearch provides an ultra relevant and instant full-text search. Our solution is open-source and you can check out [our repository here](https://github.com/meilisearch/MeiliDB).</br>
 
-Here is the [MeiliSearch documentation](https://docs.meilisearch.com/).
+Here is the [MeiliSearch documentation](https://docs.meilisearch.com/) 📖
 
 ## Table of Contents <!-- omit in toc -->
 
@@ -37,7 +37,13 @@ gem 'meilisearch'
 
 ### Run MeiliSearch <!-- omit in toc -->
 
-Here is a the [documentation](https://docs.meilisearch.com/advanced_guides/binary.html) to install and run Meilisearch.
+There are many ways to run a MeiliSearch instance.
+All of them are detailed in the [documentation](https://docs.meilisearch.com/advanced_guides/binary.html).
+
+For example, if you use Docker:
+```bash
+$ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest --api-key=apiKey
+```
 
 ## 🚀 Getting started
 
@@ -156,7 +162,7 @@ index.clear_documents
 
 ### Update status
 ```ruby
-# Get on update status
+# Get one update status
 # Parameter: the updateId got after an asynchronous request (e.g. documents addition)
 index.get_update_status(1)
 # Get all update satus
