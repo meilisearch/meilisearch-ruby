@@ -192,7 +192,7 @@ index.search('prince')
 All the supported options are described in [this documentation section](https://docs.meilisearch.com/references/search.html#search-in-an-index).
 
 ```ruby
-response = index.search('prince', { limit: 1 })
+index.search('prince', { limit: 1 })
 ```
 
 ```json
