@@ -53,7 +53,8 @@ $ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest --api-key=apiKey
 require 'meilisearch'
 
 client = MeiliSearch::Client.new('url', 'apiKey')
-index = client.index('indexUid')
+index = client.create_index('books') # If your index does not exist
+index = client.index('books')        # If you already created your index
 
 documents = [
   { id: 123,  title: 'Pride and Prejudice' },
@@ -63,11 +64,10 @@ documents = [
   { id: 4,    title: 'Harry Potter and the Half-Blood Prince' },
   { id: 42,   title: 'The Hitchhiker\'s Guide to the Galaxy' }
 ]
-index.add_documents(documents) # asynchronous
+index.add_documents(documents) # Asynchronous
 ```
 
-⚠️ The method `add_documents` is **[asynchronous](https://docs.meilisearch.com/advanced_guides/asynchronous_updates.html)**.<br/>
-It means that your new documents addition will not be taken into account if you do a request *right after* your addition in the same ruby script.
+You can check the status of your documents addition thanks to this [method](https://github.com/meilisearch/meilisearch-ruby#update-status).
 
 #### Search in index <!-- omit in toc -->
 ``` ruby
@@ -86,15 +86,6 @@ Output:
   "processingTimeMs" => 1,
   "query" => "hary pottre"
 }
-```
-
-#### Create an index <!-- omit in toc -->
-
-If you don't have any index yet, you can create one with:
-
-```ruby
-index = client.create_index('Books')
-puts index.uid
 ```
 
 ## 🎬 Examples
