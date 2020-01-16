@@ -64,10 +64,10 @@ documents = [
   { id: 4,    title: 'Harry Potter and the Half-Blood Prince' },
   { id: 42,   title: 'The Hitchhiker\'s Guide to the Galaxy' }
 ]
-index.add_documents(documents) # Asynchronous
+index.add_documents(documents) # => { "updateId": 1 }
 ```
 
-You can check the status of your documents addition thanks to this [method](https://github.com/meilisearch/meilisearch-ruby#update-status).
+With the `updateId`, you can check the status of your documents addition thanks to this [method](https://github.com/meilisearch/meilisearch-ruby#update-status).
 
 #### Search in index <!-- omit in toc -->
 ``` ruby
