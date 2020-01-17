@@ -53,8 +53,8 @@ $ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest --api-key=apiKey
 require 'meilisearch'
 
 client = MeiliSearch::Client.new('url', 'apiKey')
-index = client.create_index('books') # If your index does not exist
-index = client.index('books')        # If you already created your index
+index = client.create_index(name: 'Books', uid: 'books') # If your index does not exist
+index = client.index('books')                            # If you already created your index
 
 documents = [
   { id: 123,  title: 'Pride and Prejudice' },
