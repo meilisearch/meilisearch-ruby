@@ -38,7 +38,7 @@ gem 'meilisearch'
 ### Run MeiliSearch <!-- omit in toc -->
 
 There are many ways to run a MeiliSearch instance.
-All of them are detailed in the [documentation](https://docs.meilisearch.com/advanced_guides/binary.html).
+All of them are detailed in the [documentation](https://docs.meilisearch.com/guides/advanced_guides/binary.html#download-and-launch).
 
 For example, if you use Docker:
 ```bash
