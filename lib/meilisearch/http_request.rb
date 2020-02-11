@@ -20,7 +20,7 @@ module MeiliSearch
       response = self.class.get(
         @base_url + path,
         query: query,
-        headers: @headers
+        headers: @headers, timeout: 1
       )
       validate(response)
     end
@@ -29,13 +29,13 @@ module MeiliSearch
       response = if body.nil?
                    self.class.post(
                      @base_url + path,
-                     headers: @headers
+                     headers: @headers, timeout: 1
                    )
                  else
                    self.class.post(
                      @base_url + path,
                      body: body.to_json,
-                     headers: @headers
+                     headers: @headers, timeout: 1
                    )
                  end
       validate(response)
@@ -45,7 +45,7 @@ module MeiliSearch
       response = self.class.put(
         @base_url + path,
         body: body.to_json,
-        headers: @headers
+        headers: @headers, timeout: 1
       )
       validate(response)
     end
@@ -54,7 +54,7 @@ module MeiliSearch
       response = self.class.patch(
         @base_url + path,
         body: body.to_json,
-        headers: @headers
+        headers: @headers, timeout: 1
       )
       validate(response)
     end
@@ -62,7 +62,7 @@ module MeiliSearch
     def http_delete(path = '')
       response = self.class.delete(
         @base_url + path,
-        headers: @headers
+        headers: @headers, timeout: 1
       )
       validate(response)
     end
