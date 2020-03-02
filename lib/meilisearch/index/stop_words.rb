@@ -4,24 +4,17 @@ module MeiliSearch
   class Index < HTTPRequest
     module StopWords
       def stop_words
-        http_get "/indexes/#{@uid}/stop-words"
+        http_get "/indexes/#{@uid}/settings/stop-words"
       end
       alias get_stop_words stop_words
 
-      def add_stop_words(stop_words)
-        if stop_words.is_a?(Array)
-          http_patch "/indexes/#{@uid}/stop-words", stop_words
-        else
-          http_patch "/indexes/#{@uid}/stop-words", [stop_words]
-        end
+      def update_stop_words(stop_words)
+        body = stop_words.is_a?(Array) ? stop_words : [stop_words]
+        http_post "/indexes/#{@uid}/settings/stop-words", body
       end
 
-      def delete_stop_words(stop_words)
-        if stop_words.is_a?(Array)
-          http_post "/indexes/#{@uid}/stop-words", stop_words
-        else
-          http_post "/indexes/#{@uid}/stop-words", [stop_words]
-        end
+      def reset_stop_words
+        http_delete "/indexes/#{@uid}/settings/stop-words"
       end
     end
   end

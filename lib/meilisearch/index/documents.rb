@@ -15,27 +15,22 @@ module MeiliSearch
       end
       alias get_documents documents
 
-      def add_documents(documents)
+      def add_documents(documents, primary_key = nil)
         documents = [documents] if documents.is_a?(Hash)
-        http_post "/indexes/#{@uid}/documents", documents
+        http_post "/indexes/#{@uid}/documents", documents, primaryKey: primary_key
       end
       alias replace_documents add_documents
       alias add_or_replace_documents add_documents
 
-      def update_documents(documents)
+      def update_documents(documents, primary_key = nil)
         documents = [documents] if documents.is_a?(Hash)
-        http_put "/indexes/#{@uid}/documents", documents
+        http_put "/indexes/#{@uid}/documents", documents, primaryKey: primary_key
       end
       alias add_or_update_documents update_documents
 
-      def clear_documents
-        http_delete "/indexes/#{@uid}/documents"
-      end
-      alias clear_all_documents clear_documents
-
       def delete_documents(documents_ids)
         if documents_ids.is_a?(Array)
-          http_post "/indexes/#{@uid}/documents/delete", documents_ids
+          http_post "/indexes/#{@uid}/documents/delete-batch", documents_ids
         else
           delete_document(documents_ids)
         end
@@ -47,6 +42,10 @@ module MeiliSearch
         http_delete "/indexes/#{@uid}/documents/#{encode_document}"
       end
       alias delete_one_document delete_document
+
+      def delete_all_documents
+        http_delete "/indexes/#{@uid}/documents"
+      end
     end
   end
 end
