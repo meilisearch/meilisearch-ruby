@@ -2,7 +2,7 @@
 
 module MeiliSearch
   class MeiliSearchError < StandardError; end
-  class IndexIdentifierError < MeiliSearchError; end
+  class IndexUidError < MeiliSearchError; end
 
   class HTTPError < MeiliSearchError
     attr_reader :status

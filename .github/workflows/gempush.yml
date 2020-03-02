@@ -16,7 +16,7 @@ jobs:
       uses: actions/setup-ruby@v1
       with:
         version: 2.6.x
-    - name: check valid release
+    - name: Check release validity
       run: sh scripts/check-release.sh
     - name: Publish to RubyGems
       run: |

@@ -20,4 +20,4 @@ Style/WordArray:
 Style/GlobalVars:
   AllowedVariables:
     - $URL
-    - $API_KEY
+    - $MASTER_KEY

@@ -4,7 +4,7 @@ module MeiliSearch
   class Index < HTTPRequest
     module Stats
       def stats
-        http_get "/stats/#{@uid}"
+        http_get "/indexes/#{@uid}/stats"
       end
 
       def number_of_documents
