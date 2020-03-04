@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Checking if current branch is master
-current_branch=$(git rev-parse --abbrev-ref HEAD)
+current_branch=${GITHUB_REF#refs/heads/}
 if [ "$current_branch" != 'master' ]; then
   echo "Error: the current branch must be master."
   echo "Current branch: $current_branch"
