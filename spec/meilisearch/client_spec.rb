@@ -28,7 +28,7 @@ RSpec.describe MeiliSearch::Client do
   end
 
   context 'Client with bad url' do
-    let(:client) { MeiliSearch::Client.new('nope') }
+    let(:client) { MeiliSearch::Client.new('bad_url') }
 
     it 'is not healthy' do
       expect(client.healthy?).to be false

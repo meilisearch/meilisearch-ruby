@@ -72,7 +72,7 @@ documents = [
 index.add_documents(documents) # => { "updateId": 0 }
 ```
 
-With the `updateId`, you can check the status (`processed` of `failed`) of your documents addition thanks to this [method](#update-status).
+With the `updateId`, you can check the status (`processed` or `failed`) of your documents addition thanks to this [method](#update-status).
 
 #### Search in index <!-- omit in toc -->
 
