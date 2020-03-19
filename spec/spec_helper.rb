@@ -22,7 +22,7 @@ require 'simplecov'
 
 SimpleCov.start
 
-Dir["#{Dir.pwd}/spec/support/**/*.rb"].each { |file| require file }
+Dir["#{Dir.pwd}/spec/support/**/*.rb"].sort.each { |file| require file }
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -109,10 +109,9 @@ RSpec.configure do |config|
 
   # Globals for all tests
   $URL = 'http://localhost:7700'
-  $API_KEY = 'apiKey'
+  $MASTER_KEY = 'masterKey'
 
   # Helpers
   config.include IndexesHelpers
-  config.include KeysHelpers
   config.include ExceptionsHelpers
 end

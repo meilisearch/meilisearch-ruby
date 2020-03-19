@@ -26,38 +26,38 @@ module MeiliSearch
       validate(response)
     end
 
-    def http_post(path = '', body = nil)
-      response = if body.nil?
-                   self.class.post(
-                     @base_url + path,
-                     headers: @headers,
-                     timeout: 1
-                   )
-                 else
-                   self.class.post(
-                     @base_url + path,
-                     body: body.to_json,
-                     headers: @headers,
-                     timeout: 1
-                   )
-                 end
+    def http_post(path = '', body = nil, params = nil)
+      body = body.to_json unless body.nil?
+      params = {
+        body: body,
+        query: params,
+        headers: @headers,
+        timeout: 1
+      }.compact
+      response = self.class.post(
+        @base_url + path,
+        params
+      )
       validate(response)
     end
 
-    def http_put(path = '', body = {})
+    def http_put(path = '', body = nil, params = nil)
+      body = body.to_json unless body.nil?
       response = self.class.put(
         @base_url + path,
-        body: body.to_json,
+        body: body,
+        query: params,
         headers: @headers,
         timeout: 1
       )
       validate(response)
     end
 
-    def http_patch(path = '', body = {})
+    def http_patch(path = '', body = nil)
+      body = body.to_json unless body.nil?
       response = self.class.patch(
         @base_url + path,
-        body: body.to_json,
+        body: body,
         headers: @headers,
         timeout: 1
       )
