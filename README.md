@@ -57,7 +57,7 @@ NB: you can also download MeiliSearch from **Homebrew** or **APT**.
 ```ruby
 require 'meilisearch'
 
-client = MeiliSearch::Client.new('http://127.0.0.1:7700/', 'masterKey')
+client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
 index = client.create_index('books') # If your index does not exist
 index = client.index('books')        # If you already created your index
 
