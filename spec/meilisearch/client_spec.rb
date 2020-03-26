@@ -16,19 +16,19 @@ RSpec.describe MeiliSearch::Client do
   end
 
   context 'Client with right master API key' do
-    let(:client) { MeiliSearch::Client.new($URL, $API_KEY) }
+    let(:client) { MeiliSearch::Client.new($URL, $MASTER_KEY) }
 
     it 'is healthy' do
       expect(client.healthy?).to be true
     end
 
     it 'has access to others routes' do
-      expect(client.keys).to be_empty
+      expect(client.keys.keys).to contain_exactly('private', 'public')
     end
   end
 
   context 'Client with bad url' do
-    let(:client) { MeiliSearch::Client.new('nope') }
+    let(:client) { MeiliSearch::Client.new('bad_url') }
 
     it 'is not healthy' do
       expect(client.healthy?).to be false
