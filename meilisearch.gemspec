@@ -34,5 +34,5 @@ Gem::Specification.new do |s|
     'lib/meilisearch/index/settings.rb'
   ]
 
-  s.add_dependency 'httparty', '~> 0.17.1'
+  s.add_dependency 'httparty', '>= 0.17.1', '< 0.19.0'
 end
