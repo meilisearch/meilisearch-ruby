@@ -6,7 +6,7 @@
 
 The ruby client for MeiliSearch API.
 
-MeiliSearch provides an ultra relevant and instant full-text search. Our solution is open-source and you can check out [our repository here](https://github.com/meilisearch/MeiliDB).
+MeiliSearch provides an ultra relevant and instant full-text search. Our solution is open-source and you can check out [our repository here](https://github.com/meilisearch/MeiliSearch).
 
 Here is the [MeiliSearch documentation](https://docs.meilisearch.com/) 📖
 
@@ -19,6 +19,10 @@ Here is the [MeiliSearch documentation](https://docs.meilisearch.com/) 📖
   - [Documents](#documents)
   - [Update status](#update-status)
   - [Search](#search)
+- [⚙️ Development Workflow](#️-development-workflow)
+  - [Install dependencies](#install-dependencies)
+  - [Tests and Linter](#tests-and-linter)
+  - [Release](#release)
 - [🤖 Compatibility with MeiliSearch](#-compatibility-with-meilisearch)
 
 ## 🔧 Installation
@@ -37,11 +41,11 @@ gem 'meilisearch'
 
 ### Run MeiliSearch <!-- omit in toc -->
 
-There are many easy ways to [download and run a MeiliSearch instance](https://docs.meilisearch.com/guides/advanced_guides/binary.html#download-and-launch).
+There are many easy ways to [download and run a MeiliSearch instance](https://docs.meilisearch.com/guides/advanced_guides/installation.html#download-and-launch).
 
 For example, if you use Docker:
 ```bash
-$ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest --api-key=apiKey
+$ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest --master-key=masterKey
 ```
 
 NB: you can also download MeiliSearch from **Homebrew** or **APT**.
@@ -53,39 +57,40 @@ NB: you can also download MeiliSearch from **Homebrew** or **APT**.
 ```ruby
 require 'meilisearch'
 
-client = MeiliSearch::Client.new('url', 'apiKey')
-index = client.create_index(name: 'Books', uid: 'books') # If your index does not exist
-index = client.index('books')                            # If you already created your index
+client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
+index = client.create_index('books') # If your index does not exist
+index = client.index('books')        # If you already created your index
 
 documents = [
-  { id: 123,  title: 'Pride and Prejudice' },
-  { id: 456,  title: 'Le Petit Prince' },
-  { id: 1,    title: 'Alice In Wonderland' },
-  { id: 1344, title: 'The Hobbit' },
-  { id: 4,    title: 'Harry Potter and the Half-Blood Prince' },
-  { id: 42,   title: 'The Hitchhiker\'s Guide to the Galaxy' }
+  { book_id: 123,  title: 'Pride and Prejudice' },
+  { book_id: 456,  title: 'Le Petit Prince' },
+  { book_id: 1,    title: 'Alice In Wonderland' },
+  { book_id: 1344, title: 'The Hobbit' },
+  { book_id: 4,    title: 'Harry Potter and the Half-Blood Prince' },
+  { book_id: 42,   title: 'The Hitchhiker\'s Guide to the Galaxy' }
 ]
-index.add_documents(documents) # => { "updateId": 1 }
+index.add_documents(documents) # => { "updateId": 0 }
 ```
 
-With the `updateId`, you can check the status of your documents addition thanks to this [method](https://github.com/meilisearch/meilisearch-ruby#update-status).
+With the `updateId`, you can check the status (`processed` or `failed`) of your documents addition thanks to this [method](#update-status).
 
 #### Search in index <!-- omit in toc -->
+
 ``` ruby
 # MeiliSearch is typo-tolerant:
-puts index.search('hary pottre')
+puts index.search('harry pottre')
 ```
 Output:
 ```ruby
 {
   "hits" => [{
-    "id" => 4,
+    "book_id" => 4,
     "title" => "Harry Potter and the Half-Blood Prince"
   }],
   "offset" => 0,
   "limit" => 20,
   "processingTimeMs" => 1,
-  "query" => "hary pottre"
+  "query" => "harry pottre"
 }
 ```
 
@@ -97,41 +102,41 @@ You can check out [the API documentation](https://docs.meilisearch.com/reference
 ### Indexes
 
 #### Create an index <!-- omit in toc -->
+
 ```ruby
 # Create an index
-client.create_index('Books')
-# Create an index with a specific uid (uid must be unique)
-client.create_index(name: 'Books', uid: 'books')
-# Create an index with a schema
-schema = {
-  id:    [:displayed, :indexed, :identifier],
-  title: [:displayed, :indexed]
-}
-client.create_index(name: 'Books', schema: schema)
+client.create_index('books')
+# Create an index and give the primary-key
+client.create_index(uid: 'books', primaryKey: 'book_id')
 ```
 
 #### List all indexes <!-- omit in toc -->
+
 ```ruby
 client.indexes
 ```
 
 #### Get an index object <!-- omit in toc -->
+
 ```ruby
-client.index('indexUid')
+client.index('books')
 ```
 
 ### Documents
 
 #### Fetch documents <!-- omit in toc -->
+
 ```ruby
 # Get one document
 index.document(123)
 # Get documents by batch
 index.documents(offset: 10 , limit: 20)
 ```
+
 #### Add documents <!-- omit in toc -->
+
 ```ruby
-index.add_documents({ id: 2, title: 'Madame Bovary' })
+index.add_documents({ book_id: 2, title: 'Madame Bovary' })
 ```
 
 Response:
@@ -143,13 +148,14 @@ Response:
 With this `updateId` you can track your [operation update](#update-status).
 
 #### Delete documents <!-- omit in toc -->
+
 ```ruby
 # Delete one document
 index.delete_document(2)
 # Delete several documents
 index.delete_documents([1, 42])
 # Delete all documents /!\
-index.clear_documents
+index.delete_all_documents
 ```
 
 ### Update status
@@ -173,11 +179,11 @@ index.search('prince')
 {
     "hits": [
         {
-            "id": 456,
+            "book_id": 456,
             "title": "Le Petit Prince"
         },
         {
-            "id": 4,
+            "book_id": 4,
             "title": "Harry Potter and the Half-Blood Prince"
         }
     ],
@@ -193,24 +199,75 @@ index.search('prince')
 All the supported options are described in [this documentation section](https://docs.meilisearch.com/references/search.html#search-in-an-index).
 
 ```ruby
-index.search('prince', { limit: 1 })
+index.search('prince', { limit: 1, attributesToHighlight: '*' })
 ```
 
 ```json
 {
     "hits": [
         {
-            "id": 456,
-            "title": "Le Petit Prince"
+            "book_id": 456,
+            "title": "Le Petit Prince",
+            "_formatted": {
+                "book_id": 456,
+                "title": "Le Petit <em>Prince</em>"
+            }
         }
     ],
     "offset": 0,
     "limit": 1,
-    "processingTimeMs": 10,
+    "processingTimeMs": 0,
     "query": "prince"
 }
 ```
 
+## ⚙️ Development Workflow
+
+If you want to contribute, this section describes the steps to follow.
+
+Thank you for your interest in a MeiliSearch tool! ♥️
+
+### Install dependencies
+
+```bash
+$ bundle install
+```
+
+### Tests and Linter
+
+Each PR should pass the tests and the linter to be accepted.
+
+```bash
+# Tests
+$ docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey --no-analytics
+$ bundle exec rspec
+# Linter
+$ bundle exec rubocop lib/ spec/
+# Linter with auto-correct
+$ bundle exec rubocop -a lib/ spec/
+```
+
+### Release
+
+MeiliSearch tools follow the [Semantic Versioning Convention](https://semver.org/).
+
+You must do a PR modifying the file `lib/meilisearch/version.rb` with the right version.<br>
+
+```ruby
+VERSION = 'X.X.X'
+```
+
+Once the changes are merged on `master`, in your terminal, you must be on the `master` branch and push a new tag with the right version:
+
+```bash
+$ git checkout master
+$ git pull origin master
+$ git tag vX.X.X
+$ git push --tag origin master
+```
+
+A GitHub Action will be triggered and push the new gem on [RubyGems](https://rubygems.org/gems/meilisearch).
+
 ## 🤖 Compatibility with MeiliSearch
 
-This gem works for MeiliSearch `v0.8.x`.
+This gem works for MeiliSearch `v0.9.x`.
