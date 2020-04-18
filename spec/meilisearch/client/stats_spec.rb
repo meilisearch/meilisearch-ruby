@@ -30,7 +30,7 @@ RSpec.describe MeiliSearch::Client::Stats do
     expect(response).to have_key('processorUsage')
     expect(response).to have_key('global')
     expect(response['global']['totalMemory']).to be_a(String)
-    expect(response['global']['totalMemory']).to end_with('GB')
+    expect(response['global']['totalMemory']).to end_with('B')
     expect(response['processorUsage'].first).to be_a(String)
     expect(response['processorUsage'].first).to end_with('%')
   end
