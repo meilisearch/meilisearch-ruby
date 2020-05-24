@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe MeiliSearch::Index::Base do
+RSpec.describe MeiliSearch::Index do
   before(:all) do
     @uid1 = 'UID_1'
     @uid2 = 'UID_2'
