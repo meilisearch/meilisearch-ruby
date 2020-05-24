@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe MeiliSearch::Index::Settings do
+RSpec.describe MeiliSearch::Index do
   before(:all) do
     @client = MeiliSearch::Client.new($URL, $MASTER_KEY)
     clear_all_indexes(@client)
@@ -277,6 +277,124 @@ RSpec.describe MeiliSearch::Index::Settings do
     end
   end
 
+  context 'On synonyms sub-routes' do
+    before(:all) do
+      @uid = SecureRandom.hex(4)
+      @client.create_index(@uid)
+    end
+
+    after(:all) { clear_all_indexes(@client) }
+
+    let(:index) { @client.index(@uid) }
+    let(:synonyms) do
+      {
+        wow: ['world of warcraft'],
+        wolverine: ['xmen', 'logan'],
+        logan: ['wolverine', 'xmen']
+      }
+    end
+
+    it 'gets an empty hash of synonyms by default' do
+      response = index.synonyms
+      expect(response).to be_a(Hash)
+      expect(response).to be_empty
+    end
+
+    it 'returns an updateId when updating' do
+      response = index.update_synonyms(synonyms)
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      sleep(0.1)
+    end
+
+    it 'gets all the synonyms' do
+      response = index.synonyms
+      expect(response).to be_a(Hash)
+      expect(response.count).to eq(3)
+      expect(response.keys).to contain_exactly('wow', 'wolverine', 'logan')
+      expect(response['wow']).to be_a(Array)
+      expect(response['wow']).to eq(['world of warcraft'])
+    end
+
+    it 'overwrites all synonyms when updating' do
+      response = index.update_synonyms(hp: ['harry potter'], 'harry potter': ['hp'])
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      sleep(0.1)
+      synonyms = index.synonyms
+      expect(synonyms).to be_a(Hash)
+      expect(synonyms.count).to eq(2)
+      expect(synonyms.keys).to contain_exactly('hp', 'harry potter')
+      expect(synonyms['hp']).to be_a(Array)
+      expect(synonyms['hp']).to eq(['harry potter'])
+    end
+
+    it 'deletes all the synonyms' do
+      response = index.reset_synonyms
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      sleep(0.1)
+      synonyms = index.synonyms
+      expect(synonyms).to be_a(Hash)
+      expect(synonyms).to be_empty
+    end
+  end
+
+  context 'On stop-words sub-routes' do
+    before(:all) do
+      @uid = SecureRandom.hex(4)
+      @client.create_index(@uid)
+    end
+
+    after(:all) { clear_all_indexes(@client) }
+
+    let(:index) { @client.index(@uid) }
+    let(:stop_words_array) { ['the', 'of'] }
+    let(:stop_words_string) { 'a' }
+
+    it 'gets an empty array when there is no stop-words' do
+      response = index.stop_words
+      expect(response).to be_a(Array)
+      expect(response).to be_empty
+    end
+
+    it 'updates stop-words when the body is valid (as an array)' do
+      response = index.update_stop_words(stop_words_array)
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      sleep(0.1)
+    end
+
+    it 'gets list of stop-words' do
+      response = index.stop_words
+      expect(response).to be_a(Array)
+      expect(response).to contain_exactly(*stop_words_array)
+    end
+
+    it 'updates stop-words when the body is valid (as single string)' do
+      response = index.update_stop_words(stop_words_string)
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      sleep(0.1)
+      sw = index.stop_words
+      expect(sw).to be_a(Array)
+      expect(sw).to contain_exactly(stop_words_string)
+    end
+
+    it 'returns an error when the body is invalid' do
+      expect { index.update_stop_words(test: 'test') }.to raise_meilisearch_http_error_with(400)
+    end
+
+    it 'resets stop-words' do
+      response = index.reset_stop_words
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      sleep(0.1)
+      expect(index.stop_words).to be_a(Array)
+      expect(index.stop_words).to be_empty
+    end
+  end
+
   context 'Index with primary-key' do
     before(:all) do
       @uid = SecureRandom.hex(4)
@@ -388,6 +506,8 @@ RSpec.describe MeiliSearch::Index::Settings do
       expect(index.method(:searchable_attributes) == index.method(:get_searchable_attributes)).to be_truthy
       expect(index.method(:displayed_attributes) == index.method(:get_displayed_attributes)).to be_truthy
       expect(index.method(:accept_new_fields) == index.method(:get_accept_new_fields)).to be_truthy
+      expect(index.method(:synonyms) == index.method(:get_synonyms)).to be_truthy
+      expect(index.method(:stop_words) == index.method(:get_stop_words)).to be_truthy
     end
   end
 end

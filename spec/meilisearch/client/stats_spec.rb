@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe MeiliSearch::Client::Stats do
+RSpec.describe MeiliSearch::Client do
   before(:all) do
     @client = MeiliSearch::Client.new($URL, $MASTER_KEY)
   end

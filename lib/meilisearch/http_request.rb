@@ -53,17 +53,6 @@ module MeiliSearch
       validate(response)
     end
 
-    def http_patch(path = '', body = nil)
-      body = body.to_json unless body.nil?
-      response = self.class.patch(
-        @base_url + path,
-        body: body,
-        headers: @headers,
-        timeout: 1
-      )
-      validate(response)
-    end
-
     def http_delete(path = '')
       response = self.class.delete(
         @base_url + path,
