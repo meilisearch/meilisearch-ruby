@@ -48,14 +48,14 @@ module MeiliSearch
 
     def add_documents(documents, primary_key = nil)
       documents = [documents] if documents.is_a?(Hash)
-      http_post "/indexes/#{@uid}/documents", documents, primaryKey: primary_key
+      http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
     end
     alias replace_documents add_documents
     alias add_or_replace_documents add_documents
 
     def update_documents(documents, primary_key = nil)
       documents = [documents] if documents.is_a?(Hash)
-      http_put "/indexes/#{@uid}/documents", documents, primaryKey: primary_key
+      http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
     end
     alias add_or_update_documents update_documents
 
@@ -125,8 +125,8 @@ module MeiliSearch
       stats['lastUpdate']
     end
 
-    def fields_frequency
-      stats['fieldsFrequency']
+    def fields_distribution
+      stats['fieldsDistribution']
     end
 
     ### SETTINGS - GENERAL

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe MeiliSearch::Index do
+RSpec.describe 'MeiliSearch::Index - Settings' do
   before(:all) do
     @client = MeiliSearch::Client.new($URL, $MASTER_KEY)
     clear_all_indexes(@client)

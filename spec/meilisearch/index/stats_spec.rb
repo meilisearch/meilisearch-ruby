@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe MeiliSearch::Index do
+RSpec.describe 'MeiliSearch::Index - Stats' do
   before(:all) do
     @documents = [
       { objectId: 123,  title: 'Pride and Prejudice' },
@@ -32,8 +32,8 @@ RSpec.describe MeiliSearch::Index do
     expect(response).to eq(@documents.count)
   end
 
-  it 'gets the frequency of fields' do
-    response = @index.fields_frequency
+  it 'gets the distribution of fields' do
+    response = @index.fields_distribution
     expect(response).to be_a(Hash)
   end
 

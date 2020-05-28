@@ -36,7 +36,8 @@
   - [Search](#search)
 - [⚙️ Development Workflow](#️-development-workflow)
   - [Install dependencies](#install-dependencies)
-  - [Tests and Linter](#tests-and-linter)
+  - [Tests](#tests)
+  - [Linter](#linter)
   - [Release](#release)
 
 ## 🔧 Installation
@@ -252,18 +253,39 @@ Thank you for your interest in a MeiliSearch tool! ♥️
 $ bundle install
 ```
 
-### Tests and Linter
+### Tests
 
-Each PR should pass the tests and the linter to be accepted.
+Each PR should pass the tests to be accepted.
 
 ```bash
 # Tests
 $ docker run -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey --no-analytics
 $ bundle exec rspec
-# Linter
+```
+
+To launch a specific folder or file:
+
+```bash
+$ bundle exec rspec spec/meilisearch/index/base_spec.rb
+```
+
+### Linter
+
+Each PR should pass the linter to be accepted.
+
+```bash
+# Check the linter error
 $ bundle exec rubocop lib/ spec/
-# Linter with auto-correct
+# Auto-correct
 $ bundle exec rubocop -a lib/ spec/
+```
+
+Once you think the remaining linter errors as valid, do not add any `rubocop` comment line in the code.<br>
+This project uses a `rubocop_todo.yml` file that is generated. Do not modify this file manually.<br>
+To update it, run the following command:
+
+```bash
+$ bundle exec rubocop --auto-gen-config
 ```
 
 ### Release

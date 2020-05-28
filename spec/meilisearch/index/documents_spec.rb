@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe MeiliSearch::Index do
+RSpec.describe 'MeiliSearch::Index - Documents' do
   before(:all) do
     @client = MeiliSearch::Client.new($URL, $MASTER_KEY)
     clear_all_indexes(@client)
@@ -66,7 +66,7 @@ RSpec.describe MeiliSearch::Index do
       response = index.documents(offset: 2, limit: 5)
       expect(response).to be_a(Array)
       expect(response.size).to eq(5)
-      expect(response.first['objectId']).to eq(123)
+      expect(response.first['objectId']).to eq(1)
     end
 
     it 'updates documents in index (as an array of documents)' do

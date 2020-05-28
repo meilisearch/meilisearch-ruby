@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe MeiliSearch::Client do
+RSpec.describe 'MeiliSearch::Client - Keys' do
   before(:all) do
     @client = MeiliSearch::Client.new($URL, $MASTER_KEY)
     @uid = 'uid'
     @client.create_index(@uid)
   end
+
+  after(:all) { clear_all_indexes(@client) }
 
   it 'gets the list of keys' do
     response = @client.keys
