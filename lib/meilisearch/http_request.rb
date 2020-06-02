@@ -17,6 +17,10 @@ module MeiliSearch
     end
 
     def http_get(path = '', query = {})
+      # Flattens arguments as array for search params
+      query.each do |key, value|
+        query[key] = value.join(',') if value.is_a?(Array)
+      end
       response = self.class.get(
         @base_url + path,
         query: query,

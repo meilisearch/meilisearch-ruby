@@ -3,12 +3,12 @@
 RSpec.describe MeiliSearch::Index do
   before(:all) do
     documents = [
-      { objectId: 123,  title: 'Pride and Prejudice' },
-      { objectId: 456,  title: 'Le Petit Prince' },
-      { objectId: 1,    title: 'Alice In Wonderland' },
-      { objectId: 1344, title: 'The Hobbit' },
-      { objectId: 4,    title: 'Harry Potter and the Half-Blood Prince' },
-      { objectId: 42,   title: 'The Hitchhiker\'s Guide to the Galaxy' }
+      { objectId: 123,  title: 'Pride and Prejudice', release_date: 12_345_432 },
+      { objectId: 456,  title: 'Le Petit Prince', release_date: 12_345_432 },
+      { objectId: 1,    title: 'Alice In Wonderland', release_date: 12_345_432 },
+      { objectId: 1344, title: 'The Hobbit', release_date: 12_345_432 },
+      { objectId: 4,    title: 'Harry Potter and the Half-Blood Prince', release_date: 12_345_432 },
+      { objectId: 42,   title: 'The Hitchhiker\'s Guide to the Galaxy', release_date: 12_345_432 }
     ]
     client = MeiliSearch::Client.new($URL, $MASTER_KEY)
     clear_all_indexes(client)
@@ -43,5 +43,25 @@ RSpec.describe MeiliSearch::Index do
     expect(response).to have_key('hits')
     expect(response['hits'].count).to eq(3)
     expect(response['hits'].first).to have_key('_formatted')
+  end
+
+  it 'does a custom search with attributesToRetrieve as string' do
+    response = @index.search('the', attributesToRetrieve: 'title')
+    expect(response).to be_a(Hash)
+    expect(response).to have_key('hits')
+    expect(response['hits'].count).to eq(3)
+    expect(response['hits'].first).to have_key('title')
+    expect(response['hits'].first).not_to have_key('objectId')
+    expect(response['hits'].first).not_to have_key('release_date')
+  end
+
+  it 'does a custom search with attributesToRetrieve as an array of string' do
+    response = @index.search('the', attributesToRetrieve: ['title', 'release_date'])
+    expect(response).to be_a(Hash)
+    expect(response).to have_key('hits')
+    expect(response['hits'].count).to eq(3)
+    expect(response['hits'].first).to have_key('title')
+    expect(response['hits'].first).to have_key('release_date')
+    expect(response['hits'].first).not_to have_key('objectId')
   end
 end
