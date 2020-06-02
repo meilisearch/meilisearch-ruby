@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 require 'meilisearch/http_request'
+require 'timeout'
 
 module MeiliSearch
-  class Index < HTTPRequest
+  class Index < HTTPRequest # rubocop:disable Metrics/ClassLength
     attr_reader :uid
 
     def initialize(index_uid, url, api_key = nil)
@@ -230,6 +231,17 @@ module MeiliSearch
 
     def update_accept_new_fields(accept_new_fields)
       http_post "/indexes/#{@uid}/settings/accept-new-fields", accept_new_fields
+    end
+
+    def wait_for_pending_update(update_id, timeout_in_ms = 5000, interval_in_ms = 50)
+      Timeout.timeout(timeout_in_ms.to_f / 1000) do
+        loop do
+          get_update = get_update_status(update_id)
+          return get_update if get_update['status'] != 'enqueued'
+
+          sleep interval_in_ms.to_f / 1000
+        end
+      end
     end
   end
 end
