@@ -4,7 +4,7 @@ require 'meilisearch/http_request'
 require 'timeout'
 
 module MeiliSearch
-  class Index < HTTPRequest # rubocop:disable Metrics/ClassLength
+  class Index < HTTPRequest
     attr_reader :uid
 
     def initialize(index_uid, url, api_key = nil)
