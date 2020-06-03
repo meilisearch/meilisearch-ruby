@@ -36,16 +36,16 @@ RSpec.describe MeiliSearch::Index do
     expect(status['status']).not_to eq('enqueued')
   end
 
-  it 'waits for pending update with custom timeout_in_ms and raises error' do
+  it 'waits for pending update with custom timeout_in_ms and raises MeiliSearchTimeoutError' do
     @index.add_documents(@documents)
     response = @index.add_documents(@documents)
     update_id = response['updateId']
     lambda {
       @index.wait_for_pending_update(update_id, 1)
-    }.should raise_error(Timeout::Error)
+    }.should raise_error(MeiliSearch::MeiliSearchTimeoutError)
   end
 
-  it 'waits for pending update with custom interval_in_ms and raises error' do
+  it 'waits for pending update with custom interval_in_ms and raises Timeout::Error' do
     @index.add_documents(@documents)
     response = @index.add_documents(@documents)
     update_id = response['updateId']
