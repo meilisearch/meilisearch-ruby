@@ -3,6 +3,17 @@
 module MeiliSearch
   class MeiliSearchError < StandardError; end
   class IndexUidError < MeiliSearchError; end
+  class MeiliSearchTimeoutError < MeiliSearchError
+    attr_reader :message
+
+    def initialize
+      @message = "MeiliSearchTimeoutError: update wasn't processed in the expected time"
+    end
+
+    def to_s
+      "#{@message}."
+    end
+  end
 
   class HTTPError < MeiliSearchError
     attr_reader :status
