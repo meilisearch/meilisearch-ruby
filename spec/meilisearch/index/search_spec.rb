@@ -75,10 +75,9 @@ RSpec.describe 'MeiliSearch::Index - Search' do
   it 'does a custom search with attributesToRetrieve as an array of string' do
     response = @index.search('the', attributesToRetrieve: ['title', 'genre'])
     expect(response).to be_a(Hash)
-    expect(response).to have_key('hits')
+    expect(response.keys).to contain_exactly(*default_search_response_keys)
     expect(response['hits'].count).to eq(3)
     expect(response['hits'].first).to have_key('title')
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
     expect(response['hits'].first).not_to have_key('objectId')
     expect(response['hits'].first).to have_key('genre')
   end
