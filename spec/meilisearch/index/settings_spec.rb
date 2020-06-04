@@ -25,7 +25,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       'displayedAttributes',
       'stopWords',
       'synonyms',
-      'acceptNewFields'
+      'acceptNewFields',
+      'attributesForFaceting'
     ]
   end
 
@@ -395,6 +396,39 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
   end
 
+  context 'On attributes-for-faceting sub-routes' do
+    before(:all) do
+      @uid = SecureRandom.hex(4)
+      @client.create_index(@uid)
+    end
+
+    after(:all) { clear_all_indexes(@client) }
+
+    let(:index) { @client.index(@uid) }
+    let(:attributes_for_faceting) { ['title', 'description'] }
+
+    it 'gets default values of attributes for faceting' do
+      response = index.attributes_for_faceting
+      expect(response).to be_a(Array)
+      expect(response).to be_empty
+    end
+
+    it 'updates attributes for faceting' do
+      response = index.update_attributes_for_faceting(attributes_for_faceting)
+      expect(response).to have_key('updateId')
+      sleep(0.1)
+      expect(index.attributes_for_faceting).to contain_exactly(*attributes_for_faceting)
+    end
+
+    it 'resets attributes for faceting' do
+      response = index.reset_attributes_for_faceting
+      expect(response).to have_key('updateId')
+      sleep(0.1)
+      expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
+      expect(index.attributes_for_faceting).to be_empty
+    end
+  end
+
   context 'Index with primary-key' do
     before(:all) do
       @uid = SecureRandom.hex(4)
@@ -508,6 +542,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.method(:accept_new_fields) == index.method(:get_accept_new_fields)).to be_truthy
       expect(index.method(:synonyms) == index.method(:get_synonyms)).to be_truthy
       expect(index.method(:stop_words) == index.method(:get_stop_words)).to be_truthy
+      expect(index.method(:attributes_for_faceting) == index.method(:get_attributes_for_faceting)).to be_truthy
     end
   end
 end

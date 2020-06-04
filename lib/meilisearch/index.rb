@@ -245,5 +245,20 @@ module MeiliSearch
     def update_accept_new_fields(accept_new_fields)
       http_post "/indexes/#{@uid}/settings/accept-new-fields", accept_new_fields
     end
+
+    ### SETTINGS - ATTRIBUTES FOR FACETING
+
+    def attributes_for_faceting
+      http_get "/indexes/#{@uid}/settings/attributes-for-faceting"
+    end
+    alias get_attributes_for_faceting attributes_for_faceting
+
+    def update_attributes_for_faceting(attributes_for_faceting)
+      http_post "/indexes/#{@uid}/settings/attributes-for-faceting", attributes_for_faceting
+    end
+
+    def reset_attributes_for_faceting
+      http_delete "/indexes/#{@uid}/settings/attributes-for-faceting"
+    end
   end
 end
