@@ -37,9 +37,8 @@ RSpec.describe 'MeiliSearch::Index - Search' do
   it 'does a basic search in index' do
     response = @index.search('prince')
     expect(response).to be_a(Hash)
-    expect(response).to have_key('hits')
-    expect(response['hits']).not_to be_empty
     expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response['hits']).not_to be_empty
     expect(response['hits'].first).not_to have_key('_formatted')
   end
 
