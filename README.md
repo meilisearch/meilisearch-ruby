@@ -269,6 +269,12 @@ To launch a specific folder or file:
 $ bundle exec rspec spec/meilisearch/index/base_spec.rb
 ```
 
+To launch a single test in a specific file:
+
+```bash
+$ bundle exec rspec spec/meilisearch/index/search_spec.rb -e 'does a basic search in index'
+```
+
 ### Linter
 
 Each PR should pass the linter to be accepted.
