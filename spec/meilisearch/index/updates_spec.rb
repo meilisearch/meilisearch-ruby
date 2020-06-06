@@ -41,4 +41,45 @@ RSpec.describe 'MeiliSearch::Index - Updates' do
     expect(response).to be_a(Array)
     expect(response.count).to eq(1)
   end
+
+  it 'waits for pending update with default values' do
+    response = @index.add_documents(@documents)
+    update_id = response['updateId']
+    status = @index.wait_for_pending_update(update_id)
+    expect(status).to be_a(Hash)
+    expect(status['status']).not_to eq('enqueued')
+  end
+
+  it 'waits for pending update with default values after several updates' do
+    @index.add_documents(@documents)
+    @index.add_documents(@documents)
+    @index.add_documents(@documents)
+    @index.add_documents(@documents)
+    @index.add_documents(@documents)
+    response = @index.add_documents(@documents)
+    update_id = response['updateId']
+    status = @index.wait_for_pending_update(update_id)
+    expect(status).to be_a(Hash)
+    expect(status['status']).not_to eq('enqueued')
+  end
+
+  it 'waits for pending update with custom timeout_in_ms and raises MeiliSearchTimeoutError' do
+    @index.add_documents(@documents)
+    response = @index.add_documents(@documents)
+    update_id = response['updateId']
+    expect do
+      @index.wait_for_pending_update(update_id, 1)
+    end.to raise_error(MeiliSearch::MeiliSearchTimeoutError)
+  end
+
+  it 'waits for pending update with custom interval_in_ms and raises Timeout::Error' do
+    @index.add_documents(@documents)
+    response = @index.add_documents(@documents)
+    update_id = response['updateId']
+    expect do
+      Timeout.timeout(0.1) do
+        @index.wait_for_pending_update(update_id, 5000, 200)
+      end
+    end.to raise_error(Timeout::Error)
+  end
 end
