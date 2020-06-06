@@ -32,7 +32,7 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
 
   it 'fails to search if no key used' do
     new_client = MeiliSearch::Client.new($URL)
-    expect { new_client.index(@uid).settings }.to raise_meilisearch_http_error_with(403)
+    expect { new_client.index(@uid).settings }.to raise_meilisearch_http_error_with(401)
   end
 
   it 'succeeds to search when using public key' do
