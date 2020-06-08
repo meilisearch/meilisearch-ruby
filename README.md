@@ -38,6 +38,7 @@
   - [Install dependencies](#install-dependencies)
   - [Tests](#tests)
   - [Linter](#linter)
+  - [Want to debug?](#want-to-debug)
   - [Release](#release)
 
 ## 🔧 Installation
@@ -292,6 +293,18 @@ To update it, run the following command:
 
 ```bash
 $ bundle exec rubocop --auto-gen-config
+```
+
+### Want to debug?
+
+You can use the [`byebug` gem](https://github.com/deivid-rodriguez/byebug) that is already imported in the all files of this package.
+
+To create a breakpoint, just add this line in you code:
+
+```ruby
+...
+byebug
+...
 ```
 
 ### Release
