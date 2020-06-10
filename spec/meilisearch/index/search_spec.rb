@@ -104,4 +104,13 @@ RSpec.describe 'MeiliSearch::Index - Search' do
     expect(response['nbHits']).to eq(1)
     expect(response['hits'][0]['objectId']).to eq(4)
   end
+
+  it 'does a custom search with multiple facetFilters' do
+    @index.update_attributes_for_faceting(['genre'])
+    sleep(0.1)
+    response = @index.search('prinec', facetFilters: ['genre:fantasy', ['genre:fantasy', 'genre:fantasy']])
+    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response['nbHits']).to eq(1)
+    expect(response['hits'][0]['objectId']).to eq(4)
+  end
 end
