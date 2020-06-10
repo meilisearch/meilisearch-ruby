@@ -6,7 +6,6 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     clear_all_indexes(@client)
     @uid1 = 'uid1'
     @uid2 = 'uid2'
-    @uid3 = 'uid3'
     @primary_key = 'objectId'
   end
 
@@ -17,17 +16,10 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     expect(index.primary_key).to be_nil
   end
 
-  it 'creates an index without primary-key as an Hash' do
-    index = @client.create_index(uid: @uid2)
+  it 'creates an index with primary-key' do
+    index = @client.create_index(@uid2, primaryKey: @primary_key)
     expect(index).to be_a(MeiliSearch::Index)
     expect(index.uid).to eq(@uid2)
-    expect(index.primary_key).to be_nil
-  end
-
-  it 'creates an index with primary-key' do
-    index = @client.create_index(uid: @uid3, primaryKey: @primary_key)
-    expect(index).to be_a(MeiliSearch::Index)
-    expect(index.uid).to eq(@uid3)
     expect(index.primary_key).to eq(@primary_key)
   end
 
@@ -46,22 +38,22 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
   it 'gets list of indexes' do
     response = @client.indexes
     expect(response).to be_a(Array)
-    expect(response.count).to eq(3)
+    expect(response.count).to eq(2)
     uids = response.map { |elem| elem['uid'] }
-    expect(uids).to contain_exactly(@uid1, @uid2, @uid3)
+    expect(uids).to contain_exactly(@uid1, @uid2)
   end
 
   it 'shows a specific index' do
-    response = @client.show_index(@uid3)
+    response = @client.show_index(@uid2)
     expect(response).to be_a(Hash)
-    expect(response['uid']).to eq(@uid3)
+    expect(response['uid']).to eq(@uid2)
     expect(response['primaryKey']).to eq(@primary_key)
   end
 
   it 'returns an index object based on uid' do
-    index = @client.index(@uid3)
+    index = @client.index(@uid2)
     expect(index).to be_a(MeiliSearch::Index)
-    expect(index.uid).to eq(@uid3)
+    expect(index.uid).to eq(@uid2)
     expect(index.primary_key).to eq(@primary_key)
   end
 
@@ -70,8 +62,6 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     expect { @client.show_index(@uid1) }.to raise_meilisearch_http_error_with(404)
     expect(@client.delete_index(@uid2)).to be_nil
     expect { @client.show_index(@uid2) }.to raise_meilisearch_http_error_with(404)
-    expect(@client.delete_index(@uid3)).to be_nil
-    expect { @client.show_index(@uid3) }.to raise_meilisearch_http_error_with(404)
     expect(@client.indexes.count).to eq(0)
   end
 

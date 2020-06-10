@@ -12,7 +12,7 @@ RSpec.describe 'MeiliSearch::Index - Updates' do
     ]
     client = MeiliSearch::Client.new($URL, $MASTER_KEY)
     clear_all_indexes(client)
-    @index = client.create_index(uid: 'books', primaryKey: 'objectId')
+    @index = client.create_index('books', primaryKey: 'objectId')
   end
 
   after(:all) do
