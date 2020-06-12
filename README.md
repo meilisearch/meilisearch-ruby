@@ -128,7 +128,7 @@ You can check out [the API documentation](https://docs.meilisearch.com/reference
 # Create an index
 client.create_index('books')
 # Create an index and give the primary-key
-client.create_index(uid: 'books', primaryKey: 'book_id')
+client.create_index('books', primaryKey: 'book_id')
 ```
 
 #### List all indexes <!-- omit in toc -->

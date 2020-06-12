@@ -432,7 +432,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'Index with primary-key' do
     before(:all) do
       @uid = SecureRandom.hex(4)
-      @client.create_index(uid: @uid, primaryKey: 'id')
+      @client.create_index(@uid, primaryKey: 'id')
     end
 
     after(:all) { clear_all_indexes(@client) }
