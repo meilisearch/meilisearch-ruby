@@ -16,39 +16,40 @@ module MeiliSearch
       }.compact
     end
 
-    def http_get(path = '', query = {})
+    def http_get(path = '', query_params = {})
       response = self.class.get(
         @base_url + path,
-        query: query,
+        query: query_params,
         headers: @headers,
         timeout: 1
       )
       validate(response)
     end
 
-    def http_post(path = '', body = nil, params = nil)
+    def http_post(path = '', body = nil, query_params = nil)
       body = body.to_json unless body.nil?
-      params = {
-        body: body,
-        query: params,
-        headers: @headers,
-        timeout: 1
-      }.compact
       response = self.class.post(
         @base_url + path,
-        params
+        {
+          body: body,
+          query: query_params,
+          headers: @headers,
+          timeout: 1
+        }.compact
       )
       validate(response)
     end
 
-    def http_put(path = '', body = nil, params = nil)
+    def http_put(path = '', body = nil, query_params = nil)
       body = body.to_json unless body.nil?
       response = self.class.put(
         @base_url + path,
-        body: body,
-        query: params,
-        headers: @headers,
-        timeout: 1
+        {
+          body: body,
+          query: query_params,
+          headers: @headers,
+          timeout: 1
+        }.compact
       )
       validate(response)
     end

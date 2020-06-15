@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe MeiliSearch::Client do
+RSpec.describe 'MeiliSearch::Client - Health' do
   let(:client)       { MeiliSearch::Client.new($URL, $MASTER_KEY) }
   let(:wrong_client) { MeiliSearch::Client.new('bad_url') }
 
