@@ -8,7 +8,7 @@ RSpec.describe MeiliSearch::Index do
     client = MeiliSearch::Client.new($URL, $MASTER_KEY)
     clear_all_indexes(client)
     @index1 = client.create_index(@uid1)
-    @index2 = client.create_index(uid: @uid2, primaryKey: @primary_key)
+    @index2 = client.create_index(@uid2, primaryKey: @primary_key)
   end
 
   it 'shows the index' do

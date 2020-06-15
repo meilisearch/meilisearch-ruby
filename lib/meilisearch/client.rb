@@ -15,15 +15,10 @@ module MeiliSearch
     end
 
     # Usage:
-    # create_index('indexUID')
-    # create_index(uid: 'indexUID')
-    # create_index(uid: 'indexUID', primaryKey: 'id')
-    def create_index(attributes)
-      body = if attributes.is_a?(Hash)
-               attributes
-             else
-               { uid: attributes }
-             end
+    # client.create_index('indexUID')
+    # client.create_index('indexUID', primaryKey: 'id')
+    def create_index(index_uid, options = {})
+      body = { uid: index_uid }.merge(options)
       res = http_post '/indexes', body
       index_object(res['uid'])
     end
@@ -33,13 +28,11 @@ module MeiliSearch
     end
 
     # Usage:
-    # index('indexUID')
-    # index(uid: 'indexUID')
-    def index(attribute)
-      uid = attribute.is_a?(Hash) ? attribute[:uid] : attribute
-      raise IndexUidError if uid.nil?
+    # client.index('indexUID')
+    def index(index_uid)
+      raise IndexUidError if index_uid.nil?
 
-      index_object(uid)
+      index_object(index_uid)
     end
     alias get_index index
 

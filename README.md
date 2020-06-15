@@ -36,7 +36,9 @@
   - [Search](#search)
 - [⚙️ Development Workflow](#️-development-workflow)
   - [Install dependencies](#install-dependencies)
-  - [Tests and Linter](#tests-and-linter)
+  - [Tests](#tests)
+  - [Linter](#linter)
+  - [Want to debug?](#want-to-debug)
   - [Release](#release)
 
 ## 🔧 Installation
@@ -126,7 +128,7 @@ You can check out [the API documentation](https://docs.meilisearch.com/reference
 # Create an index
 client.create_index('books')
 # Create an index and give the primary-key
-client.create_index(uid: 'books', primaryKey: 'book_id')
+client.create_index('books', primaryKey: 'book_id')
 ```
 
 #### List all indexes <!-- omit in toc -->
@@ -252,18 +254,57 @@ Thank you for your interest in a MeiliSearch tool! ♥️
 $ bundle install
 ```
 
-### Tests and Linter
+### Tests
 
-Each PR should pass the tests and the linter to be accepted.
+Each PR should pass the tests to be accepted.
 
 ```bash
 # Tests
 $ docker run -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey --no-analytics
 $ bundle exec rspec
-# Linter
+```
+
+To launch a specific folder or file:
+
+```bash
+$ bundle exec rspec spec/meilisearch/index/base_spec.rb
+```
+
+To launch a single test in a specific file:
+
+```bash
+$ bundle exec rspec spec/meilisearch/index/search_spec.rb -e 'does a basic search in index'
+```
+
+### Linter
+
+Each PR should pass the linter to be accepted.
+
+```bash
+# Check the linter error
 $ bundle exec rubocop lib/ spec/
-# Linter with auto-correct
+# Auto-correct
 $ bundle exec rubocop -a lib/ spec/
+```
+
+Once you think the remaining linter errors as valid, do not add any `rubocop` comment line in the code.<br>
+This project uses a `rubocop_todo.yml` file that is generated. Do not modify this file manually.<br>
+To update it, run the following command:
+
+```bash
+$ bundle exec rubocop --auto-gen-config
+```
+
+### Want to debug?
+
+You can use the [`byebug` gem](https://github.com/deivid-rodriguez/byebug) that is already imported in the all files of this package.
+
+To create a breakpoint, just add this line in you code:
+
+```ruby
+...
+byebug
+...
 ```
 
 ### Release

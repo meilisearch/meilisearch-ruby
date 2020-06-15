@@ -48,14 +48,14 @@ module MeiliSearch
 
     def add_documents(documents, primary_key = nil)
       documents = [documents] if documents.is_a?(Hash)
-      http_post "/indexes/#{@uid}/documents", documents, primaryKey: primary_key
+      http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
     end
     alias replace_documents add_documents
     alias add_or_replace_documents add_documents
 
     def update_documents(documents, primary_key = nil)
       documents = [documents] if documents.is_a?(Hash)
-      http_put "/indexes/#{@uid}/documents", documents, primaryKey: primary_key
+      http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
     end
     alias add_or_update_documents update_documents
 
@@ -81,7 +81,16 @@ module MeiliSearch
     ### SEARCH
 
     def search(query, options = {})
-      http_get "/indexes/#{@uid}/search", { q: query }.merge(options)
+      parsed_options = options.transform_keys(&:to_sym).map do |k, v|
+        if [:facetFilters, :facetsDistribution].include?(k)
+          [k, v.inspect]
+        elsif v.is_a?(Array)
+          [k, v.join(',')]
+        else
+          [k, v]
+        end
+      end.to_h
+      http_get "/indexes/#{@uid}/search", { q: query }.merge(parsed_options)
     end
 
     ### UPDATES
@@ -125,8 +134,8 @@ module MeiliSearch
       stats['lastUpdate']
     end
 
-    def fields_frequency
-      stats['fieldsFrequency']
+    def fields_distribution
+      stats['fieldsDistribution']
     end
 
     ### SETTINGS - GENERAL
@@ -244,6 +253,21 @@ module MeiliSearch
 
     def update_accept_new_fields(accept_new_fields)
       http_post "/indexes/#{@uid}/settings/accept-new-fields", accept_new_fields
+    end
+
+    ### SETTINGS - ATTRIBUTES FOR FACETING
+
+    def attributes_for_faceting
+      http_get "/indexes/#{@uid}/settings/attributes-for-faceting"
+    end
+    alias get_attributes_for_faceting attributes_for_faceting
+
+    def update_attributes_for_faceting(attributes_for_faceting)
+      http_post "/indexes/#{@uid}/settings/attributes-for-faceting", attributes_for_faceting
+    end
+
+    def reset_attributes_for_faceting
+      http_delete "/indexes/#{@uid}/settings/attributes-for-faceting"
     end
   end
 end

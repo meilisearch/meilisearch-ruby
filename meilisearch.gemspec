@@ -19,19 +19,7 @@ Gem::Specification.new do |s|
     'lib/meilisearch/http_request.rb',
     'lib/meilisearch/client.rb',
     'lib/meilisearch/index.rb',
-    'lib/meilisearch/version.rb',
-    'lib/meilisearch/client/health.rb',
-    'lib/meilisearch/client/stats.rb',
-    'lib/meilisearch/client/keys.rb',
-    'lib/meilisearch/client/indexes.rb',
-    'lib/meilisearch/index/base.rb',
-    'lib/meilisearch/index/search.rb',
-    'lib/meilisearch/index/documents.rb',
-    'lib/meilisearch/index/stats.rb',
-    'lib/meilisearch/index/updates.rb',
-    'lib/meilisearch/index/stop_words.rb',
-    'lib/meilisearch/index/synonyms.rb',
-    'lib/meilisearch/index/settings.rb'
+    'lib/meilisearch/version.rb'
   ]
 
   s.add_dependency 'httparty', '>= 0.17.1', '< 0.19.0'

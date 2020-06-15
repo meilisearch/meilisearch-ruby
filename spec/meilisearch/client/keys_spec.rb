@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe MeiliSearch::Client do
+RSpec.describe 'MeiliSearch::Client - Keys' do
   before(:all) do
     @client = MeiliSearch::Client.new($URL, $MASTER_KEY)
     @uid = 'uid'
     @client.create_index(@uid)
   end
+
+  after(:all) { clear_all_indexes(@client) }
 
   it 'gets the list of keys' do
     response = @client.keys
@@ -30,7 +32,7 @@ RSpec.describe MeiliSearch::Client do
 
   it 'fails to search if no key used' do
     new_client = MeiliSearch::Client.new($URL)
-    expect { new_client.index(@uid).settings }.to raise_meilisearch_http_error_with(403)
+    expect { new_client.index(@uid).settings }.to raise_meilisearch_http_error_with(401)
   end
 
   it 'succeeds to search when using public key' do
