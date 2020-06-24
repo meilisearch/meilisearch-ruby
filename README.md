@@ -311,20 +311,13 @@ byebug
 
 MeiliSearch tools follow the [Semantic Versioning Convention](https://semver.org/).
 
-You must do a PR modifying the file `lib/meilisearch/version.rb` with the right version.<br>
+You must do a PR modifying the file [`lib/meilisearch/version.rb`](https://github.com/meilisearch/meilisearch-ruby/blob/master/lib/meilisearch/version.rb) with the right version:
 
 ```ruby
 VERSION = 'X.X.X'
 ```
 
-Once the changes are merged on `master`, in your terminal, you must be on the `master` branch and push a new tag with the right version:
-
-```bash
-$ git checkout master
-$ git pull origin master
-$ git tag vX.X.X
-$ git push --tag origin master
-```
+Once the changes are merged on `master`, you can publish the current draft release via the [GitHub interface](https://github.com/meilisearch/meilisearch-ruby/releases).
 
 A GitHub Action will be triggered and push the new gem on [RubyGems](https://rubygems.org/gems/meilisearch).
 
