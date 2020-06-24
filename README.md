@@ -311,7 +311,7 @@ byebug
 
 MeiliSearch tools follow the [Semantic Versioning Convention](https://semver.org/).
 
-You must do a PR modifying the file [`lib/meilisearch/version.rb`](https://github.com/meilisearch/meilisearch-ruby/blob/master/lib/meilisearch/version.rb) with the right version:
+You must do a PR modifying the file [`lib/meilisearch/version.rb`](/lib/meilisearch/version.rb) with the right version:
 
 ```ruby
 VERSION = 'X.X.X'
