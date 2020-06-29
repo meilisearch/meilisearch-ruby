@@ -106,6 +106,8 @@ getting_started_search_md: |-
   ```ruby
   index.search('botman')
   ```
+
+  [About this gem](https://www.github.com/meilisearch/meilisearch-ruby)
 faceted_search_update_settings_1: |-
 faceted_search_facet_filters_1: |-
 faceted_search_facets_distribution_1: |-
