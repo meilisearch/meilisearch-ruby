@@ -81,7 +81,7 @@ search_guide_1: |-
 search_guide_2: |-
 getting_started_create_index_md: |-
   ```bash |-
-    $ bundle add meilisearch
+  $ bundle add meilisearch
   ```
 
   ```ruby
