@@ -62,7 +62,7 @@ $ bundle exec rspec spec/meilisearch/index/search_spec.rb -e 'does a basic searc
 Each PR should pass the linter to be accepted.
 
 ```bash
-# Check the linter error
+# Check the linter errors
 $ bundle exec rubocop lib/ spec/
 # Auto-correct the linter errors
 $ bundle exec rubocop -a lib/ spec/
