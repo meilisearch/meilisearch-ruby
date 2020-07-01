@@ -68,7 +68,7 @@ $ bundle exec rubocop lib/ spec/
 $ bundle exec rubocop -a lib/ spec/
 ```
 
-Once you think the remaining linter errors as valid, do not add any `rubocop` comment line in the code.<br>
+If you think the remaining linter errors are acceptable, do not add any `rubocop` in-line comments in the code.<br>
 This project uses a `rubocop_todo.yml` file that is generated. Do not modify this file manually.<br>
 To update it, run the following command:
 
