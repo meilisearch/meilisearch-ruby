@@ -24,7 +24,7 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 3. [Create a new Git branch](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-and-deleting-branches-within-your-repository).
 4. Review the [Development Workflow](#workflow) section that describes the steps to maintain the repository.
 5. Make your changes.
-6. [Submit the branch as a PR](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) pointing to the `master` branch of the main meilisearch-ruby repo. A maintainer should comment and/or review your Pull Request within a few days. Although depending on the circumstances, it may take longer.<br>
+6. [Submit the branch as a PR](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) pointing to the `master` branch of the main meilisearch-ruby reposotory. A maintainer should comment and/or review your Pull Request within a few days. Although depending on the circumstances, it may take longer.<br>
  We do not enforce a naming convention for the PRs, but **please use something descriptive of your changes**, having in mind that the title of your PR will be automatically added to the next [release changelog](https://github.com/meilisearch/meilisearch-ruby/releases/).
 
 ## Development Workflow
@@ -104,7 +104,7 @@ About this automation:
 - If the changes you are doing in the PR are breaking: add the label `breaking-change`. In the release tag, the minor will be increased instead of the patch. The major will never be changed until [MeiliSearch](https://github.com/meilisearch/MeiliSearch) is stable.
 - If you did any mistake, for example the PR is already closed but you forgot to add a label or you misnamed your PR, don't panic: change what you want in the closed PR and run the job again.
 
-*More information about [release drafter](https://github.com/release-drafter/release-drafter), used to automate these steps.*
+*More information about the [Release Drafter](https://github.com/release-drafter/release-drafter), used to automate these steps.*
 
 #### How to Publish the Release
 
