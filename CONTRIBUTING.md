@@ -64,7 +64,7 @@ Each PR should pass the linter to be accepted.
 ```bash
 # Check the linter error
 $ bundle exec rubocop lib/ spec/
-# Auto-correct
+# Auto-correct the linter errors
 $ bundle exec rubocop -a lib/ spec/
 ```
 
