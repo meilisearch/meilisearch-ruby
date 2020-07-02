@@ -34,6 +34,7 @@
   - [Documents](#documents)
   - [Update status](#update-status)
   - [Search](#search)
+- [⚙️ Development Workflow and Contributing](#️-development-workflow-and-contributing)
 
 ## 🔧 Installation
 
@@ -236,6 +237,12 @@ index.search('prince', { limit: 1, attributesToHighlight: '*' })
     "query": "prince"
 }
 ```
+
+## ⚙️ Development Workflow and Contributing
+
+Any new contribution is more than welcome in this project!
+
+If you want to know more about the development workflow or want to contribute, please visit our [contributing guidelines](/CONTRIBUTING.md) for detailed instructions!
 
 <hr>
 
