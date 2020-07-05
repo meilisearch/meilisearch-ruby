@@ -5,7 +5,7 @@ module MeiliSearch
     attr_reader :message
 
     def initialize
-      @message = "The enqueued update was not processed in the expected time"
+      @message = 'The enqueued update was not processed in the expected time'
       super(@message)
     end
 
@@ -29,24 +29,25 @@ module MeiliSearch
     alias ms_link link
 
     def initialize(http_code, http_message, http_body)
+      get_meilisearch_error_info(http_body) unless http_body.nil? || http_body.empty?
       @http_code = http_code
       @http_message = http_message
-      unless http_body.nil? || http_body.empty?
-        @http_body = JSON.parse(http_body)
-        @code = @http_body['errorCode']
-        @ms_message = @http_body['message']
-        @type = @http_body['errorType']
-        @link = @http_body['errorLink']
-      end
-      @ms_message = @ms_message || 'MeiliSearch API has not returned any error message'
-      @link = @link || '<no documentation link found>'
+      @ms_message ||= 'MeiliSearch API has not returned any error message'
+      @link ||= '<no documentation link found>'
       @message = "#{http_code} #{http_message} - #{@ms_message.capitalize}. See #{link}."
       super(details)
+    end
+
+    def get_meilisearch_error_info(http_body)
+      @http_body = JSON.parse(http_body)
+      @code = @http_body['errorCode']
+      @ms_message = @http_body['message']
+      @type = @http_body['errorType']
+      @link = @http_body['errorLink']
     end
 
     def details
       "MeiliSearch::ApiError - code: #{@code} - type: #{type} - message: #{@ms_message} - link: #{link}"
     end
-
   end
 end
