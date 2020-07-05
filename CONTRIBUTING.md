@@ -78,7 +78,7 @@ $ bundle exec rubocop --auto-gen-config
 
 ### Want to debug?
 
-You can use the [`byebug` gem](https://github.com/deivid-rodriguez/byebug) that is already imported in the all files of this package.
+You can use the [`byebug` gem](https://github.com/deivid-rodriguez/byebug).
 
 To create a breakpoint, just add this line in you code:
 
@@ -86,6 +86,13 @@ To create a breakpoint, just add this line in you code:
 ...
 byebug
 ...
+```
+
+The `byebug` gem is already imported in all the spec files.<br>
+But if you want to use it in the source files you need to add this line at the top of the file:
+
+```ruby
+require 'byebug'
 ```
 
 ### Release Process
