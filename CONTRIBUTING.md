@@ -103,7 +103,7 @@ MeiliSearch tools follow the [Semantic Versioning Convention](https://semver.org
 
 For each PR merged on `master`, a GitHub Action is running and updates the next release description as a draft release in the [GitHub interface](https://github.com/meilisearch/meilisearch-ruby/releases). If you don't have the right access to this repository, you will not be able to see the draft release until the release is published.
 
-The draft release description is therefore generated and corresponds to all the PRs titles since the previous release. This means each PR should only do one change and the title should be desriptive of this change.
+The draft release description is therefore generated and corresponds to all the PRs titles since the previous release. This means each PR should only do one change and the title should be descriptive of this change.
 
 About this automation:
 - As the draft release description is generated on every push on `master`, don't change it manually until the final release publishment.
