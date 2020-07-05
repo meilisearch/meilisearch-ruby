@@ -34,13 +34,13 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
   it 'fails to create an index with an uid already taken' do
     expect do
       @client.create_index(@uid1)
-    end.to raise_meilisearch_http_error_with(400)
+    end.to raise_meilisearch_api_error_with(400)
   end
 
   it 'fails to create an index with bad UID format' do
     expect do
       @client.create_index('two words')
-    end.to raise_meilisearch_http_error_with(400)
+    end.to raise_meilisearch_api_error_with(400)
   end
 
   it 'gets list of indexes' do
@@ -67,11 +67,11 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
   it 'deletes index' do
     expect(@client.delete_index(@uid1)).to be_nil
-    expect { @client.show_index(@uid1) }.to raise_meilisearch_http_error_with(404)
+    expect { @client.show_index(@uid1) }.to raise_meilisearch_api_error_with(404)
     expect(@client.delete_index(@uid2)).to be_nil
-    expect { @client.show_index(@uid2) }.to raise_meilisearch_http_error_with(404)
+    expect { @client.show_index(@uid2) }.to raise_meilisearch_api_error_with(404)
     expect(@client.delete_index(@uid3)).to be_nil
-    expect { @client.show_index(@uid3) }.to raise_meilisearch_http_error_with(404)
+    expect { @client.show_index(@uid3) }.to raise_meilisearch_api_error_with(404)
     expect(@client.indexes.count).to eq(0)
   end
 

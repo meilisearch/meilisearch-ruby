@@ -150,7 +150,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       expect(index.documents.size).to eq(documents.count - 1)
-      expect { index.document(id) }.to raise_meilisearch_http_error_with(404)
+      expect { index.document(id) }.to raise_meilisearch_api_error_with(404)
     end
 
     it 'does nothing when trying to delete a document which does not exist' do
@@ -160,7 +160,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       expect(index.documents.size).to eq(documents.count - 1)
-      expect { index.document(id) }.to raise_meilisearch_http_error_with(404)
+      expect { index.document(id) }.to raise_meilisearch_api_error_with(404)
     end
 
     it 'deletes one document from index (with delete-batch route)' do
@@ -170,7 +170,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       expect(index.documents.size).to eq(documents.count - 2)
-      expect { index.document(id) }.to raise_meilisearch_http_error_with(404)
+      expect { index.document(id) }.to raise_meilisearch_api_error_with(404)
     end
 
     it 'deletes one document from index (with delete-batch route as an array of one uid)' do
@@ -180,7 +180,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       expect(index.documents.size).to eq(documents.count - 3)
-      expect { index.document(id) }.to raise_meilisearch_http_error_with(404)
+      expect { index.document(id) }.to raise_meilisearch_api_error_with(404)
     end
 
     it 'deletes multiples documents from index' do
@@ -347,7 +347,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     end
 
     it 'returns a 400' do
-      expect { index.add_documents(documents) }.to raise_meilisearch_http_error_with(400)
+      expect { index.add_documents(documents) }.to raise_meilisearch_api_error_with(400)
     end
   end
 

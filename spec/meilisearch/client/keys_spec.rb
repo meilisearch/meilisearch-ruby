@@ -21,18 +21,18 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
   it 'fails to get settings if public key used' do
     public_key = @client.keys['public']
     new_client = MeiliSearch::Client.new($URL, public_key)
-    expect { new_client.index(@uid).settings }.to raise_meilisearch_http_error_with(403)
+    expect { new_client.index(@uid).settings }.to raise_meilisearch_api_error_with(403)
   end
 
   it 'fails to get keys if private key used' do
     private_key = @client.keys['private']
     new_client = MeiliSearch::Client.new($URL, private_key)
-    expect { new_client.keys }.to raise_meilisearch_http_error_with(403)
+    expect { new_client.keys }.to raise_meilisearch_api_error_with(403)
   end
 
   it 'fails to search if no key used' do
     new_client = MeiliSearch::Client.new($URL)
-    expect { new_client.index(@uid).settings }.to raise_meilisearch_http_error_with(401)
+    expect { new_client.index(@uid).settings }.to raise_meilisearch_api_error_with(401)
   end
 
   it 'succeeds to search when using public key' do

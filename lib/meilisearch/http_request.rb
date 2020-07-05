@@ -66,7 +66,7 @@ module MeiliSearch
     private
 
     def validate(response)
-      raise HTTPError.new(response.code, response.message, response.body) unless response.success?
+      raise ApiError.new(response.code, response.message, response.body) unless response.success?
 
       response.parsed_response
     end

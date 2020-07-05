@@ -116,7 +116,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'fails when updating with wrong ranking rules name' do
       expect do
         index.update_ranking_rules(wrong_ranking_rules)
-      end.to raise_meilisearch_http_error_with(400)
+      end.to raise_meilisearch_api_error_with(400)
     end
 
     it 'resets ranking rules' do
@@ -383,7 +383,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'returns an error when the body is invalid' do
-      expect { index.update_stop_words(test: 'test') }.to raise_meilisearch_http_error_with(400)
+      expect { index.update_stop_words(test: 'test') }.to raise_meilisearch_api_error_with(400)
     end
 
     it 'resets stop-words' do
@@ -501,7 +501,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'does not add document when there is no primary-key' do
       expect do
         index.add_documents(title: 'Test')
-      end.to raise_meilisearch_http_error_with(400)
+      end.to raise_meilisearch_api_error_with(400)
     end
 
     it 'adds documents when there is a primary-key' do
