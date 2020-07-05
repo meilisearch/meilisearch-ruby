@@ -31,7 +31,7 @@ module ExceptionsHelpers
     raise_meilisearch_api_error_with(
       404,
       'document_not_found',
-      'internal_error' # temporary, should be changed as invalid_request_error in MS API soon
+      'internal_error' # temporary, will be changed as invalid_request_error in the next MS release
     )
   end
 end
