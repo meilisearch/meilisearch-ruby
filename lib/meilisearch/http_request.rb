@@ -2,7 +2,6 @@
 
 require 'httparty'
 require 'meilisearch/error'
-require 'byebug'
 
 module MeiliSearch
   class HTTPRequest
