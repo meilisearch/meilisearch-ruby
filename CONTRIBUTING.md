@@ -123,7 +123,7 @@ VERSION = 'X.X.X'
 
 Once the changes are merged on `master`, you can publish the current draft release via the [GitHub interface](https://github.com/meilisearch/meilisearch-ruby/releases).
 
-A GitHub Action will be triggered and push the package on [RubyGems](https://rubygems.org/gems/meilisearch).
+A GitHub Action will be triggered and push the package to [RubyGems](https://rubygems.org/gems/meilisearch).
 
 ## Git Guidelines
 
