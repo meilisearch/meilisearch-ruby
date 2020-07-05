@@ -44,21 +44,21 @@ RSpec.describe MeiliSearch::Index do
     new_primary_key = 'id_test'
     expect do
       @index2.update(primaryKey: new_primary_key)
-    end.to raise_meilisearch_api_error_with(400)
+    end.to raise_bad_request_meilisearch_api_error
   end
 
   it 'deletes index' do
     expect(@index1.delete).to be_nil
-    expect { @index1.show }.to raise_meilisearch_api_error_with(404)
+    expect { @index1.show }.to raise_index_not_found_meilisearch_api_error
     expect(@index2.delete).to be_nil
-    expect { @index2.show }.to raise_meilisearch_api_error_with(404)
+    expect { @index2.show }.to raise_index_not_found_meilisearch_api_error
   end
 
   it 'fails to manipulate index object after deletion' do
-    expect { @index2.primary_key }.to raise_meilisearch_api_error_with(404)
-    expect { @index2.show }.to raise_meilisearch_api_error_with(404)
-    expect { @index2.update(primaryKey: 'id_test') }.to raise_meilisearch_api_error_with(404)
-    expect { @index2.delete }.to raise_meilisearch_api_error_with(404)
+    expect { @index2.primary_key }.to raise_index_not_found_meilisearch_api_error
+    expect { @index2.show }.to raise_index_not_found_meilisearch_api_error
+    expect { @index2.update(primaryKey: 'id_test') }.to raise_index_not_found_meilisearch_api_error
+    expect { @index2.delete }.to raise_index_not_found_meilisearch_api_error
   end
 
   it 'works with method aliases' do

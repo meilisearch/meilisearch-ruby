@@ -45,7 +45,7 @@ module MeiliSearch
     end
 
     def details
-      "MeiliSearch::ApiError - message: #{@ms_message} - code: #{@code} - type: #{type} - link: #{link}"
+      "MeiliSearch::ApiError - code: #{@code} - type: #{type} - message: #{@ms_message} - link: #{link}"
     end
 
   end
