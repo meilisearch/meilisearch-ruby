@@ -2,39 +2,39 @@
 
 module MeiliSearch
   class ApiError < StandardError
-    attr_reader :http_code      # e.g. 400, 404...
-    attr_reader :http_message   # e.g. Bad Request, Not Found...
-    attr_reader :http_body      # The response body received from the MeiliSearch API
-    attr_reader :code           # The error code given by the MeiliSearch API
-    attr_reader :type           # The error type given by the MeiliSearch API
-    attr_reader :link           # The documentation link given by the MeiliSearch API
-    attr_reader :ms_message     # The error message given by the MeiliSearch API
-    attr_reader :message        # The detailed error message of this error class
+    attr_reader :http_code    # e.g. 400, 404...
+    attr_reader :http_message # e.g. Bad Request, Not Found...
+    attr_reader :http_body    # The response body received from the MeiliSearch API
+    attr_reader :ms_code      # The error code given by the MeiliSearch API
+    attr_reader :ms_type      # The error type given by the MeiliSearch API
+    attr_reader :ms_link      # The documentation link given by the MeiliSearch API
+    attr_reader :ms_message   # The error message given by the MeiliSearch API
+    attr_reader :message      # The detailed error message of this error class
 
-    alias ms_code code
-    alias ms_type type
-    alias ms_link link
+    alias code ms_code
+    alias type ms_type
+    alias link ms_link
 
     def initialize(http_code, http_message, http_body)
       get_meilisearch_error_info(http_body) unless http_body.nil? || http_body.empty?
       @http_code = http_code
       @http_message = http_message
       @ms_message ||= 'MeiliSearch API has not returned any error message'
-      @link ||= '<no documentation link found>'
-      @message = "#{http_code} #{http_message} - #{@ms_message.capitalize}. See #{link}."
+      @ms_link ||= '<no documentation link found>'
+      @message = "#{http_code} #{http_message} - #{@ms_message.capitalize}. See #{ms_link}."
       super(details)
     end
 
     def get_meilisearch_error_info(http_body)
       @http_body = JSON.parse(http_body)
-      @code = @http_body['errorCode']
+      @ms_code = @http_body['errorCode']
       @ms_message = @http_body['message']
-      @type = @http_body['errorType']
-      @link = @http_body['errorLink']
+      @ms_type = @http_body['errorType']
+      @ms_link = @http_body['errorLink']
     end
 
     def details
-      "MeiliSearch::ApiError - code: #{@code} - type: #{type} - message: #{@ms_message} - link: #{link}"
+      "MeiliSearch::ApiError - code: #{@ms_code} - type: #{ms_type} - message: #{@ms_message} - link: #{ms_link}"
     end
   end
 

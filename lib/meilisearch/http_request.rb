@@ -51,10 +51,10 @@ module MeiliSearch
 
     private
 
-    def send_request(http_method, path, query_params = nil, body = nil)
+    def send_request(http_method, relative_path, query_params = nil, body = nil)
       config = http_config(query_params, body)
       begin
-        response = http_method.call(@base_url + path, config)
+        response = http_method.call(@base_url + relative_path, config)
       rescue Errno::ECONNREFUSED => e
         raise CommunicationError, e.message
       end
