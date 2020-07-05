@@ -23,6 +23,15 @@ module MeiliSearch
       index_object(res['uid'])
     end
 
+    def get_or_create_index(index_uid, options = {})
+      begin
+        client.create_index(index_uid, options)
+      rescue ApiError => e
+        raise e unless e.code == 'index_already_exists'
+        index_object(index_uid)
+      end
+    end
+
     def delete_index(index_uid)
       index_object(index_uid).delete
     end
