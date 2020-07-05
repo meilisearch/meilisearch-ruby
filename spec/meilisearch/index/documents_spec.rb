@@ -349,7 +349,8 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     it 'returns a 400' do
       expect do
         index.add_documents(documents)
-      end.to raise_bad_request_meilisearch_api_error # temporary, will be return a 'missing_primary_key' code in the next MS release
+      end.to raise_bad_request_meilisearch_api_error
+      # temporary, will be return a 'missing_primary_key' code in the next MS release
     end
   end
 
