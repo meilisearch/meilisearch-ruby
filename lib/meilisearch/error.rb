@@ -1,19 +1,6 @@
 # frozen_string_literal: true
 
 module MeiliSearch
-  class TimeoutError < StandardError
-    attr_reader :message
-
-    def initialize
-      @message = 'The enqueued update was not processed in the expected time'
-      super(@message)
-    end
-
-    def to_s
-      "#{@message}."
-    end
-  end
-
   class ApiError < StandardError
     attr_reader :http_code      # e.g. 400, 404...
     attr_reader :http_message   # e.g. Bad Request, Not Found...
@@ -48,6 +35,24 @@ module MeiliSearch
 
     def details
       "MeiliSearch::ApiError - code: #{@code} - type: #{type} - message: #{@ms_message} - link: #{link}"
+    end
+  end
+
+  class CommunicationError < StandardError
+    attr_reader :message
+
+    def initialize(message)
+      @message = "An error occurred when trying to connect to the MeiliSearch instance: #{message}"
+      super(@message)
+    end
+  end
+
+  class TimeoutError < StandardError
+    attr_reader :message
+
+    def initialize
+      @message = 'The enqueued update was not processed in the expected time'
+      super(@message)
     end
   end
 end
