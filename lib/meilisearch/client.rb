@@ -30,8 +30,6 @@ module MeiliSearch
     # Usage:
     # client.index('indexUID')
     def index(index_uid)
-      raise IndexUidError if index_uid.nil?
-
       index_object(index_uid)
     end
     alias get_index index
