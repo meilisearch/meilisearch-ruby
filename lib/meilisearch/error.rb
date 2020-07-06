@@ -42,7 +42,7 @@ module MeiliSearch
     attr_reader :message
 
     def initialize(message)
-      @message = "An error occurred when trying to connect to the MeiliSearch instance: #{message}"
+      @message = "An error occurred while trying to connect to the MeiliSearch instance: #{message}"
       super(@message)
     end
   end
