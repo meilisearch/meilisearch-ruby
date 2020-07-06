@@ -51,7 +51,7 @@ module MeiliSearch
     attr_reader :message
 
     def initialize
-      @message = 'The enqueued update was not processed in the expected time'
+      @message = 'The update was not processed in the expected time'
       super(@message)
     end
   end
