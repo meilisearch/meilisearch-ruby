@@ -1,45 +1,58 @@
 # frozen_string_literal: true
 
 module MeiliSearch
-  class MeiliSearchError < StandardError; end
-  class IndexUidError < MeiliSearchError; end
-  class MeiliSearchTimeoutError < MeiliSearchError
-    attr_reader :message
+  class ApiError < StandardError
+    attr_reader :http_code    # e.g. 400, 404...
+    attr_reader :http_message # e.g. Bad Request, Not Found...
+    attr_reader :http_body    # The response body received from the MeiliSearch API
+    attr_reader :ms_code      # The error code given by the MeiliSearch API
+    attr_reader :ms_type      # The error type given by the MeiliSearch API
+    attr_reader :ms_link      # The documentation link given by the MeiliSearch API
+    attr_reader :ms_message   # The error message given by the MeiliSearch API
+    attr_reader :message      # The detailed error message of this error class
 
-    def initialize
-      @message = "MeiliSearchTimeoutError: update wasn't processed in the expected time"
+    alias code ms_code
+    alias type ms_type
+    alias link ms_link
+
+    def initialize(http_code, http_message, http_body)
+      get_meilisearch_error_info(http_body) unless http_body.nil? || http_body.empty?
+      @http_code = http_code
+      @http_message = http_message
+      @ms_message ||= 'MeiliSearch API has not returned any error message'
+      @ms_link ||= '<no documentation link found>'
+      @message = "#{http_code} #{http_message} - #{@ms_message.capitalize}. See #{ms_link}."
+      super(details)
     end
 
-    def to_s
-      "#{@message}."
+    def get_meilisearch_error_info(http_body)
+      @http_body = JSON.parse(http_body)
+      @ms_code = @http_body['errorCode']
+      @ms_message = @http_body['message']
+      @ms_type = @http_body['errorType']
+      @ms_link = @http_body['errorLink']
+    end
+
+    def details
+      "MeiliSearch::ApiError - code: #{@ms_code} - type: #{ms_type} - message: #{@ms_message} - link: #{ms_link}"
     end
   end
 
-  class HTTPError < MeiliSearchError
-    attr_reader :status
+  class CommunicationError < StandardError
     attr_reader :message
-    attr_reader :http_body
-    attr_reader :http_body_message
-    attr_reader :details
 
-    alias code         status
-    alias body         http_body
-    alias body_message http_body_message
-
-    def initialize(status, message, http_body, details = nil)
-      @status = status
-      unless http_body.nil? || http_body.empty?
-        @http_body = JSON.parse(http_body)
-        @http_body_message = @http_body['message']
-      end
-      @message = message.capitalize
-      @message = "#{@message} - #{@http_body_message.capitalize}" unless @http_body_message.nil?
-      @details = details
+    def initialize(message)
+      @message = "An error occurred while trying to connect to the MeiliSearch instance: #{message}"
+      super(@message)
     end
+  end
 
-    def to_s
-      final_message = @details.nil? ? @message : "#{@message}. #{@details}"
-      "#{@status}: #{final_message}."
+  class TimeoutError < StandardError
+    attr_reader :message
+
+    def initialize
+      @message = 'The update was not processed in the expected time'
+      super(@message)
     end
   end
 end

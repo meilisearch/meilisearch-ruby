@@ -69,7 +69,7 @@ RSpec.describe 'MeiliSearch::Index - Updates' do
     update_id = response['updateId']
     expect do
       @index.wait_for_pending_update(update_id, 1)
-    end.to raise_error(MeiliSearch::MeiliSearchTimeoutError)
+    end.to raise_error(MeiliSearch::TimeoutError)
   end
 
   it 'waits for pending update with custom interval_in_ms and raises Timeout::Error' do
