@@ -113,7 +113,7 @@ module MeiliSearch
         end
       end
     rescue Timeout::Error
-      raise MeiliSearch::MeiliSearchTimeoutError
+      raise MeiliSearch::TimeoutError
     end
 
     ### STATS
