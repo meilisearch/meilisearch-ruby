@@ -7,6 +7,8 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     @uid1 = 'uid1'
     @uid2 = 'uid2'
     @uid3 = 'uid3'
+    @uid4 = 'uid4'
+    @uid5 = 'uid5'
     @primary_key = 'objectId'
   end
 
@@ -31,6 +33,31 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     expect(index.primary_key).to eq(@primary_key)
   end
 
+  it 'creates an new index with get_or_create_index method' do
+    index = @client.get_or_create_index(@uid4)
+    expect(@client.indexes.count).to eq(4)
+    expect(@client.index(@uid4).uid).to eq(index.uid)
+    expect(@client.index(@uid4).uid).to eq(@uid4)
+    expect(@client.index(@uid4).primary_key).to be_nil
+  end
+
+  it 'creates an new index with get_or_create_index method and a primary-key' do
+    index = @client.get_or_create_index(@uid5, primaryKey: 'title')
+    expect(@client.indexes.count).to eq(5)
+    expect(@client.index(@uid5).uid).to eq(index.uid)
+    expect(@client.index(@uid5).uid).to eq(@uid5)
+    expect(@client.index(@uid5).primary_key).to eq(index.primary_key)
+    expect(@client.index(@uid5).primary_key).to eq('title')
+  end
+
+  it 'get an already existing index with get_or_create_index method' do
+    index = @client.get_or_create_index(@uid5)
+    expect(@client.indexes.count).to eq(5)
+    expect(@client.index(@uid5).uid).to eq(index.uid)
+    expect(@client.index(@uid5).uid).to eq(@uid5)
+    expect(@client.index(@uid5).primary_key).to eq('title')
+  end
+
   it 'fails to create an index with an uid already taken' do
     expect do
       @client.create_index(@uid1)
@@ -46,9 +73,9 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
   it 'gets list of indexes' do
     response = @client.indexes
     expect(response).to be_a(Array)
-    expect(response.count).to eq(3)
+    expect(response.count).to eq(5)
     uids = response.map { |elem| elem['uid'] }
-    expect(uids).to contain_exactly(@uid1, @uid2, @uid3)
+    expect(uids).to contain_exactly(@uid1, @uid2, @uid3, @uid4, @uid5)
   end
 
   it 'shows a specific index' do
@@ -72,6 +99,10 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     expect { @client.show_index(@uid2) }.to raise_index_not_found_meilisearch_api_error
     expect(@client.delete_index(@uid3)).to be_nil
     expect { @client.show_index(@uid3) }.to raise_index_not_found_meilisearch_api_error
+    expect(@client.delete_index(@uid4)).to be_nil
+    expect { @client.show_index(@uid4) }.to raise_index_not_found_meilisearch_api_error
+    expect(@client.delete_index(@uid5)).to be_nil
+    expect { @client.show_index(@uid5) }.to raise_index_not_found_meilisearch_api_error
     expect(@client.indexes.count).to eq(0)
   end
 
