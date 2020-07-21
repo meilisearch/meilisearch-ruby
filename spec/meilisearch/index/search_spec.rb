@@ -2,7 +2,7 @@
 
 RSpec.describe 'MeiliSearch::Index - Search' do
   before(:all) do
-    documents = [
+    @documents = [
       { objectId: 123,  title: 'Pride and Prejudice',                    genre: 'romance' },
       { objectId: 456,  title: 'Le Petit Prince',                        genre: 'adventure' },
       { objectId: 1,    title: 'Alice In Wonderland',                    genre: 'adventure' },
@@ -14,7 +14,7 @@ RSpec.describe 'MeiliSearch::Index - Search' do
     client = MeiliSearch::Client.new($URL, $MASTER_KEY)
     clear_all_indexes(client)
     @index = client.create_index('books')
-    @index.add_documents(documents)
+    @index.add_documents(@documents)
     sleep(0.1)
   end
 
@@ -42,6 +42,21 @@ RSpec.describe 'MeiliSearch::Index - Search' do
     expect(response['hits'].first).not_to have_key('_formatted')
   end
 
+  it 'does a basic search with an empty query' do
+    response = @index.search('')
+    expect(response).to be_a(Hash)
+    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response['hits'].count).to eq(0)
+  end
+
+  it 'does a basic search with an nil query' do
+    response = @index.search(nil)
+    expect(response).to be_a(Hash)
+    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response['hits'].count).to eq(@documents.count)
+    expect(response['hits'].first).not_to have_key('_formatted')
+  end
+
   it 'does a custom search with limit' do
     response = @index.search('the', limit: 1)
     expect(response).to be_a(Hash)
@@ -51,15 +66,30 @@ RSpec.describe 'MeiliSearch::Index - Search' do
   end
 
   it 'does a custom search with highlight' do
-    response = @index.search('the', attributesToHighlight: '*')
+    response = @index.search('the', attributesToHighlight: ['*'])
     expect(response).to be_a(Hash)
     expect(response.keys).to contain_exactly(*default_search_response_keys)
     expect(response['hits'].count).to eq(3)
     expect(response['hits'].first).to have_key('_formatted')
   end
 
+  it 'does a custom search with an empty query' do
+    response = @index.search('', attributesToHighlight: ['*'])
+    expect(response).to be_a(Hash)
+    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response['hits'].count).to eq(0)
+  end
+
+  it 'does a custom search with an nil query' do
+    response = @index.search(nil, attributesToHighlight: ['*'])
+    expect(response).to be_a(Hash)
+    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response['hits'].count).to eq(@documents.count)
+    expect(response['hits'].first).to have_key('_formatted')
+  end
+
   it 'does a custom search with attributesToRetrieve as string' do
-    response = @index.search('the', attributesToRetrieve: 'title')
+    response = @index.search('the', attributesToRetrieve: ['title'])
     expect(response).to be_a(Hash)
     expect(response.keys).to contain_exactly(*default_search_response_keys)
     expect(response['hits'].count).to eq(3)
