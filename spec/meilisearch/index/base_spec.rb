@@ -44,8 +44,11 @@ RSpec.describe MeiliSearch::Index do
     new_primary_key = 'id_test'
     expect do
       @index2.update(primaryKey: new_primary_key)
-    end.to raise_bad_request_meilisearch_api_error
-    # temporary, will be raise a 'primary_key_already_present' code in the next MS release
+    end.to raise_meilisearch_api_error_with(
+      400,
+      'primary_key_already_present',
+      'invalid_request_error'
+    )
   end
 
   it 'deletes index' do

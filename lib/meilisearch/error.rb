@@ -21,7 +21,7 @@ module MeiliSearch
       @http_message = http_message
       @ms_message ||= 'MeiliSearch API has not returned any error message'
       @ms_link ||= '<no documentation link found>'
-      @message = "#{http_code} #{http_message} - #{@ms_message.capitalize}. See #{ms_link}."
+      @message = "#{http_code} #{http_message} - #{@ms_message}. See #{ms_link}."
       super(details)
     end
 

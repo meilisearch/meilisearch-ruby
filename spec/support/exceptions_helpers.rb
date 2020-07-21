@@ -30,7 +30,15 @@ module ExceptionsHelpers
     raise_meilisearch_api_error_with(
       404,
       'document_not_found',
-      'internal_error' # temporary, will be changed as invalid_request_error in the next MS release
+      'invalid_request_error'
+    )
+  end
+
+  def raise_missing_primary_key_meilisearch_api_error
+    raise_meilisearch_api_error_with(
+      400,
+      'missing_primary_key',
+      'invalid_request_error'
     )
   end
 end
