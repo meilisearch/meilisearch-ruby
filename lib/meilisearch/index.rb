@@ -81,16 +81,8 @@ module MeiliSearch
     ### SEARCH
 
     def search(query, options = {})
-      parsed_options = options.transform_keys(&:to_sym).map do |k, v|
-        if [:facetFilters, :facetsDistribution].include?(k)
-          [k, v.inspect]
-        elsif v.is_a?(Array)
-          [k, v.join(',')]
-        else
-          [k, v]
-        end
-      end.to_h
-      http_get "/indexes/#{@uid}/search", { q: query }.merge(parsed_options)
+      parsed_options = options.compact
+      http_post "/indexes/#{@uid}/search", { q: query }.merge(parsed_options)
     end
 
     ### UPDATES
