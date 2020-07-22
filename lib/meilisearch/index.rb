@@ -244,17 +244,6 @@ module MeiliSearch
       http_delete "/indexes/#{@uid}/settings/displayed-attributes"
     end
 
-    ### SETTINGS - ACCEPT NEW FIELS VALUE
-
-    def accept_new_fields
-      http_get "/indexes/#{@uid}/settings/accept-new-fields"
-    end
-    alias get_accept_new_fields accept_new_fields
-
-    def update_accept_new_fields(accept_new_fields)
-      http_post "/indexes/#{@uid}/settings/accept-new-fields", accept_new_fields
-    end
-
     ### SETTINGS - ATTRIBUTES FOR FACETING
 
     def attributes_for_faceting

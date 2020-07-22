@@ -16,6 +16,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       'exactness'
     ]
   end
+  let(:default_searchable_attributes) { ['*'] }
+  let(:default_displayed_attributes) { ['*'] }
 
   let(:settings_keys) do
     [
@@ -25,7 +27,6 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       'displayedAttributes',
       'stopWords',
       'synonyms',
-      'acceptNewFields',
       'attributesForFaceting'
     ]
   end
@@ -46,11 +47,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(response.keys).to contain_exactly(*settings_keys)
       expect(response['rankingRules']).to eq(default_ranking_rules)
       expect(response['distinctAttribute']).to be_nil
-      expect(response['searchableAttributes']).to eq([])
-      expect(response['displayedAttributes']).to eq([])
+      expect(response['searchableAttributes']).to eq(default_searchable_attributes)
+      expect(response['displayedAttributes']).to eq(default_displayed_attributes)
       expect(response['stopWords']).to eq([])
       expect(response['synonyms']).to eq({})
-      expect(response['acceptNewFields']).to be_truthy
     end
 
     it 'updates multiples settings at the same time' do
@@ -171,8 +171,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'gets default values of searchable attributes' do
       response = index.searchable_attributes
-      expect(response).to be_a(Array)
-      expect(response).to be_empty
+      expect(response).to eq(default_searchable_attributes)
     end
 
     it 'updates searchable attributes' do
@@ -187,6 +186,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(response).to have_key('updateId')
       sleep(0.1)
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
+      expect(index.searchable_attributes).to eq(default_searchable_attributes)
     end
   end
 
@@ -203,8 +203,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'gets default values of displayed attributes' do
       response = index.displayed_attributes
-      expect(response).to be_a(Array)
-      expect(response).to be_empty
+      expect(response).to eq(default_displayed_attributes)
     end
 
     it 'updates displayed attributes' do
@@ -219,62 +218,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(response).to have_key('updateId')
       sleep(0.1)
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
-    end
-  end
-
-  context 'On accept-new-fields sub-routes' do
-    before(:all) do
-      @uid = SecureRandom.hex(4)
-      @client.create_index(@uid)
-    end
-
-    after(:all) { clear_all_indexes(@client) }
-
-    let(:index) { @client.index(@uid) }
-
-    it 'gets default values of acceptNewFields' do
-      expect(index.accept_new_fields).to be_truthy
-    end
-
-    it 'adds searchable or display attributes when truthy' do
-      index.update_searchable_attributes(['title', 'description'])
-      sleep(0.1)
-      index.update_displayed_attributes(['title', 'description'])
-      sleep(0.1)
-      index.add_documents(id: 1, title: 'Test', comment: 'comment test')
-      sleep(0.1)
-      sa = index.searchable_attributes
-      da = index.displayed_attributes
-      expect(sa).to contain_exactly('id', 'title', 'description', 'comment')
-      expect(da).to contain_exactly('id', 'title', 'description', 'comment')
-      index.update_searchable_attributes([])
-      sleep(0.1)
-      index.update_displayed_attributes([])
-      sleep(0.1)
-      index.delete_all_documents
-      sleep(0.1)
-    end
-
-    it 'updates displayed attributes' do
-      response = index.update_accept_new_fields(false)
-      expect(response).to have_key('updateId')
-      sleep(0.1)
-      expect(index.accept_new_fields).to be_falsy
-    end
-
-    it 'does not add searchable or display attributes when falsy' do
-      index.update_searchable_attributes(['title', 'description'])
-      sleep(0.1)
-      index.update_displayed_attributes(['title', 'description'])
-      sleep(0.1)
-      index.update_accept_new_fields(false)
-      sleep(0.1)
-      index.add_documents(id: 1, title: 'Test', comment: 'comment test', note: 'note')
-      sleep(0.1)
-      sa = index.searchable_attributes
-      da = index.displayed_attributes
-      expect(sa).to contain_exactly('title', 'description')
-      expect(da).to contain_exactly('title', 'description')
+      expect(index.displayed_attributes).to eq(default_displayed_attributes)
     end
   end
 
@@ -447,11 +391,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(response.keys).to contain_exactly(*settings_keys)
       expect(response['rankingRules']).to eq(default_ranking_rules)
       expect(response['distinctAttribute']).to be_nil
-      expect(response['searchableAttributes']).to eq(['id'])
-      expect(response['displayedAttributes']).to eq(['id'])
+      expect(response['searchableAttributes']).to eq(default_searchable_attributes)
+      expect(response['displayedAttributes']).to eq(default_displayed_attributes)
       expect(response['stopWords']).to eq([])
       expect(response['synonyms']).to eq({})
-      expect(response['acceptNewFields']).to be_truthy
     end
 
     it 'updates multiples settings at the same time' do
@@ -503,7 +446,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'does not add document when there is no primary-key' do
       expect do
         index.add_documents(title: 'Test')
-      end.to raise_bad_request_meilisearch_api_error
+      end.to raise_missing_primary_key_meilisearch_api_error
     end
 
     it 'adds documents when there is a primary-key' do
@@ -522,6 +465,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(response).to have_key('updateId')
       sleep(0.1)
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
+      expect(index.searchable_attributes).to eq(['*'])
     end
   end
 
@@ -541,7 +485,6 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.method(:distinct_attribute) == index.method(:get_distinct_attribute)).to be_truthy
       expect(index.method(:searchable_attributes) == index.method(:get_searchable_attributes)).to be_truthy
       expect(index.method(:displayed_attributes) == index.method(:get_displayed_attributes)).to be_truthy
-      expect(index.method(:accept_new_fields) == index.method(:get_accept_new_fields)).to be_truthy
       expect(index.method(:synonyms) == index.method(:get_synonyms)).to be_truthy
       expect(index.method(:stop_words) == index.method(:get_stop_words)).to be_truthy
       expect(index.method(:attributes_for_faceting) == index.method(:get_attributes_for_faceting)).to be_truthy
