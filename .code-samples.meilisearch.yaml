@@ -75,7 +75,7 @@ documents_guide_add_movie_1: |-
 search_guide_1: |-
 search_guide_2: |-
 getting_started_create_index_md: |-
-  ```bash |-
+  ```bash
   $ bundle add meilisearch
   ```
 
