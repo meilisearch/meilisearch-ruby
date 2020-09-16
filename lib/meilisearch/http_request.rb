@@ -7,9 +7,10 @@ module MeiliSearch
   class HTTPRequest
     include HTTParty
 
-    def initialize(url, api_key = nil)
+    def initialize(url, api_key = nil, options = {})
       @base_url = url
       @api_key = api_key
+      @options = options
       @headers = {
         'Content-Type' => 'application/json',
         'X-Meili-API-Key' => api_key
@@ -67,7 +68,8 @@ module MeiliSearch
         headers: @headers,
         query: query_params,
         body: body,
-        timeout: 1
+        timeout: @options[:timeout] || 1,
+        max_retries: @options[:max_retries] || 1
       }.compact
     end
 
