@@ -69,7 +69,7 @@ module MeiliSearch
         query: query_params,
         body: body,
         timeout: @options[:timeout] || 1,
-        max_retries: @options[:max_retries] || 1
+        max_retries: @options[:max_retries] || 0
       }.compact
     end
 
