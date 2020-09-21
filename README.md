@@ -30,6 +30,7 @@
 - [🚀 Getting started](#-getting-started)
 - [🤖 Compatibility with MeiliSearch](#-compatibility-with-meilisearch)
 - [🎬 Examples](#-examples)
+  - [Client](#client)
   - [Indexes](#indexes)
   - [Documents](#documents)
   - [Update status](#update-status)
@@ -116,6 +117,21 @@ This package is compatible with the following MeiliSearch versions:
 
 All HTTP routes of MeiliSearch are accessible via methods in this SDK.</br>
 You can check out [the API documentation](https://docs.meilisearch.com/references/).
+
+### Client
+
+```ruby
+# Default client
+client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
+# Custom client
+client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey', timeout: 2, max_retries: 2)
+```
+
+`timeout` - default value: `1` second<br>
+The time in seconds before a `Timeout::Error` is raised.
+
+`max_retries` - default value: `0`<br>
+If the HTTP request times out, this number of retries will be applied.
 
 ### Indexes
 
