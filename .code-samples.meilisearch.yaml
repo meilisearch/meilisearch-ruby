@@ -49,7 +49,9 @@ get_displayed_attributes_1: |-
 update_displayed_attributes_1: |-
 reset_displayed_attributes_1: |-
 get_index_stats_1: |-
+  client.index('movies').stats
 get_indexes_stats_1: |-
+  client.stats
 get_health_1: |-
 update_health_1: |-
 get_version_1: |-
