@@ -213,14 +213,42 @@ filtering_guide_4: |-
     filters: 'rating >= 3 AND (NOT director = "Tim Burton")'
   })
 search_parameter_guide_query_1: |-
+  index.search('shifu')
 search_parameter_guide_offset_1: |-
+  index.search('shifu', { 
+    offset: 1
+  })
 search_parameter_guide_limit_1: |-
+  index.search('shifu', { 
+    limit: 2
+  })
 search_parameter_guide_retrieve_1: |-
+  index.search('shifu', {
+    attributesToRetrieve: ['overview', 'title']
+  })
 search_parameter_guide_crop_1: |-
+  index.search('shifu', {
+    attributesToCrop: ['overview'],
+    cropLength: 10
+  })
 search_parameter_guide_highlight_1: |-
-search_parameter_guide_filter_1: |-
-search_parameter_guide_filter_2: |-
+  index.search('shifu', {
+    attributesToHighlight: ['overview']
+  })
 search_parameter_guide_matches_1: |-
+  index.search('n', {
+    filters: 'title="Kung Fu Panda"',
+    attributesToHighlight: ['overview'],
+    matches: true
+  })
+search_parameter_guide_filter_1: |-
+  index.search('n', {
+    filters: 'title = Nightshift'
+  })  
+search_parameter_guide_filter_2: |-
+  index.search('n', {
+    filters: 'title="Kung Fu Panda"'
+  })
 settings_guide_synonyms_1: |-
 settings_guide_stop_words_1: |-
 settings_guide_ranking_rules_1: |-
