@@ -137,13 +137,19 @@ update_distinct_attribute_1: |-
   index.update_distinct_attribute('movie_id')
 reset_distinct_attribute_1: |-
   index.reset_distinct_attribute
+get_searchable_attributes_1: |-
+  index.get_searchable_attributes
+update_searchable_attributes_1: |-
+  index.update_searchable_attributes([
+    'title',
+    'description',
+    'uid'
+  ])
+reset_searchable_attributes_1: |-
+  index.reset_searchable_attributes
 get_attributes_for_faceting_1: |-
-
 update_attributes_for_faceting_1: |-
 reset_attributes_for_faceting_1: |-
-get_searchable_attributes_1: |-
-update_searchable_attributes_1: |-
-reset_searchable_attributes_1: |-
 get_displayed_attributes_1: |-
 update_displayed_attributes_1: |-
 reset_displayed_attributes_1: |-
