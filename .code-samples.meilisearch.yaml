@@ -302,9 +302,25 @@ settings_guide_displayed_1: |-
     ]
   })
 add_movies_json_1: |-
+  require 'json'
+
+  movies_json = File.read('movies.json')
+  movies = JSON.parse(movies_json)
+  index.add_documents(movies)
 documents_guide_add_movie_1: |-
+  index.add_documents([{
+    "movie_id": "123sq178",
+    "title": "Amelie Poulain"
+  }])
 search_guide_1: |-
+  index.search('shifu', {
+    limit: 5,
+    offset: 10
+  })
 search_guide_2: |-
+  index.search('Avengers', {
+    filters: 'release_date > 795484800'
+  })
 getting_started_create_index_md: |-
   ```bash
   $ bundle add meilisearch
