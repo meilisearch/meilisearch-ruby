@@ -173,11 +173,33 @@ get_index_stats_1: |-
 get_indexes_stats_1: |-
   client.stats
 get_health_1: |-
+  client.health
 update_health_1: |-
+  client.update_health(false)
 get_version_1: |-
+  client.version
 distinct_attribute_guide_1: |-
+  client.index('jackets').update_distinct_attribute('product_id')
 field_properties_guide_searchable_1: |-
+  index.update_searchable_attributes([
+    'uid',
+    'movie_id',
+    'title',
+    'description',
+    'poster',
+    'release_date',
+    'rank'
+  ])
 field_properties_guide_displayed_1: |-
+  index.update_settings({
+    displayedAttributes: [
+      'title',
+      'description',
+      'poster',
+      'release_date',
+      'rank'
+    ]
+  })
 filtering_guide_1: |-
 filtering_guide_2: |-
 filtering_guide_3: |-
