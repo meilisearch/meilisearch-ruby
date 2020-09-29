@@ -148,11 +148,26 @@ update_searchable_attributes_1: |-
 reset_searchable_attributes_1: |-
   index.reset_searchable_attributes
 get_attributes_for_faceting_1: |-
+  index.get_attributes_for_faceting
 update_attributes_for_faceting_1: |-
+  index.update_attributes_for_faceting([
+    'genre',
+    'director'
+  ])
 reset_attributes_for_faceting_1: |-
+  index.reset_attributes_for_faceting
 get_displayed_attributes_1: |-
+  index.get_displayed_attributes
 update_displayed_attributes_1: |-
+  index.update_displayed_attributes([
+    'title',
+    'description',
+    'release_date',
+    'rank',
+    'poster'
+  ])
 reset_displayed_attributes_1: |-
+  index.reset_displayed_attributes
 get_index_stats_1: |-
   client.index('movies').stats
 get_indexes_stats_1: |-
