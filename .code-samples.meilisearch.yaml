@@ -132,10 +132,13 @@ update_ranking_rules_1: |-
 reset_ranking_rules_1: |-
   index.reset_ranking_rules
 get_distinct_attribute_1: |-
-  
+  index.get_distinct_attribute
 update_distinct_attribute_1: |-
+  index.update_distinct_attribute('movie_id')
 reset_distinct_attribute_1: |-
+  index.reset_distinct_attribute
 get_attributes_for_faceting_1: |-
+
 update_attributes_for_faceting_1: |-
 reset_attributes_for_faceting_1: |-
 get_searchable_attributes_1: |-
