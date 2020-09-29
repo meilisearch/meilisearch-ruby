@@ -52,19 +52,87 @@ get_update_1: |-
 get_all_updates_1: |-
   index.get_all_update_status
 get_keys_1: |-
+  client.get_keys
+  // OR
+  client.keys
 get_settings_1: |-
+  index.get_settings
+  // OR
+  index.settings
 update_settings_1: |-
+  index.update_settings({
+    rankingRules: [
+      'typo',
+      'words',
+      'proximity',
+      'attribute',
+      'wordsPosition',
+      'exactness',
+      'desc(release_date)',
+      'desc(rank)'
+    ],
+    distinctAttribute: 'movie_id',
+    searchableAttributes: [
+      'uid',
+      'movie_id',
+      'title',
+      'description',
+      'poster',
+      'release_date',
+      'rank'
+    ],
+    displayedAttributes: [
+      'title',
+      'description',
+      'poster',
+      'release_date',
+      'rank'
+    ],
+    stopWords: [
+      'the',
+      'a',
+      'an'
+    ],
+    synonyms: {
+      'wolverine': ['xmen', 'logan'],
+      'logan': ['wolverine']
+    }
+  })
 reset_settings_1: |-
+  index.reset_settings
 get_synonyms_1: |-
+  index.get_synonyms
 update_synonyms_1: |-
+  index.update_synonyms({
+    'wolverine': ['xmen', 'logan'],
+    'logan': ['wolverine', 'xmen'],
+    'wow': ['world of warcraft']
+  })
 reset_synonyms_1: |-
+  index.reset_synonyms
 get_stop_words_1: |-
+  index.get_stop_words
 update_stop_words_1: |-
+  index.update_stop_words(['of', 'the', 'to'])
 reset_stop_words_1: |-
+  index.reset_stop_words
 get_ranking_rules_1: |-
+  index.get_ranking_rules
 update_ranking_rules_1: |-
+  index.update_ranking_rules([
+    'typo',
+    'words',
+    'proximity',
+    'attribute',
+    'wordsPosition',
+    'exactness',
+    'asc(release_date)',
+    'desc(rank)'
+  ])
 reset_ranking_rules_1: |-
+  index.reset_ranking_rules
 get_distinct_attribute_1: |-
+  
 update_distinct_attribute_1: |-
 reset_distinct_attribute_1: |-
 get_attributes_for_faceting_1: |-
