@@ -244,17 +244,63 @@ search_parameter_guide_matches_1: |-
 search_parameter_guide_filter_1: |-
   index.search('n', {
     filters: 'title = Nightshift'
-  })  
+  })
 search_parameter_guide_filter_2: |-
   index.search('n', {
     filters: 'title="Kung Fu Panda"'
   })
 settings_guide_synonyms_1: |-
+  index.update_settings({
+    synonyms: {
+      sweater: ['jumper'],
+      jumper: ['sweater']
+    }
+  })
 settings_guide_stop_words_1: |-
+  index.update_settings({
+    stopWords: [
+      'the',
+      'a',
+      'an'
+    ]
+  })
 settings_guide_ranking_rules_1: |-
+  index.update_settings({
+    rankingRules: [
+      'typo',
+      'words',
+      'proximity',
+      'attribute',
+      'wordsPosition',
+      'exactness',
+      'asc(release_date)',
+      'desc(rank)'
+    ]
+  })
 settings_guide_distinct_1: |-
+  client.index('jackets').update_distinct_attribute('product_id')
 settings_guide_searchable_1: |-
+  index.update_settings({
+    searchableAttributes: [
+      'uid',
+      'movie_id',
+      'title',
+      'description',
+      'poster',
+      'release_date',
+      'rank'
+    ]
+  })
 settings_guide_displayed_1: |-
+  index.update_settings({
+    displayedAttributes: [
+      'title',
+      'description',
+      'poster',
+      'release_date',
+      'rank'
+    ]
+  })
 add_movies_json_1: |-
 documents_guide_add_movie_1: |-
 search_guide_1: |-
