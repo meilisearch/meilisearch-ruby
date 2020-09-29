@@ -46,7 +46,7 @@ RSpec.describe 'MeiliSearch::Index - Search' do
     response = @index.search('')
     expect(response).to be_a(Hash)
     expect(response.keys).to contain_exactly(*default_search_response_keys)
-    expect(response['hits'].count).to eq(0)
+    expect(response['hits'].count).to eq(7)
   end
 
   it 'does a basic search with an nil query' do
@@ -77,7 +77,8 @@ RSpec.describe 'MeiliSearch::Index - Search' do
     response = @index.search('', attributesToHighlight: ['*'])
     expect(response).to be_a(Hash)
     expect(response.keys).to contain_exactly(*default_search_response_keys)
-    expect(response['hits'].count).to eq(0)
+    expect(response['hits'].count).to eq(7)
+    expect(response['hits'].first).to have_key('_formatted')
   end
 
   it 'does a custom search with an nil query' do
