@@ -14,12 +14,8 @@ update_an_index_1: |-
 delete_an_index_1: |-
   client.delete_index('movies')
 get_one_document_1: |-
-  index.get_document(25684)
-  // OR
   index.document(25684)
 get_documents_1: |-
-  index.get_documents(limit: 2)
-  // OR
   index.documents(limit: 2)
 add_or_replace_documents_1: |-
   index.add_documents([
@@ -52,12 +48,8 @@ get_update_1: |-
 get_all_updates_1: |-
   index.get_all_update_status
 get_keys_1: |-
-  client.get_keys
-  // OR
   client.keys
 get_settings_1: |-
-  index.get_settings
-  // OR
   index.settings
 update_settings_1: |-
   index.update_settings({
@@ -101,7 +93,7 @@ update_settings_1: |-
 reset_settings_1: |-
   index.reset_settings
 get_synonyms_1: |-
-  index.get_synonyms
+  index.synonyms
 update_synonyms_1: |-
   index.update_synonyms({
     'wolverine': ['xmen', 'logan'],
@@ -111,13 +103,13 @@ update_synonyms_1: |-
 reset_synonyms_1: |-
   index.reset_synonyms
 get_stop_words_1: |-
-  index.get_stop_words
+  index.stop_words
 update_stop_words_1: |-
   index.update_stop_words(['of', 'the', 'to'])
 reset_stop_words_1: |-
   index.reset_stop_words
 get_ranking_rules_1: |-
-  index.get_ranking_rules
+  index.ranking_rules
 update_ranking_rules_1: |-
   index.update_ranking_rules([
     'typo',
@@ -132,13 +124,13 @@ update_ranking_rules_1: |-
 reset_ranking_rules_1: |-
   index.reset_ranking_rules
 get_distinct_attribute_1: |-
-  index.get_distinct_attribute
+  index.distinct_attribute
 update_distinct_attribute_1: |-
   index.update_distinct_attribute('movie_id')
 reset_distinct_attribute_1: |-
   index.reset_distinct_attribute
 get_searchable_attributes_1: |-
-  index.get_searchable_attributes
+  index.searchable_attributes
 update_searchable_attributes_1: |-
   index.update_searchable_attributes([
     'title',
@@ -148,7 +140,7 @@ update_searchable_attributes_1: |-
 reset_searchable_attributes_1: |-
   index.reset_searchable_attributes
 get_attributes_for_faceting_1: |-
-  index.get_attributes_for_faceting
+  index.attributes_for_faceting
 update_attributes_for_faceting_1: |-
   index.update_attributes_for_faceting([
     'genre',
@@ -378,4 +370,3 @@ faceted_search_walkthrough_facets_distribution_1: |-
   index.search('Batman', {
     facetsDistribution: ['genres']
   })
-
