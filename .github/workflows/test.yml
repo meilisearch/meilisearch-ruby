@@ -21,7 +21,7 @@ jobs:
       run: docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey --no-analytics=true
     - name: Install ruby dependencies
       run: bundle install --with test
-    - name: Run test suite
-      run: bundle exec rspec
     - name: Run linter
       run: bundle exec rubocop lib/ spec/
+    - name: Run test suite
+      run: bundle exec rspec
