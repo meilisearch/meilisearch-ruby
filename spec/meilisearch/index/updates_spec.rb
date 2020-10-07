@@ -67,6 +67,12 @@ RSpec.describe 'MeiliSearch::Index - Updates' do
     @index.add_documents(@documents)
     response = @index.add_documents(@documents)
     update_id = response['updateId']
+
+    # check if some unknown error occurred
+    expect do
+      @index.wait_for_pending_update(update_id, 1)
+    end.to raise_error(StandardError)
+
     expect do
       @index.wait_for_pending_update(update_id, 1)
     end.to raise_error(MeiliSearch::TimeoutError)
