@@ -2,14 +2,16 @@
 
 module MeiliSearch
   class ApiError < StandardError
-    attr_reader :http_code    # e.g. 400, 404...
-    attr_reader :http_message # e.g. Bad Request, Not Found...
-    attr_reader :http_body    # The response body received from the MeiliSearch API
-    attr_reader :ms_code      # The error code given by the MeiliSearch API
-    attr_reader :ms_type      # The error type given by the MeiliSearch API
-    attr_reader :ms_link      # The documentation link given by the MeiliSearch API
-    attr_reader :ms_message   # The error message given by the MeiliSearch API
-    attr_reader :message      # The detailed error message of this error class
+    # :http_code    # e.g. 400, 404...
+    # :http_message # e.g. Bad Request, Not Found...
+    # :http_body    # The response body received from the MeiliSearch API
+    # :ms_code      # The error code given by the MeiliSearch API
+    # :ms_type      # The error type given by the MeiliSearch API
+    # :ms_link      # The documentation link given by the MeiliSearch API
+    # :ms_message   # The error message given by the MeiliSearch API
+    # :message      # The detailed error message of this error class
+
+    attr_reader :http_code, :http_message, :http_body, :ms_code, :ms_type, :ms_link, :ms_message, :message
 
     alias code ms_code
     alias type ms_type
