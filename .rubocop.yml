@@ -11,6 +11,9 @@ inherit_from: .rubocop_todo.yml
 #
 # See https://github.com/rubocop-hq/rubocop/blob/master/manual/configuration.md
 
+AllCops:
+  NewCops: enable
+
 Style/SymbolArray:
   EnforcedStyle: brackets
 
