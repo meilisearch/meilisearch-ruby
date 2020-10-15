@@ -29,12 +29,7 @@
 - [🔧 Installation](#-installation)
 - [🚀 Getting started](#-getting-started)
 - [🤖 Compatibility with MeiliSearch](#-compatibility-with-meilisearch)
-- [🎬 Examples](#-examples)
-  - [Client](#client)
-  - [Indexes](#indexes)
-  - [Documents](#documents)
-  - [Update status](#update-status)
-  - [Search](#search)
+- [📖 Documentation and Examples](#-documentation-and-examples)
 - [⚙️ Development Workflow and Contributing](#️-development-workflow-and-contributing)
 
 ## 🔧 Installation
@@ -87,7 +82,7 @@ index.add_documents(documents) # => { "updateId": 0 }
 
 With the `updateId`, you can check the status (`processed` or `failed`) of your documents addition thanks to this [method](#update-status).
 
-#### Search in index <!-- omit in toc -->
+#### Basic Search <!-- omit in toc -->
 
 ``` ruby
 # MeiliSearch is typo-tolerant:
@@ -107,131 +102,9 @@ Output:
 }
 ```
 
-## 🤖 Compatibility with MeiliSearch
-
-This package only guarantees the compatibility with the [version v0.15.0 of MeiliSearch](https://github.com/meilisearch/MeiliSearch/releases/tag/v0.15.0).
-
-## 🎬 Examples
-
-All HTTP routes of MeiliSearch are accessible via methods in this SDK.</br>
-You can check out [the API documentation](https://docs.meilisearch.com/references/).
-
-### Client
-
-```ruby
-# Default client
-client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
-# Custom client
-client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey', timeout: 2, max_retries: 2)
-```
-
-`timeout` - default value: `1` second<br>
-The time in seconds before a `Timeout::Error` is raised.
-
-`max_retries` - default value: `0`<br>
-If the HTTP request times out, this number of retries will be applied.
-
-### Indexes
-
-#### Create an index <!-- omit in toc -->
-
-```ruby
-# Create an index
-client.create_index('books')
-# Create an index and give the primary-key
-client.create_index('books', primaryKey: 'book_id')
-# Create an index or get the already existing one
-client.create_index('books')
-client.get_or_create_index('books', primaryKey: 'book_id')
-```
-
-#### List all indexes <!-- omit in toc -->
-
-```ruby
-client.indexes
-```
-
-#### Get an index object <!-- omit in toc -->
-
-```ruby
-client.index('books')
-```
-
-### Documents
-
-#### Fetch documents <!-- omit in toc -->
-
-```ruby
-# Get one document
-index.document(123)
-# Get documents by batch
-index.documents(offset: 10 , limit: 20)
-```
-
-#### Add documents <!-- omit in toc -->
-
-```ruby
-index.add_documents({ book_id: 2, title: 'Madame Bovary' })
-```
-
-Response:
-```json
-{
-    "updateId": 1
-}
-```
-With this `updateId` you can track your [operation update](#update-status).
-
-#### Delete documents <!-- omit in toc -->
-
-```ruby
-# Delete one document
-index.delete_document(2)
-# Delete several documents
-index.delete_documents([1, 42])
-# Delete all documents /!\
-index.delete_all_documents
-```
-
-### Update status
-```ruby
-# Get one update status
-# Parameter: the updateId got after an asynchronous request (e.g. documents addition)
-index.get_update_status(1)
-# Get all update satus
-index.get_all_update_status
-```
-
-### Search
-
-#### Basic search <!-- omit in toc -->
-
-```ruby
-index.search('prince')
-```
-
-```json
-{
-    "hits": [
-        {
-            "book_id": 456,
-            "title": "Le Petit Prince"
-        },
-        {
-            "book_id": 4,
-            "title": "Harry Potter and the Half-Blood Prince"
-        }
-    ],
-    "offset": 0,
-    "limit": 20,
-    "processingTimeMs": 13,
-    "query": "prince"
-}
-```
-
 #### Custom search <!-- omit in toc -->
 
-All the supported options are described in [this documentation section](https://docs.meilisearch.com/references/search.html#search-in-an-index).
+All the supported options are described in [this documentation section](https://docs.meilisearch.com/guides/advanced_guides/search_parameters.html).
 
 ```ruby
 index.search('prince', { limit: 1, attributesToHighlight: '*' })
@@ -255,6 +128,23 @@ index.search('prince', { limit: 1, attributesToHighlight: '*' })
     "query": "prince"
 }
 ```
+
+## 🤖 Compatibility with MeiliSearch
+
+This package only guarantees the compatibility with the [version v0.15.0 of MeiliSearch](https://github.com/meilisearch/MeiliSearch/releases/tag/v0.15.0).
+
+## 📖 Documentation and Examples
+
+MeiliSearch documentation provides **examples** and a detailed explanation of every one of its features and functionalities, including examples on how to implement them **using this SDK**.
+
+Please read the [guides available in the documentation](https://docs.meilisearch.com/guides/) or check the [API references](https://docs.meilisearch.com/references/) to find the one that you need!
+
+The following sections may interest you:
+
+- [Manipulate documents](https://docs.meilisearch.com/references/documents.html)
+- [Search](https://docs.meilisearch.com/references/search.html)
+- [Manage the indexes](https://docs.meilisearch.com/references/indexes.html)
+- [Configure the index settings](https://docs.meilisearch.com/references/settings.html)
 
 ## ⚙️ Development Workflow and Contributing
 
