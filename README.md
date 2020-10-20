@@ -104,7 +104,7 @@ Output:
 
 #### Custom search <!-- omit in toc -->
 
-All the supported options are described in [this documentation section](https://docs.meilisearch.com/guides/advanced_guides/search_parameters.html).
+All the supported options are described in the [search parameters](https://docs.meilisearch.com/guides/advanced_guides/search_parameters.html) section of the documentation.
 
 ```ruby
 index.search('prince', { limit: 1, attributesToHighlight: '*' })
