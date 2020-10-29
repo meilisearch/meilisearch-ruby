@@ -166,8 +166,6 @@ get_indexes_stats_1: |-
   client.stats
 get_health_1: |-
   client.health
-update_health_1: |-
-  client.update_health(false)
 get_version_1: |-
   client.version
 distinct_attribute_guide_1: |-
@@ -195,8 +193,8 @@ field_properties_guide_displayed_1: |-
 filtering_guide_1: |-
   index.search('Avengers', { filters: 'release_date > 795484800' })
 filtering_guide_2: |-
-  index.search('Batman', { 
-    filters: 'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan")' 
+  index.search('Batman', {
+    filters: 'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan")'
   })
 filtering_guide_3: |-
   index.search('horror', { filters: 'director = "Jordan Peele"' })
@@ -207,11 +205,11 @@ filtering_guide_4: |-
 search_parameter_guide_query_1: |-
   index.search('shifu')
 search_parameter_guide_offset_1: |-
-  index.search('shifu', { 
+  index.search('shifu', {
     offset: 1
   })
 search_parameter_guide_limit_1: |-
-  index.search('shifu', { 
+  index.search('shifu', {
     limit: 2
   })
 search_parameter_guide_retrieve_1: |-
