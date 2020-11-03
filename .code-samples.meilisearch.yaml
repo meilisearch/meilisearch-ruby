@@ -32,7 +32,7 @@ add_or_update_documents_1: |-
     {
       'id': 287947,
       'title': 'Shazam ⚡️',
-      'genre': 'comedy'
+      'genres': 'comedy'
     }
   ])
 delete_all_documents_1: |-
@@ -143,7 +143,7 @@ get_attributes_for_faceting_1: |-
   index.attributes_for_faceting
 update_attributes_for_faceting_1: |-
   index.update_attributes_for_faceting([
-    'genre',
+    'genres',
     'director'
   ])
 reset_attributes_for_faceting_1: |-
@@ -195,8 +195,8 @@ field_properties_guide_displayed_1: |-
 filtering_guide_1: |-
   index.search('Avengers', { filters: 'release_date > 795484800' })
 filtering_guide_2: |-
-  index.search('Batman', { 
-    filters: 'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan")' 
+  index.search('Batman', {
+    filters: 'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan")'
   })
 filtering_guide_3: |-
   index.search('horror', { filters: 'director = "Jordan Peele"' })
@@ -207,11 +207,11 @@ filtering_guide_4: |-
 search_parameter_guide_query_1: |-
   index.search('shifu')
 search_parameter_guide_offset_1: |-
-  index.search('shifu', { 
+  index.search('shifu', {
     offset: 1
   })
 search_parameter_guide_limit_1: |-
-  index.search('shifu', { 
+  index.search('shifu', {
     limit: 2
   })
 search_parameter_guide_retrieve_1: |-
