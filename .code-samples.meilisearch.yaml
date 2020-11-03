@@ -20,19 +20,19 @@ get_documents_1: |-
 add_or_replace_documents_1: |-
   index.add_documents([
     {
-      'id': 287947,
-      'title': 'Shazam',
-      'poster': 'https://image.tmdb.org/t/p/w1280/xnopI5Xtky18MPhK40cZAGAOVeV.jpg',
-      'overview': 'A boy is given the ability to become an adult superhero in times of need with a single magic word.',
-      'release_date': '2019-03-23'
+      id: 287947,
+      title: 'Shazam',
+      poster: 'https://image.tmdb.org/t/p/w1280/xnopI5Xtky18MPhK40cZAGAOVeV.jpg',
+      overview: 'A boy is given the ability to become an adult superhero in times of need with a single magic word.',
+      release_date: '2019-03-23'
     }
   ])
 add_or_update_documents_1: |-
   index.update_documents([
     {
-      'id': 287947,
-      'title': 'Shazam ⚡️',
-      'genre': 'comedy'
+      id: 287947,
+      title: 'Shazam ⚡️',
+      genres: 'comedy'
     }
   ])
 delete_all_documents_1: |-
@@ -86,8 +86,8 @@ update_settings_1: |-
       'an'
     ],
     synonyms: {
-      'wolverine': ['xmen', 'logan'],
-      'logan': ['wolverine']
+      wolverine: ['xmen', 'logan'],
+      logan: ['wolverine']
     }
   })
 reset_settings_1: |-
@@ -96,9 +96,9 @@ get_synonyms_1: |-
   index.synonyms
 update_synonyms_1: |-
   index.update_synonyms({
-    'wolverine': ['xmen', 'logan'],
-    'logan': ['wolverine', 'xmen'],
-    'wow': ['world of warcraft']
+    wolverine: ['xmen', 'logan'],
+    logan: ['wolverine', 'xmen'],
+    wow: ['world of warcraft']
   })
 reset_synonyms_1: |-
   index.reset_synonyms
@@ -143,7 +143,7 @@ get_attributes_for_faceting_1: |-
   index.attributes_for_faceting
 update_attributes_for_faceting_1: |-
   index.update_attributes_for_faceting([
-    'genre',
+    'genres',
     'director'
   ])
 reset_attributes_for_faceting_1: |-
@@ -195,8 +195,8 @@ field_properties_guide_displayed_1: |-
 filtering_guide_1: |-
   index.search('Avengers', { filters: 'release_date > 795484800' })
 filtering_guide_2: |-
-  index.search('Batman', { 
-    filters: 'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan")' 
+  index.search('Batman', {
+    filters: 'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan")'
   })
 filtering_guide_3: |-
   index.search('horror', { filters: 'director = "Jordan Peele"' })
@@ -207,11 +207,11 @@ filtering_guide_4: |-
 search_parameter_guide_query_1: |-
   index.search('shifu')
 search_parameter_guide_offset_1: |-
-  index.search('shifu', { 
+  index.search('shifu', {
     offset: 1
   })
 search_parameter_guide_limit_1: |-
-  index.search('shifu', { 
+  index.search('shifu', {
     limit: 2
   })
 search_parameter_guide_retrieve_1: |-
