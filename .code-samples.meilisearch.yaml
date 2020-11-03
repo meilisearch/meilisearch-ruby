@@ -20,19 +20,19 @@ get_documents_1: |-
 add_or_replace_documents_1: |-
   index.add_documents([
     {
-      'id': 287947,
-      'title': 'Shazam',
-      'poster': 'https://image.tmdb.org/t/p/w1280/xnopI5Xtky18MPhK40cZAGAOVeV.jpg',
-      'overview': 'A boy is given the ability to become an adult superhero in times of need with a single magic word.',
-      'release_date': '2019-03-23'
+      id: 287947,
+      title: 'Shazam',
+      poster: 'https://image.tmdb.org/t/p/w1280/xnopI5Xtky18MPhK40cZAGAOVeV.jpg',
+      overview: 'A boy is given the ability to become an adult superhero in times of need with a single magic word.',
+      release_date: '2019-03-23'
     }
   ])
 add_or_update_documents_1: |-
   index.update_documents([
     {
-      'id': 287947,
-      'title': 'Shazam ⚡️',
-      'genres': 'comedy'
+      id: 287947,
+      title: 'Shazam ⚡️',
+      genres: 'comedy'
     }
   ])
 delete_all_documents_1: |-
@@ -86,8 +86,8 @@ update_settings_1: |-
       'an'
     ],
     synonyms: {
-      'wolverine': ['xmen', 'logan'],
-      'logan': ['wolverine']
+      wolverine: ['xmen', 'logan'],
+      logan: ['wolverine']
     }
   })
 reset_settings_1: |-
@@ -96,9 +96,9 @@ get_synonyms_1: |-
   index.synonyms
 update_synonyms_1: |-
   index.update_synonyms({
-    'wolverine': ['xmen', 'logan'],
-    'logan': ['wolverine', 'xmen'],
-    'wow': ['world of warcraft']
+    wolverine: ['xmen', 'logan'],
+    logan: ['wolverine', 'xmen'],
+    wow: ['world of warcraft']
   })
 reset_synonyms_1: |-
   index.reset_synonyms
