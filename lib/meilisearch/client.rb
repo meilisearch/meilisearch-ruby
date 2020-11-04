@@ -63,10 +63,6 @@ module MeiliSearch
       http_get '/health'
     end
 
-    def update_health(bool)
-      http_put '/health', health: bool
-    end
-
     ### STATS
 
     def version

@@ -11,10 +11,4 @@ RSpec.describe 'MeiliSearch::Client - Health' do
   it 'is unhealthy when the url is invalid' do
     expect(wrong_client.healthy?).to be false
   end
-
-  it 'sets unhealthy' do
-    client.update_health(false)
-    expect(client.healthy?).to be false
-    client.update_health(true)
-  end
 end
