@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe 'MeiliSearch::Index - Search' do
   before(:all) do
     @documents = [
@@ -40,12 +42,11 @@ RSpec.describe 'MeiliSearch::Index - Search' do
     expect(response['hits'].first).not_to have_key('_formatted')
   end
 
-  it 'does a custom placeholder search with limit' do 
+  it 'does a custom placeholder search with limit' do
     response = @index.search('', limit: 2)
     expect(response['hits'].count).to be(2)
-    expect(response['hits'].first["objectId"]).to eq(123)
-    expect(response['hits'].last["objectId"]).to eq(456)
+    expect(response['hits'].first['objectId']).to eq(123)
+    expect(response['hits'].last['objectId']).to eq(456)
     expect(response['hits'].first).not_to have_key('_formatted')
   end
-
 end

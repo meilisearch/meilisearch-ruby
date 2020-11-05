@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe 'MeiliSearch::Index - Search' do
   before(:all) do
     @documents = [
@@ -55,19 +57,19 @@ RSpec.describe 'MeiliSearch::Index - Search' do
     expect(response['hits'].first).not_to have_key('_formatted')
   end
 
-  it 'does a basic search with an empty query and a custom ranking rule' do 
+  it 'does a basic search with an empty query and a custom ranking rule' do
     @index.update_ranking_rules([
-      'typo',
-      'words',
-      'proximity',
-      'attribute',
-      'wordsPosition',
-      'exactness',
-      'asc(objectId)',
-    ])
+                                  'typo',
+                                  'words',
+                                  'proximity',
+                                  'attribute',
+                                  'wordsPosition',
+                                  'exactness',
+                                  'asc(objectId)'
+                                ])
     sleep(0.1)
     response = @index.search('')
     expect(response['nbHits']).to eq(7)
-    expect(response['hits'].first["objectId"]).to eq(1)
+    expect(response['hits'].first['objectId']).to eq(1)
   end
 end

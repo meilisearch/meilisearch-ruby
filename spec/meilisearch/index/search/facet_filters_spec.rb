@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe 'MeiliSearch::Index - Search' do
   before(:all) do
     @documents = [
@@ -67,5 +69,4 @@ RSpec.describe 'MeiliSearch::Index - Search' do
     expect(response['nbHits']).to eq(1)
     expect(response['hits'][0]['objectId']).to eq(4)
   end
-
 end
