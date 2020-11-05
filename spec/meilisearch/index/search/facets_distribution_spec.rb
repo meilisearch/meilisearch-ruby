@@ -62,7 +62,7 @@ RSpec.describe 'MeiliSearch::Index - Search' do
       'exhaustiveFacetsCount'
     )
     expect(response['exhaustiveFacetsCount']).to be true
-    expect(response['nbHits']).to eq(7)
+    expect(response['nbHits']).to eq(@documents.count)
     expect(response['facetsDistribution'].keys).to contain_exactly('genre')
     expect(response['facetsDistribution']['genre'].keys).to contain_exactly('romance', 'adventure', 'fantasy')
     expect(response['facetsDistribution']['genre']['romance']).to eq(2)

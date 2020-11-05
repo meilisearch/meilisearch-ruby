@@ -46,7 +46,7 @@ RSpec.describe 'MeiliSearch::Index - Search' do
     response = @index.search('')
     expect(response).to be_a(Hash)
     expect(response.keys).to contain_exactly(*default_search_response_keys)
-    expect(response['hits'].count).to eq(7)
+    expect(response['hits'].count).to eq(@documents.count)
   end
 
   it 'does a basic search with a nil query' do
@@ -69,7 +69,7 @@ RSpec.describe 'MeiliSearch::Index - Search' do
                                 ])
     sleep(0.1)
     response = @index.search('')
-    expect(response['nbHits']).to eq(7)
+    expect(response['nbHits']).to eq(@documents.count)
     expect(response['hits'].first['objectId']).to eq(1)
   end
 end
