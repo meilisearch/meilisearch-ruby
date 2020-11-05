@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe 'MeiliSearch::Index - Search' do
   before(:all) do
     @documents = [
@@ -46,18 +48,17 @@ RSpec.describe 'MeiliSearch::Index - Search' do
 
   it 'does a custom placeholder search with an offset set to 3 and custom ranking rules' do
     @index.update_ranking_rules([
-      'typo',
-      'words',
-      'proximity',
-      'attribute',
-      'wordsPosition',
-      'exactness',
-      'asc(objectId)',
-    ])
+                                  'typo',
+                                  'words',
+                                  'proximity',
+                                  'attribute',
+                                  'wordsPosition',
+                                  'exactness',
+                                  'asc(objectId)'
+                                ])
     sleep(0.1)
     response = @index.search('')
     response_with_offset = @index.search('', offset: 3)
     expect(response['hits'][3]).to eq(response_with_offset['hits'][0])
   end
-  
 end

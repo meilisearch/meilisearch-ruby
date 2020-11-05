@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe 'MeiliSearch::Index - Search' do
   before(:all) do
     @documents = [
@@ -33,14 +35,13 @@ RSpec.describe 'MeiliSearch::Index - Search' do
   end
 
   it 'does a custom search with filters' do
-    response = @index.search('le', { filters: 'genre = romance'})
+    response = @index.search('le', { filters: 'genre = romance' })
     expect(response['hits'].count).to eq(1)
-    expect(response['hits'].first["objectId"]).to eq(2)
+    expect(response['hits'].first['objectId']).to eq(2)
   end
 
   it 'does a custom placeholder search with filters' do
-    response = @index.search('', { filters: 'genre = adventure'})
+    response = @index.search('', { filters: 'genre = adventure' })
     expect(response['hits'].count).to eq(3)
   end
-
 end
