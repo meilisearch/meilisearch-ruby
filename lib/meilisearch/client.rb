@@ -73,6 +73,16 @@ module MeiliSearch
       http_get '/stats'
     end
 
+    ### DUMPS
+
+    def create_dump
+      http_post '/dumps'
+    end
+
+    def get_dump_status(dump_uid)
+      http_get "/dumps/#{dump_uid}/status"
+    end
+
     private
 
     def index_object(uid)
