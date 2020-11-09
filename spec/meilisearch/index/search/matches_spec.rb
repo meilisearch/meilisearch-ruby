@@ -39,6 +39,7 @@ RSpec.describe 'MeiliSearch::Index - Search' do
     expect(response).to be_a(Hash)
     expect(response.keys).to contain_exactly(*default_search_response_keys)
     expect(response['hits'].first).to have_key('_matchesInfo')
+    expect(response['hits'].first['_matchesInfo']).to have_key('title')
   end
 
   it 'does a custom placeholder search with matches' do
