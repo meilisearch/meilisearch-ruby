@@ -12,12 +12,14 @@ RSpec.describe 'MeiliSearch::Client - Dumps' do
     expect(response['uid']).to_not be_nil
     expect(response['status']).to_not be_nil
     expect(response['status']).to eq('in_progress')
+    wait_for_dump_creation(@client, response['uid'])
   end
 
   it 'gets dump status' do
     dump = @client.create_dump
     response = @client.dump_status(dump['uid'])
     expect(response['status']).to_not be_nil
+    wait_for_dump_creation(@client, dump['uid'])
   end
 
   it 'fails to get dump status without uid' do
