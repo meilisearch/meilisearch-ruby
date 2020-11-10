@@ -114,4 +114,5 @@ RSpec.configure do |config|
   # Helpers
   config.include IndexesHelpers
   config.include ExceptionsHelpers
+  config.include DumpsHelpers
 end
