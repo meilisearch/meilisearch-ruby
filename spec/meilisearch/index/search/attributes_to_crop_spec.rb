@@ -39,6 +39,7 @@ RSpec.describe 'MeiliSearch::Index - Cropped search' do
     expect(response['hits'].first).to have_key('_formatted')
     expect(response['hits'].first['_formatted']['title']).to eq('s Guide')
   end
+
   it 'does a custom placehodler search with attributes to crop' do
     response = @index.search('', { attributesToCrop: ['title'], cropLength: 1 })
     expect(response['hits'].first).to have_key('_formatted')
