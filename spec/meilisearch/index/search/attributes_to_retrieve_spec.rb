@@ -34,7 +34,7 @@ RSpec.describe 'MeiliSearch::Index - Search with attributes to retrieve' do
     ]
   end
 
-  it 'does a custom search with attributesToRetrieve as string' do
+  it 'does a custom search with one attributesToRetrieve' do
     response = @index.search('the', attributesToRetrieve: ['title'])
     expect(response).to be_a(Hash)
     expect(response.keys).to contain_exactly(*default_search_response_keys)
