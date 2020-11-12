@@ -50,7 +50,7 @@ RSpec.describe 'MeiliSearch::Index - Search with highlight' do
     expect(response['hits'].first).to have_key('_formatted')
   end
 
-  it 'does a custom search with a nil query' do
+  it 'does a custom placeholder search (nil) with attributes to highlight' do
     response = @index.search(nil, attributesToHighlight: ['*'])
     expect(response).to be_a(Hash)
     expect(response.keys).to contain_exactly(*default_search_response_keys)
