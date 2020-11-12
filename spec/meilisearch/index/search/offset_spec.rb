@@ -59,6 +59,9 @@ RSpec.describe 'MeiliSearch::Index - Search with offset' do
     sleep(0.1)
     response = @index.search('')
     response_with_offset = @index.search('', offset: 3)
+    expect(response['hits'].first['objectId']).to eq(1)
     expect(response['hits'][3]).to eq(response_with_offset['hits'][0])
+    expect(response['hits'].last['objectId']).to eq(1344)
+    expect(response_with_offset['hits'].last['objectId']).to eq(1344)
   end
 end
