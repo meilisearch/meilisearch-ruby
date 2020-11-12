@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Search' do
+RSpec.describe 'MeiliSearch::Index - Filtered search' do
   before(:all) do
     @documents = [
       { objectId: 123,  title: 'Pride and Prejudice',                    genre: 'romance' },
