@@ -1,4 +1,4 @@
-name: Test
+name: Check
 
 on:
   pull_request:
@@ -10,10 +10,9 @@ on:
       - master
 
 jobs:
-  test:
-    name: ruby-tests
+  integration_tests:
+    name: integration-tests
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v1
     - name: Set up Ruby 2.6
@@ -24,7 +23,19 @@ jobs:
       run: docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey --no-analytics=true
     - name: Install ruby dependencies
       run: bundle install --with test
-    - name: Run linter
-      run: bundle exec rubocop lib/ spec/
     - name: Run test suite
       run: bundle exec rspec
+
+  linter_check:
+    name: linter-check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Ruby 2.6
+      uses: actions/setup-ruby@v1
+      with:
+        version: 2.6.x
+    - name: Install ruby dependencies
+      run: bundle install --with test
+    - name: Run linter
+      run: bundle exec rubocop lib/ spec/
