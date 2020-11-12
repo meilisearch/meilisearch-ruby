@@ -47,7 +47,7 @@ RSpec.describe 'MeiliSearch::Index - Search' do
     expect(response['hits'].first['_formatted']['title']).to eq('<em>Prince</em>')
   end
 
-  it 'does a custom search with attributesToRetrieve as an array of string and a limit' do
+  it 'does a custom search with attributesToRetrieve and a limit' do
     response = @index.search('the', attributesToRetrieve: ['title', 'genre'], limit: 2)
     expect(response).to be_a(Hash)
     expect(response.keys).to contain_exactly(*default_search_response_keys)
