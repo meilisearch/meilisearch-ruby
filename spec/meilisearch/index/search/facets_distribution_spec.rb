@@ -78,22 +78,10 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
     @index.delete
   end
 
-  let(:default_search_response_keys) do
-    [
-      'hits',
-      'offset',
-      'limit',
-      'nbHits',
-      'exhaustiveNbHits',
-      'processingTimeMs',
-      'query'
-    ]
-  end
-
   it 'does a custom search with facetsDistribution' do
     response = @index.search('prinec', facetsDistribution: ['genre', 'author'])
     expect(response.keys).to contain_exactly(
-      *default_search_response_keys,
+      *$DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetsDistribution',
       'exhaustiveFacetsCount'
     )
@@ -111,7 +99,7 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
   it 'does a custom placeholder search with facetsDistribution' do
     response = @index.search('', facetsDistribution: ['genre', 'author'])
     expect(response.keys).to contain_exactly(
-      *default_search_response_keys,
+      *$DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetsDistribution',
       'exhaustiveFacetsCount'
     )

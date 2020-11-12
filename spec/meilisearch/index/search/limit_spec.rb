@@ -22,22 +22,10 @@ RSpec.describe 'MeiliSearch::Index - Search with limit' do
     @index.delete
   end
 
-  let(:default_search_response_keys) do
-    [
-      'hits',
-      'offset',
-      'limit',
-      'nbHits',
-      'exhaustiveNbHits',
-      'processingTimeMs',
-      'query'
-    ]
-  end
-
   it 'does a custom search with limit' do
     response = @index.search('the', limit: 1)
     expect(response).to be_a(Hash)
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['hits'].count).to eq(1)
     expect(response['hits'].first).not_to have_key('_formatted')
   end

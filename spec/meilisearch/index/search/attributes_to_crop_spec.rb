@@ -55,18 +55,6 @@ RSpec.describe 'MeiliSearch::Index - Cropped search' do
     @index.delete
   end
 
-  let(:default_search_response_keys) do
-    [
-      'hits',
-      'offset',
-      'limit',
-      'nbHits',
-      'exhaustiveNbHits',
-      'processingTimeMs',
-      'query'
-    ]
-  end
-
   it 'does a custom search with attributes to crop' do
     response = @index.search('galaxy', { attributesToCrop: ['description'], cropLength: 15 })
     expect(response['hits'].first).to have_key('_formatted')

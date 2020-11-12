@@ -24,3 +24,4 @@ Style/GlobalVars:
   AllowedVariables:
     - $URL
     - $MASTER_KEY
+    - $DEFAULT_SEARCH_RESPONSE_KEYS

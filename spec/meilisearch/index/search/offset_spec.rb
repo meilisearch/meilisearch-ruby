@@ -22,18 +22,6 @@ RSpec.describe 'MeiliSearch::Index - Search with offset' do
     @index.delete
   end
 
-  let(:default_search_response_keys) do
-    [
-      'hits',
-      'offset',
-      'limit',
-      'nbHits',
-      'exhaustiveNbHits',
-      'processingTimeMs',
-      'query'
-    ]
-  end
-
   it 'does a custom search with an offset set to 1' do
     response = @index.search('prince')
     response_with_offset = @index.search('prince', offset: 1)
