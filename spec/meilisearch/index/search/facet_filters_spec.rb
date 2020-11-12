@@ -15,6 +15,7 @@ RSpec.describe 'MeiliSearch::Index - Search with facetFilters' do
     clear_all_indexes(client)
     @index = client.create_index('books')
     @index.add_documents(@documents)
+    @index.update_attributes_for_faceting(['genre'])
     sleep(0.1)
   end
 
@@ -35,8 +36,6 @@ RSpec.describe 'MeiliSearch::Index - Search with facetFilters' do
   end
 
   it 'does a custom search with facetFilters' do
-    @index.update_attributes_for_faceting(['genre'])
-    sleep(0.1)
     response = @index.search('prinec', facetFilters: ['genre: fantasy'])
     expect(response.keys).to contain_exactly(*default_search_response_keys)
     expect(response['nbHits']).to eq(1)
@@ -44,8 +43,6 @@ RSpec.describe 'MeiliSearch::Index - Search with facetFilters' do
   end
 
   it 'does a custom search with multiple facetFilters' do
-    @index.update_attributes_for_faceting(['genre'])
-    sleep(0.1)
     response = @index.search('prinec', facetFilters: ['genre:fantasy', ['genre:fantasy', 'genre:fantasy']])
     expect(response.keys).to contain_exactly(*default_search_response_keys)
     expect(response['nbHits']).to eq(1)
@@ -53,8 +50,6 @@ RSpec.describe 'MeiliSearch::Index - Search with facetFilters' do
   end
 
   it 'does a custom placeholder search with facetFilters' do
-    @index.update_attributes_for_faceting(['genre'])
-    sleep(0.1)
     response = @index.search('', facetFilters: ['genre:fantasy'])
     expect(response.keys).to contain_exactly(*default_search_response_keys)
     expect(response['nbHits']).to eq(1)
@@ -62,8 +57,6 @@ RSpec.describe 'MeiliSearch::Index - Search with facetFilters' do
   end
 
   it 'does a custom placeholder search with multiple facetFilters' do
-    @index.update_attributes_for_faceting(['genre'])
-    sleep(0.1)
     response = @index.search('', facetFilters: ['genre:fantasy', ['genre:fantasy', 'genre:fantasy']])
     expect(response.keys).to contain_exactly(*default_search_response_keys)
     expect(response['nbHits']).to eq(1)
