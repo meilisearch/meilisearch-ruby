@@ -110,6 +110,16 @@ RSpec.configure do |config|
   # Globals for all tests
   $URL = 'http://localhost:7700'
   $MASTER_KEY = 'masterKey'
+  $DEFAULT_SEARCH_RESPONSE_KEYS =
+    [
+      'hits',
+      'offset',
+      'limit',
+      'nbHits',
+      'exhaustiveNbHits',
+      'processingTimeMs',
+      'query'
+    ]
 
   # Helpers
   config.include IndexesHelpers

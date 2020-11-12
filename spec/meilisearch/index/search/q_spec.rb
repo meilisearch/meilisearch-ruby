@@ -22,22 +22,10 @@ RSpec.describe 'MeiliSearch::Index - Basic search' do
     @index.delete
   end
 
-  let(:default_search_response_keys) do
-    [
-      'hits',
-      'offset',
-      'limit',
-      'nbHits',
-      'exhaustiveNbHits',
-      'processingTimeMs',
-      'query'
-    ]
-  end
-
   it 'does a basic search in index' do
     response = @index.search('prince')
     expect(response).to be_a(Hash)
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['hits']).not_to be_empty
     expect(response['hits'].first).not_to have_key('_formatted')
   end
@@ -45,14 +33,14 @@ RSpec.describe 'MeiliSearch::Index - Basic search' do
   it 'does a basic search with an empty query' do
     response = @index.search('')
     expect(response).to be_a(Hash)
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['hits'].count).to eq(@documents.count)
   end
 
   it 'does a basic search with a nil query' do
     response = @index.search(nil)
     expect(response).to be_a(Hash)
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['hits'].count).to eq(@documents.count)
     expect(response['hits'].first).not_to have_key('_formatted')
   end

@@ -22,18 +22,6 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
     @index.delete
   end
 
-  let(:default_search_response_keys) do
-    [
-      'hits',
-      'offset',
-      'limit',
-      'nbHits',
-      'exhaustiveNbHits',
-      'processingTimeMs',
-      'query'
-    ]
-  end
-
   it 'does a custom search with attributes to crop, filters and attributes to highlight' do
     response = @index.search('prince',
                              {
@@ -50,7 +38,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
   it 'does a custom search with attributesToRetrieve and a limit' do
     response = @index.search('the', attributesToRetrieve: ['title', 'genre'], limit: 2)
     expect(response).to be_a(Hash)
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['hits'].count).to eq(2)
     expect(response['hits'].first).to have_key('title')
     expect(response['hits'].first).not_to have_key('objectId')
@@ -65,7 +53,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
   it 'does a custom search with limit and attributes to highlight' do
     response = @index.search('the', { limit: 1, attributesToHighlight: ['*'] })
     expect(response).to be_a(Hash)
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['hits'].count).to eq(1)
     expect(response['hits'].first).to have_key('_formatted')
   end
@@ -79,7 +67,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
                                attributesToRetrieve: ['title'],
                                attributesToHighlight: ['*']
                              })
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['nbHits']).to eq(1)
     expect(response['hits'].first).to have_key('_formatted')
     expect(response['hits'].first).not_to have_key('objectId')
@@ -93,7 +81,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
     sleep(0.1)
     response = @index.search('prinec', facetsDistribution: ['genre'], limit: 1)
     expect(response.keys).to contain_exactly(
-      *default_search_response_keys,
+      *$DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetsDistribution',
       'exhaustiveFacetsCount'
     )

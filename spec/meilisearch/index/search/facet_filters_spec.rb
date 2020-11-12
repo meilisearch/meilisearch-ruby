@@ -24,35 +24,23 @@ RSpec.describe 'MeiliSearch::Index - Search with facetFilters' do
     @index.delete
   end
 
-  let(:default_search_response_keys) do
-    [
-      'hits',
-      'offset',
-      'limit',
-      'nbHits',
-      'exhaustiveNbHits',
-      'processingTimeMs',
-      'query'
-    ]
-  end
-
   it 'does a custom search with facetFilters' do
     response = @index.search('prinec', facetFilters: ['genre: fantasy'])
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['nbHits']).to eq(1)
     expect(response['hits'][0]['objectId']).to eq(4)
   end
 
   it 'does a custom search with multiple facetFilters' do
     response = @index.search('potter', facetFilters: ['genre:fantasy', ['year:2005']])
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['nbHits']).to eq(1)
     expect(response['hits'][0]['objectId']).to eq(4)
   end
 
   it 'does a custom placeholder search with facetFilters' do
     response = @index.search('', facetFilters: ['genre:fantasy'])
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['nbHits']).to eq(2)
     expect(response['hits'][0]['objectId']).to eq(4)
     expect(response['hits'][1]['objectId']).to eq(2056)
@@ -60,7 +48,7 @@ RSpec.describe 'MeiliSearch::Index - Search with facetFilters' do
 
   it 'does a custom placeholder search with multiple facetFilters' do
     response = @index.search('', facetFilters: ['genre:adventure', ['year:1937']])
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['nbHits']).to eq(1)
     expect(response['hits'][0]['objectId']).to eq(1344)
   end

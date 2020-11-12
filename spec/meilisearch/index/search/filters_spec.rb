@@ -77,18 +77,6 @@ RSpec.describe 'MeiliSearch::Index - Filtered search' do
     @index.delete
   end
 
-  let(:default_search_response_keys) do
-    [
-      'hits',
-      'offset',
-      'limit',
-      'nbHits',
-      'exhaustiveNbHits',
-      'processingTimeMs',
-      'query'
-    ]
-  end
-
   it 'does a custom search with one filter' do
     response = @index.search('le', { filters: 'genre = romance' })
     expect(response['hits'].count).to eq(1)

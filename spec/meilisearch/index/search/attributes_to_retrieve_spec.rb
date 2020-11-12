@@ -22,22 +22,10 @@ RSpec.describe 'MeiliSearch::Index - Search with attributes to retrieve' do
     @index.delete
   end
 
-  let(:default_search_response_keys) do
-    [
-      'hits',
-      'offset',
-      'limit',
-      'nbHits',
-      'exhaustiveNbHits',
-      'processingTimeMs',
-      'query'
-    ]
-  end
-
   it 'does a custom search with one attributesToRetrieve' do
     response = @index.search('the', attributesToRetrieve: ['title'])
     expect(response).to be_a(Hash)
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['hits'].count).to eq(3)
     expect(response['hits'].first).to have_key('title')
     expect(response['hits'].first).not_to have_key('objectId')
@@ -47,7 +35,7 @@ RSpec.describe 'MeiliSearch::Index - Search with attributes to retrieve' do
   it 'does a custom search with multiple attributesToRetrieve' do
     response = @index.search('the', attributesToRetrieve: ['title', 'genre'])
     expect(response).to be_a(Hash)
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['hits'].count).to eq(3)
     expect(response['hits'].first).to have_key('title')
     expect(response['hits'].first).not_to have_key('objectId')
@@ -57,7 +45,7 @@ RSpec.describe 'MeiliSearch::Index - Search with attributes to retrieve' do
   it 'does a custom search with all attributesToRetrieve' do
     response = @index.search('the', attributesToRetrieve: ['*'])
     expect(response).to be_a(Hash)
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['hits'].count).to eq(3)
     expect(response['hits'].first).to have_key('objectId')
     expect(response['hits'].first).to have_key('title')
@@ -67,7 +55,7 @@ RSpec.describe 'MeiliSearch::Index - Search with attributes to retrieve' do
   it 'does a custom placeholder search with one attributesToRetrieve' do
     response = @index.search('', attributesToRetrieve: ['title'])
     expect(response).to be_a(Hash)
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['hits'].count).to eq(@documents.count)
     expect(response['hits'].first).to have_key('title')
     expect(response['hits'].first).not_to have_key('objectId')
@@ -77,7 +65,7 @@ RSpec.describe 'MeiliSearch::Index - Search with attributes to retrieve' do
   it 'does a custom placeholder search with multiple attributesToRetrieve' do
     response = @index.search('', attributesToRetrieve: ['title', 'genre'])
     expect(response).to be_a(Hash)
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['hits'].count).to eq(@documents.count)
     expect(response['hits'].first).to have_key('title')
     expect(response['hits'].first).not_to have_key('objectId')
@@ -87,7 +75,7 @@ RSpec.describe 'MeiliSearch::Index - Search with attributes to retrieve' do
   it 'does a custom placeholder search with all attributesToRetrieve' do
     response = @index.search('', attributesToRetrieve: ['*'])
     expect(response).to be_a(Hash)
-    expect(response.keys).to contain_exactly(*default_search_response_keys)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['hits'].count).to eq(@documents.count)
     expect(response['hits'].first).to have_key('title')
     expect(response['hits'].first).to have_key('objectId')
