@@ -95,20 +95,32 @@ RSpec.describe 'MeiliSearch::Index - Filtered search' do
     expect(response['hits'].first['objectId']).to eq(2)
   end
 
-  it 'does a custom search with numeric filters and conditions' do
-    response = @index.search('prince', { filters: 'year > 1900' })
-    expect(response['hits'].count).to eq(2)
+  it 'does a custom search with a numerical value filter' do
+    response = @index.search('potter', { filters: 'year = 2007' })
+    expect(response['hits'].count).to eq(1)
+    expect(response['hits'].first['objectId']).to eq(2056)
+  end
+
+  it 'does a custom search with multiple filters' do
+    response = @index.search('prince', { filters: 'year > 1930 AND author = "Antoine de Saint-Exupéry"' })
+    expect(response['hits'].count).to eq(1)
     expect(response['hits'].first['objectId']).to eq(456)
   end
 
-  it 'does a custom placeholder search with filters and conditions' do
-    response = @index.search('', { filters: 'author = "J. K. Rowling" AND year > 2006' })
-    expect(response['hits'].count).to eq(1)
+  it 'does a custom placeholder search with multiple filters' do
+    response = @index.search('', { filters: 'author = "J. K. Rowling" OR author = "George R. R. Martin"' })
+    expect(response['hits'].count).to eq(3)
   end
 
-  it 'does a custom placeholder search with numeric filters and conditions' do
+  it 'does a custom placeholder search with numerical values filters' do
     response = @index.search('', { filters: 'year < 2000 AND year > 1990' })
     expect(response['hits'].count).to eq(1)
     expect(response['hits'].first['year']).to eq(1996)
+  end
+
+  it 'does a custom placeholder search with multiple filters and different type of values' do
+    response = @index.search('', { filters: 'author = "J. K. Rowling" AND year > 2006' })
+    expect(response['hits'].count).to eq(1)
+    expect(response['hits'].first['objectId']).to eq(2056)
   end
 end
