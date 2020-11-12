@@ -64,7 +64,7 @@ RSpec.describe 'MeiliSearch::Index - Search with attributes to retrieve' do
     expect(response['hits'].first).not_to have_key('genre')
   end
 
-  it 'does a custom placeholder search with attributesToRetrieve as an array of string' do
+  it 'does a custom placeholder search with multiple attributesToRetrieve' do
     response = @index.search('', attributesToRetrieve: ['title', 'genre'])
     expect(response).to be_a(Hash)
     expect(response.keys).to contain_exactly(*default_search_response_keys)
