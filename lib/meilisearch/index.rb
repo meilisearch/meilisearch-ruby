@@ -140,6 +140,7 @@ module MeiliSearch
     def update_settings(settings)
       http_post "/indexes/#{@uid}/settings", settings
     end
+    alias settings= update_settings
 
     def reset_settings
       http_delete "/indexes/#{@uid}/settings"
@@ -155,6 +156,7 @@ module MeiliSearch
     def update_ranking_rules(ranking_rules)
       http_post "/indexes/#{@uid}/settings/ranking-rules", ranking_rules
     end
+    alias ranking_rules= update_ranking_rules
 
     def reset_ranking_rules
       http_delete "/indexes/#{@uid}/settings/ranking-rules"
@@ -170,6 +172,7 @@ module MeiliSearch
     def update_synonyms(synonyms)
       http_post "/indexes/#{@uid}/settings/synonyms", synonyms
     end
+    alias synonyms= update_synonyms
 
     def reset_synonyms
       http_delete "/indexes/#{@uid}/settings/synonyms"
@@ -186,6 +189,7 @@ module MeiliSearch
       body = stop_words.is_a?(Array) ? stop_words : [stop_words]
       http_post "/indexes/#{@uid}/settings/stop-words", body
     end
+    alias stop_words= update_stop_words
 
     def reset_stop_words
       http_delete "/indexes/#{@uid}/settings/stop-words"
@@ -201,6 +205,7 @@ module MeiliSearch
     def update_distinct_attribute(distinct_attribute)
       http_post "/indexes/#{@uid}/settings/distinct-attribute", distinct_attribute
     end
+    alias distinct_attribute= update_distinct_attribute
 
     def reset_distinct_attribute
       http_delete "/indexes/#{@uid}/settings/distinct-attribute"
@@ -216,6 +221,7 @@ module MeiliSearch
     def update_searchable_attributes(searchable_attributes)
       http_post "/indexes/#{@uid}/settings/searchable-attributes", searchable_attributes
     end
+    alias searchable_attributes= update_searchable_attributes
 
     def reset_searchable_attributes
       http_delete "/indexes/#{@uid}/settings/searchable-attributes"
@@ -231,6 +237,7 @@ module MeiliSearch
     def update_displayed_attributes(displayed_attributes)
       http_post "/indexes/#{@uid}/settings/displayed-attributes", displayed_attributes
     end
+    alias displayed_attributes= update_displayed_attributes
 
     def reset_displayed_attributes
       http_delete "/indexes/#{@uid}/settings/displayed-attributes"
@@ -246,6 +253,7 @@ module MeiliSearch
     def update_attributes_for_faceting(attributes_for_faceting)
       http_post "/indexes/#{@uid}/settings/attributes-for-faceting", attributes_for_faceting
     end
+    alias attributes_for_faceting= update_attributes_for_faceting
 
     def reset_attributes_for_faceting
       http_delete "/indexes/#{@uid}/settings/attributes-for-faceting"
