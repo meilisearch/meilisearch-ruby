@@ -24,6 +24,7 @@ module MeiliSearch
         index_instance = fetch_index(index_uid)
       rescue ApiError => e
         raise e unless e.code == 'index_not_found'
+
         index_instance = create_index(index_uid, options)
       end
       index_instance
