@@ -6,19 +6,24 @@ require 'timeout'
 module MeiliSearch
   class Index < HTTPRequest
     attr_reader :uid
+    attr_reader :primary_key
 
-    def initialize(index_uid, url, api_key = nil)
+    def initialize(index_uid, url, api_key = nil, primary_key = nil)
       @uid = index_uid
+      @primary_key = primary_key
       super(url, api_key)
     end
 
-    def show
-      http_get "/indexes/#{@uid}"
+    def fetch_info
+      index_hash = http_get "/indexes/#{@uid}"
+      @primary_key = index_hash['primaryKey']
+      self
     end
-    alias show_index show
 
     def update(body)
-      http_put "/indexes/#{@uid}", body
+      index_hash = http_put "/indexes/#{@uid}", body
+      @primary_key = index_hash['primaryKey']
+      self
     end
     alias update_index update
 
@@ -27,10 +32,10 @@ module MeiliSearch
     end
     alias delete_index delete
 
-    def primary_key
-      show['primaryKey']
+    def fetch_primary_key
+      fetch_info.primary_key
     end
-    alias get_primary_key primary_key
+    alias get_primary_key fetch_primary_key
 
     ### DOCUMENTS
 

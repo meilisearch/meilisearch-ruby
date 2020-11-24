@@ -41,7 +41,16 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     end
 
     it 'infers primary-key attribute' do
-      expect(index.show['primaryKey']).to eq('objectId')
+      expect(index.fetch_primary_key).to eq('objectId')
+    end
+
+    it 'create the index during document addition' do
+      response = @client.index('newIndex').add_documents(documents)
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      sleep(0.2)
+      expect(@client.index('newIndex').fetch_primary_key).to eq('objectId')
+      expect(@client.index('newIndex').documents.count).to eq(documents.count)
     end
 
     it 'gets one document from its primary-key' do
@@ -247,7 +256,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       sleep(0.2)
-      expect(index.show['primaryKey']).to eq('unique')
+      expect(index.fetch_primary_key).to eq('unique')
     end
 
     it 'does not take into account the new primary key' do
@@ -259,7 +268,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       sleep(0.2)
-      expect(index.show['primaryKey']).to eq('unique')
+      expect(index.fetch_primary_key).to eq('unique')
       doc = index.document(3)
       expect(doc['unique']).to eq(3)
       expect(doc['id']).to eq(1)
@@ -285,7 +294,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       sleep(0.2)
-      expect(index.show['primaryKey']).to eq('objectId')
+      expect(index.fetch_primary_key).to eq('objectId')
       expect(index.get_update_status(response['updateId'])['status']).to eq('failed')
     end
 
@@ -294,7 +303,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       sleep(0.2)
-      expect(index.show['primaryKey']).to eq('objectId')
+      expect(index.fetch_primary_key).to eq('objectId')
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
       expect(index.documents.count).to eq(1)
     end
@@ -304,7 +313,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       sleep(0.2)
-      expect(index.show['primaryKey']).to eq('objectId')
+      expect(index.fetch_primary_key).to eq('objectId')
       expect(index.get_update_status(response['updateId'])['status']).to eq('failed')
     end
   end
@@ -327,7 +336,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       sleep(0.2)
-      expect(index.show['primaryKey']).to eq('title')
+      expect(index.fetch_primary_key).to eq('title')
       expect(index.get_update_status(response['updateId'])['status']).to eq('failed')
       expect(index.documents.count).to eq(0)
     end
@@ -371,7 +380,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       sleep(0.2)
-      expect(index.show['primaryKey']).to eq('unique')
+      expect(index.fetch_primary_key).to eq('unique')
       expect(index.documents.count).to eq(1)
     end
   end
