@@ -5,8 +5,7 @@ require 'timeout'
 
 module MeiliSearch
   class Index < HTTPRequest
-    attr_reader :uid
-    attr_reader :primary_key
+    attr_reader :uid, :primary_key
 
     def initialize(index_uid, url, api_key = nil, primary_key = nil)
       @uid = index_uid
