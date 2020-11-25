@@ -10,26 +10,24 @@ module MeiliSearch
       http_get '/indexes'
     end
 
-    def show_index(index_uid)
-      index_object(index_uid).show
-    end
-
     # Usage:
     # client.create_index('indexUID')
     # client.create_index('indexUID', primaryKey: 'id')
     def create_index(index_uid, options = {})
       body = options.merge(uid: index_uid)
-      res = http_post '/indexes', body
-      index_object(res['uid'])
+      index_hash = http_post '/indexes', body
+      index_object(index_hash['uid'], index_hash['primaryKey'])
     end
 
     def get_or_create_index(index_uid, options = {})
       begin
-        create_index(index_uid, options)
+        index_instance = fetch_index(index_uid)
       rescue ApiError => e
-        raise e unless e.code == 'index_already_exists'
+        raise e unless e.code == 'index_not_found'
+
+        index_instance = create_index(index_uid, options)
       end
-      index_object(index_uid)
+      index_instance
     end
 
     def delete_index(index_uid)
@@ -41,7 +39,10 @@ module MeiliSearch
     def index(index_uid)
       index_object(index_uid)
     end
-    alias get_index index
+
+    def fetch_index(index_uid)
+      index_object(index_uid).fetch_info
+    end
 
     ### KEYS
 
@@ -86,8 +87,8 @@ module MeiliSearch
 
     private
 
-    def index_object(uid)
-      Index.new(uid, @base_url, @api_key)
+    def index_object(uid, primary_key = nil)
+      Index.new(uid, @base_url, @api_key, primary_key)
     end
   end
 end
