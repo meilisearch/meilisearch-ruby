@@ -21,7 +21,7 @@ jobs:
     - name: Set up Ruby 2.6
       uses: actions/setup-ruby@v1
       with:
-        version: 2.6.x
+        ruby-version: 2.6.x
     - name: Install ruby dependencies
       run: bundle install --with test
     - name: MeiliSearch (latest) setup with Docker
@@ -37,7 +37,7 @@ jobs:
     - name: Set up Ruby 2.6
       uses: actions/setup-ruby@v1
       with:
-        version: 2.6.x
+        ruby-version: 2.6.x
     - name: Install ruby dependencies
       run: bundle install --with test
     - name: Run linter
