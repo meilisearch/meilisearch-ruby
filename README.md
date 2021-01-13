@@ -41,6 +41,8 @@ See our [Documentation](https://docs.meilisearch.com/guides/introduction/quick_s
 
 ## 🔧 Installation
 
+This package requires Ruby version 2.6.0 or later.
+
 With `gem` in command line:
 ```bash
 $ gem install meilisearch
