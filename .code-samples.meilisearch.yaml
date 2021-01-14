@@ -65,20 +65,15 @@ update_settings_1: |-
     ],
     distinctAttribute: 'movie_id',
     searchableAttributes: [
-      'uid',
-      'movie_id',
       'title',
       'description',
-      'poster',
-      'release_date',
-      'rank'
+      'genre'
     ],
     displayedAttributes: [
       'title',
       'description',
-      'poster',
-      'release_date',
-      'rank'
+      'genre',
+      'release_date'
     ],
     stopWords: [
       'the',
@@ -135,7 +130,7 @@ update_searchable_attributes_1: |-
   index.update_searchable_attributes([
     'title',
     'description',
-    'uid'
+    'genre'
   ])
 reset_searchable_attributes_1: |-
   index.reset_searchable_attributes
@@ -154,9 +149,8 @@ update_displayed_attributes_1: |-
   index.update_displayed_attributes([
     'title',
     'description',
-    'release_date',
-    'rank',
-    'poster'
+    'genre',
+    'release_date'
   ])
 reset_displayed_attributes_1: |-
   index.reset_displayed_attributes
@@ -172,22 +166,17 @@ distinct_attribute_guide_1: |-
   client.index('jackets').update_distinct_attribute('product_id')
 field_properties_guide_searchable_1: |-
   index.update_searchable_attributes([
-    'uid',
-    'movie_id',
     'title',
     'description',
-    'poster',
-    'release_date',
-    'rank'
+    'genre'
   ])
 field_properties_guide_displayed_1: |-
   index.update_settings({
     displayedAttributes: [
       'title',
       'description',
-      'poster',
-      'release_date',
-      'rank'
+      'genre',
+      'release_date'
     ]
   })
 filtering_guide_1: |-
@@ -272,13 +261,9 @@ settings_guide_distinct_1: |-
 settings_guide_searchable_1: |-
   index.update_settings({
     searchableAttributes: [
-      'uid',
-      'movie_id',
       'title',
       'description',
-      'poster',
-      'release_date',
-      'rank'
+      'genre'
     ]
   })
 settings_guide_displayed_1: |-
@@ -286,9 +271,8 @@ settings_guide_displayed_1: |-
     displayedAttributes: [
       'title',
       'description',
-      'poster',
-      'release_date',
-      'rank'
+      'genre',
+      'release_date'
     ]
   })
 add_movies_json_1: |-
@@ -311,26 +295,21 @@ search_guide_2: |-
   index.search('Avengers', {
     filters: 'release_date > 795484800'
   })
-getting_started_create_index_md: |-
+getting_started_add_documents_md: |-
   ```bash
   $ bundle add meilisearch
   ```
 
   ```ruby
+  require 'json'
   require 'meilisearch'
 
   client = MeiliSearch::Client.new('http://127.0.0.1:7700')
-  index = client.create_index('movies')
-  ```
-
-  [About this gem](https://www.github.com/meilisearch/meilisearch-ruby)
-getting_started_add_documents_md: |-
-  ```ruby
-  require 'json'
 
   movies_json = File.read('movies.json')
   movies = JSON.parse(movies_json)
-  index.add_documents(movies)
+
+  client.index('movies').add_documents(movies)
   ```
 
   [About this gem](https://www.github.com/meilisearch/meilisearch-ruby)
