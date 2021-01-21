@@ -149,6 +149,16 @@ JSON output:
 }
 ```
 
+## 🤫 Hints & Tips
+
+MeiliSearch Ruby uses a one second timeout by default. You might need to increase this timeout to complete larger indexing requests. For example:
+
+```ruby
+MeiliSearch::Client.new($URL, $MASTER_KEY, timeout: 10)
+# or
+MeiliSearch::HTTPRequest.default_timeout(10)
+```
+
 ## 🤖 Compatibility with MeiliSearch
 
 This package only guarantees the compatibility with the [version v0.18.1 of MeiliSearch](https://github.com/meilisearch/MeiliSearch/releases/tag/v0.18.1).
