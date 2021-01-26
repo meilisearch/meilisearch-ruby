@@ -94,6 +94,8 @@ index.add_documents(documents) # => { "updateId": 0 }
 
 With the `updateId`, you can check the status (`enqueued`, `processed` or `failed`) of your documents addition using the [update endpoint](https://docs.meilisearch.com/references/updates.html#get-an-update-status).
 
+💡 To customize the `Client`, for example, increasing the default timeout, please check out [this section](https://github.com/meilisearch/meilisearch-ruby/wiki/Client-Options) of the wiki.
+
 #### Basic Search <!-- omit in toc -->
 
 ``` ruby
