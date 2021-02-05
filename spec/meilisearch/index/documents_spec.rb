@@ -276,7 +276,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     end
   end
 
-  context 'Wrong primary-key (attribute does not exist) added when pushing documents' do
+  context 'Wrong primary-key (attribute does not exist) when pushing documents' do
     before(:all) do
       @uid = SecureRandom.hex(4)
       @client.create_index(@uid)
@@ -289,36 +289,17 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       { unique: 3, id: 1, title: 'Le Rouge et le Noir' }
     end
 
-    it 'adds the primary-key but not the documents' do
+    it 'does not add the primary key and the documents either' do
       response = index.update_documents(documents, 'objectId')
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       sleep(0.2)
-      expect(index.fetch_primary_key).to eq('objectId')
-      expect(index.get_update_status(response['updateId'])['status']).to eq('failed')
-    end
-
-    it 'succeeds to add document with the primary-key' do
-      response = index.add_documents({ objectId: 1, title: 'Le Rouge et le Noir' }, 'id')
-      expect(response).to be_a(Hash)
-      expect(response).to have_key('updateId')
-      sleep(0.2)
-      expect(index.fetch_primary_key).to eq('objectId')
-      expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
-      expect(index.documents.count).to eq(1)
-    end
-
-    it 'does not take into account the new primary key' do
-      response = index.add_documents({ id: 2, title: 'Le Petit Prince' }, 'id')
-      expect(response).to be_a(Hash)
-      expect(response).to have_key('updateId')
-      sleep(0.2)
-      expect(index.fetch_primary_key).to eq('objectId')
+      expect(index.fetch_primary_key).to be_nil
       expect(index.get_update_status(response['updateId'])['status']).to eq('failed')
     end
   end
 
-  context 'Wrong primary-key (attribute bad formatted) added when pushing documents' do
+  context 'Wrong primary-key (attribute bad formatted) when pushing documents' do
     before(:all) do
       @uid = SecureRandom.hex(4)
       @client.create_index(@uid)
@@ -331,12 +312,12 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       { id: 1, title: 'Le Rouge et le Noir' }
     end
 
-    it 'adds the primary-key but not the documents' do
+    it 'does not add the primary key and the documents either' do
       response = index.add_documents(documents, 'title')
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       sleep(0.2)
-      expect(index.fetch_primary_key).to eq('title')
+      expect(index.fetch_primary_key).to be_nil
       expect(index.get_update_status(response['updateId'])['status']).to eq('failed')
       expect(index.documents.count).to eq(0)
     end
