@@ -14,8 +14,8 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
     client = MeiliSearch::Client.new($URL, $MASTER_KEY)
     clear_all_indexes(client)
     @index = client.create_index('books')
-    @index.add_documents(@documents)
-    sleep(0.1)
+    response = @index.add_documents(@documents)
+    @index.wait_for_pending_update(response['updateId'])
   end
 
   after(:all) do
@@ -59,8 +59,8 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
   end
 
   it 'does a custom search with facetFilters, attributesToRetrieve and attributesToHighlight' do
-    @index.update_attributes_for_faceting(['genre'])
-    sleep(0.1)
+    response = @index.update_attributes_for_faceting(['genre'])
+    @index.wait_for_pending_update(response['updateId'])
     response = @index.search('prinec',
                              {
                                facetFilters: ['genre: fantasy'],
@@ -77,8 +77,8 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
   end
 
   it 'does a custom search with facetsDistribution and limit' do
-    @index.update_attributes_for_faceting(['genre'])
-    sleep(0.1)
+    response = @index.update_attributes_for_faceting(['genre'])
+    @index.wait_for_pending_update(response['updateId'])
     response = @index.search('prinec', facetsDistribution: ['genre'], limit: 1)
     expect(response.keys).to contain_exactly(
       *$DEFAULT_SEARCH_RESPONSE_KEYS,

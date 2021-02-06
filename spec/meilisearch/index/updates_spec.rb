@@ -28,7 +28,7 @@ RSpec.describe 'MeiliSearch::Index - Updates' do
   it 'gets update status after adding documents' do
     response = @index.add_documents(@documents)
     update_id = response['updateId']
-    sleep(0.2)
+    @index.wait_for_pending_update(update_id)
     response = @index.get_update_status(update_id)
     expect(response).to be_a(Hash)
     expect(response['updateId']).to eq(update_id)

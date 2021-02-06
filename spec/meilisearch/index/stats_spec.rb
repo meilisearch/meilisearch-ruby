@@ -13,8 +13,8 @@ RSpec.describe 'MeiliSearch::Index - Stats' do
     client = MeiliSearch::Client.new($URL, $MASTER_KEY)
     clear_all_indexes(client)
     @index = client.create_index('indexUID')
-    @index.add_documents(@documents)
-    sleep(0.1)
+    response = @index.add_documents(@documents)
+    @index.wait_for_pending_update(response['updateId'])
   end
 
   after(:all) do

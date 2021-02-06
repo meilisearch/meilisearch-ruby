@@ -59,7 +59,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
         distinctAttribute: 'title'
       )
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       settings = index.settings
       expect(settings['rankingRules']).to eq(['asc(title)', 'typo'])
       expect(settings['distinctAttribute']).to eq('title')
@@ -69,7 +69,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'updates one setting without reset the others' do
       response = index.update_settings(stopWords: ['the'])
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       settings = index.settings
       expect(settings['rankingRules']).to eq(['asc(title)', 'typo'])
       expect(settings['distinctAttribute']).to eq('title')
@@ -80,7 +80,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'resets all settings' do
       response = index.reset_settings
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       settings = index.settings
       expect(settings['rankingRules']).to eq(default_ranking_rules)
       expect(settings['distinctAttribute']).to be_nil
@@ -109,7 +109,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'updates ranking rules' do
       response = index.update_ranking_rules(ranking_rules)
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.ranking_rules).to eq(ranking_rules)
     end
 
@@ -122,7 +122,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'resets ranking rules' do
       response = index.reset_ranking_rules
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.ranking_rules).to eq(default_ranking_rules)
     end
   end
@@ -146,14 +146,14 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'updates distinct attribute' do
       response = index.update_distinct_attribute(distinct_attribute)
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.distinct_attribute).to eq(distinct_attribute)
     end
 
     it 'resets distinct attribute' do
       response = index.reset_distinct_attribute
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.distinct_attribute).to be_nil
     end
   end
@@ -177,14 +177,14 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'updates searchable attributes' do
       response = index.update_searchable_attributes(searchable_attributes)
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.searchable_attributes).to eq(searchable_attributes)
     end
 
     it 'resets searchable attributes' do
       response = index.reset_searchable_attributes
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
       expect(index.searchable_attributes).to eq(default_searchable_attributes)
     end
@@ -209,14 +209,14 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'updates displayed attributes' do
       response = index.update_displayed_attributes(displayed_attributes)
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.displayed_attributes).to contain_exactly(*displayed_attributes)
     end
 
     it 'resets displayed attributes' do
       response = index.reset_displayed_attributes
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
       expect(index.displayed_attributes).to eq(default_displayed_attributes)
     end
@@ -249,7 +249,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       response = index.update_synonyms(synonyms)
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
     end
 
     it 'gets all the synonyms' do
@@ -265,7 +265,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       response = index.update_synonyms(hp: ['harry potter'], 'harry potter': ['hp'])
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       synonyms = index.synonyms
       expect(synonyms).to be_a(Hash)
       expect(synonyms.count).to eq(2)
@@ -278,7 +278,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       response = index.reset_synonyms
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       synonyms = index.synonyms
       expect(synonyms).to be_a(Hash)
       expect(synonyms).to be_empty
@@ -307,7 +307,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       response = index.update_stop_words(stop_words_array)
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
     end
 
     it 'gets list of stop-words' do
@@ -320,7 +320,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       response = index.update_stop_words(stop_words_string)
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       sw = index.stop_words
       expect(sw).to be_a(Array)
       expect(sw).to contain_exactly(stop_words_string)
@@ -336,7 +336,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       response = index.reset_stop_words
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.stop_words).to be_a(Array)
       expect(index.stop_words).to be_empty
     end
@@ -362,14 +362,14 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'updates attributes for faceting' do
       response = index.update_attributes_for_faceting(attributes_for_faceting)
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.attributes_for_faceting).to contain_exactly(*attributes_for_faceting)
     end
 
     it 'resets attributes for faceting' do
       response = index.reset_attributes_for_faceting
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
       expect(index.attributes_for_faceting).to be_empty
     end
@@ -403,7 +403,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
         distinctAttribute: 'title'
       )
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       settings = index.settings
       expect(settings['rankingRules']).to eq(['asc(title)', 'typo'])
       expect(settings['distinctAttribute']).to eq('title')
@@ -413,7 +413,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'updates one setting without reset the others' do
       response = index.update_settings(stopWords: ['the'])
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       settings = index.settings
       expect(settings['rankingRules']).to eq(['asc(title)', 'typo'])
       expect(settings['distinctAttribute']).to eq('title')
@@ -424,7 +424,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'resets all settings' do
       response = index.reset_settings
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       settings = index.settings
       expect(settings['rankingRules']).to eq(default_ranking_rules)
       expect(settings['distinctAttribute']).to be_nil
@@ -452,18 +452,18 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'adds documents when there is a primary-key' do
       response = index.add_documents(objectId: 1, title: 'Test')
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.documents.count).to eq(1)
     end
 
     it 'resets searchable/displayed attributes' do
       response = index.reset_displayed_attributes
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
       response = index.reset_searchable_attributes
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
       expect(index.searchable_attributes).to eq(['*'])
     end
