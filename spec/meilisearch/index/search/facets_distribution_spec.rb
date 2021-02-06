@@ -69,9 +69,9 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
     client = MeiliSearch::Client.new($URL, $MASTER_KEY)
     clear_all_indexes(client)
     @index = client.create_index('books')
-    @index.add_documents(@documents)
+    response = @index.add_documents(@documents)
     @index.update_attributes_for_faceting(['genre', 'year', 'author'])
-    sleep(0.1)
+    @index.wait_for_pending_update(response['updateId'])
   end
 
   after(:all) do
