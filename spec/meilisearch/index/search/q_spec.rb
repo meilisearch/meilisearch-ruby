@@ -47,14 +47,14 @@ RSpec.describe 'MeiliSearch::Index - Basic search' do
 
   it 'does a basic search with an empty query and a custom ranking rule' do
     response = @index.update_ranking_rules([
-                                  'typo',
-                                  'words',
-                                  'proximity',
-                                  'attribute',
-                                  'wordsPosition',
-                                  'exactness',
-                                  'asc(objectId)'
-                                ])
+                                             'typo',
+                                             'words',
+                                             'proximity',
+                                             'attribute',
+                                             'wordsPosition',
+                                             'exactness',
+                                             'asc(objectId)'
+                                           ])
     @index.wait_for_pending_update(response['updateId'])
     response = @index.search('')
     expect(response['nbHits']).to eq(@documents.count)
