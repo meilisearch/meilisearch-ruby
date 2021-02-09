@@ -122,7 +122,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(response).to have_key('updateId')
       expect(index.documents.count).to eq(documents.count + 1)
       expect(index.document(id)['title']).to eq(title)
-      index.delete_document(id)
+      response = index.delete_document(id)
       index.wait_for_pending_update(response['updateId'])
     end
 
