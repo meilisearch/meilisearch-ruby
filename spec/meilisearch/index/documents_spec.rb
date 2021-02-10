@@ -31,7 +31,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       response = index.add_documents(documents)
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      sleep(0.2)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.documents.count).to eq(documents.count)
     end
 
@@ -45,10 +45,11 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     end
 
     it 'create the index during document addition' do
-      response = @client.index('newIndex').add_documents(documents)
+      new_index = @client.index('newIndex')
+      response = new_index.add_documents(documents)
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      sleep(0.2)
+      new_index.wait_for_pending_update(response['updateId'])
       expect(@client.index('newIndex').fetch_primary_key).to eq('objectId')
       expect(@client.index('newIndex').documents.count).to eq(documents.count)
     end
@@ -88,7 +89,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       response = index.update_documents(updated_documents)
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       doc1 = index.document(id1)
       doc2 = index.document(id2)
       expect(index.documents.count).to eq(documents.count)
@@ -102,7 +103,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       id = 123
       updated_document = { objectId: id, title: 'Emma' }
       response = index.update_documents(updated_document)
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       expect(index.documents.count).to eq(documents.count)
@@ -116,20 +117,20 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       title = 'Hamlet'
       new_doc = { objectId: id, title: title }
       response = index.add_documents(new_doc)
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       expect(index.documents.count).to eq(documents.count + 1)
       expect(index.document(id)['title']).to eq(title)
-      index.delete_document(id)
-      sleep(0.1)
+      response = index.delete_document(id)
+      index.wait_for_pending_update(response['updateId'])
     end
 
     it 'update a document with new fields' do
       id = 2
       doc = { objectId: id, note: '8/10' }
       response = index.update_documents(doc)
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       expect(index.documents.count).to eq(documents.count)
@@ -144,7 +145,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       response = index.replace_documents(objectId: id, title: 'Pride & Prejudice', note: '8.5/10')
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.documents.count).to eq(documents.count)
       doc = index.document(id)
       expect(doc['title']).to eq(new_title)
@@ -155,7 +156,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     it 'deletes one document from index' do
       id = 456
       response = index.delete_document(id)
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       expect(index.documents.size).to eq(documents.count - 1)
@@ -165,7 +166,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     it 'does nothing when trying to delete a document which does not exist' do
       id = 111
       response = index.delete_document(id)
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       expect(index.documents.size).to eq(documents.count - 1)
@@ -175,7 +176,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     it 'deletes one document from index (with delete-batch route)' do
       id = 2
       response = index.delete_documents(id)
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       expect(index.documents.size).to eq(documents.count - 2)
@@ -185,7 +186,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     it 'deletes one document from index (with delete-batch route as an array of one uid)' do
       id = 123
       response = index.delete_documents([id])
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       expect(index.documents.size).to eq(documents.count - 3)
@@ -195,7 +196,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     it 'deletes multiples documents from index' do
       docs_to_delete = [1, 4]
       response = index.delete_documents(docs_to_delete)
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       expect(index.documents.size).to eq(documents.count - 3 - docs_to_delete.count)
@@ -203,7 +204,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
 
     it 'clears all documents from index' do
       response = index.delete_all_documents
-      sleep(0.1)
+      index.wait_for_pending_update(response['updateId'])
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       expect(index.documents).to be_empty
@@ -211,15 +212,15 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     end
 
     it 'fails to add document with bad primary-key format' do
-      res = index.add_documents(objectId: 'toto et titi', title: 'Unknown')
-      sleep(0.1)
-      expect(index.get_update_status(res['updateId'])['status']).to eq('failed')
+      response = index.add_documents(objectId: 'toto et titi', title: 'Unknown')
+      index.wait_for_pending_update(response['updateId'])
+      expect(index.get_update_status(response['updateId'])['status']).to eq('failed')
     end
 
     it 'fails to add document with no primary-key' do
-      res = index.add_documents(id: 0, title: 'Unknown')
-      sleep(0.1)
-      expect(index.get_update_status(res['updateId'])['status']).to eq('failed')
+      response = index.add_documents(id: 0, title: 'Unknown')
+      index.wait_for_pending_update(response['updateId'])
+      expect(index.get_update_status(response['updateId'])['status']).to eq('failed')
     end
 
     it 'works with method aliases' do
@@ -255,7 +256,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       response = index.add_documents(documents, 'unique')
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      sleep(0.2)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.fetch_primary_key).to eq('unique')
     end
 
@@ -267,7 +268,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
                                         }, 'id')
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      sleep(0.2)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.fetch_primary_key).to eq('unique')
       doc = index.document(3)
       expect(doc['unique']).to eq(3)
@@ -293,7 +294,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       response = index.update_documents(documents, 'objectId')
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      sleep(0.2)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.fetch_primary_key).to be_nil
       expect(index.get_update_status(response['updateId'])['status']).to eq('failed')
     end
@@ -316,7 +317,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       response = index.add_documents(documents, 'title')
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      sleep(0.2)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.fetch_primary_key).to be_nil
       expect(index.get_update_status(response['updateId'])['status']).to eq('failed')
       expect(index.documents.count).to eq(0)
@@ -360,7 +361,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       response = index.add_documents(documents, 'unique')
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      sleep(0.2)
+      index.wait_for_pending_update(response['updateId'])
       expect(index.fetch_primary_key).to eq('unique')
       expect(index.documents.count).to eq(1)
     end

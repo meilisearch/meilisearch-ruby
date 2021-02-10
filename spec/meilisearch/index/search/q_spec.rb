@@ -14,8 +14,8 @@ RSpec.describe 'MeiliSearch::Index - Basic search' do
     client = MeiliSearch::Client.new($URL, $MASTER_KEY)
     clear_all_indexes(client)
     @index = client.create_index('books')
-    @index.add_documents(@documents)
-    sleep(0.1)
+    response = @index.add_documents(@documents)
+    @index.wait_for_pending_update(response['updateId'])
   end
 
   after(:all) do
@@ -46,16 +46,16 @@ RSpec.describe 'MeiliSearch::Index - Basic search' do
   end
 
   it 'does a basic search with an empty query and a custom ranking rule' do
-    @index.update_ranking_rules([
-                                  'typo',
-                                  'words',
-                                  'proximity',
-                                  'attribute',
-                                  'wordsPosition',
-                                  'exactness',
-                                  'asc(objectId)'
-                                ])
-    sleep(0.1)
+    response = @index.update_ranking_rules([
+                                             'typo',
+                                             'words',
+                                             'proximity',
+                                             'attribute',
+                                             'wordsPosition',
+                                             'exactness',
+                                             'asc(objectId)'
+                                           ])
+    @index.wait_for_pending_update(response['updateId'])
     response = @index.search('')
     expect(response['nbHits']).to eq(@documents.count)
     expect(response['hits'].first['objectId']).to eq(1)

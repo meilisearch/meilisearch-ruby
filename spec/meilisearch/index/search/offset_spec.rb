@@ -14,8 +14,8 @@ RSpec.describe 'MeiliSearch::Index - Search with offset' do
     client = MeiliSearch::Client.new($URL, $MASTER_KEY)
     clear_all_indexes(client)
     @index = client.create_index('books')
-    @index.add_documents(@documents)
-    sleep(0.1)
+    response = @index.add_documents(@documents)
+    @index.wait_for_pending_update(response['updateId'])
   end
 
   after(:all) do
@@ -35,16 +35,16 @@ RSpec.describe 'MeiliSearch::Index - Search with offset' do
   end
 
   it 'does a custom placeholder search with an offset set to 3 and custom ranking rules' do
-    @index.update_ranking_rules([
-                                  'typo',
-                                  'words',
-                                  'proximity',
-                                  'attribute',
-                                  'wordsPosition',
-                                  'exactness',
-                                  'asc(objectId)'
-                                ])
-    sleep(0.1)
+    response = @index.update_ranking_rules([
+                                             'typo',
+                                             'words',
+                                             'proximity',
+                                             'attribute',
+                                             'wordsPosition',
+                                             'exactness',
+                                             'asc(objectId)'
+                                           ])
+    @index.wait_for_pending_update(response['updateId'])
     response = @index.search('')
     response_with_offset = @index.search('', offset: 3)
     expect(response['hits'].first['objectId']).to eq(1)
