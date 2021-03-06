@@ -88,7 +88,7 @@ documents = [
   { book_id: 4,    title: 'Harry Potter and the Half-Blood Prince' },
   { book_id: 42,   title: 'The Hitchhiker\'s Guide to the Galaxy' }
 ]
-# If the index 'movies' does not exist, MeiliSearch creates it when you first add the documents.
+# If the index 'books' does not exist, MeiliSearch creates it when you first add the documents.
 index.add_documents(documents) # => { "updateId": 0 }
 ```
 
