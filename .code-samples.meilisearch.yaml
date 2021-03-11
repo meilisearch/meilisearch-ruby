@@ -312,13 +312,13 @@ getting_started_add_documents_md: |-
   client.index('movies').add_documents(movies)
   ```
 
-  [About this gem](https://www.github.com/meilisearch/meilisearch-ruby)
+  [About this SDK](https://www.github.com/meilisearch/meilisearch-ruby)
 getting_started_search_md: |-
   ```ruby
   index.search('botman')
   ```
 
-  [About this gem](https://www.github.com/meilisearch/meilisearch-ruby)
+  [About this SDK](https://www.github.com/meilisearch/meilisearch-ruby)
 faceted_search_update_settings_1: |-
   index.update_attributes_for_faceting([
     'director',
