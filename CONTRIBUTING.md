@@ -33,7 +33,7 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 ### Setup
 
 ```bash
-$ bundle install
+bundle install
 ```
 
 ### Tests
@@ -42,21 +42,21 @@ Each PR should pass the tests to be accepted.
 
 ```bash
 # Tests
-$ docker pull getmeili/meilisearch:latest # Fetch the latest version of MeiliSearch image from Docker Hub
-$ docker run -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey --no-analytics=true
-$ bundle exec rspec
+docker pull getmeili/meilisearch:latest # Fetch the latest version of MeiliSearch image from Docker Hub
+docker run -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey --no-analytics=true
+bundle exec rspec
 ```
 
 To launch a specific folder or file:
 
 ```bash
-$ bundle exec rspec spec/meilisearch/index/base_spec.rb
+bundle exec rspec spec/meilisearch/index/base_spec.rb
 ```
 
 To launch a single test in a specific file:
 
 ```bash
-$ bundle exec rspec spec/meilisearch/index/search_spec.rb -e 'does a basic search in index'
+bundle exec rspec spec/meilisearch/index/search_spec.rb -e 'does a basic search in index'
 ```
 
 ### Linter
@@ -65,9 +65,9 @@ Each PR should pass the linter to be accepted.
 
 ```bash
 # Check the linter errors
-$ bundle exec rubocop lib/ spec/
+bundle exec rubocop lib/ spec/
 # Auto-correct the linter errors
-$ bundle exec rubocop -a lib/ spec/
+bundle exec rubocop -a lib/ spec/
 ```
 
 If you think the remaining linter errors are acceptable, do not add any `rubocop` in-line comments in the code.<br>
@@ -75,7 +75,7 @@ This project uses a `rubocop_todo.yml` file that is generated. Do not modify thi
 To update it, run the following command:
 
 ```bash
-$ bundle exec rubocop --auto-gen-config
+bundle exec rubocop --auto-gen-config
 ```
 
 ### Want to debug?
