@@ -57,6 +57,13 @@ module MeiliSearch
     alias replace_documents add_documents
     alias add_or_replace_documents add_documents
 
+    def add_documents!(documents, primary_key = nil)
+      update = add_documents(documents, primary_key)
+      wait_for_pending_update(update["updateId"])      
+    end
+    alias replace_documents! add_documents!
+    alias add_or_replace_documents! add_documents!
+    
     def update_documents(documents, primary_key = nil)
       documents = [documents] if documents.is_a?(Hash)
       http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
@@ -77,9 +84,20 @@ module MeiliSearch
       http_delete "/indexes/#{@uid}/documents/#{encode_document}"
     end
     alias delete_one_document delete_document
-
+    
+    def delete_document!(documentId)
+      update = delete_document(documentId)
+      wait_for_pending_update(update["updateId"])
+    end
+    alias delete_one_document! delete_document!
+    
     def delete_all_documents
       http_delete "/indexes/#{@uid}/documents"
+    end
+    
+    def delete_all_documents! 
+      update = delete_all_documents
+      wait_for_pending_update(update["updateId"]) 
     end
 
     ### SEARCH
