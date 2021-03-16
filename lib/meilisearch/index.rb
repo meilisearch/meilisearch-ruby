@@ -70,6 +70,12 @@ module MeiliSearch
     end
     alias add_or_update_documents update_documents
 
+    def update_documents!(documents, primary_key = nil)
+      update = update_documents(documents, primary_key)
+      wait_for_pending_update(update['updateId'])
+    end
+    alias add_or_update_documents! update_documents!
+
     def delete_documents(documents_ids)
       if documents_ids.is_a?(Array)
         http_post "/indexes/#{@uid}/documents/delete-batch", documents_ids
@@ -78,6 +84,12 @@ module MeiliSearch
       end
     end
     alias delete_multiple_documents delete_documents
+
+    def delete_documents!(documents_ids)
+      update = delete_documents(documents_ids)
+      wait_for_pending_update(update['updateId'])
+    end
+    alias delete_multiple_documents! delete_documents!
 
     def delete_document(document_id)
       encode_document = URI.encode_www_form_component(document_id)
