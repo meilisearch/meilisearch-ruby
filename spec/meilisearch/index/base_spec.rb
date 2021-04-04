@@ -4,8 +4,9 @@ RSpec.describe MeiliSearch::Index do
   before(:all) do
     @uid1 = 'UID_1'
     @uid2 = 'UID_2'
+    @options = { timeout: 2, max_retries: 1 }
     @primary_key = 'objectId'
-    client = MeiliSearch::Client.new($URL, $MASTER_KEY)
+    client = MeiliSearch::Client.new($URL, $MASTER_KEY, @options)
     clear_all_indexes(client)
     @index1 = client.create_index(@uid1)
     @index2 = client.create_index(@uid2, primaryKey: @primary_key)
@@ -50,6 +51,18 @@ RSpec.describe MeiliSearch::Index do
       'primary_key_already_present',
       'invalid_request_error'
     )
+  end
+
+  it 'supports options' do
+    expect(@index1.options).to eq({ timeout: 2, max_retries: 1 })
+    expect(MeiliSearch::Index).to receive(:get).with(
+      'http://localhost:7700/indexes/UID_1',
+      { headers: { 'Content-Type' => 'application/json', 'X-Meili-API-Key' => 'masterKey' },
+        max_retries: 1,
+        query: {},
+        timeout: 2 }
+    ).and_return(double(success?: true, parsed_response: ''))
+    @index1.fetch_info
   end
 
   it 'deletes index' do

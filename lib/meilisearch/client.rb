@@ -88,7 +88,7 @@ module MeiliSearch
     private
 
     def index_object(uid, primary_key = nil)
-      Index.new(uid, @base_url, @api_key, primary_key)
+      Index.new(uid, @base_url, @api_key, primary_key, @options)
     end
   end
 end
