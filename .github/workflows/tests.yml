@@ -26,6 +26,8 @@ jobs:
       run: bundle install --with test
     - name: MeiliSearch (latest) setup with Docker
       run: docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey --no-analytics=true
+    - name: Exact ruby version and revision
+      run: ruby --version
     - name: Run test suite
       run: bundle exec rspec --backtrace
 
