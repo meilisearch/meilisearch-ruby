@@ -24,5 +24,7 @@ jobs:
       run: echo "MEILISEARCH_VERSION=$(curl https://raw.githubusercontent.com/meilisearch/integration-guides/master/scripts/get-latest-meilisearch-rc.sh | bash)" >> $GITHUB_ENV
     - name: MeiliSearch (${{ env.MEILISEARCH_VERSION }}) setup with Docker
       run: docker run -d -p 7700:7700 getmeili/meilisearch:${{ env.MEILISEARCH_VERSION }} ./meilisearch --master-key=masterKey --no-analytics=true
+    - name: Exact ruby version and revision
+      run: ruby --version
     - name: Run test suite
       run: bundle exec rspec
