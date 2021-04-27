@@ -8,11 +8,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
   let(:default_ranking_rules) do
     [
-      'typo',
       'words',
+      'typo',
       'proximity',
       'attribute',
-      'wordsPosition',
       'exactness'
     ]
   end
