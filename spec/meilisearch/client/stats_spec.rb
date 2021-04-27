@@ -9,7 +9,7 @@ RSpec.describe 'MeiliSearch::Client - Stats' do
     response = @client.version
     expect(response).to be_a(Hash)
     expect(response).to have_key('commitSha')
-    expect(response).to have_key('buildDate')
+    expect(response).to have_key('commitgDate')
     expect(response).to have_key('pkgVersion')
   end
 
