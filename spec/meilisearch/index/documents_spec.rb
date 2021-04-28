@@ -344,7 +344,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     end
   end
 
-  context 'Impossible to udpate primary-key if already given during index creation' do
+  context 'Impossible to update primary-key if already given during index creation' do
     before(:all) do
       @uid = SecureRandom.hex(4)
       @client.create_index(@uid)
@@ -364,6 +364,29 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       index.wait_for_pending_update(response['updateId'])
       expect(index.fetch_primary_key).to eq('unique')
       expect(index.documents.count).to eq(1)
+    end
+  end
+
+  context 'Add document with client options' do
+    let(:documents) do
+      { id: 1, unique: 1, title: 'Le Rouge et le Noir' }
+    end
+
+    it 'uses the timeout client option' do
+      zero_timeout_client = MeiliSearch::Client.new($URL, $MASTER_KEY, @options = { timeout: 0 })
+      new_index = zero_timeout_client.index('newIndex')
+      expect do
+        new_index.add_documents(documents)
+      end.to raise_error(Timeout::Error)
+    end
+
+    it 'uses the max_retries client option' do
+      max_retries_client = MeiliSearch::Client.new($URL, $MASTER_KEY, @options = { max_retries: 2 })
+      http = Net::HTTP.new('localhost', 7700)
+      new_index = max_retries_client.index('newIndex')
+      expect(Net::HTTP).to receive(:new).with('localhost', 7700).and_return(http)
+      expect(http).to receive(:max_retries=).with(2)
+      new_index.add_documents(documents)
     end
   end
 end
