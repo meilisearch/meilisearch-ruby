@@ -11,17 +11,21 @@ on:
 
 jobs:
   integration_tests:
-    name: integration-tests
     # Will not run if the event is a PR to bump-meilisearch-v* (so a pre-release PR)
     # Will still run for each push to bump-meilisearch-v*
     if: github.event_name != 'pull_request' || !startsWith(github.base_ref, 'bump-meilisearch-v')
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby-version: ['2.6', '2.7']
+    name: integration-tests (ruby ${{ matrix.ruby-version }})
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up Ruby 2.6
-      uses: actions/setup-ruby@v1
+    - uses: actions/checkout@v2
+    - name: Set up Ruby ${{ matrix.ruby-version }}
+      uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.6.x
+        ruby-version: ${{ matrix.ruby-version }}
     - name: Install ruby dependencies
       run: bundle install --with test
     - name: MeiliSearch (latest) setup with Docker
@@ -33,11 +37,11 @@ jobs:
     name: linter-check
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up Ruby 2.6
-      uses: actions/setup-ruby@v1
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.6.x
+        ruby-version: 3.0
     - name: Install ruby dependencies
       run: bundle install --with test
     - name: Run linter
