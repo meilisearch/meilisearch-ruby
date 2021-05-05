@@ -394,7 +394,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.attributes_for_faceting).to contain_exactly(*attributes_for_faceting)
     end
 
-    it 'updates attributes at null' do
+    it 'updates attributes for faceting at null' do
       response = index.update_attributes_for_faceting(nil)
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
