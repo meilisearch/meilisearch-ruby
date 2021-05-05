@@ -113,6 +113,13 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.ranking_rules).to eq(ranking_rules)
     end
 
+    it 'updates ranking rules at null' do
+      response = index.update_ranking_rules(nil)
+      expect(response).to have_key('updateId')
+      index.wait_for_pending_update(response['updateId'])
+      expect(index.ranking_rules).to eq(default_ranking_rules)
+    end
+
     it 'fails when updating with wrong ranking rules name' do
       expect do
         index.update_ranking_rules(wrong_ranking_rules)
@@ -150,6 +157,13 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.distinct_attribute).to eq(distinct_attribute)
     end
 
+    it 'updates distinct attribute at null' do
+      response = index.update_distinct_attribute(nil)
+      expect(response).to have_key('updateId')
+      index.wait_for_pending_update(response['updateId'])
+      expect(index.distinct_attribute).to be_nil
+    end
+
     it 'resets distinct attribute' do
       response = index.reset_distinct_attribute
       expect(response).to have_key('updateId')
@@ -179,6 +193,13 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
       expect(index.searchable_attributes).to eq(searchable_attributes)
+    end
+
+    it 'updates searchable attributes at null' do
+      response = index.update_searchable_attributes(nil)
+      expect(response).to have_key('updateId')
+      index.wait_for_pending_update(response['updateId'])
+      expect(index.searchable_attributes).to eq(default_searchable_attributes)
     end
 
     it 'resets searchable attributes' do
@@ -211,6 +232,13 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
       expect(index.displayed_attributes).to contain_exactly(*displayed_attributes)
+    end
+
+    it 'updates displayed attributes at null' do
+      response = index.update_displayed_attributes(nil)
+      expect(response).to have_key('updateId')
+      index.wait_for_pending_update(response['updateId'])
+      expect(index.displayed_attributes).to eq(default_displayed_attributes)
     end
 
     it 'resets displayed attributes' do
@@ -364,6 +392,13 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
       expect(index.attributes_for_faceting).to contain_exactly(*attributes_for_faceting)
+    end
+
+    it 'updates attributes at null' do
+      response = index.update_attributes_for_faceting(nil)
+      expect(response).to have_key('updateId')
+      index.wait_for_pending_update(response['updateId'])
+      expect(index.attributes_for_faceting).to be_empty
     end
 
     it 'resets attributes for faceting' do
