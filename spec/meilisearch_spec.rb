@@ -13,7 +13,7 @@ RSpec.describe MeiliSearch do
   end
 
   it 'allows to set a custom timeout and max_retries' do
-    client = MeiliSearch::Client.new($URL, 'masterKey', timeout: 20, max_retries: 2)
+    client = MeiliSearch::Client.new($URL, $MASTER_KEY, timeout: 20, max_retries: 2)
     expect(client.healthy?).to be true
   end
 
