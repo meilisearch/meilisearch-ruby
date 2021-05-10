@@ -116,7 +116,7 @@ module MeiliSearch
 
     def search(query, options = {})
       parsed_options = options.compact
-      http_post "/indexes/#{@uid}/search", { q: query }.merge(parsed_options)
+      http_post "/indexes/#{@uid}/search", { q: query.to_s }.merge(parsed_options)
     end
 
     ### UPDATES
