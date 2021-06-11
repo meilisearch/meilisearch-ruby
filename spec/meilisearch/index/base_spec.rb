@@ -52,6 +52,25 @@ RSpec.describe MeiliSearch::Index do
     )
   end
 
+  it 'supports options' do
+    options = { timeout: 2, max_retries: 1 }
+    client = MeiliSearch::Client.new($URL, $MASTER_KEY, options)
+    index_uid = 'options'
+    index = client.create_index(index_uid)
+    expect(index.options).to eq({ timeout: 2, max_retries: 1 })
+    expect(MeiliSearch::Index).to receive(:get).with(
+      "#{$URL}/indexes/#{index_uid}",
+      {
+        headers: { 'Content-Type' => 'application/json', 'X-Meili-API-Key' => $MASTER_KEY },
+        body: 'null',
+        query: {},
+        max_retries: 1,
+        timeout: 2
+      }
+    ).and_return(double(success?: true, parsed_response: ''))
+    index.fetch_info
+  end
+
   it 'deletes index' do
     expect(@index1.delete).to be_nil
     expect { @index1.fetch_info }.to raise_index_not_found_meilisearch_api_error
