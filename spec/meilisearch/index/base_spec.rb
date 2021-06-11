@@ -59,11 +59,12 @@ RSpec.describe MeiliSearch::Index do
     index = client.create_index(index_uid)
     expect(index.options).to eq({ timeout: 2, max_retries: 1 })
     expect(MeiliSearch::Index).to receive(:get).with(
-      "#{$URL}/#{index_uid}",
+      "#{$URL}/indexes/#{index_uid}",
       {
         headers: { 'Content-Type' => 'application/json', 'X-Meili-API-Key' => $MASTER_KEY },
-        max_retries: 1,
+        body: 'null',
         query: {},
+        max_retries: 1,
         timeout: 2
       }
     ).and_return(double(success?: true, parsed_response: ''))
