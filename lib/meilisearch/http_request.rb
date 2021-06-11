@@ -7,6 +7,8 @@ module MeiliSearch
   class HTTPRequest
     include HTTParty
 
+    attr_reader :options
+
     def initialize(url, api_key = nil, options = {})
       @base_url = url
       @api_key = api_key
