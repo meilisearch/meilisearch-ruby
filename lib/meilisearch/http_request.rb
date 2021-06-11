@@ -64,7 +64,7 @@ module MeiliSearch
     end
 
     def http_config(query_params, body)
-      body = body.to_json unless body.nil?
+      body = body.to_json
       {
         headers: @headers,
         query: query_params,

@@ -1,3 +1,8 @@
-status = ['integration-tests', 'linter-check']
+status = [
+  'integration-tests (ruby 2.6)',
+  'integration-tests (ruby 2.7)',
+  'integration-tests (ruby 3.0)',
+  'linter-check'
+]
 # 1 hour timeout
 timeout-sec = 3600

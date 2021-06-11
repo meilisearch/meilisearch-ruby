@@ -60,4 +60,12 @@ RSpec.describe 'MeiliSearch::Index - Basic search' do
     expect(response['nbHits']).to eq(@documents.count)
     expect(response['hits'].first['objectId']).to eq(1)
   end
+
+  it 'does a basic search with an integer query' do
+    response = @index.search(1)
+    expect(response).to be_a(Hash)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
+    expect(response['hits'].count).to eq(3)
+    expect(response['hits'].first).not_to have_key('_formatted')
+  end
 end

@@ -35,6 +35,16 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(index.documents.count).to eq(documents.count)
     end
 
+    it 'adds documents synchronously (as an array of documents)' do
+      response = index.add_documents!(documents)
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      expect(response).to have_key('status')
+      expect(response['status']).not_to eql('enqueued')
+      expect(response['status']).to eql('processed')
+      expect(index.documents.count).to eq(documents.count)
+    end
+
     it 'infers order of fields' do
       response = index.document(1)
       expect(response.keys).to eq(['objectId', 'title', 'comment'])
@@ -99,6 +109,28 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(doc2['comment']).to eq(documents.detect { |doc| doc[:objectId] == id2 }[:comment])
     end
 
+    it 'updates documents synchronously in index (as an array of documents)' do
+      id1 = 123
+      id2 = 456
+      updated_documents = [
+        { objectId: id1,  title: 'Sense and Sensibility' },
+        { objectId: id2,  title: 'The Little Prince' }
+      ]
+      response = index.update_documents!(updated_documents)
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      expect(response).to have_key('status')
+      expect(response['status']).not_to eql('enqueued')
+      expect(response['status']).to eql('processed')
+      doc1 = index.document(id1)
+      doc2 = index.document(id2)
+      expect(index.documents.count).to eq(documents.count)
+      expect(doc1['title']).to eq(updated_documents.detect { |doc| doc[:objectId] == id1 }[:title])
+      expect(doc1['comment']).to eq(documents.detect { |doc| doc[:objectId] == id1 }[:comment])
+      expect(doc2['title']).to eq(updated_documents.detect { |doc| doc[:objectId] == id2 }[:title])
+      expect(doc2['comment']).to eq(documents.detect { |doc| doc[:objectId] == id2 }[:comment])
+    end
+
     it 'updates one document in index (as an hash of one document)' do
       id = 123
       updated_document = { objectId: id, title: 'Emma' }
@@ -106,6 +138,21 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       index.wait_for_pending_update(response['updateId'])
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
+      expect(index.documents.count).to eq(documents.count)
+      new_doc = index.document(id)
+      expect(new_doc['title']).to eq(updated_document[:title])
+      expect(new_doc['comment']).to eq(documents.detect { |doc| doc[:objectId] == id }[:comment])
+    end
+
+    it 'updates one document synchronously in index (as an hash of one document)' do
+      id = 123
+      updated_document = { objectId: id, title: 'Emma' }
+      response = index.update_documents!(updated_document)
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      expect(response).to have_key('status')
+      expect(response['status']).not_to eql('enqueued')
+      expect(response['status']).to eql('processed')
       expect(index.documents.count).to eq(documents.count)
       new_doc = index.document(id)
       expect(new_doc['title']).to eq(updated_document[:title])
@@ -120,6 +167,22 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       index.wait_for_pending_update(response['updateId'])
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
+      expect(index.documents.count).to eq(documents.count + 1)
+      expect(index.document(id)['title']).to eq(title)
+      response = index.delete_document(id)
+      index.wait_for_pending_update(response['updateId'])
+    end
+
+    it 'adds only one document synchronously to index (as an hash of one document)' do
+      id = 30
+      title = 'Hamlet'
+      new_doc = { objectId: id, title: title }
+      response = index.add_documents!(new_doc)
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      expect(response).to have_key('status')
+      expect(response['status']).not_to eql('enqueued')
+      expect(response['status']).to eql('processed')
       expect(index.documents.count).to eq(documents.count + 1)
       expect(index.document(id)['title']).to eq(title)
       response = index.delete_document(id)
@@ -163,6 +226,18 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect { index.document(id) }.to raise_document_not_found_meilisearch_api_error
     end
 
+    it 'deletes one document synchronously from index' do
+      id = 456
+      response = index.delete_document!(id)
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      expect(response).to have_key('status')
+      expect(response['status']).not_to eql('enqueued')
+      expect(response['status']).to eql('processed')
+      expect(index.documents.size).to eq(documents.count - 1)
+      expect { index.document(id) }.to raise_document_not_found_meilisearch_api_error
+    end
+
     it 'does nothing when trying to delete a document which does not exist' do
       id = 111
       response = index.delete_document(id)
@@ -183,12 +258,36 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect { index.document(id) }.to raise_document_not_found_meilisearch_api_error
     end
 
+    it 'deletes one document synchronously from index (with delete-batch route)' do
+      id = 2
+      response = index.delete_documents!(id)
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      expect(response).to have_key('status')
+      expect(response['status']).not_to eql('enqueued')
+      expect(response['status']).to eql('processed')
+      expect(index.documents.size).to eq(documents.count - 2)
+      expect { index.document(id) }.to raise_document_not_found_meilisearch_api_error
+    end
+
     it 'deletes one document from index (with delete-batch route as an array of one uid)' do
       id = 123
       response = index.delete_documents([id])
       index.wait_for_pending_update(response['updateId'])
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
+      expect(index.documents.size).to eq(documents.count - 3)
+      expect { index.document(id) }.to raise_document_not_found_meilisearch_api_error
+    end
+
+    it 'deletes one document synchronously from index (with delete-batch route as an array of one uid)' do
+      id = 123
+      response = index.delete_documents!([id])
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      expect(response).to have_key('status')
+      expect(response['status']).not_to eql('enqueued')
+      expect(response['status']).to eql('processed')
       expect(index.documents.size).to eq(documents.count - 3)
       expect { index.document(id) }.to raise_document_not_found_meilisearch_api_error
     end
@@ -202,11 +301,33 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(index.documents.size).to eq(documents.count - 3 - docs_to_delete.count)
     end
 
+    it 'deletes multiples documents synchronously from index' do
+      docs_to_delete = [1, 4]
+      response = index.delete_documents!(docs_to_delete)
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      expect(response).to have_key('status')
+      expect(response['status']).not_to eql('enqueued')
+      expect(response['status']).to eql('processed')
+      expect(index.documents.size).to eq(documents.count - 3 - docs_to_delete.count)
+    end
+
     it 'clears all documents from index' do
       response = index.delete_all_documents
       index.wait_for_pending_update(response['updateId'])
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
+      expect(index.documents).to be_empty
+      expect(index.documents.size).to eq(0)
+    end
+
+    it 'clears all documents synchronously from index' do
+      response = index.delete_all_documents!
+      expect(response).to be_a(Hash)
+      expect(response).to have_key('updateId')
+      expect(response).to have_key('status')
+      expect(response['status']).not_to eql('enqueued')
+      expect(response['status']).to eql('processed')
       expect(index.documents).to be_empty
       expect(index.documents.size).to eq(0)
     end
