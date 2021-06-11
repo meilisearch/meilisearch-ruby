@@ -41,7 +41,7 @@ delete_one_document_1: |-
   index.delete_document(25684)
 delete_documents_1: |-
   index.delete_documents([23488, 153738, 437035, 363869])
-search_1: |-
+search_post_1: |-
   index.search('american ninja')
 get_update_1: |-
   index.get_update_status(1)

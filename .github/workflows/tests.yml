@@ -17,9 +17,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby-version: ['2.6', '2.7']
+        ruby-version: ['2.6', '2.7', '3.0']
     name: integration-tests (ruby ${{ matrix.ruby-version }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby ${{ matrix.ruby-version }}
@@ -35,7 +35,7 @@ jobs:
 
   linter_check:
     name: linter-check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby

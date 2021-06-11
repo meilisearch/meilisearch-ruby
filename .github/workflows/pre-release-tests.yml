@@ -13,11 +13,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby-version: ['2.6', '2.7']
+        ruby-version: ['2.6', '2.7', '3.0']
     name: integration-tests-against-rc (ruby ${{ matrix.ruby-version }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@v1
       with:
