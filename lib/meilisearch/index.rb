@@ -281,20 +281,20 @@ module MeiliSearch
       http_delete "/indexes/#{@uid}/settings/displayed-attributes"
     end
 
-    ### SETTINGS - ATTRIBUTES FOR FACETING
+    ### SETTINGS - FILTERABLE ATTRIBUTES
 
-    def attributes_for_faceting
-      http_get "/indexes/#{@uid}/settings/attributes-for-faceting"
+    def filterable_attributes
+      http_get "/indexes/#{@uid}/settings/filterable-attributes"
     end
-    alias get_attributes_for_faceting attributes_for_faceting
+    alias get_filterable_attributes filterable_attributes
 
-    def update_attributes_for_faceting(attributes_for_faceting)
-      http_post "/indexes/#{@uid}/settings/attributes-for-faceting", attributes_for_faceting
+    def update_filterable_attributes(filterable_attributes)
+      http_post "/indexes/#{@uid}/settings/filterable-attributes", filterable_attributes
     end
-    alias attributes_for_faceting= update_attributes_for_faceting
+    alias filterable_attributes= update_filterable_attributes
 
-    def reset_attributes_for_faceting
-      http_delete "/indexes/#{@uid}/settings/attributes-for-faceting"
+    def reset_filterable_attributes
+      http_delete "/indexes/#{@uid}/settings/filterable-attributes"
     end
   end
 end

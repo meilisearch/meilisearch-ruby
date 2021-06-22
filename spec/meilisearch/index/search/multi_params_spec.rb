@@ -59,7 +59,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
   end
 
   it 'does a custom search with facetFilters, attributesToRetrieve and attributesToHighlight' do
-    response = @index.update_attributes_for_faceting(['genre'])
+    response = @index.update_filterable_attributes(['genre'])
     @index.wait_for_pending_update(response['updateId'])
     response = @index.search('prinec',
                              {
@@ -77,7 +77,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
   end
 
   it 'does a custom search with facetsDistribution and limit' do
-    response = @index.update_attributes_for_faceting(['genre'])
+    response = @index.update_filterable_attributes(['genre'])
     @index.wait_for_pending_update(response['updateId'])
     response = @index.search('prinec', facetsDistribution: ['genre'], limit: 1)
     expect(response.keys).to contain_exactly(

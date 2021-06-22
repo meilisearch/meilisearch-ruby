@@ -26,7 +26,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       'displayedAttributes',
       'stopWords',
       'synonyms',
-      'attributesForFaceting'
+      'filterableAttributes'
     ]
   end
 
@@ -369,7 +369,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
   end
 
-  context 'On attributes-for-faceting sub-routes' do
+  context 'On filterable-attributes sub-routes' do
     before(:all) do
       @uid = SecureRandom.hex(4)
       @client.create_index(@uid)
@@ -378,34 +378,34 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     after(:all) { clear_all_indexes(@client) }
 
     let(:index) { @client.index(@uid) }
-    let(:attributes_for_faceting) { ['title', 'description'] }
+    let(:filterable_attributes) { ['title', 'description'] }
 
-    it 'gets default values of attributes for faceting' do
-      response = index.attributes_for_faceting
+    it 'gets default values of filterable attributes' do
+      response = index.filterable_attributes
       expect(response).to be_a(Array)
       expect(response).to be_empty
     end
 
-    it 'updates attributes for faceting' do
-      response = index.update_attributes_for_faceting(attributes_for_faceting)
+    it 'updates filterable attributes' do
+      response = index.update_filterable_attributes(filterable_attributes)
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
-      expect(index.attributes_for_faceting).to contain_exactly(*attributes_for_faceting)
+      expect(index.filterable_attributes).to contain_exactly(*filterable_attributes)
     end
 
-    it 'updates attributes for faceting at null' do
-      response = index.update_attributes_for_faceting(nil)
+    it 'updates filterable attributes at null' do
+      response = index.update_filterable_attributes(nil)
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
-      expect(index.attributes_for_faceting).to be_empty
+      expect(index.filterable_attributes).to be_empty
     end
 
-    it 'resets attributes for faceting' do
-      response = index.reset_attributes_for_faceting
+    it 'resets filterable attributes' do
+      response = index.reset_filterable_attributes
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
-      expect(index.attributes_for_faceting).to be_empty
+      expect(index.filterable_attributes).to be_empty
     end
   end
 
@@ -521,7 +521,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.method(:displayed_attributes) == index.method(:get_displayed_attributes)).to be_truthy
       expect(index.method(:synonyms) == index.method(:get_synonyms)).to be_truthy
       expect(index.method(:stop_words) == index.method(:get_stop_words)).to be_truthy
-      expect(index.method(:attributes_for_faceting) == index.method(:get_attributes_for_faceting)).to be_truthy
+      expect(index.method(:filterable_attributes) == index.method(:get_filterable_attributes)).to be_truthy
     end
   end
 end
