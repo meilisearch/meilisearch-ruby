@@ -17,7 +17,7 @@ RSpec.describe 'MeiliSearch::Index - Search with facetFilters' do
     @index = client.create_index('books')
     response = @index.add_documents(@documents)
     @index.wait_for_pending_update(response['updateId'])
-    response = @index.update_attributes_for_faceting(['genre', 'year'])
+    response = @index.update_filterable_attributes(['genre', 'year'])
     @index.wait_for_pending_update(response['updateId'])
   end
 
