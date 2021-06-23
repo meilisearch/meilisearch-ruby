@@ -3,9 +3,9 @@
 RSpec.describe 'MeiliSearch::Index - Cropped search' do
   before(:all) do
     @document = {
-        objectId: 42,
-        title: 'The Hitchhiker\'s Guide to the Galaxy',
-        description: 'The Hitchhiker\'s Guide to the Galaxy is a comedy science fiction series by Douglas Adams.'
+      objectId: 42,
+      title: 'The Hitchhiker\'s Guide to the Galaxy',
+      description: 'The Hitchhiker\'s Guide to the Galaxy is a comedy science fiction series by Douglas Adams.'
     }
     client = MeiliSearch::Client.new($URL, $MASTER_KEY)
     clear_all_indexes(client)
