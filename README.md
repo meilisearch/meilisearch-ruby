@@ -122,11 +122,9 @@ Output:
 All the supported options are described in the [search parameters](https://docs.meilisearch.com/reference/features/search_parameters.html) section of the documentation.
 
 ```ruby
-index.search('prince',
-  {
-    filters: 'book_id > 10',
-    attributesToHighlight: ['*']
-  }
+index.search(
+  'hob',
+  attributesToHighlight: ['*']
 )
 ```
 
@@ -136,18 +134,18 @@ JSON output:
 {
     "hits": [
         {
-            "book_id": 456,
-            "title": "Le Petit Prince",
+            "book_id": 1344,
+            "title": "The Hobbit",
             "_formatted": {
-                "book_id": 456,
-                "title": "Le Petit <em>Prince</em>"
+                "book_id": 1344,
+                "title": "The <em>Hob</em>bit"
             }
         }
     ],
     "offset": 0,
     "limit": 20,
     "processingTimeMs": 0,
-    "query": "prince"
+    "query": "hob"
 }
 ```
 

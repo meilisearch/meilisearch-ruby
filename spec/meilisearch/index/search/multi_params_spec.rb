@@ -22,12 +22,12 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
     @index.delete
   end
 
-  it 'does a custom search with attributes to crop, filters and attributes to highlight' do
+  it 'does a custom search with attributes to crop, filter and attributes to highlight' do
     response = @index.search('prince',
                              {
                                attributesToCrop: ['title'],
                                cropLength: 2,
-                               filters: 'genre = adventure',
+                               filter: 'genre = adventure',
                                attributesToHighlight: ['title']
                              })
     expect(response['hits'].count).to be(1)
@@ -45,8 +45,8 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
     expect(response['hits'].first).to have_key('genre')
   end
 
-  it 'does a custom placeholder search with filters and offset' do
-    response = @index.search('', { filters: 'genre = adventure', offset: 2 })
+  it 'does a custom placeholder search with filter and offset' do
+    response = @index.search('', { filter: 'genre = adventure', offset: 2 })
     expect(response['hits'].count).to eq(1)
   end
 
@@ -58,12 +58,12 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
     expect(response['hits'].first).to have_key('_formatted')
   end
 
-  it 'does a custom search with facetFilters, attributesToRetrieve and attributesToHighlight' do
+  it 'does a custom search with filter, attributesToRetrieve and attributesToHighlight' do
     response = @index.update_filterable_attributes(['genre'])
     @index.wait_for_pending_update(response['updateId'])
     response = @index.search('prinec',
                              {
-                               facetFilters: ['genre: fantasy'],
+                               filter: ['genre = fantasy'],
                                attributesToRetrieve: ['title'],
                                attributesToHighlight: ['*']
                              })
