@@ -31,7 +31,7 @@ RSpec.describe 'MeiliSearch::Index - Search with highlight' do
     expect(response['hits'].first['_formatted']['title']).to eq('<em>The</em> Hobbit')
   end
 
-  it 'does a custom placeholder search with attributes to highlight' do
+  it 'does a placeholder search with attributes to highlight' do
     response = @index.search('', attributesToHighlight: ['*'])
     expect(response).to be_a(Hash)
     expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
@@ -39,7 +39,7 @@ RSpec.describe 'MeiliSearch::Index - Search with highlight' do
     expect(response['hits'].first).to have_key('_formatted')
   end
 
-  it 'does a custom placeholder search (nil) with attributes to highlight' do
+  it 'does a placeholder search (nil) with attributes to highlight' do
     response = @index.search(nil, attributesToHighlight: ['*'])
     expect(response).to be_a(Hash)
     expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
