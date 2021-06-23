@@ -86,25 +86,24 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
       'facetsDistribution',
       'exhaustiveFacetsCount'
     )
-    expect(response['exhaustiveFacetsCount']).to be true
+    expect(response['exhaustiveFacetsCount']).to be false
     expect(response['nbHits']).to eq(2)
     expect(response['facetsDistribution'].keys).to contain_exactly('genre', 'author')
-    expect(response['facetsDistribution']['genre'].keys).to contain_exactly('romance', 'adventure', 'fantasy')
-    expect(response['facetsDistribution']['genre']['romance']).to eq(0)
+    expect(response['facetsDistribution']['genre'].keys).to contain_exactly('adventure', 'fantasy')
     expect(response['facetsDistribution']['genre']['adventure']).to eq(1)
     expect(response['facetsDistribution']['genre']['fantasy']).to eq(1)
     expect(response['facetsDistribution']['author']['J. K. Rowling']).to eq(1)
     expect(response['facetsDistribution']['author']['Antoine de Saint-Exupéry']).to eq(1)
   end
 
-  it 'does a custom placeholder search with facetsDistribution' do
+  it 'does a placeholder search with facetsDistribution' do
     response = @index.search('', facetsDistribution: ['genre', 'author'])
     expect(response.keys).to contain_exactly(
       *$DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetsDistribution',
       'exhaustiveFacetsCount'
     )
-    expect(response['exhaustiveFacetsCount']).to be true
+    expect(response['exhaustiveFacetsCount']).to be false
     expect(response['nbHits']).to eq(@documents.count)
     expect(response['facetsDistribution'].keys).to contain_exactly('genre', 'author')
     expect(response['facetsDistribution']['genre'].keys).to contain_exactly('romance', 'adventure', 'fantasy')
@@ -114,14 +113,14 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
     expect(response['facetsDistribution']['author']['J. K. Rowling']).to eq(2)
   end
 
-  it 'does a custom placeholder search with facetsDistribution on number' do
+  it 'does a placeholder search with facetsDistribution on number' do
     response = @index.search('', facetsDistribution: ['year'])
     expect(response.keys).to contain_exactly(
       *$DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetsDistribution',
       'exhaustiveFacetsCount'
     )
-    expect(response['exhaustiveFacetsCount']).to be true
+    expect(response['exhaustiveFacetsCount']).to be false
     expect(response['nbHits']).to eq(@documents.count)
     expect(response['facetsDistribution'].keys).to contain_exactly('year')
     expect(response['facetsDistribution']['year'].keys).to contain_exactly(@documents.map { |o| o[:year] })

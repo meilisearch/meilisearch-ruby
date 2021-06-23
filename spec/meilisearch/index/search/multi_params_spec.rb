@@ -16,6 +16,8 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
     @index = client.create_index('books')
     response = @index.add_documents(@documents)
     @index.wait_for_pending_update(response['updateId'])
+    response = @index.update_filterable_attributes(['genre'])
+    @index.wait_for_pending_update(response['updateId'])
   end
 
   after(:all) do
@@ -32,7 +34,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
                              })
     expect(response['hits'].count).to be(1)
     expect(response['hits'].first).to have_key('_formatted')
-    expect(response['hits'].first['_formatted']['title']).to eq('<em>Prince</em>')
+    expect(response['hits'].first['_formatted']['title']).to eq('Petit <em>Prince</em>')
   end
 
   it 'does a custom search with attributesToRetrieve and a limit' do
@@ -45,7 +47,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
     expect(response['hits'].first).to have_key('genre')
   end
 
-  it 'does a custom placeholder search with filter and offset' do
+  it 'does a placeholder search with filter and offset' do
     response = @index.search('', { filter: 'genre = adventure', offset: 2 })
     expect(response['hits'].count).to eq(1)
   end
@@ -73,7 +75,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
     expect(response['hits'].first).not_to have_key('objectId')
     expect(response['hits'].first).not_to have_key('genre')
     expect(response['hits'].first).to have_key('title')
-    expect(response['hits'].first['_formatted']['title']).to eq('Harry Potter and the Half-Blood <em>Prince</em>')
+    expect(response['hits'].first['_formatted']['title']).to eq('Harry Potter and the Half-Blood <em>Princ</em>e')
   end
 
   it 'does a custom search with facetsDistribution and limit' do
@@ -85,13 +87,12 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
       'facetsDistribution',
       'exhaustiveFacetsCount'
     )
-    expect(response['exhaustiveFacetsCount']).to be true
     expect(response['nbHits']).to eq(2)
     expect(response['hits'].count).to eq(1)
     expect(response['facetsDistribution'].keys).to contain_exactly('genre')
-    expect(response['facetsDistribution']['genre'].keys).to contain_exactly('romance', 'adventure', 'fantasy')
-    expect(response['facetsDistribution']['genre']['romance']).to eq(0)
+    expect(response['facetsDistribution']['genre'].keys).to contain_exactly('adventure', 'fantasy')
     expect(response['facetsDistribution']['genre']['adventure']).to eq(1)
     expect(response['facetsDistribution']['genre']['fantasy']).to eq(1)
+    expect(response['exhaustiveFacetsCount']).to be false
   end
 end

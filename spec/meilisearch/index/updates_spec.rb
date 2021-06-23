@@ -43,8 +43,8 @@ RSpec.describe 'MeiliSearch::Index - Updates' do
   end
 
   it 'achieved_upate? method returns true' do
-    boolean = @index.achieved_upate?(0)
-    expect(boolean).to be_true
+    boolean = @index.achieved_upate?(@index.get_update_status(0))
+    expect(boolean).to be_truthy
   end
 
   it 'waits for pending update with default values' do
