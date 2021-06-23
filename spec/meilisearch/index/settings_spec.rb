@@ -120,9 +120,11 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'fails when updating with wrong ranking rules name' do
-      expect do
-        index.update_ranking_rules(wrong_ranking_rules)
-      end.to raise_bad_request_meilisearch_api_error
+      response = index.update_ranking_rules(wrong_ranking_rules)
+      index.wait_for_pending_update(response['updateId'])
+      response = index.get_update_status(response['updateId'])
+      expect(response.keys).to include('message')
+      expect(response['errorCode']).to eq('internal')
     end
 
     it 'resets ranking rules' do
@@ -478,9 +480,11 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     let(:index) { @client.index(@uid) }
 
     it 'does not add document when there is no primary-key' do
-      expect do
-        index.add_documents(title: 'Test')
-      end.to raise_missing_primary_key_meilisearch_api_error
+      response = index.add_documents(title: 'Test')
+      index.wait_for_pending_update(response['updateId'])
+      response = index.get_update_status(response['updateId'])
+      expect(response.keys).to include('message')
+      expect(response['errorCode']).to eq('missing_primary_key')
     end
 
     it 'adds documents when there is a primary-key' do
