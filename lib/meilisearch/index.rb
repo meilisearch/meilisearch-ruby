@@ -224,7 +224,7 @@ module MeiliSearch
     alias get_stop_words stop_words
 
     def update_stop_words(stop_words)
-      body = stop_words.is_a?(Array) ? stop_words : [stop_words]
+      body = stop_words.nil? || stop_words.is_a?(Array) ? stop_words : [stop_words]
       http_post "/indexes/#{@uid}/settings/stop-words", body
     end
     alias stop_words= update_stop_words

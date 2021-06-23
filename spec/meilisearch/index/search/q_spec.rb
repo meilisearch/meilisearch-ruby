@@ -68,4 +68,13 @@ RSpec.describe 'MeiliSearch::Index - Basic search' do
     expect(response['hits'].count).to eq(3)
     expect(response['hits'].first).not_to have_key('_formatted')
   end
+
+  it 'does a phrase search' do
+    response = @index.search('coco "harry"')
+    expect(response).to be_a(Hash)
+    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
+    expect(response['hits'].count).to eq(1)
+    expect(response['hits'].first['objectId']).to eq(4)
+    expect(response['hits'].first).not_to have_key('_formatted')
+  end
 end
