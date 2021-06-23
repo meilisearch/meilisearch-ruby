@@ -6,62 +6,62 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
       {
         objectId: 123,
         title: 'Pride and Prejudice',
-        year: '1813',
+        year: 1813,
         author: 'Jane Austen',
         genre: 'romance'
       },
       {
         objectId: 456,
         title: 'Le Petit Prince',
-        year: '1943',
+        year: 1943,
         author: 'Antoine de Saint-Exupéry',
         genre: 'adventure'
       },
       {
         objectId: 1,
         title: 'Alice In Wonderland',
-        year: '1865',
+        year: 1865,
         author: 'Lewis Carroll',
         genre: 'adventure'
       },
       {
         objectId: 2,
         title: 'Le Rouge et le Noir',
-        year: '1830',
+        year: 1830,
         author: 'Stendhal',
         genre: 'romance'
       },
       {
         objectId: 1344,
         title: 'The Hobbit',
-        year: '1937',
+        year: 1937,
         author: 'J. R. R. Tolkien',
         genre: 'adventure'
       },
       {
         objectId: 4,
         title: 'Harry Potter and the Half-Blood Prince',
-        year: '2005',
+        year: 2005,
         author: 'J. K. Rowling',
         genre: 'fantasy'
       },
       {
         objectId: 2056,
         title: 'Harry Potter and the Deathly Hallows',
-        year: '2007',
+        year: 2007,
         author: 'J. K. Rowling',
         genre: 'fantasy'
       },
       {
         objectId: 42,
         title: 'The Hitchhiker\'s Guide to the Galaxy',
-        year: '1978',
+        year: 1978,
         author: 'Douglas Adams'
       },
       {
         objectId: 190,
         title: 'A Game of Thrones',
-        year: '1996',
+        year: 1996,
         author: 'George R. R. Martin',
         genre: 'fantasy'
       }
@@ -112,5 +112,19 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
     expect(response['facetsDistribution']['genre']['adventure']).to eq(3)
     expect(response['facetsDistribution']['genre']['fantasy']).to eq(3)
     expect(response['facetsDistribution']['author']['J. K. Rowling']).to eq(2)
+  end
+
+  it 'does a custom placeholder search with facetsDistribution on number' do
+    response = @index.search('', facetsDistribution: ['year'])
+    expect(response.keys).to contain_exactly(
+      *$DEFAULT_SEARCH_RESPONSE_KEYS,
+      'facetsDistribution',
+      'exhaustiveFacetsCount'
+    )
+    expect(response['exhaustiveFacetsCount']).to be true
+    expect(response['nbHits']).to eq(@documents.count)
+    expect(response['facetsDistribution'].keys).to contain_exactly('year')
+    expect(response['facetsDistribution']['year'].keys).to contain_exactly(@documents.map{ |o| o[:year] })
+    expect(response['facetsDistribution']['year'][1943]).to eq(1)
   end
 end
