@@ -86,7 +86,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       response = index.documents(offset: 2, limit: 5)
       expect(response).to be_a(Array)
       expect(response.size).to eq(5)
-      expect(response.first['objectId']).to eq(1)
+      expect(response.first['objectId']).to eq(index.documents[2]['objectId'])
     end
 
     it 'updates documents in index (as an array of documents)' do
@@ -181,8 +181,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       expect(response).to have_key('status')
-      expect(response['status']).not_to eql('enqueued')
-      expect(response['status']).to eql('processed')
+      expect(response['status']).to eq('processed')
       expect(index.documents.count).to eq(documents.count + 1)
       expect(index.document(id)['title']).to eq(title)
       response = index.delete_document(id)
@@ -458,10 +457,11 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       { title: 'Le Rouge et le Noir' }
     end
 
-    it 'returns a 400' do
-      expect do
-        index.add_documents(documents)
-      end.to raise_missing_primary_key_meilisearch_api_error
+    it 'Impossible to push docs if the pk is missing' do
+      response = index.add_documents!(documents)
+      update = index.get_update_status(response['updateId'])
+      expect(update['status']).to eq('failed')
+      expect(update['errorCode']).to eq('missing_primary_key')
     end
   end
 
