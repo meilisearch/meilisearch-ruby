@@ -303,6 +303,13 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(synonyms['hp']).to eq(['harry potter'])
     end
 
+    it 'updates synonyms at null' do
+      response = index.update_synonyms(nil)
+      expect(response).to have_key('updateId')
+      index.wait_for_pending_update(response['updateId'])
+      expect(index.synonyms).to be_empty
+    end
+
     it 'deletes all the synonyms' do
       response = index.reset_synonyms
       expect(response).to be_a(Hash)
@@ -353,6 +360,13 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       sw = index.stop_words
       expect(sw).to be_a(Array)
       expect(sw).to contain_exactly(stop_words_string)
+    end
+
+    it 'updates stop-words at null' do
+      response = index.update_stop_words(nil)
+      expect(response).to have_key('updateId')
+      index.wait_for_pending_update(response['updateId'])
+      expect(index.stop_words).to be_empty
     end
 
     it 'returns an error when the body is invalid' do
