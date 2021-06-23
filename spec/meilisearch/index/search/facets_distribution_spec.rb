@@ -124,7 +124,7 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
     expect(response['exhaustiveFacetsCount']).to be true
     expect(response['nbHits']).to eq(@documents.count)
     expect(response['facetsDistribution'].keys).to contain_exactly('year')
-    expect(response['facetsDistribution']['year'].keys).to contain_exactly(@documents.map{ |o| o[:year] })
+    expect(response['facetsDistribution']['year'].keys).to contain_exactly(@documents.map { |o| o[:year] })
     expect(response['facetsDistribution']['year'][1943]).to eq(1)
   end
 end

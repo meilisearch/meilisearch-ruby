@@ -164,8 +164,8 @@ module MeiliSearch
       stats['lastUpdate']
     end
 
-    def fields_distribution
-      stats['fieldsDistribution']
+    def field_distribution
+      stats['fieldDistribution']
     end
 
     ### SETTINGS - GENERAL
