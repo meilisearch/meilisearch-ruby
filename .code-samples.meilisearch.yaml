@@ -14,11 +14,11 @@ update_an_index_1: |-
 delete_an_index_1: |-
   client.delete_index('movies')
 get_one_document_1: |-
-  index.document(25684)
+  client.index('movies').document(25684)
 get_documents_1: |-
-  index.documents(limit: 2)
+  client.index('movies').documents(limit: 2)
 add_or_replace_documents_1: |-
-  index.add_documents([
+  client.index('movies').add_documents([
     {
       id: 287947,
       title: 'Shazam',
@@ -28,7 +28,7 @@ add_or_replace_documents_1: |-
     }
   ])
 add_or_update_documents_1: |-
-  index.update_documents([
+  client.index('movies').update_documents([
     {
       id: 287947,
       title: 'Shazam ⚡️',
@@ -36,23 +36,23 @@ add_or_update_documents_1: |-
     }
   ])
 delete_all_documents_1: |-
-  index.delete_all_documents
+  client.index('movies').delete_all_documents
 delete_one_document_1: |-
-  index.delete_document(25684)
+  client.index('movies').delete_document(25684)
 delete_documents_1: |-
-  index.delete_documents([23488, 153738, 437035, 363869])
+  client.index('movies').delete_documents([23488, 153738, 437035, 363869])
 search_post_1: |-
-  index.search('american ninja')
+  client.index('movies').search('american ninja')
 get_update_1: |-
-  index.get_update_status(1)
+  client.index('movies').get_update_status(1)
 get_all_updates_1: |-
-  index.get_all_update_status
+  client.index('movies').get_all_update_status
 get_keys_1: |-
   client.keys
 get_settings_1: |-
-  index.settings
+  client.index('movies').settings
 update_settings_1: |-
-  index.update_settings({
+  client.index('movies').update_settings({
     rankingRules: [
       'typo',
       'words',
@@ -86,27 +86,27 @@ update_settings_1: |-
     }
   })
 reset_settings_1: |-
-  index.reset_settings
+  client.index('movies').reset_settings
 get_synonyms_1: |-
-  index.synonyms
+  client.index('movies').synonyms
 update_synonyms_1: |-
-  index.update_synonyms({
+  client.index('movies').update_synonyms({
     wolverine: ['xmen', 'logan'],
     logan: ['wolverine', 'xmen'],
     wow: ['world of warcraft']
   })
 reset_synonyms_1: |-
-  index.reset_synonyms
+  client.index('movies').reset_synonyms
 get_stop_words_1: |-
-  index.stop_words
+  client.index('movies').stop_words
 update_stop_words_1: |-
-  index.update_stop_words(['of', 'the', 'to'])
+  client.index('movies').update_stop_words(['of', 'the', 'to'])
 reset_stop_words_1: |-
-  index.reset_stop_words
+  client.index('movies').reset_stop_words
 get_ranking_rules_1: |-
-  index.ranking_rules
+  client.index('movies').ranking_rules
 update_ranking_rules_1: |-
-  index.update_ranking_rules([
+  client.index('movies').update_ranking_rules([
     'typo',
     'words',
     'proximity',
@@ -117,43 +117,43 @@ update_ranking_rules_1: |-
     'desc(rank)'
   ])
 reset_ranking_rules_1: |-
-  index.reset_ranking_rules
+  client.index('movies').reset_ranking_rules
 get_distinct_attribute_1: |-
-  index.distinct_attribute
+  client.index('movies').distinct_attribute
 update_distinct_attribute_1: |-
-  index.update_distinct_attribute('movie_id')
+  client.index('movies').update_distinct_attribute('movie_id')
 reset_distinct_attribute_1: |-
-  index.reset_distinct_attribute
+  client.index('movies').reset_distinct_attribute
 get_searchable_attributes_1: |-
-  index.searchable_attributes
+  client.index('movies').searchable_attributes
 update_searchable_attributes_1: |-
-  index.update_searchable_attributes([
+  client.index('movies').update_searchable_attributes([
     'title',
     'description',
     'genre'
   ])
 reset_searchable_attributes_1: |-
-  index.reset_searchable_attributes
+  client.index.reset_searchable_attributes
 get_filterable_attributes_1: |-
-  index.filterable_attributes
+  client.index.filterable_attributes
 update_filterable_attributes_1: |-
   index.update_filterable_attributes([
     'genres',
     'director'
   ])
 reset_filterable_attributes_1: |-
-  index.reset_filterable_attributes
+  client.index.reset_filterable_attributes
 get_displayed_attributes_1: |-
-  index.get_displayed_attributes
+  client.index('movies').get_displayed_attributes
 update_displayed_attributes_1: |-
-  index.update_displayed_attributes([
+  client.index('movies').update_displayed_attributes([
     'title',
     'description',
     'genre',
     'release_date'
   ])
 reset_displayed_attributes_1: |-
-  index.reset_displayed_attributes
+  client.index('movies').reset_displayed_attributes
 get_index_stats_1: |-
   client.index('movies').stats
 get_indexes_stats_1: |-
@@ -165,13 +165,13 @@ get_version_1: |-
 distinct_attribute_guide_1: |-
   client.index('jackets').update_distinct_attribute('product_id')
 field_properties_guide_searchable_1: |-
-  index.update_searchable_attributes([
+  client.index('movies').update_searchable_attributes([
     'title',
     'description',
     'genre'
   ])
 field_properties_guide_displayed_1: |-
-  index.update_settings({
+  client.index('movies').update_settings({
     displayedAttributes: [
       'title',
       'description',
@@ -182,61 +182,61 @@ field_properties_guide_displayed_1: |-
 filtering_guide_1: |-
   index.search('Avengers', { filter: 'release_date > 795484800' })
 filtering_guide_2: |-
-  index.search('Batman', {
+  client.index.search('Batman', {
     filter: 'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan")'
   })
 filtering_guide_3: |-
-  index.search('horror', { filter: 'director = "Jordan Peele"' })
+  client.index.search('horror', { filter: 'director = "Jordan Peele"' })
 filtering_guide_4: |-
-  index.search('Planet of the Apes', {
+  client.index.search('Planet of the Apes', {
     filter: 'rating >= 3 AND (NOT director = "Tim Burton")'
   })
 search_parameter_guide_query_1: |-
-  index.search('shifu')
+  client.index('movies').search('shifu')
 search_parameter_guide_offset_1: |-
-  index.search('shifu', {
+  client.index('movies').search('shifu', {
     offset: 1
   })
 search_parameter_guide_limit_1: |-
-  index.search('shifu', {
+  client.index('movies').search('shifu', {
     limit: 2
   })
 search_parameter_guide_retrieve_1: |-
-  index.search('shifu', {
+  client.index('movies').search('shifu', {
     attributesToRetrieve: ['overview', 'title']
   })
 search_parameter_guide_crop_1: |-
-  index.search('shifu', {
+  client.index('movies').search('shifu', {
     attributesToCrop: ['overview'],
     cropLength: 10
   })
 search_parameter_guide_highlight_1: |-
-  index.search('shifu', {
+  client.index('movies').search('shifu', {
     attributesToHighlight: ['overview']
   })
 search_parameter_guide_matches_1: |-
-  index.search('n', {
+  client.index.search('n', {
     filter: 'title="Kung Fu Panda"',
     attributesToHighlight: ['overview'],
     matches: true
   })
 search_parameter_guide_filter_1: |-
-  index.search('n', {
+  client.index.search('n', {
     filter: 'title = Nightshift'
   })
 search_parameter_guide_filter_2: |-
-  index.search('n', {
+  client.index.search('n', {
     filter: 'title="Kung Fu Panda"'
   })
 settings_guide_synonyms_1: |-
-  index.update_settings({
+  client.index('movies').update_settings({
     synonyms: {
       sweater: ['jumper'],
       jumper: ['sweater']
     }
   })
 settings_guide_stop_words_1: |-
-  index.update_settings({
+  client.index('movies').update_settings({
     stopWords: [
       'the',
       'a',
@@ -244,7 +244,7 @@ settings_guide_stop_words_1: |-
     ]
   })
 settings_guide_ranking_rules_1: |-
-  index.update_settings({
+  client.index('movies').update_settings({
     rankingRules: [
       'typo',
       'words',
@@ -259,7 +259,7 @@ settings_guide_ranking_rules_1: |-
 settings_guide_distinct_1: |-
   client.index('jackets').update_distinct_attribute('product_id')
 settings_guide_searchable_1: |-
-  index.update_settings({
+  client.index('movies').update_settings({
     searchableAttributes: [
       'title',
       'description',
@@ -267,7 +267,7 @@ settings_guide_searchable_1: |-
     ]
   })
 settings_guide_displayed_1: |-
-  index.update_settings({
+  client.index('movies').update_settings({
     displayedAttributes: [
       'title',
       'description',
@@ -280,19 +280,19 @@ add_movies_json_1: |-
 
   movies_json = File.read('movies.json')
   movies = JSON.parse(movies_json)
-  index.add_documents(movies)
+  client.index('movies').add_documents(movies)
 documents_guide_add_movie_1: |-
-  index.add_documents([{
+  client.index('movies').add_documents([{
     "movie_id": "123sq178",
     "title": "Amelie Poulain"
   }])
 search_guide_1: |-
-  index.search('shifu', {
+  client.index('movies').search('shifu', {
     limit: 5,
     offset: 10
   })
 search_guide_2: |-
-  index.search('Avengers', {
+  client.index.search('Avengers', {
     filter: 'release_date > 795484800'
   })
 getting_started_add_documents_md: |-
@@ -315,36 +315,36 @@ getting_started_add_documents_md: |-
   [About this SDK](https://www.github.com/meilisearch/meilisearch-ruby)
 getting_started_search_md: |-
   ```ruby
-  index.search('botman')
+  client.index('movies').search('botman')
   ```
 
   [About this SDK](https://www.github.com/meilisearch/meilisearch-ruby)
 faceted_search_update_settings_1: |-
-  index.update_filterable_attributes([
+  client.index.update_filterable_attributes([
     'director',
     'genres'
   ])
 # faceted_search_facet_filters_1: |-
-#   index.search('thriller', {
+#   client.index.search('thriller', {
 #     facetFilters: [['genres:Horror', 'genres:Mystery'], 'director:Jordan Peele']
 #   })
 faceted_search_facets_distribution_1: |-
-  index.search('Batman', {
+  client.index('movies').search('Batman', {
     facetsDistribution: ['genres']
   })
 faceted_search_walkthrough_filterable_attributes_1: |-
-  index.update_filterable_attributes([
+  client.index.update_filterable_attributes([
     'director',
     'producer',
     'genres',
     'production_companies'
   ])
 # faceted_search_walkthrough_facet_filters_1: |-
-#   index.search('thriller', {
+#   client.index.search('thriller', {
 #     facetFilters: [['genres:Horror', 'genres:Mystery'], 'director:Jordan Peele']
 #   })
 faceted_search_walkthrough_facets_distribution_1: |-
-  index.search('Batman', {
+  client.index('movies').search('Batman', {
     facetsDistribution: ['genres']
   })
 post_dump_1: |-
