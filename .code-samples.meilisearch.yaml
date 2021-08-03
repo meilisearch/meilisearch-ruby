@@ -54,11 +54,10 @@ get_settings_1: |-
 update_settings_1: |-
   client.index('movies').update_settings({
     rankingRules: [
-      'typo',
       'words',
+      'typo',
       'proximity',
       'attribute',
-      'wordsPosition',
       'exactness',
       'desc(release_date)',
       'desc(rank)'
@@ -107,11 +106,10 @@ get_ranking_rules_1: |-
   client.index('movies').ranking_rules
 update_ranking_rules_1: |-
   client.index('movies').update_ranking_rules([
-    'typo',
     'words',
+    'typo',
     'proximity',
     'attribute',
-    'wordsPosition',
     'exactness',
     'asc(release_date)',
     'desc(rank)'
@@ -211,7 +209,7 @@ search_parameter_guide_crop_1: |-
     cropLength: 10
   })
 search_parameter_guide_highlight_1: |-
-  client.index('movies').search('shifu', {
+  client.index('movies').search('winter feast', {
     attributesToHighlight: ['overview']
   })
 search_parameter_guide_matches_1: |-
@@ -225,11 +223,11 @@ search_parameter_guide_filter_1: |-
     filter: 'title = Nightshift'
   })
 search_parameter_guide_filter_2: |-
-  client.index.search('n', {
+  client.index.search('shifu', {
     filter: 'title="Kung Fu Panda"'
   })
 settings_guide_synonyms_1: |-
-  client.index('movies').update_settings({
+  client.index('tops').update_settings({
     synonyms: {
       sweater: ['jumper'],
       jumper: ['sweater']
@@ -246,11 +244,10 @@ settings_guide_stop_words_1: |-
 settings_guide_ranking_rules_1: |-
   client.index('movies').update_settings({
     rankingRules: [
-      'typo',
       'words',
+      'typo',
       'proximity',
       'attribute',
-      'wordsPosition',
       'exactness',
       'asc(release_date)',
       'desc(rank)'
@@ -324,10 +321,10 @@ faceted_search_update_settings_1: |-
     'director',
     'genres'
   ])
-# faceted_search_facet_filters_1: |-
-#   client.index.search('thriller', {
-#     facetFilters: [['genres:Horror', 'genres:Mystery'], 'director:Jordan Peele']
-#   })
+faceted_search_filter_1: |-
+  client.index.search('thriller', {
+    filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
+  })
 faceted_search_facets_distribution_1: |-
   client.index('movies').search('Batman', {
     facetsDistribution: ['genres']
@@ -339,10 +336,10 @@ faceted_search_walkthrough_filterable_attributes_1: |-
     'genres',
     'production_companies'
   ])
-# faceted_search_walkthrough_facet_filters_1: |-
-#   client.index.search('thriller', {
-#     facetFilters: [['genres:Horror', 'genres:Mystery'], 'director:Jordan Peele']
-#   })
+faceted_search_walkthrough_filter_1: |-
+  client.index.search('thriller', {
+    filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
+  })
 faceted_search_walkthrough_facets_distribution_1: |-
   client.index('movies').search('Batman', {
     facetsDistribution: ['genres']
