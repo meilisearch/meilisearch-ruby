@@ -214,7 +214,7 @@ search_parameter_guide_highlight_1: |-
   })
 search_parameter_guide_matches_1: |-
   client.index('movies').search('n', {
-    filter: 'title="Kung Fu Panda"',
+    filter: 'title="winter feast"',
     attributesToHighlight: ['overview'],
     matches: true
   })
