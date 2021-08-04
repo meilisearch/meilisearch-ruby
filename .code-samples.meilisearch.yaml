@@ -223,7 +223,7 @@ search_parameter_guide_filter_1: |-
     filter: 'title = Nightshift'
   })
 search_parameter_guide_filter_2: |-
-  client.index.search('shifu', {
+  client.index('movies').search('shifu', {
     filter: 'title="Kung Fu Panda"'
   })
 settings_guide_synonyms_1: |-
