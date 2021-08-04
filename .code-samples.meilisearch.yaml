@@ -213,9 +213,7 @@ search_parameter_guide_highlight_1: |-
     attributesToHighlight: ['overview']
   })
 search_parameter_guide_matches_1: |-
-  client.index('movies').search('n', {
-    filter: 'title="winter feast"',
-    attributesToHighlight: ['overview'],
+  client.index('movies').search('winter feast', {
     matches: true
   })
 search_parameter_guide_filter_1: |-
