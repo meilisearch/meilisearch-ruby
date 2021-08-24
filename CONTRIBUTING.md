@@ -8,6 +8,7 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 - [How to Contribute](#how-to-contribute)
 - [Development Workflow](#development-workflow)
 - [Git Guidelines](#git-guidelines)
+  - [How to Publish the Release](#how-to-publish-the-release)
 
 <!-- /MarkdownTOC -->
 
@@ -137,7 +138,7 @@ _[Read more about this](https://github.com/meilisearch/integration-guides/blob/m
 This project integrates a tool to create automated changelogs.<br>
 _[Read more about this](https://github.com/meilisearch/integration-guides/blob/main/guides/release-drafter.md)._
 
-### How to Publish the Release <!-- omit in toc -->
+### How to Publish the Release
 
 ⚠️ Before doing anything, make sure you got through the guide about [Releasing an Integration](https://github.com/meilisearch/integration-guides/blob/main/guides/integration-release.md).
 
