@@ -51,7 +51,6 @@ RSpec.describe 'MeiliSearch::Index - Basic search' do
                                              'words',
                                              'proximity',
                                              'attribute',
-                                             'wordsPosition',
                                              'exactness',
                                              'asc(objectId)'
                                            ])
