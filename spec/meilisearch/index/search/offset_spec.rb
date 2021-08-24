@@ -28,22 +28,14 @@ RSpec.describe 'MeiliSearch::Index - Search with offset' do
     expect(response['hits'][1]).to eq(response_with_offset['hits'][0])
   end
 
-  it 'does a custom placeholder search with an offset set to 3' do
+  it 'does a placeholder search with an offset set to 3' do
     response = @index.search('')
     response_with_offset = @index.search('', offset: 3)
     expect(response['hits'][3]).to eq(response_with_offset['hits'][0])
   end
 
-  it 'does a custom placeholder search with an offset set to 3 and custom ranking rules' do
-    response = @index.update_ranking_rules([
-                                             'typo',
-                                             'words',
-                                             'proximity',
-                                             'attribute',
-                                             'wordsPosition',
-                                             'exactness',
-                                             'asc(objectId)'
-                                           ])
+  it 'does a placeholder search with an offset set to 3 and custom ranking rules' do
+    response = @index.update_ranking_rules(['asc(objectId)'])
     @index.wait_for_pending_update(response['updateId'])
     response = @index.search('')
     response_with_offset = @index.search('', offset: 3)

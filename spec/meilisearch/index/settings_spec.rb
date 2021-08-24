@@ -8,11 +8,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
   let(:default_ranking_rules) do
     [
-      'typo',
       'words',
+      'typo',
       'proximity',
       'attribute',
-      'wordsPosition',
       'exactness'
     ]
   end
@@ -27,7 +26,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       'displayedAttributes',
       'stopWords',
       'synonyms',
-      'attributesForFaceting'
+      'filterableAttributes'
     ]
   end
 
@@ -121,9 +120,11 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'fails when updating with wrong ranking rules name' do
-      expect do
-        index.update_ranking_rules(wrong_ranking_rules)
-      end.to raise_bad_request_meilisearch_api_error
+      response = index.update_ranking_rules(wrong_ranking_rules)
+      index.wait_for_pending_update(response['updateId'])
+      response = index.get_update_status(response['updateId'])
+      expect(response.keys).to include('message')
+      expect(response['errorCode']).to eq('internal')
     end
 
     it 'resets ranking rules' do
@@ -302,6 +303,13 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(synonyms['hp']).to eq(['harry potter'])
     end
 
+    it 'updates synonyms at null' do
+      response = index.update_synonyms(nil)
+      expect(response).to have_key('updateId')
+      index.wait_for_pending_update(response['updateId'])
+      expect(index.synonyms).to be_empty
+    end
+
     it 'deletes all the synonyms' do
       response = index.reset_synonyms
       expect(response).to be_a(Hash)
@@ -354,6 +362,13 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(sw).to contain_exactly(stop_words_string)
     end
 
+    it 'updates stop-words at null' do
+      response = index.update_stop_words(nil)
+      expect(response).to have_key('updateId')
+      index.wait_for_pending_update(response['updateId'])
+      expect(index.stop_words).to be_empty
+    end
+
     it 'returns an error when the body is invalid' do
       expect do
         index.update_stop_words(test: 'test')
@@ -370,7 +385,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
   end
 
-  context 'On attributes-for-faceting sub-routes' do
+  context 'On filterable-attributes sub-routes' do
     before(:all) do
       @uid = SecureRandom.hex(4)
       @client.create_index(@uid)
@@ -379,34 +394,34 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     after(:all) { clear_all_indexes(@client) }
 
     let(:index) { @client.index(@uid) }
-    let(:attributes_for_faceting) { ['title', 'description'] }
+    let(:filterable_attributes) { ['title', 'description'] }
 
-    it 'gets default values of attributes for faceting' do
-      response = index.attributes_for_faceting
+    it 'gets default values of filterable attributes' do
+      response = index.filterable_attributes
       expect(response).to be_a(Array)
       expect(response).to be_empty
     end
 
-    it 'updates attributes for faceting' do
-      response = index.update_attributes_for_faceting(attributes_for_faceting)
+    it 'updates filterable attributes' do
+      response = index.update_filterable_attributes(filterable_attributes)
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
-      expect(index.attributes_for_faceting).to contain_exactly(*attributes_for_faceting)
+      expect(index.filterable_attributes).to contain_exactly(*filterable_attributes)
     end
 
-    it 'updates attributes for faceting at null' do
-      response = index.update_attributes_for_faceting(nil)
+    it 'updates filterable attributes at null' do
+      response = index.update_filterable_attributes(nil)
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
-      expect(index.attributes_for_faceting).to be_empty
+      expect(index.filterable_attributes).to be_empty
     end
 
-    it 'resets attributes for faceting' do
-      response = index.reset_attributes_for_faceting
+    it 'resets filterable attributes' do
+      response = index.reset_filterable_attributes
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
-      expect(index.attributes_for_faceting).to be_empty
+      expect(index.filterable_attributes).to be_empty
     end
   end
 
@@ -479,9 +494,11 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     let(:index) { @client.index(@uid) }
 
     it 'does not add document when there is no primary-key' do
-      expect do
-        index.add_documents(title: 'Test')
-      end.to raise_missing_primary_key_meilisearch_api_error
+      response = index.add_documents(title: 'Test')
+      index.wait_for_pending_update(response['updateId'])
+      response = index.get_update_status(response['updateId'])
+      expect(response.keys).to include('message')
+      expect(response['errorCode']).to eq('missing_primary_key')
     end
 
     it 'adds documents when there is a primary-key' do
@@ -522,7 +539,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.method(:displayed_attributes) == index.method(:get_displayed_attributes)).to be_truthy
       expect(index.method(:synonyms) == index.method(:get_synonyms)).to be_truthy
       expect(index.method(:stop_words) == index.method(:get_stop_words)).to be_truthy
-      expect(index.method(:attributes_for_faceting) == index.method(:get_attributes_for_faceting)).to be_truthy
+      expect(index.method(:filterable_attributes) == index.method(:get_filterable_attributes)).to be_truthy
     end
   end
 end

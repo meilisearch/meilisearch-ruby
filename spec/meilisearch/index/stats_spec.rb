@@ -33,7 +33,7 @@ RSpec.describe 'MeiliSearch::Index - Stats' do
   end
 
   it 'gets the distribution of fields' do
-    response = @index.fields_distribution
+    response = @index.field_distribution
     expect(response).to be_a(Hash)
   end
 

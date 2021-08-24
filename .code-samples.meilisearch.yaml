@@ -54,11 +54,10 @@ get_settings_1: |-
 update_settings_1: |-
   client.index('movies').update_settings({
     rankingRules: [
-      'typo',
       'words',
+      'typo',
       'proximity',
       'attribute',
-      'wordsPosition',
       'exactness',
       'desc(release_date)',
       'desc(rank)'
@@ -107,11 +106,10 @@ get_ranking_rules_1: |-
   client.index('movies').ranking_rules
 update_ranking_rules_1: |-
   client.index('movies').update_ranking_rules([
-    'typo',
     'words',
+    'typo',
     'proximity',
     'attribute',
-    'wordsPosition',
     'exactness',
     'asc(release_date)',
     'desc(rank)'
@@ -134,15 +132,15 @@ update_searchable_attributes_1: |-
   ])
 reset_searchable_attributes_1: |-
   client.index('movies').reset_searchable_attributes
-get_attributes_for_faceting_1: |-
-  client.index('movies').attributes_for_faceting
-update_attributes_for_faceting_1: |-
-  client.index('movies').update_attributes_for_faceting([
+get_filterable_attributes_1: |-
+  client.index('movies').filterable_attributes
+update_filterable_attributes_1: |-
+  client.index('movies').update_filterable_attributes([
     'genres',
     'director'
   ])
-reset_attributes_for_faceting_1: |-
-  client.index('movies').reset_attributes_for_faceting
+reset_filterable_attributes_1: |-
+  client.index('movies').reset_filterable_attributes
 get_displayed_attributes_1: |-
   client.index('movies').get_displayed_attributes
 update_displayed_attributes_1: |-
@@ -180,16 +178,16 @@ field_properties_guide_displayed_1: |-
     ]
   })
 filtering_guide_1: |-
-  client.index('movies').search('Avengers', { filters: 'release_date > 795484800' })
+  client.index('movies').search('Avengers', { filter: 'release_date > 795484800' })
 filtering_guide_2: |-
   client.index('movies').search('Batman', {
-    filters: 'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan")'
+    filter: 'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan")'
   })
 filtering_guide_3: |-
-  client.index('movies').search('horror', { filters: 'director = "Jordan Peele"' })
+  client.index('movies').search('horror', { filter: 'director = "Jordan Peele"' })
 filtering_guide_4: |-
   client.index('movies').search('Planet of the Apes', {
-    filters: 'rating >= 3 AND (NOT director = "Tim Burton")'
+    filter: 'rating >= 3 AND (NOT director = "Tim Burton")'
   })
 search_parameter_guide_query_1: |-
   client.index('movies').search('shifu')
@@ -211,25 +209,23 @@ search_parameter_guide_crop_1: |-
     cropLength: 10
   })
 search_parameter_guide_highlight_1: |-
-  client.index('movies').search('shifu', {
+  client.index('movies').search('winter feast', {
     attributesToHighlight: ['overview']
   })
 search_parameter_guide_matches_1: |-
-  client.index('movies').search('n', {
-    filters: 'title="Kung Fu Panda"',
-    attributesToHighlight: ['overview'],
+  client.index('movies').search('winter feast', {
     matches: true
   })
 search_parameter_guide_filter_1: |-
   client.index('movies').search('n', {
-    filters: 'title = Nightshift'
+    filter: 'title = Nightshift'
   })
 search_parameter_guide_filter_2: |-
-  client.index('movies').search('n', {
-    filters: 'title="Kung Fu Panda"'
+  client.index('movies').search('shifu', {
+    filter: 'title="Kung Fu Panda"'
   })
 settings_guide_synonyms_1: |-
-  client.index('movies').update_settings({
+  client.index('tops').update_settings({
     synonyms: {
       sweater: ['jumper'],
       jumper: ['sweater']
@@ -246,11 +242,10 @@ settings_guide_stop_words_1: |-
 settings_guide_ranking_rules_1: |-
   client.index('movies').update_settings({
     rankingRules: [
-      'typo',
       'words',
+      'typo',
       'proximity',
       'attribute',
-      'wordsPosition',
       'exactness',
       'asc(release_date)',
       'desc(rank)'
@@ -293,7 +288,7 @@ search_guide_1: |-
   })
 search_guide_2: |-
   client.index('movies').search('Avengers', {
-    filters: 'release_date > 795484800'
+    filter: 'release_date > 795484800'
   })
 getting_started_add_documents_md: |-
   ```bash
@@ -320,28 +315,28 @@ getting_started_search_md: |-
 
   [About this SDK](https://www.github.com/meilisearch/meilisearch-ruby)
 faceted_search_update_settings_1: |-
-  client.index('movies').update_attributes_for_faceting([
+  client.index('movies').update_filterable_attributes([
     'director',
     'genres'
   ])
-faceted_search_facet_filters_1: |-
+faceted_search_filter_1: |-
   client.index('movies').search('thriller', {
-    facetFilters: [['genres:Horror', 'genres:Mystery'], 'director:Jordan Peele']
+    filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
   })
 faceted_search_facets_distribution_1: |-
   client.index('movies').search('Batman', {
     facetsDistribution: ['genres']
   })
-faceted_search_walkthrough_attributes_for_faceting_1: |-
-  client.index('movies').update_attributes_for_faceting([
+faceted_search_walkthrough_filterable_attributes_1: |-
+  client.index('movies').update_filterable_attributes([
     'director',
     'producer',
     'genres',
     'production_companies'
   ])
-faceted_search_walkthrough_facet_filters_1: |-
+faceted_search_walkthrough_filter_1: |-
   client.index('movies').search('thriller', {
-    facetFilters: [['genres:Horror', 'genres:Mystery'], 'director:Jordan Peele']
+    filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
   })
 faceted_search_walkthrough_facets_distribution_1: |-
   client.index('movies').search('Batman', {
@@ -351,3 +346,5 @@ post_dump_1: |-
   client.create_dump
 get_dump_status_1: |-
   client.get_dump_status(20201006-053243949)
+phrase_search_1: |-
+  client.index('movies').search('"african american" horror')

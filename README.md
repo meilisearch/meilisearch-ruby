@@ -92,7 +92,7 @@ documents = [
 index.add_documents(documents) # => { "updateId": 0 }
 ```
 
-With the `updateId`, you can check the status (`enqueued`, `processed` or `failed`) of your documents addition using the [update endpoint](https://docs.meilisearch.com/reference/api/updates.html#get-an-update-status).
+With the `updateId`, you can check the status (`enqueued`, `processing`, `processed` or `failed`) of your documents addition using the [update endpoint](https://docs.meilisearch.com/reference/api/updates.html#get-an-update-status).
 
 💡 To customize the `Client`, for example, increasing the default timeout, please check out [this section](https://github.com/meilisearch/meilisearch-ruby/wiki/Client-Options) of the Wiki.
 
@@ -122,11 +122,9 @@ Output:
 All the supported options are described in the [search parameters](https://docs.meilisearch.com/reference/features/search_parameters.html) section of the documentation.
 
 ```ruby
-index.search('prince',
-  {
-    filters: 'book_id > 10',
-    attributesToHighlight: ['*']
-  }
+index.search(
+  'hob',
+  attributesToHighlight: ['*']
 )
 ```
 
@@ -136,24 +134,24 @@ JSON output:
 {
     "hits": [
         {
-            "book_id": 456,
-            "title": "Le Petit Prince",
+            "book_id": 1344,
+            "title": "The Hobbit",
             "_formatted": {
-                "book_id": 456,
-                "title": "Le Petit <em>Prince</em>"
+                "book_id": 1344,
+                "title": "The <em>Hob</em>bit"
             }
         }
     ],
     "offset": 0,
     "limit": 20,
     "processingTimeMs": 0,
-    "query": "prince"
+    "query": "hob"
 }
 ```
 
 ## 🤖 Compatibility with MeiliSearch
 
-This package only guarantees the compatibility with the [version v0.20.0 of MeiliSearch](https://github.com/meilisearch/MeiliSearch/releases/tag/v0.20.0).
+This package only guarantees the compatibility with the [version v0.21.0 of MeiliSearch](https://github.com/meilisearch/MeiliSearch/releases/tag/v0.21.0).
 
 ## 💡 Learn More
 

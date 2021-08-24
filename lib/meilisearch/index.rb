@@ -129,11 +129,15 @@ module MeiliSearch
       http_get "/indexes/#{@uid}/updates"
     end
 
+    def achieved_upate?(update)
+      update['status'] != 'enqueued' && update['status'] != 'processing'
+    end
+
     def wait_for_pending_update(update_id, timeout_in_ms = 5000, interval_in_ms = 50)
       Timeout.timeout(timeout_in_ms.to_f / 1000) do
         loop do
           get_update = get_update_status(update_id)
-          return get_update if get_update['status'] != 'enqueued'
+          return get_update if achieved_upate?(get_update)
 
           sleep interval_in_ms.to_f / 1000
         end
@@ -160,8 +164,8 @@ module MeiliSearch
       stats['lastUpdate']
     end
 
-    def fields_distribution
-      stats['fieldsDistribution']
+    def field_distribution
+      stats['fieldDistribution']
     end
 
     ### SETTINGS - GENERAL
@@ -220,7 +224,7 @@ module MeiliSearch
     alias get_stop_words stop_words
 
     def update_stop_words(stop_words)
-      body = stop_words.is_a?(Array) ? stop_words : [stop_words]
+      body = stop_words.nil? || stop_words.is_a?(Array) ? stop_words : [stop_words]
       http_post "/indexes/#{@uid}/settings/stop-words", body
     end
     alias stop_words= update_stop_words
@@ -277,20 +281,20 @@ module MeiliSearch
       http_delete "/indexes/#{@uid}/settings/displayed-attributes"
     end
 
-    ### SETTINGS - ATTRIBUTES FOR FACETING
+    ### SETTINGS - FILTERABLE ATTRIBUTES
 
-    def attributes_for_faceting
-      http_get "/indexes/#{@uid}/settings/attributes-for-faceting"
+    def filterable_attributes
+      http_get "/indexes/#{@uid}/settings/filterable-attributes"
     end
-    alias get_attributes_for_faceting attributes_for_faceting
+    alias get_filterable_attributes filterable_attributes
 
-    def update_attributes_for_faceting(attributes_for_faceting)
-      http_post "/indexes/#{@uid}/settings/attributes-for-faceting", attributes_for_faceting
+    def update_filterable_attributes(filterable_attributes)
+      http_post "/indexes/#{@uid}/settings/filterable-attributes", filterable_attributes
     end
-    alias attributes_for_faceting= update_attributes_for_faceting
+    alias filterable_attributes= update_filterable_attributes
 
-    def reset_attributes_for_faceting
-      http_delete "/indexes/#{@uid}/settings/attributes-for-faceting"
+    def reset_filterable_attributes
+      http_delete "/indexes/#{@uid}/settings/filterable-attributes"
     end
   end
 end
