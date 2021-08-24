@@ -8,7 +8,7 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 - [How to Contribute](#how-to-contribute)
 - [Development Workflow](#development-workflow)
 - [Git Guidelines](#git-guidelines)
-  - [How to Publish the Release](#how-to-publish-the-release)
+- [Release Process (for internal team only)](#release-process-for-internal-team-only)
 
 <!-- /MarkdownTOC -->
 
@@ -124,7 +124,7 @@ Some notes on GitHub PRs:
 - All PRs must be reviewed and approved by at least one maintainer.
 - The PR title should be accurate and descriptive of the changes. The title of the PR will be indeed automatically added to the next [release changelogs](https://github.com/meilisearch/meilisearch-ruby/releases/).
 
-## Release Process (for internal team only) <!-- omit in toc -->
+## Release Process (for internal team only)
 
 MeiliSearch tools follow the [Semantic Versioning Convention](https://semver.org/).
 
@@ -138,7 +138,7 @@ _[Read more about this](https://github.com/meilisearch/integration-guides/blob/m
 This project integrates a tool to create automated changelogs.<br>
 _[Read more about this](https://github.com/meilisearch/integration-guides/blob/main/guides/release-drafter.md)._
 
-### How to Publish the Release
+### How to Publish the Release <!-- omit in toc -->
 
 ⚠️ Before doing anything, make sure you got through the guide about [Releasing an Integration](https://github.com/meilisearch/integration-guides/blob/main/guides/integration-release.md).
 
