@@ -35,7 +35,7 @@ RSpec.describe 'MeiliSearch::Index - Search with offset' do
   end
 
   it 'does a placeholder search with an offset set to 3 and custom ranking rules' do
-    response = @index.update_ranking_rules(['asc(objectId)'])
+    response = @index.update_ranking_rules(['objectId:asc'])
     @index.wait_for_pending_update(response['updateId'])
     response = @index.search('')
     response_with_offset = @index.search('', offset: 3)
