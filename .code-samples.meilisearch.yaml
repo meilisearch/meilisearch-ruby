@@ -352,12 +352,7 @@ get_dump_status_1: |-
 phrase_search_1: |-
   client.index('movies').search('"african american" horror')
 sorting_guide_update_sortable_attributes_1: |-
-  client.index('books').update_settings(
-    sortableAttributes: [
-      'author',
-      'price'
-    ]
-  )
+  client.index('books').update_sortable_attributes(['author', 'price'])
 sorting_guide_update_ranking_rules_1: |-
   client.index('books').update_ranking_rules([
     'words',
