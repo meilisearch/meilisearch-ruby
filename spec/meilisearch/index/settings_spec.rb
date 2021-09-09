@@ -10,9 +10,9 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     [
       'words',
       'typo',
-      'sort',
       'proximity',
       'attribute',
+      'sort',
       'exactness'
     ]
   end
