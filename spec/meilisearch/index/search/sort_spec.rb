@@ -74,13 +74,13 @@ RSpec.describe 'MeiliSearch::Index - Sorted search' do
     response = @index.update_sortable_attributes(['year', 'author'])
     @index.wait_for_pending_update(response['updateId'])
     response = @index.update_ranking_rules([
-      'sort',
-      'words',
-      'typo',
-      'proximity',
-      'attribute',
-      'exactness'
-    ])
+                                             'sort',
+                                             'words',
+                                             'typo',
+                                             'proximity',
+                                             'attribute',
+                                             'exactness'
+                                           ])
     @index.wait_for_pending_update(response['updateId'])
   end
 
