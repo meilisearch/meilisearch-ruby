@@ -296,5 +296,21 @@ module MeiliSearch
     def reset_filterable_attributes
       http_delete "/indexes/#{@uid}/settings/filterable-attributes"
     end
+
+    ### SETTINGS - SORTABLE ATTRIBUTES
+
+    def sortable_attributes
+      http_get "/indexes/#{@uid}/settings/sortable-attributes"
+    end
+    alias get_sortable_attributes sortable_attributes
+
+    def update_sortable_attributes(sortable_attributes)
+      http_post "/indexes/#{@uid}/settings/sortable-attributes", sortable_attributes
+    end
+    alias sortable_attributes= update_sortable_attributes
+
+    def reset_sortable_attributes
+      http_delete "/indexes/#{@uid}/settings/sortable-attributes"
+    end
   end
 end
