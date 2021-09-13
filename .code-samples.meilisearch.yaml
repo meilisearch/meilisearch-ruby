@@ -60,7 +60,7 @@ update_settings_1: |-
       'attribute',
       'sort',
       'exactness',
-      'desc(release_date)',
+      'release_date:desc',
       'rank:desc'
     ],
     distinctAttribute: 'movie_id',
