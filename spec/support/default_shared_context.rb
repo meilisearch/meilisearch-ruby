@@ -2,13 +2,13 @@
 
 RSpec.shared_context 'test defaults' do
   let(:test_client) { MeiliSearch::Client.new(URL, MASTER_KEY) }
-  let(:test_uid) { 'test_uid' }
-  let(:test_index) { test_client.create_index(test_uid) }
+  let(:test_uid) { random_uid }
 
   before do
     clear_all_indexes(test_client)
+  end
 
-    # Create the test index after clearing
-    test_index
+  def random_uid
+    SecureRandom.hex(4)
   end
 end

@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe 'MeiliSearch::Index - Documents' do
-  let(:random_uid) { SecureRandom.hex(4) }
-  let(:index) { test_client.create_index(random_uid) }
+  let(:index) { test_client.create_index(test_uid) }
 
   context 'All basic tests with primary-key inference' do
     let(:documents) do

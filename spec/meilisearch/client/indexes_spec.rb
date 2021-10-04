@@ -54,6 +54,8 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
   end
 
   it 'get an already existing index with get_or_create_index method' do
+    test_client.create_index(test_uid)
+
     expect do
       index = test_client.get_or_create_index(test_uid)
 
@@ -64,6 +66,8 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
   end
 
   it 'fails to create an index with an uid already taken' do
+    test_client.create_index(test_uid)
+
     expect do
       test_client.create_index(test_uid)
     end.to raise_meilisearch_api_error_with(400, 'index_already_exists', 'invalid_request_error')
@@ -76,7 +80,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
   end
 
   it 'gets list of indexes' do
-    # test_index is the first index
+    test_client.create_index('first_index')
     test_client.create_index('second_index')
     test_client.create_index('third_index')
 
@@ -85,7 +89,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     expect(indexes).to be_a(Array)
     expect(indexes.length).to eq(3)
     uids = indexes.map { |elem| elem['uid'] }
-    expect(uids).to contain_exactly(test_uid, 'second_index', 'third_index')
+    expect(uids).to contain_exactly('first_index', 'second_index', 'third_index')
   end
 
   it 'fetch a specific index' do
@@ -112,14 +116,13 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
   end
 
   it 'deletes index' do
-    # test_index is the first index
     expect do
-      test_client.create_index('another_index')
-    end.to(change { test_client.indexes.length }.from(1).to(2))
+      test_client.create_index('index')
+    end.to(change { test_client.indexes.length }.by(1))
 
     expect do
-      expect(test_client.delete_index('another_index')).to be_nil
-    end.to(change { test_client.indexes.length }.from(2).to(1))
+      expect(test_client.delete_index('index')).to be_nil
+    end.to(change { test_client.indexes.length }.by(-1))
   end
 
   context 'with snake_case options' do

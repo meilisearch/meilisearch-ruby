@@ -35,8 +35,9 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
 
   it 'succeeds to search when using public key' do
     public_key = test_client.keys['public']
-    response = test_index.add_documents(title: 'Test')
-    test_index.wait_for_pending_update(response['updateId'])
+    index = test_client.create_index(test_uid)
+    response = index.add_documents(title: 'Test')
+    index.wait_for_pending_update(response['updateId'])
 
     new_client = MeiliSearch::Client.new(URL, public_key)
     response = new_client.index(test_uid).search('test')
@@ -44,6 +45,7 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
   end
 
   it 'succeeds to get settings when using private key' do
+    test_client.create_index(test_uid)
     private_key = test_client.keys['private']
     new_client = MeiliSearch::Client.new(URL, private_key)
     response = new_client.index(test_uid).settings
