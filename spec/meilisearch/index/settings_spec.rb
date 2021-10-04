@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe 'MeiliSearch::Index - Settings' do
-  before(:all) do
-    @client = MeiliSearch::Client.new(URL, MASTER_KEY)
-    clear_all_indexes(@client)
-  end
-
   let(:default_ranking_rules) do
     [
       'words',
@@ -33,14 +28,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   end
 
   context 'On global settings routes' do
-    before(:all) do
+    before do
       @uid = SecureRandom.hex(4)
-      @client.create_index(@uid)
+      test_client.create_index(@uid)
     end
 
-    after(:all) { clear_all_indexes(@client) }
-
-    let(:index) { @client.index(@uid) }
+    let(:index) { test_client.index(@uid) }
 
     it 'gets default values of settings' do
       response = index.settings
@@ -74,8 +67,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
       settings = index.settings
-      expect(settings['rankingRules']).to eq(['title:asc', 'typo'])
-      expect(settings['distinctAttribute']).to eq('title')
+      expect(settings['rankingRules']).to eq(default_ranking_rules)
+      expect(settings['distinctAttribute']).to be_nil
       expect(settings['stopWords']).to eq(['the'])
       expect(settings['synonyms']).to be_empty
     end
@@ -93,14 +86,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   end
 
   context 'On ranking-rules sub-routes' do
-    before(:all) do
+    before do
       @uid = SecureRandom.hex(4)
-      @client.create_index(@uid)
+      test_client.create_index(@uid)
     end
 
-    after(:all) { clear_all_indexes(@client) }
-
-    let(:index) { @client.index(@uid) }
+    let(:index) { test_client.index(@uid) }
     let(:ranking_rules) { ['title:asc', 'words', 'typo'] }
     let(:wrong_ranking_rules) { ['title:asc', 'typos'] }
 
@@ -140,14 +131,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   end
 
   context 'On distinct-attribute sub-routes' do
-    before(:all) do
+    before do
       @uid = SecureRandom.hex(4)
-      @client.create_index(@uid)
+      test_client.create_index(@uid)
     end
 
-    after(:all) { clear_all_indexes(@client) }
-
-    let(:index) { @client.index(@uid) }
+    let(:index) { test_client.index(@uid) }
     let(:distinct_attribute) { 'title' }
 
     it 'gets default values of distinct attribute' do
@@ -178,14 +167,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   end
 
   context 'On searchable-attributes sub-routes' do
-    before(:all) do
+    before do
       @uid = SecureRandom.hex(4)
-      @client.create_index(@uid)
+      test_client.create_index(@uid)
     end
 
-    after(:all) { clear_all_indexes(@client) }
-
-    let(:index) { @client.index(@uid) }
+    let(:index) { test_client.index(@uid) }
     let(:searchable_attributes) { ['title', 'description'] }
 
     it 'gets default values of searchable attributes' do
@@ -217,14 +204,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   end
 
   context 'On displayed-attributes sub-routes' do
-    before(:all) do
+    before do
       @uid = SecureRandom.hex(4)
-      @client.create_index(@uid)
+      test_client.create_index(@uid)
     end
 
-    after(:all) { clear_all_indexes(@client) }
-
-    let(:index) { @client.index(@uid) }
+    let(:index) { test_client.index(@uid) }
     let(:displayed_attributes) { ['title', 'description'] }
 
     it 'gets default values of displayed attributes' do
@@ -256,14 +241,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   end
 
   context 'On synonyms sub-routes' do
-    before(:all) do
+    before do
       @uid = SecureRandom.hex(4)
-      @client.create_index(@uid)
+      test_client.create_index(@uid)
     end
 
-    after(:all) { clear_all_indexes(@client) }
-
-    let(:index) { @client.index(@uid) }
+    let(:index) { test_client.index(@uid) }
     let(:synonyms) do
       {
         wow: ['world of warcraft'],
@@ -286,6 +269,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'gets all the synonyms' do
+      index.update_synonyms(synonyms)
       response = index.synonyms
       expect(response).to be_a(Hash)
       expect(response.count).to eq(3)
@@ -295,6 +279,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'overwrites all synonyms when updating' do
+      index.update_synonyms(synonyms)
       response = index.update_synonyms(hp: ['harry potter'], 'harry potter': ['hp'])
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
@@ -326,14 +311,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   end
 
   context 'On stop-words sub-routes' do
-    before(:all) do
+    before do
       @uid = SecureRandom.hex(4)
-      @client.create_index(@uid)
+      test_client.create_index(@uid)
     end
 
-    after(:all) { clear_all_indexes(@client) }
-
-    let(:index) { @client.index(@uid) }
+    let(:index) { test_client.index(@uid) }
     let(:stop_words_array) { ['the', 'of'] }
     let(:stop_words_string) { 'a' }
 
@@ -347,10 +330,11 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       response = index.update_stop_words(stop_words_array)
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
-      index.wait_for_pending_update(response['updateId'])
     end
 
     it 'gets list of stop-words' do
+      response = index.update_stop_words(stop_words_array)
+      index.wait_for_pending_update(response['updateId'])
       response = index.stop_words
       expect(response).to be_a(Array)
       expect(response).to contain_exactly(*stop_words_array)
@@ -390,14 +374,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   end
 
   context 'On filterable-attributes sub-routes' do
-    before(:all) do
+    before do
       @uid = SecureRandom.hex(4)
-      @client.create_index(@uid)
+      test_client.create_index(@uid)
     end
 
-    after(:all) { clear_all_indexes(@client) }
-
-    let(:index) { @client.index(@uid) }
+    let(:index) { test_client.index(@uid) }
     let(:filterable_attributes) { ['title', 'description'] }
 
     it 'gets default values of filterable attributes' do
@@ -430,14 +412,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   end
 
   context 'On sortable-attributes sub-routes' do
-    before(:all) do
+    before do
       @uid = SecureRandom.hex(4)
-      @client.create_index(@uid)
+      test_client.create_index(@uid)
     end
 
-    after(:all) { clear_all_indexes(@client) }
-
-    let(:index) { @client.index(@uid) }
+    let(:index) { test_client.index(@uid) }
     let(:sortable_attributes) { ['title', 'description'] }
 
     it 'gets default values of sortable attributes' do
@@ -470,14 +450,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   end
 
   context 'Index with primary-key' do
-    before(:all) do
+    before do
       @uid = SecureRandom.hex(4)
-      @client.create_index(@uid, primaryKey: 'id')
+      test_client.create_index(@uid, primaryKey: 'id')
     end
 
-    after(:all) { clear_all_indexes(@client) }
-
-    let(:index) { @client.index(@uid) }
+    let(:index) { test_client.index(@uid) }
 
     it 'gets the default values of settings' do
       response = index.settings
@@ -509,8 +487,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
       settings = index.settings
-      expect(settings['rankingRules']).to eq(['title:asc', 'typo'])
-      expect(settings['distinctAttribute']).to eq('title')
+      expect(settings['rankingRules']).to eq(default_ranking_rules)
+      expect(settings['distinctAttribute']).to be_nil
       expect(settings['stopWords']).to eq(['the'])
       expect(settings['synonyms']).to be_empty
     end
@@ -528,14 +506,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   end
 
   context 'Manipulation of searchable/displayed attributes with the primary-key' do
-    before(:all) do
+    before do
       @uid = SecureRandom.hex(4)
-      @client.create_index(@uid)
+      test_client.create_index(@uid)
     end
 
-    after(:all) { clear_all_indexes(@client) }
-
-    let(:index) { @client.index(@uid) }
+    let(:index) { test_client.index(@uid) }
 
     it 'does not add document when there is no primary-key' do
       response = index.add_documents(title: 'Test')
@@ -566,14 +542,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   end
 
   context 'Aliases' do
-    before(:all) do
+    before do
       @uid = SecureRandom.hex(4)
-      @client.create_index(@uid)
+      test_client.create_index(@uid)
     end
 
-    after(:all) { clear_all_indexes(@client) }
-
-    let(:index) { @client.index(@uid) }
+    let(:index) { test_client.index(@uid) }
 
     it 'works with method aliases' do
       expect(index.method(:settings) == index.method(:get_settings)).to be_truthy
