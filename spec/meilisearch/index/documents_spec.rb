@@ -429,7 +429,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     end
 
     it 'does not take into account the new primary key' do
-      response = index.add_documents!(documents, 'unique')
+      index.add_documents!(documents, 'unique')
       response = index.update_documents({
                                           unique: 3,
                                           id: 1,

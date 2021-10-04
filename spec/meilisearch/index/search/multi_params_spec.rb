@@ -10,12 +10,12 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
 
   it 'does a custom search with attributes to crop, filter and attributes to highlight' do
     response = index.search('prince',
-                             {
-                               attributesToCrop: ['title'],
-                               cropLength: 2,
-                               filter: 'genre = adventure',
-                               attributesToHighlight: ['title']
-                             })
+                            {
+                              attributesToCrop: ['title'],
+                              cropLength: 2,
+                              filter: 'genre = adventure',
+                              attributesToHighlight: ['title']
+                            })
     expect(response['hits'].count).to be(1)
     expect(response['hits'].first).to have_key('_formatted')
     expect(response['hits'].first['_formatted']['title']).to eq('Petit <em>Prince</em>')
