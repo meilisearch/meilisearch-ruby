@@ -128,7 +128,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       index.wait_for_pending_update(response['updateId'])
       response = index.get_update_status(response['updateId'])
       expect(response.keys).to include('message')
-      expect(response['errorCode']).to eq('internal')
+      expect(response['errorCode']).to eq('invalid_request')
     end
 
     it 'resets ranking rules' do
