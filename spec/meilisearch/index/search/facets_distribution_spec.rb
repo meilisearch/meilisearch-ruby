@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
-  before(:all) do
-    @documents = [
+  let(:index) { test_client.create_index('books') }
+  let(:documents) do
+    [
       {
         objectId: 123,
         title: 'Pride and Prejudice',
@@ -66,21 +67,18 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
         genre: 'fantasy'
       }
     ]
-    client = MeiliSearch::Client.new(URL, MASTER_KEY)
-    clear_all_indexes(client)
-    @index = client.create_index('books')
-    response = @index.add_documents(@documents)
-    @index.wait_for_pending_update(response['updateId'])
-    response = @index.update_filterable_attributes(['genre', 'year', 'author'])
-    @index.wait_for_pending_update(response['updateId'])
   end
 
-  after(:all) do
-    @index.delete
+  before do
+    response = index.add_documents(documents)
+    index.wait_for_pending_update(response['updateId'])
+
+    response = index.update_filterable_attributes(['genre', 'year', 'author'])
+    index.wait_for_pending_update(response['updateId'])
   end
 
   it 'does a custom search with facetsDistribution' do
-    response = @index.search('prinec', facetsDistribution: ['genre', 'author'])
+    response = index.search('prinec', facetsDistribution: ['genre', 'author'])
     expect(response.keys).to contain_exactly(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetsDistribution',
@@ -97,14 +95,14 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
   end
 
   it 'does a placeholder search with facetsDistribution' do
-    response = @index.search('', facetsDistribution: ['genre', 'author'])
+    response = index.search('', facetsDistribution: ['genre', 'author'])
     expect(response.keys).to contain_exactly(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetsDistribution',
       'exhaustiveFacetsCount'
     )
     expect(response['exhaustiveFacetsCount']).to be false
-    expect(response['nbHits']).to eq(@documents.count)
+    expect(response['nbHits']).to eq(documents.count)
     expect(response['facetsDistribution'].keys).to contain_exactly('genre', 'author')
     expect(response['facetsDistribution']['genre'].keys).to contain_exactly('romance', 'adventure', 'fantasy')
     expect(response['facetsDistribution']['genre']['romance']).to eq(2)
@@ -114,16 +112,16 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
   end
 
   it 'does a placeholder search with facetsDistribution on number' do
-    response = @index.search('', facetsDistribution: ['year'])
+    response = index.search('', facetsDistribution: ['year'])
     expect(response.keys).to contain_exactly(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetsDistribution',
       'exhaustiveFacetsCount'
     )
     expect(response['exhaustiveFacetsCount']).to be false
-    expect(response['nbHits']).to eq(@documents.count)
+    expect(response['nbHits']).to eq(documents.count)
     expect(response['facetsDistribution'].keys).to contain_exactly('year')
-    expect(response['facetsDistribution']['year'].keys).to contain_exactly(*@documents.map { |o| o[:year].to_s })
+    expect(response['facetsDistribution']['year'].keys).to contain_exactly(*documents.map { |o| o[:year].to_s })
     expect(response['facetsDistribution']['year']['1943']).to eq(1)
   end
 end
