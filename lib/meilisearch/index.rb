@@ -81,6 +81,7 @@ module MeiliSearch
       documents.each_slice(batch_size) do |batch|
         update_ids.append(add_documents(batch, primary_key))
       end
+      update_ids
     end
 
     def add_documents_in_batches!(documents, batch_size = 1000, primary_key = nil)
@@ -89,6 +90,7 @@ module MeiliSearch
       update_ids.each do |update_object|
         responses.append(wait_for_pending_update(update_object['updateId']))
       end
+      responses
     end
 
     def update_documents_in_batches(documents, batch_size = 1000, primary_key = nil)
@@ -96,6 +98,7 @@ module MeiliSearch
       documents.each_slice(batch_size) do |batch|
         update_ids.append(update_documents(batch, primary_key))
       end
+      update_ids
     end
 
     def update_documents_in_batches!(documents, batch_size = 1000, primary_key = nil)
@@ -104,6 +107,7 @@ module MeiliSearch
       update_ids.each do |update_object|
         responses.append(wait_for_pending_update(update_object['updateId']))
       end
+      responses
     end
 
     def delete_documents(documents_ids)
