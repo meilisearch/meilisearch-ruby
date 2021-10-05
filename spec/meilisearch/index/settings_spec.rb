@@ -29,7 +29,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
   context 'On global settings routes' do
     before do
-      @uid = SecureRandom.hex(4)
+      @uid = random_uid
       test_client.create_index(@uid)
     end
 
@@ -87,7 +87,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
   context 'On ranking-rules sub-routes' do
     before do
-      @uid = SecureRandom.hex(4)
+      @uid = random_uid
       test_client.create_index(@uid)
     end
 
@@ -132,7 +132,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
   context 'On distinct-attribute sub-routes' do
     before do
-      @uid = SecureRandom.hex(4)
+      @uid = random_uid
       test_client.create_index(@uid)
     end
 
@@ -168,7 +168,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
   context 'On searchable-attributes sub-routes' do
     before do
-      @uid = SecureRandom.hex(4)
+      @uid = random_uid
       test_client.create_index(@uid)
     end
 
@@ -205,7 +205,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
   context 'On displayed-attributes sub-routes' do
     before do
-      @uid = SecureRandom.hex(4)
+      @uid = random_uid
       test_client.create_index(@uid)
     end
 
@@ -242,7 +242,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
   context 'On synonyms sub-routes' do
     before do
-      @uid = SecureRandom.hex(4)
+      @uid = random_uid
       test_client.create_index(@uid)
     end
 
@@ -312,7 +312,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
   context 'On stop-words sub-routes' do
     before do
-      @uid = SecureRandom.hex(4)
+      @uid = random_uid
       test_client.create_index(@uid)
     end
 
@@ -375,7 +375,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
   context 'On filterable-attributes sub-routes' do
     before do
-      @uid = SecureRandom.hex(4)
+      @uid = random_uid
       test_client.create_index(@uid)
     end
 
@@ -413,7 +413,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
   context 'On sortable-attributes sub-routes' do
     before do
-      @uid = SecureRandom.hex(4)
+      @uid = random_uid
       test_client.create_index(@uid)
     end
 
@@ -451,7 +451,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
   context 'Index with primary-key' do
     before do
-      @uid = SecureRandom.hex(4)
+      @uid = random_uid
       test_client.create_index(@uid, primaryKey: 'id')
     end
 
@@ -507,7 +507,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
   context 'Manipulation of searchable/displayed attributes with the primary-key' do
     before do
-      @uid = SecureRandom.hex(4)
+      @uid = random_uid
       test_client.create_index(@uid)
     end
 
@@ -543,7 +543,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
   context 'Aliases' do
     before do
-      @uid = SecureRandom.hex(4)
+      @uid = random_uid
       test_client.create_index(@uid)
     end
 
