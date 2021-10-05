@@ -35,6 +35,17 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(index.documents.count).to eq(documents.count)
     end
 
+    it 'adds documents in a batch (as a array of documents)' do
+      response = index.add_documents_in_batches(documents, 5)
+      expect(response).to be_a(Array)
+      expect(response.count).to eq(2) # 2 batches, since we start with 5 < documents.count <= 10 documents
+      expect(response[0]).to have_key('updateId')
+      for response_object in response
+        index.wait_for_pending_update(response_object["updateId"])
+      end
+      expect(index.documents.count).to eq(documents.count)
+    end
+
     it 'adds documents synchronously (as an array of documents)' do
       response = index.add_documents!(documents)
       expect(response).to be_a(Hash)
@@ -42,6 +53,19 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(response).to have_key('status')
       expect(response['status']).not_to eql('enqueued')
       expect(response['status']).to eql('processed')
+      expect(index.documents.count).to eq(documents.count)
+    end
+
+    it 'adds document batches synchronously (as an array of documents)' do
+      response = index.add_documents_in_batches!(documents, 5)
+      expect(response).to be_a(Array)
+      expect(response.count).to eq(2) # 2 batches, since we start with 5 < documents.count <= 10 documents
+      response.each do |response_object|
+        expect(response_object).to have_key('updateId')
+        expect(response_object).to have_key('status')
+        expect(response_object['status']).not_to eql('enqueued')
+        expect(response_object['status']).to eql('processed')
+      end
       expect(index.documents.count).to eq(documents.count)
     end
 
@@ -109,6 +133,31 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(doc2['comment']).to eq(documents.detect { |doc| doc[:objectId] == id2 }[:comment])
     end
 
+    it 'updates documents in index in batches (as an array of documents)' do
+      id1 = 123
+      id2 = 456
+      updated_documents = [
+        { objectId: id1,  title: 'Sense and Sensibility' },
+        { objectId: id2,  title: 'The Little Prince' }
+      ]
+      response = index.update_documents_in_batches(updated_documents, 1)
+      expect(response).to be_a(Array)
+      expect(response.count).to eq(2)
+      for response_object in response
+        expect(response_object).to have_key('updateId')
+        index.wait_for_pending_update(response_object["updateId"])
+      end
+
+      doc1 = index.document(id1)
+      doc2 = index.document(id2)
+
+      expect(index.documents.count).to eq(documents.count)
+      expect(doc1['title']).to eq(updated_documents.detect { |doc| doc[:objectId] == id1 }[:title])
+      expect(doc1['comment']).to eq(documents.detect { |doc| doc[:objectId] == id1 }[:comment])
+      expect(doc2['title']).to eq(updated_documents.detect { |doc| doc[:objectId] == id2 }[:title])
+      expect(doc2['comment']).to eq(documents.detect { |doc| doc[:objectId] == id2 }[:comment])
+    end
+
     it 'updates documents synchronously in index (as an array of documents)' do
       id1 = 123
       id2 = 456
@@ -124,6 +173,33 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       expect(response['status']).to eql('processed')
       doc1 = index.document(id1)
       doc2 = index.document(id2)
+      expect(index.documents.count).to eq(documents.count)
+      expect(doc1['title']).to eq(updated_documents.detect { |doc| doc[:objectId] == id1 }[:title])
+      expect(doc1['comment']).to eq(documents.detect { |doc| doc[:objectId] == id1 }[:comment])
+      expect(doc2['title']).to eq(updated_documents.detect { |doc| doc[:objectId] == id2 }[:title])
+      expect(doc2['comment']).to eq(documents.detect { |doc| doc[:objectId] == id2 }[:comment])
+    end
+    
+    it 'updates documents synchronously in index in batches (as an array of documents)' do
+      id1 = 123
+      id2 = 456
+      updated_documents = [
+        { objectId: id1,  title: 'Sense and Sensibility' },
+        { objectId: id2,  title: 'The Little Prince' }
+      ]
+      response = index.update_documents_in_batches!(updated_documents, 1)
+      expect(response).to be_a(Array)
+      expect(response.count).to eq(2) # 2 batches, since we have two items with batch size 1
+      for response_object in response
+        expect(response_object).to have_key('updateId')
+        expect(response_object).to have_key('status')
+        expect(response_object['status']).not_to eql('enqueued')
+        expect(response_object['status']).to eql('processed')
+      end
+      
+      doc1 = index.document(id1)
+      doc2 = index.document(id2)
+      
       expect(index.documents.count).to eq(documents.count)
       expect(doc1['title']).to eq(updated_documents.detect { |doc| doc[:objectId] == id1 }[:title])
       expect(doc1['comment']).to eq(documents.detect { |doc| doc[:objectId] == id1 }[:comment])

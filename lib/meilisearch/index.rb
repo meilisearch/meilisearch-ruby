@@ -76,6 +76,40 @@ module MeiliSearch
     end
     alias add_or_update_documents! update_documents!
 
+    def add_documents_in_batches(documents, batch_size = 1000, primary_key = nil)
+      update_ids = []
+      documents.each_slice(batch_size) do |batch|
+        update_ids.append(add_documents(batch, primary_key))
+      end
+      return update_ids
+    end
+
+    def add_documents_in_batches!(documents, batch_size = 1000, primary_key = nil)
+      update_ids = add_documents_in_batches(documents, batch_size, primary_key)
+      responses = []
+      update_ids.each do |update_object|
+        responses.append(wait_for_pending_update(update_object['updateId']))
+      end
+      return responses
+    end
+
+    def update_documents_in_batches(documents, batch_size = 1000, primary_key = nil)
+      update_ids = []
+      documents.each_slice(batch_size) do |batch|
+        update_ids.append(update_documents(batch, primary_key))
+      end
+      return update_ids
+    end
+
+    def update_documents_in_batches!(documents, batch_size = 1000, primary_key = nil)
+      update_ids = update_documents_in_batches(documents, batch_size, primary_key)
+      responses = []
+      update_ids.each do |update_object|
+        responses.append(wait_for_pending_update(update_object['updateId']))
+      end
+      return responses
+    end
+
     def delete_documents(documents_ids)
       if documents_ids.is_a?(Array)
         http_post "/indexes/#{@uid}/documents/delete-batch", documents_ids
