@@ -269,7 +269,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'gets all the synonyms' do
-      index.update_synonyms(synonyms)
+      update_synonyms(index, synonyms)
       response = index.synonyms
       expect(response).to be_a(Hash)
       expect(response.count).to eq(3)
@@ -279,11 +279,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'overwrites all synonyms when updating' do
-      index.update_synonyms(synonyms)
-      response = index.update_synonyms(hp: ['harry potter'], 'harry potter': ['hp'])
-      expect(response).to be_a(Hash)
-      expect(response).to have_key('updateId')
-      index.wait_for_pending_update(response['updateId'])
+      update_synonyms(index, synonyms)
+      update_synonyms(index, hp: ['harry potter'], 'harry potter': ['hp'])
       synonyms = index.synonyms
       expect(synonyms).to be_a(Hash)
       expect(synonyms.count).to eq(2)
@@ -293,20 +290,25 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'updates synonyms at null' do
-      response = index.update_synonyms(nil)
-      expect(response).to have_key('updateId')
-      index.wait_for_pending_update(response['updateId'])
-      expect(index.synonyms).to be_empty
+      update_synonyms(index, synonyms)
+
+      expect do
+        update_synonyms(index, nil)
+      end.to(change { index.synonyms.length }.from(3).to(0))
     end
 
     it 'deletes all the synonyms' do
-      response = index.reset_synonyms
-      expect(response).to be_a(Hash)
-      expect(response).to have_key('updateId')
-      index.wait_for_pending_update(response['updateId'])
-      synonyms = index.synonyms
-      expect(synonyms).to be_a(Hash)
-      expect(synonyms).to be_empty
+      update_synonyms(index, synonyms)
+
+      expect do
+        response = index.reset_synonyms
+
+        expect(response).to be_a(Hash)
+        expect(response).to have_key('updateId')
+        index.wait_for_pending_update(response['updateId'])
+
+        expect(index.synonyms).to be_a(Hash)
+      end.to(change { index.synonyms.length }.from(3).to(0))
     end
   end
 
@@ -559,5 +561,11 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.method(:stop_words) == index.method(:get_stop_words)).to be_truthy
       expect(index.method(:filterable_attributes) == index.method(:get_filterable_attributes)).to be_truthy
     end
+  end
+
+  def update_synonyms(index, synonyms)
+    response = index.update_synonyms(synonyms)
+
+    index.wait_for_pending_update(response['updateId'])
   end
 end
