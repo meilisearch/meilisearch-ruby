@@ -113,7 +113,7 @@ Output:
   "offset" => 0,
   "limit" => 20,
   "processingTimeMs" => 1,
-  "query" => "carol"
+  "query" => "carlo"
 }
 ```
 
