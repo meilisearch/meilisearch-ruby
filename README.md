@@ -100,20 +100,20 @@ With the `updateId`, you can check the status (`enqueued`, `processing`, `proces
 
 ``` ruby
 # MeiliSearch is typo-tolerant:
-puts index.search('harry pottre')
+puts index.search('carol')
 ```
 Output:
 
 ```ruby
 {
   "hits" => [{
-    "id" => 4,
-    "title" => "Harry Potter and the Half-Blood Prince"
+    "id" => 1,
+    "title" => "Carol"
   }],
   "offset" => 0,
   "limit" => 20,
   "processingTimeMs" => 1,
-  "query" => "harry pottre"
+  "query" => "carol"
 }
 ```
 
@@ -123,7 +123,7 @@ All the supported options are described in the [search parameters](https://docs.
 
 ```ruby
 index.search(
-  'hob',
+  'wonder',
   attributesToHighlight: ['*']
 )
 ```
@@ -134,18 +134,18 @@ JSON output:
 {
     "hits": [
         {
-            "id": 1344,
-            "title": "The Hobbit",
+            "id": 2,
+            "title": "Wonder Woman",
             "_formatted": {
-                "id": 1344,
-                "title": "The <em>Hob</em>bit"
+                "id": 2,
+                "title": "<em>Wonder</em> Woman"
             }
         }
     ],
     "offset": 0,
     "limit": 20,
     "processingTimeMs": 0,
-    "query": "hob"
+    "query": "wonder"
 }
 ```
 
