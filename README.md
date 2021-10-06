@@ -100,7 +100,7 @@ With the `updateId`, you can check the status (`enqueued`, `processing`, `proces
 
 ``` ruby
 # MeiliSearch is typo-tolerant:
-puts index.search('carol')
+puts index.search('carlo')
 ```
 Output:
 
