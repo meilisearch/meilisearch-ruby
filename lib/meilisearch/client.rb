@@ -20,18 +20,6 @@ module MeiliSearch
       index_object(index_hash['uid'], index_hash['primaryKey'])
     end
 
-    # Usage:
-    # client.delete_index_if_exists('indexUID')
-    def delete_index_if_exists(index_uid)
-      begin
-        index_object(index_uid).delete
-        true
-      rescue => error
-        raise error if error.error_code != 'index_not_found'
-        false
-      end
-    end
-
     def get_or_create_index(index_uid, options = {})
       begin
         index_instance = fetch_index(index_uid)
@@ -45,6 +33,18 @@ module MeiliSearch
 
     def delete_index(index_uid)
       index_object(index_uid).delete
+    end
+
+    # Usage:
+    # client.delete_index_if_exists('indexUID')
+    def delete_index_if_exists(index_uid)
+      begin
+        index_object(index_uid).delete
+        true
+      rescue ApiError => error
+        raise error if error.code != 'index_not_found'
+        false
+      end
     end
 
     # Usage:
