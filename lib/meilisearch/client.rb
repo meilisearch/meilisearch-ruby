@@ -2,6 +2,7 @@
 
 require 'meilisearch/http_request'
 
+
 module MeiliSearch
   class Client < HTTPRequest
     ### INDEXES
@@ -17,6 +18,18 @@ module MeiliSearch
       body = options.merge(uid: index_uid)
       index_hash = http_post '/indexes', body
       index_object(index_hash['uid'], index_hash['primaryKey'])
+    end
+
+    # Usage:
+    # client.delete_index_if_exists('indexUID')
+    def delete_index_if_exists(index_uid)
+      begin
+        index_object(index_uid).delete
+        true
+      rescue => error
+        raise error if error.error_code != 'index_not_found'
+        false
+      end
     end
 
     def get_or_create_index(index_uid, options = {})
