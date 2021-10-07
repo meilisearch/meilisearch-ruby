@@ -2,7 +2,6 @@
 
 require 'meilisearch/http_request'
 
-
 module MeiliSearch
   class Client < HTTPRequest
     ### INDEXES
