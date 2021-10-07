@@ -33,6 +33,11 @@ module MeiliSearch
       @ms_message = @http_body['message']
       @ms_type = @http_body['errorType']
       @ms_link = @http_body['errorLink']
+    rescue JSON::ParserError
+      # We might receive a JSON::ParserError when, for example, MeiliSearch is running behind
+      # some proxy (ELB or Nginx, for example), and the request timeouts, returning us
+      # a raw HTML body instead of a JSON as we were expecting
+      @ms_message = "MeiliSearch API has not returned a valid JSON HTTP body: #{http_body}"
     end
 
     def details
