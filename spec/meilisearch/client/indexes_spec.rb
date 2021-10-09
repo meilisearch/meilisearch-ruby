@@ -78,9 +78,14 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     end.to raise_meilisearch_api_error_with(400, 'invalid_index_uid', 'invalid_request_error')
   end
 
-  it 'gets list of indexes' do
+  it 'gets list of indexes as MeiliSearch::Index' do
     response = @client.indexes
-    expect(response).to be_a(Array)
+    expect(response.count).to eq(5)
+    expect(response).to all(be_a(MeiliSearch::Index))
+  end
+
+  it 'gets list of raw indexes' do
+    response = @client.raw_indexes
     expect(response.count).to eq(5)
     uids = response.map { |elem| elem['uid'] }
     expect(uids).to contain_exactly(@uid1, @uid2, @uid3, @uid4, @uid5)

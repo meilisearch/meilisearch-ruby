@@ -4,10 +4,17 @@ require 'meilisearch/http_request'
 
 module MeiliSearch
   class Client < HTTPRequest
+
+    def raw_indexes
+      http_get('/indexes')
+    end
+
     ### INDEXES
 
     def indexes
-      http_get '/indexes'
+      raw_indexes.map do |info|
+        index_object(info['uid'], info['primaryKey'])
+      end
     end
 
     # Usage:
