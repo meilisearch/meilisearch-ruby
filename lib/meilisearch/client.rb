@@ -4,12 +4,11 @@ require 'meilisearch/http_request'
 
 module MeiliSearch
   class Client < HTTPRequest
+    ### INDEXES
 
     def raw_indexes
       http_get('/indexes')
     end
-
-    ### INDEXES
 
     def indexes
       raw_indexes.map do |info|
