@@ -5,7 +5,7 @@ RSpec.describe MeiliSearch::Index do
     @uid1 = 'UID_1'
     @uid2 = 'UID_2'
     @primary_key = 'objectId'
-    client = MeiliSearch::Client.new($URL, $MASTER_KEY)
+    client = MeiliSearch::Client.new(URL, MASTER_KEY)
     clear_all_indexes(client)
     @index1 = client.create_index(@uid1)
     @index2 = client.create_index(@uid2, primaryKey: @primary_key)
@@ -54,14 +54,14 @@ RSpec.describe MeiliSearch::Index do
 
   it 'supports options' do
     options = { timeout: 2, max_retries: 1 }
-    client = MeiliSearch::Client.new($URL, $MASTER_KEY, options)
+    client = MeiliSearch::Client.new(URL, MASTER_KEY, options)
     index_uid = 'options'
     index = client.create_index(index_uid)
     expect(index.options).to eq({ timeout: 2, max_retries: 1 })
     expect(MeiliSearch::Index).to receive(:get).with(
-      "#{$URL}/indexes/#{index_uid}",
+      "#{URL}/indexes/#{index_uid}",
       {
-        headers: { 'Content-Type' => 'application/json', 'X-Meili-API-Key' => $MASTER_KEY },
+        headers: { 'Content-Type' => 'application/json', 'X-Meili-API-Key' => MASTER_KEY },
         body: 'null',
         query: {},
         max_retries: 1,

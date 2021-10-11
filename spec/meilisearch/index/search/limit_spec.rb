@@ -11,7 +11,7 @@ RSpec.describe 'MeiliSearch::Index - Search with limit' do
       { objectId: 4,    title: 'Harry Potter and the Half-Blood Prince', genre: 'fantasy' },
       { objectId: 42,   title: 'The Hitchhiker\'s Guide to the Galaxy' }
     ]
-    client = MeiliSearch::Client.new($URL, $MASTER_KEY)
+    client = MeiliSearch::Client.new(URL, MASTER_KEY)
     clear_all_indexes(client)
     @index = client.create_index('books')
     response = @index.add_documents(@documents)
@@ -25,7 +25,7 @@ RSpec.describe 'MeiliSearch::Index - Search with limit' do
   it 'does a custom search with limit' do
     response = @index.search('the', limit: 1)
     expect(response).to be_a(Hash)
-    expect(response.keys).to contain_exactly(*$DEFAULT_SEARCH_RESPONSE_KEYS)
+    expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['limit']).to be(1)
     expect(response['hits'].count).to eq(1)
     expect(response['hits'].first).not_to have_key('_formatted')
