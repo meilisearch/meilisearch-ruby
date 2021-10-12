@@ -2,13 +2,15 @@
 
 RSpec.describe 'MeiliSearch::Client - Indexes' do
   before(:all) do
-    @client = MeiliSearch::Client.new($URL, $MASTER_KEY)
+    @client = MeiliSearch::Client.new(URL, MASTER_KEY)
     clear_all_indexes(@client)
     @uid1 = 'uid1'
     @uid2 = 'uid2'
     @uid3 = 'uid3'
     @uid4 = 'uid4'
     @uid5 = 'uid5'
+    @uid6 = 'uid6'
+    @uid7 = 'uid7'
     @primary_key = 'objectId'
   end
 
@@ -114,6 +116,14 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     expect { @client.fetch_index(@uid4) }.to raise_index_not_found_meilisearch_api_error
     expect(@client.delete_index(@uid5)).to be_nil
     expect { @client.fetch_index(@uid5) }.to raise_index_not_found_meilisearch_api_error
+    expect(@client.indexes.count).to eq(0)
+  end
+
+  it 'deletes index if index exists' do
+    @client.create_index(@uid6)
+    expect(@client.delete_index_if_exists(@uid6)).to eq(true)
+    expect { @client.fetch_index(@uid6) }.to raise_index_not_found_meilisearch_api_error
+    expect(@client.delete_index_if_exists(@uid6)).to eq(false)
     expect(@client.indexes.count).to eq(0)
   end
 end

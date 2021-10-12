@@ -10,7 +10,7 @@ RSpec.describe 'MeiliSearch::Index - Updates' do
       { objectId: 4,    title: 'Harry Potter and the Half-Blood Prince' },
       { objectId: 42,   title: 'The Hitchhiker\'s Guide to the Galaxy' }
     ]
-    client = MeiliSearch::Client.new($URL, $MASTER_KEY)
+    client = MeiliSearch::Client.new(URL, MASTER_KEY)
     clear_all_indexes(client)
     @index = client.create_index('books', primaryKey: 'objectId')
   end

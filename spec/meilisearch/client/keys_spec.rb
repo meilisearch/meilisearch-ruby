@@ -2,7 +2,7 @@
 
 RSpec.describe 'MeiliSearch::Client - Keys' do
   before(:all) do
-    @client = MeiliSearch::Client.new($URL, $MASTER_KEY)
+    @client = MeiliSearch::Client.new(URL, MASTER_KEY)
     @uid = 'uid'
     @client.create_index(@uid)
   end
@@ -20,7 +20,7 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
 
   it 'fails to get settings if public key used' do
     public_key = @client.keys['public']
-    new_client = MeiliSearch::Client.new($URL, public_key)
+    new_client = MeiliSearch::Client.new(URL, public_key)
     expect do
       new_client.index(@uid).settings
     end.to raise_meilisearch_api_error_with(403, 'invalid_token', 'authentication_error')
@@ -28,14 +28,14 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
 
   it 'fails to get keys if private key used' do
     private_key = @client.keys['private']
-    new_client = MeiliSearch::Client.new($URL, private_key)
+    new_client = MeiliSearch::Client.new(URL, private_key)
     expect do
       new_client.keys
     end.to raise_meilisearch_api_error_with(403, 'invalid_token', 'authentication_error')
   end
 
   it 'fails to search if no key used' do
-    new_client = MeiliSearch::Client.new($URL)
+    new_client = MeiliSearch::Client.new(URL)
     expect do
       new_client.index(@uid).settings
     end.to raise_meilisearch_api_error_with(401, 'missing_authorization_header', 'authentication_error')
@@ -43,14 +43,14 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
 
   it 'succeeds to search when using public key' do
     public_key = @client.keys['public']
-    new_client = MeiliSearch::Client.new($URL, public_key)
+    new_client = MeiliSearch::Client.new(URL, public_key)
     response = new_client.index(@uid).search('test')
     expect(response).to have_key('hits')
   end
 
   it 'succeeds to get settings when using private key' do
     private_key = @client.keys['private']
-    new_client = MeiliSearch::Client.new($URL, private_key)
+    new_client = MeiliSearch::Client.new(URL, private_key)
     response = new_client.index(@uid).settings
     expect(response).to have_key('rankingRules')
   end

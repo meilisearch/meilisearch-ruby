@@ -2,7 +2,7 @@
 
 RSpec.describe 'MeiliSearch::Client - Dumps' do
   before(:all) do
-    @client = MeiliSearch::Client.new($URL, $MASTER_KEY)
+    @client = MeiliSearch::Client.new(URL, MASTER_KEY)
     clear_all_indexes(@client)
   end
 

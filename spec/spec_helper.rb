@@ -22,6 +22,19 @@ require 'simplecov'
 
 SimpleCov.start
 
+# Globals for all tests
+URL = 'http://localhost:7700'
+MASTER_KEY = 'masterKey'
+DEFAULT_SEARCH_RESPONSE_KEYS = [
+  'hits',
+  'offset',
+  'limit',
+  'nbHits',
+  'exhaustiveNbHits',
+  'processingTimeMs',
+  'query'
+].freeze
+
 Dir["#{Dir.pwd}/spec/support/**/*.rb"].sort.each { |file| require file }
 
 RSpec.configure do |config|
@@ -106,20 +119,6 @@ RSpec.configure do |config|
   #   # test failures related to randomization by passing the same `--seed` value
   #   # as the one that triggered the failure.
   #   Kernel.srand config.seed
-
-  # Globals for all tests
-  $URL = 'http://localhost:7700'
-  $MASTER_KEY = 'masterKey'
-  $DEFAULT_SEARCH_RESPONSE_KEYS =
-    [
-      'hits',
-      'offset',
-      'limit',
-      'nbHits',
-      'exhaustiveNbHits',
-      'processingTimeMs',
-      'query'
-    ]
 
   # Helpers
   config.include IndexesHelpers

@@ -66,7 +66,7 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
         genre: 'fantasy'
       }
     ]
-    client = MeiliSearch::Client.new($URL, $MASTER_KEY)
+    client = MeiliSearch::Client.new(URL, MASTER_KEY)
     clear_all_indexes(client)
     @index = client.create_index('books')
     response = @index.add_documents(@documents)
@@ -82,7 +82,7 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
   it 'does a custom search with facetsDistribution' do
     response = @index.search('prinec', facetsDistribution: ['genre', 'author'])
     expect(response.keys).to contain_exactly(
-      *$DEFAULT_SEARCH_RESPONSE_KEYS,
+      *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetsDistribution',
       'exhaustiveFacetsCount'
     )
@@ -99,7 +99,7 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
   it 'does a placeholder search with facetsDistribution' do
     response = @index.search('', facetsDistribution: ['genre', 'author'])
     expect(response.keys).to contain_exactly(
-      *$DEFAULT_SEARCH_RESPONSE_KEYS,
+      *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetsDistribution',
       'exhaustiveFacetsCount'
     )
@@ -116,7 +116,7 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
   it 'does a placeholder search with facetsDistribution on number' do
     response = @index.search('', facetsDistribution: ['year'])
     expect(response.keys).to contain_exactly(
-      *$DEFAULT_SEARCH_RESPONSE_KEYS,
+      *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetsDistribution',
       'exhaustiveFacetsCount'
     )
