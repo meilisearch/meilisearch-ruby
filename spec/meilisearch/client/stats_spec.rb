@@ -2,7 +2,7 @@
 
 RSpec.describe 'MeiliSearch::Client - Stats' do
   before(:all) do
-    @client = MeiliSearch::Client.new($URL, $MASTER_KEY)
+    @client = MeiliSearch::Client.new(URL, MASTER_KEY)
   end
 
   it 'gets version' do

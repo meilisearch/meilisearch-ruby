@@ -11,7 +11,7 @@ RSpec.describe 'MeiliSearch::Index - Search with offset' do
       { objectId: 4,    title: 'Harry Potter and the Half-Blood Prince', genre: 'fantasy' },
       { objectId: 42,   title: 'The Hitchhiker\'s Guide to the Galaxy' }
     ]
-    client = MeiliSearch::Client.new($URL, $MASTER_KEY)
+    client = MeiliSearch::Client.new(URL, MASTER_KEY)
     clear_all_indexes(client)
     @index = client.create_index('books')
     response = @index.add_documents(@documents)
