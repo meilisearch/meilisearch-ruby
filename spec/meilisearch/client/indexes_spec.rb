@@ -80,9 +80,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
   end
 
   it 'gets list of indexes' do
-    client.create_index('first_index')
-    client.create_index('second_index')
-    client.create_index('third_index')
+    ['first_index', 'second_index', 'third_index'].each { |name| client.create_index(name) }
 
     indexes = client.indexes
 
@@ -115,10 +113,8 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     expect(index.primary_key).to eq('primary_key')
   end
 
-  it 'deletes index' do
-    expect do
-      client.create_index('index')
-    end.to(change { client.indexes.length }.by(1))
+  it 'deletes an index' do
+    client.create_index('index')
 
     expect do
       expect(client.delete_index('index')).to be_nil
