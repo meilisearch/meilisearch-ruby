@@ -4,7 +4,7 @@ RSpec.describe 'MeiliSearch::Index - Updates' do
   include_context 'search books with genre'
 
   it 'gets an empty array when nothing happened before' do
-    index = test_client.create_index('new_index')
+    index = client.create_index('new_index')
     response = index.get_all_update_status
     expect(response).to be_a(Array)
     expect(response).to be_empty

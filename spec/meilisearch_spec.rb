@@ -6,15 +6,15 @@ RSpec.describe MeiliSearch do
   end
 
   it 'raises an exception when it is impossible to connect' do
-    client = MeiliSearch::Client.new('http://127.0.0.1:8800', 'masterKey')
+    new_client = MeiliSearch::Client.new('http://127.0.0.1:8800', 'masterKey')
     expect do
-      client.indexes
+      new_client.indexes
     end.to raise_error(MeiliSearch::CommunicationError)
   end
 
   it 'allows to set a custom timeout and max_retries' do
-    client = MeiliSearch::Client.new(URL, MASTER_KEY, timeout: 20, max_retries: 2)
-    expect(client.healthy?).to be true
+    new_client = MeiliSearch::Client.new(URL, MASTER_KEY, timeout: 20, max_retries: 2)
+    expect(new_client.healthy?).to be true
   end
 
   # Commented test due to random failure.
@@ -23,7 +23,7 @@ RSpec.describe MeiliSearch do
   # - https://github.com/meilisearch/meilisearch-ruby/issues/178
   #
   # it 'raises a timeout error when setting the timeout option' do
-  #   client = MeiliSearch::Client.new(URL, MASTER_KEY, timeout: 0)
+  #   new_client = MeiliSearch::Client.new(URL, MASTER_KEY, timeout: 0)
   #   expect do
   #     client.indexes
   #   end.to raise_error(Timeout::Error)

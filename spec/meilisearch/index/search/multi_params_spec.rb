@@ -82,7 +82,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
 
   context 'with snake_case options' do
     it 'does a custom search with attributes in a unusual formatting' do
-      response = @index.search(
+      response = index.search(
         'prince',
         {
           aTTributes_TO_Crop: ['title'],

@@ -30,10 +30,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'On global settings routes' do
     before do
       @uid = random_uid
-      test_client.create_index(@uid)
+      client.create_index(@uid)
     end
 
-    let(:index) { test_client.index(@uid) }
+    let(:index) { client.index(@uid) }
 
     it 'gets default values of settings' do
       response = index.settings
@@ -88,10 +88,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'On ranking-rules sub-routes' do
     before do
       @uid = random_uid
-      test_client.create_index(@uid)
+      client.create_index(@uid)
     end
 
-    let(:index) { test_client.index(@uid) }
+    let(:index) { client.index(@uid) }
     let(:ranking_rules) { ['title:asc', 'words', 'typo'] }
     let(:wrong_ranking_rules) { ['title:asc', 'typos'] }
 
@@ -133,10 +133,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'On distinct-attribute sub-routes' do
     before do
       @uid = random_uid
-      test_client.create_index(@uid)
+      client.create_index(@uid)
     end
 
-    let(:index) { test_client.index(@uid) }
+    let(:index) { client.index(@uid) }
     let(:distinct_attribute) { 'title' }
 
     it 'gets default values of distinct attribute' do
@@ -169,10 +169,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'On searchable-attributes sub-routes' do
     before do
       @uid = random_uid
-      test_client.create_index(@uid)
+      client.create_index(@uid)
     end
 
-    let(:index) { test_client.index(@uid) }
+    let(:index) { client.index(@uid) }
     let(:searchable_attributes) { ['title', 'description'] }
 
     it 'gets default values of searchable attributes' do
@@ -206,10 +206,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'On displayed-attributes sub-routes' do
     before do
       @uid = random_uid
-      test_client.create_index(@uid)
+      client.create_index(@uid)
     end
 
-    let(:index) { test_client.index(@uid) }
+    let(:index) { client.index(@uid) }
     let(:displayed_attributes) { ['title', 'description'] }
 
     it 'gets default values of displayed attributes' do
@@ -243,10 +243,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'On synonyms sub-routes' do
     before do
       @uid = random_uid
-      test_client.create_index(@uid)
+      client.create_index(@uid)
     end
 
-    let(:index) { test_client.index(@uid) }
+    let(:index) { client.index(@uid) }
     let(:synonyms) do
       {
         wow: ['world of warcraft'],
@@ -315,10 +315,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'On stop-words sub-routes' do
     before do
       @uid = random_uid
-      test_client.create_index(@uid)
+      client.create_index(@uid)
     end
 
-    let(:index) { test_client.index(@uid) }
+    let(:index) { client.index(@uid) }
     let(:stop_words_array) { ['the', 'of'] }
     let(:stop_words_string) { 'a' }
 
@@ -378,10 +378,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'On filterable-attributes sub-routes' do
     before do
       @uid = random_uid
-      test_client.create_index(@uid)
+      client.create_index(@uid)
     end
 
-    let(:index) { test_client.index(@uid) }
+    let(:index) { client.index(@uid) }
     let(:filterable_attributes) { ['title', 'description'] }
 
     it 'gets default values of filterable attributes' do
@@ -416,10 +416,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'On sortable-attributes sub-routes' do
     before do
       @uid = random_uid
-      test_client.create_index(@uid)
+      client.create_index(@uid)
     end
 
-    let(:index) { test_client.index(@uid) }
+    let(:index) { client.index(@uid) }
     let(:sortable_attributes) { ['title', 'description'] }
 
     it 'gets default values of sortable attributes' do
@@ -454,10 +454,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'Index with primary-key' do
     before do
       @uid = random_uid
-      test_client.create_index(@uid, primaryKey: 'id')
+      client.create_index(@uid, primaryKey: 'id')
     end
 
-    let(:index) { test_client.index(@uid) }
+    let(:index) { client.index(@uid) }
 
     it 'gets the default values of settings' do
       response = index.settings
@@ -510,10 +510,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'Manipulation of searchable/displayed attributes with the primary-key' do
     before do
       @uid = random_uid
-      test_client.create_index(@uid)
+      client.create_index(@uid)
     end
 
-    let(:index) { test_client.index(@uid) }
+    let(:index) { client.index(@uid) }
 
     it 'does not add document when there is no primary-key' do
       response = index.add_documents(title: 'Test')
@@ -546,10 +546,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'Aliases' do
     before do
       @uid = random_uid
-      test_client.create_index(@uid)
+      client.create_index(@uid)
     end
 
-    let(:index) { test_client.index(@uid) }
+    let(:index) { client.index(@uid) }
 
     it 'works with method aliases' do
       expect(index.method(:settings) == index.method(:get_settings)).to be_truthy

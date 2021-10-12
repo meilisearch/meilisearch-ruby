@@ -2,7 +2,7 @@
 
 RSpec.describe 'MeiliSearch::Client - Keys' do
   it 'gets the list of keys' do
-    response = test_client.keys
+    response = client.keys
     expect(response).to be_a(Hash)
     expect(response.count).to eq(2)
     expect(response.keys).to contain_exactly('private', 'public')
@@ -11,7 +11,7 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
   end
 
   it 'fails to get settings if public key used' do
-    public_key = test_client.keys['public']
+    public_key = client.keys['public']
     new_client = MeiliSearch::Client.new(URL, public_key)
     expect do
       new_client.index(test_uid).settings
@@ -19,7 +19,7 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
   end
 
   it 'fails to get keys if private key used' do
-    private_key = test_client.keys['private']
+    private_key = client.keys['private']
     new_client = MeiliSearch::Client.new(URL, private_key)
     expect do
       new_client.keys
@@ -34,8 +34,8 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
   end
 
   it 'succeeds to search when using public key' do
-    public_key = test_client.keys['public']
-    index = test_client.create_index(test_uid)
+    public_key = client.keys['public']
+    index = client.create_index(test_uid)
     response = index.add_documents(title: 'Test')
     index.wait_for_pending_update(response['updateId'])
 
@@ -45,14 +45,14 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
   end
 
   it 'succeeds to get settings when using private key' do
-    test_client.create_index(test_uid)
-    private_key = test_client.keys['private']
+    client.create_index(test_uid)
+    private_key = client.keys['private']
     new_client = MeiliSearch::Client.new(URL, private_key)
     response = new_client.index(test_uid).settings
     expect(response).to have_key('rankingRules')
   end
 
   it 'works with method aliases' do
-    expect(test_client.method(:keys) == test_client.method(:get_keys)).to be_truthy
+    expect(client.method(:keys) == client.method(:get_keys)).to be_truthy
   end
 end

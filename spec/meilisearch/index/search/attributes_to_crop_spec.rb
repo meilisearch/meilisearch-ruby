@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe 'MeiliSearch::Index - Cropped search' do
-  let(:index) { test_client.create_index('books') }
+  let(:index) { client.create_index('books') }
   let(:document) do
     {
       objectId: 42,

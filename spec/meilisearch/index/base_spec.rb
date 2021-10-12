@@ -2,7 +2,7 @@
 
 RSpec.describe MeiliSearch::Index do
   it 'fetch the info of the index' do
-    index = test_client.create_index('new_index')
+    index = client.create_index('new_index')
     index.fetch_info
     expect(index).to be_a(MeiliSearch::Index)
     expect(index.uid).to eq('new_index')
@@ -10,24 +10,24 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'get primary-key of index if null' do
-    index = test_client.create_index('index_without_primary_key')
+    index = client.create_index('index_without_primary_key')
     expect(index.primary_key).to be_nil
     expect(index.fetch_primary_key).to be_nil
   end
 
   it 'get primary-key of index if it exists' do
-    index = test_client.create_index('index_with_prirmary_key', primaryKey: 'primary_key')
+    index = client.create_index('index_with_prirmary_key', primaryKey: 'primary_key')
     expect(index.primary_key).to eq('primary_key')
     expect(index.fetch_primary_key).to eq('primary_key')
   end
 
   it 'get uid of index' do
-    index = test_client.create_index('uid')
+    index = client.create_index('uid')
     expect(index.uid).to eq('uid')
   end
 
   it 'updates primary-key of index if not defined before' do
-    index = test_client.create_index('uid')
+    index = client.create_index('uid')
     index.update(primaryKey: 'new_primary_key')
     expect(index).to be_a(MeiliSearch::Index)
     expect(index.uid).to eq('uid')
@@ -36,7 +36,7 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'returns error if trying to update primary-key if it is already defined' do
-    index = test_client.create_index('uid', primaryKey: 'primary_key')
+    index = client.create_index('uid', primaryKey: 'primary_key')
     expect do
       index.update(primaryKey: 'new_primary_key')
     end.to raise_meilisearch_api_error_with(
@@ -65,13 +65,13 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'deletes index' do
-    index = test_client.create_index('uid')
+    index = client.create_index('uid')
     expect(index.delete).to be_nil
     expect { index.fetch_info }.to raise_index_not_found_meilisearch_api_error
   end
 
   it 'fails to manipulate index object after deletion' do
-    index = test_client.create_index('uid')
+    index = client.create_index('uid')
     expect(index.delete).to be_nil
 
     expect { index.fetch_primary_key }.to raise_index_not_found_meilisearch_api_error
@@ -81,7 +81,7 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'works with method aliases' do
-    index = test_client.create_index('uid', primaryKey: 'primary_key')
+    index = client.create_index('uid', primaryKey: 'primary_key')
 
     expect(index.method(:fetch_primary_key) == index.method(:get_primary_key)).to be_truthy
     expect(index.method(:update) == index.method(:update_index)).to be_truthy

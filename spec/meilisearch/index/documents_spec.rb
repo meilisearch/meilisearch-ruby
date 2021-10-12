@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe 'MeiliSearch::Index - Documents' do
-  let(:index) { test_client.create_index(test_uid) }
+  let(:index) { client.create_index(test_uid) }
 
   context 'All basic tests with primary-key inference' do
     let(:documents) do
@@ -71,13 +71,13 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       end
 
       it 'create the index during document addition' do
-        new_index = test_client.index('newIndex')
+        new_index = client.index('newIndex')
         response = new_index.add_documents(documents)
         expect(response).to be_a(Hash)
         expect(response).to have_key('updateId')
         new_index.wait_for_pending_update(response['updateId'])
-        expect(test_client.index('newIndex').fetch_primary_key).to eq('objectId')
-        expect(test_client.index('newIndex').documents.count).to eq(documents.count)
+        expect(client.index('newIndex').fetch_primary_key).to eq('objectId')
+        expect(client.index('newIndex').documents.count).to eq(documents.count)
       end
 
       it 'adds only one document to index (as an hash of one document)' do
