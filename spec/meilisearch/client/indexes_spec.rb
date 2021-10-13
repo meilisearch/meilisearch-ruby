@@ -126,4 +126,15 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     expect(@client.delete_index_if_exists(@uid6)).to eq(false)
     expect(@client.indexes.count).to eq(0)
   end
+
+  context 'with snake_case options' do
+    it 'creates an index without errors' do
+      uid = SecureRandom.uuid
+
+      expect do
+        @client.create_index(uid, primary_key: @primary_key)
+        @client.fetch_index(uid)
+      end.to_not raise_error
+    end
+  end
 end

@@ -124,7 +124,7 @@ All the supported options are described in the [search parameters](https://docs.
 ```ruby
 index.search(
   'wonder',
-  attributesToHighlight: ['*']
+  attributes_to_highlight: ['*']
 )
 ```
 
