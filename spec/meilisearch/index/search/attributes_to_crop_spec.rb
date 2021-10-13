@@ -7,7 +7,7 @@ RSpec.describe 'MeiliSearch::Index - Cropped search' do
       title: 'The Hitchhiker\'s Guide to the Galaxy',
       description: 'The Hitchhiker\'s Guide to the Galaxy is a comedy science fiction series by Douglas Adams.'
     }
-    client = MeiliSearch::Client.new($URL, $MASTER_KEY)
+    client = MeiliSearch::Client.new(URL, MASTER_KEY)
     clear_all_indexes(client)
     @index = client.create_index('books')
     response = @index.add_documents(@document)

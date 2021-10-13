@@ -66,7 +66,7 @@ RSpec.describe 'MeiliSearch::Index - Sorted search' do
         genre: 'fantasy'
       }
     ]
-    client = MeiliSearch::Client.new($URL, $MASTER_KEY)
+    client = MeiliSearch::Client.new(URL, MASTER_KEY)
     clear_all_indexes(client)
     @index = client.create_index('books')
     response = @index.add_documents(@documents)

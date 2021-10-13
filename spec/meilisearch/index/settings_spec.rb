@@ -2,7 +2,7 @@
 
 RSpec.describe 'MeiliSearch::Index - Settings' do
   before(:all) do
-    @client = MeiliSearch::Client.new($URL, $MASTER_KEY)
+    @client = MeiliSearch::Client.new(URL, MASTER_KEY)
     clear_all_indexes(@client)
   end
 
@@ -128,7 +128,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       index.wait_for_pending_update(response['updateId'])
       response = index.get_update_status(response['updateId'])
       expect(response.keys).to include('message')
-      expect(response['errorCode']).to eq('internal')
+      expect(response['errorCode']).to eq('invalid_request')
     end
 
     it 'resets ranking rules' do

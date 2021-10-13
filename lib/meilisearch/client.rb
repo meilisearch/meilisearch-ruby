@@ -41,6 +41,17 @@ module MeiliSearch
     end
 
     # Usage:
+    # client.delete_index_if_exists('indexUID')
+    def delete_index_if_exists(index_uid)
+      index_object(index_uid).delete
+      true
+    rescue ApiError => e
+      raise e if e.code != 'index_not_found'
+
+      false
+    end
+
+    # Usage:
     # client.index('indexUID')
     def index(index_uid)
       index_object(index_uid)
