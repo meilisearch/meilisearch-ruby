@@ -8,9 +8,9 @@ get_one_index_1: |-
 list_all_indexes_1: |-
   client.indexes
 create_an_index_1: |-
-  client.create_index('movies', primaryKey: 'movie_id')
+  client.create_index('movies', primary_key: 'movie_id')
 update_an_index_1: |-
-  client.index('movies').update(primaryKey: 'movie_id')
+  client.index('movies').update(primary_key: 'movie_id')
 delete_an_index_1: |-
   client.delete_index('movies')
 get_one_document_1: |-
@@ -53,7 +53,7 @@ get_settings_1: |-
   client.index('movies').settings
 update_settings_1: |-
   client.index('movies').update_settings({
-    rankingRules: [
+    ranking_rules: [
       'words',
       'typo',
       'proximity',
@@ -63,24 +63,24 @@ update_settings_1: |-
       'release_date:desc',
       'rank:desc'
     ],
-    distinctAttribute: 'movie_id',
-    searchableAttributes: [
+    distinct_attribute: 'movie_id',
+    searchable_attributes: [
       'title',
       'description',
       'genre'
     ],
-    displayedAttributes: [
+    displayed_attributes: [
       'title',
       'description',
       'genre',
       'release_date'
     ],
-    stopWords: [
+    stop_words: [
       'the',
       'a',
       'an'
     ],
-    sortableAttributes: [
+    sortable_attributes: [
       'title',
       'release_date'
     ],
@@ -176,7 +176,7 @@ field_properties_guide_searchable_1: |-
   ])
 field_properties_guide_displayed_1: |-
   client.index('movies').update_settings({
-    displayedAttributes: [
+    displayed_attributes: [
       'title',
       'description',
       'genre',
@@ -207,16 +207,16 @@ search_parameter_guide_limit_1: |-
   })
 search_parameter_guide_retrieve_1: |-
   client.index('movies').search('shifu', {
-    attributesToRetrieve: ['overview', 'title']
+    attributes_to_retrieve: ['overview', 'title']
   })
 search_parameter_guide_crop_1: |-
   client.index('movies').search('shifu', {
-    attributesToCrop: ['overview'],
+    attributes_to_crop: ['overview'],
     cropLength: 10
   })
 search_parameter_guide_highlight_1: |-
   client.index('movies').search('winter feast', {
-    attributesToHighlight: ['overview']
+    attributes_to_highlight: ['overview']
   })
 search_parameter_guide_matches_1: |-
   client.index('movies').search('winter feast', {
@@ -239,7 +239,7 @@ settings_guide_synonyms_1: |-
   })
 settings_guide_stop_words_1: |-
   client.index('movies').update_settings({
-    stopWords: [
+    stop_words: [
       'the',
       'a',
       'an'
@@ -247,7 +247,7 @@ settings_guide_stop_words_1: |-
   })
 settings_guide_ranking_rules_1: |-
   client.index('movies').update_settings({
-    rankingRules: [
+    ranking_rules: [
       'words',
       'typo',
       'proximity',
@@ -262,7 +262,7 @@ settings_guide_distinct_1: |-
   client.index('jackets').update_distinct_attribute('product_id')
 settings_guide_searchable_1: |-
   client.index('movies').update_settings({
-    searchableAttributes: [
+    searchable_attributes: [
       'title',
       'description',
       'genre'
@@ -270,7 +270,7 @@ settings_guide_searchable_1: |-
   })
 settings_guide_displayed_1: |-
   client.index('movies').update_settings({
-    displayedAttributes: [
+    displayed_attributes: [
       'title',
       'description',
       'genre',
@@ -332,7 +332,7 @@ faceted_search_filter_1: |-
   })
 faceted_search_facets_distribution_1: |-
   client.index('movies').search('Batman', {
-    facetsDistribution: ['genres']
+    facets_distribution: ['genres']
   })
 faceted_search_walkthrough_filterable_attributes_1: |-
   client.index('movies').update_filterable_attributes([
@@ -347,7 +347,7 @@ faceted_search_walkthrough_filter_1: |-
   })
 faceted_search_walkthrough_facets_distribution_1: |-
   client.index('movies').search('Batman', {
-    facetsDistribution: ['genres']
+    facets_distribution: ['genres']
   })
 post_dump_1: |-
   client.create_dump
