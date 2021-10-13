@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'search books with genre' do
-  let(:index) { client.create_index('books') }
+  let(:index) { client.index('books') }
   let(:documents) do
     [
       { objectId: 123,  title: 'Pride and Prejudice',                    genre: 'romance' },
@@ -21,7 +21,7 @@ RSpec.shared_context 'search books with genre' do
 end
 
 RSpec.shared_context 'search books with author, genre, year' do
-  let(:index) { client.create_index('books') }
+  let(:index) { client.index('books') }
   let(:documents) do
     [
       {
