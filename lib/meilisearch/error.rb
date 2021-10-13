@@ -37,7 +37,7 @@ module MeiliSearch
       # We might receive a JSON::ParserError when, for example, MeiliSearch is running behind
       # some proxy (ELB or Nginx, for example), and the request timeouts, returning us
       # a raw HTML body instead of a JSON as we were expecting
-      @ms_message = "MeiliSearch API has not returned a valid JSON HTTP body: #{http_body}"
+      @ms_message = "The server has not returned a valid JSON HTTP body: #{http_body}"
     end
 
     def details
