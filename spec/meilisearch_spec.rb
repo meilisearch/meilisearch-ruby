@@ -17,15 +17,11 @@ RSpec.describe MeiliSearch do
     expect(new_client.healthy?).to be true
   end
 
-  # Commented test due to random failure.
-  # See the related issues:
-  # - https://github.com/meilisearch/meilisearch-ruby/issues/168
-  # - https://github.com/meilisearch/meilisearch-ruby/issues/178
-  #
-  # it 'raises a timeout error when setting the timeout option' do
-  #   new_client = MeiliSearch::Client.new(URL, MASTER_KEY, timeout: 0)
-  #   expect do
-  #     client.indexes
-  #   end.to raise_error(Timeout::Error)
-  # end
+  it 'raises a timeout error when setting the timeout option' do
+    new_client = MeiliSearch::Client.new(URL, MASTER_KEY, timeout: 0.00001)
+
+    expect do
+      new_client.indexes
+    end.to raise_error(Timeout::Error)
+  end
 end
