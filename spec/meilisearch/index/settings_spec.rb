@@ -74,9 +74,18 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'resets all settings' do
+      response = index.update_settings(
+        rankingRules: ['title:asc', 'typo'],
+        distinctAttribute: 'title',
+        stopWords: ['the', 'a'],
+        synonyms: { wow: ['world of warcraft'] }
+      )
+      index.wait_for_pending_update(response['updateId'])
+
       response = index.reset_settings
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
+
       settings = index.settings
       expect(settings['rankingRules']).to eq(default_ranking_rules)
       expect(settings['distinctAttribute']).to be_nil
@@ -108,39 +117,47 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'updates ranking rules at null' do
+      response = index.update_ranking_rules(ranking_rules)
+      index.wait_for_pending_update(response['updateId'])
+
       response = index.update_ranking_rules(nil)
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
+
       expect(index.ranking_rules).to eq(default_ranking_rules)
     end
 
     it 'fails when updating with wrong ranking rules name' do
       response = index.update_ranking_rules(wrong_ranking_rules)
       index.wait_for_pending_update(response['updateId'])
+
       response = index.get_update_status(response['updateId'])
+
       expect(response.keys).to include('message')
       expect(response['errorCode']).to eq('invalid_request')
     end
 
     it 'resets ranking rules' do
+      response = index.update_ranking_rules(ranking_rules)
+      index.wait_for_pending_update(response['updateId'])
+
       response = index.reset_ranking_rules
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
+
       expect(index.ranking_rules).to eq(default_ranking_rules)
     end
   end
 
   context 'On distinct-attribute sub-routes' do
-    before do
-      @uid = random_uid
-      client.create_index(@uid)
-    end
-
-    let(:index) { client.index(@uid) }
+    let(:uid) { random_uid }
+    let(:index) { client.index(uid) }
     let(:distinct_attribute) { 'title' }
 
     it 'gets default values of distinct attribute' do
+      client.create_index(uid)
       response = index.distinct_attribute
+
       expect(response).to be_nil
     end
 
@@ -148,20 +165,27 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       response = index.update_distinct_attribute(distinct_attribute)
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
+
       expect(index.distinct_attribute).to eq(distinct_attribute)
     end
 
     it 'updates distinct attribute at null' do
-      response = index.update_distinct_attribute(nil)
-      expect(response).to have_key('updateId')
+      response = index.update_distinct_attribute(distinct_attribute)
       index.wait_for_pending_update(response['updateId'])
+
+      response = index.update_distinct_attribute(nil)
+      index.wait_for_pending_update(response['updateId'])
+
       expect(index.distinct_attribute).to be_nil
     end
 
     it 'resets distinct attribute' do
-      response = index.reset_distinct_attribute
-      expect(response).to have_key('updateId')
+      response = index.update_distinct_attribute(distinct_attribute)
       index.wait_for_pending_update(response['updateId'])
+
+      response = index.reset_distinct_attribute
+      index.wait_for_pending_update(response['updateId'])
+
       expect(index.distinct_attribute).to be_nil
     end
   end
@@ -188,16 +212,24 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'updates searchable attributes at null' do
+      response = index.update_searchable_attributes(searchable_attributes)
+      index.wait_for_pending_update(response['updateId'])
+
       response = index.update_searchable_attributes(nil)
       expect(response).to have_key('updateId')
+
       index.wait_for_pending_update(response['updateId'])
       expect(index.searchable_attributes).to eq(default_searchable_attributes)
     end
 
     it 'resets searchable attributes' do
+      response = index.update_searchable_attributes(searchable_attributes)
+      index.wait_for_pending_update(response['updateId'])
+
       response = index.reset_searchable_attributes
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
+
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
       expect(index.searchable_attributes).to eq(default_searchable_attributes)
     end
@@ -221,20 +253,29 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       response = index.update_displayed_attributes(displayed_attributes)
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
+
       expect(index.displayed_attributes).to contain_exactly(*displayed_attributes)
     end
 
     it 'updates displayed attributes at null' do
+      response = index.update_displayed_attributes(displayed_attributes)
+      index.wait_for_pending_update(response['updateId'])
+
       response = index.update_displayed_attributes(nil)
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
+
       expect(index.displayed_attributes).to eq(default_displayed_attributes)
     end
 
     it 'resets displayed attributes' do
+      response = index.update_displayed_attributes(displayed_attributes)
+      index.wait_for_pending_update(response['updateId'])
+
       response = index.reset_displayed_attributes
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
+
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
       expect(index.displayed_attributes).to eq(default_displayed_attributes)
     end
@@ -353,9 +394,13 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'updates stop-words at null' do
+      response = index.update_stop_words(stop_words_string)
+      index.wait_for_pending_update(response['updateId'])
+
       response = index.update_stop_words(nil)
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
+
       expect(index.stop_words).to be_empty
     end
 
@@ -366,10 +411,14 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'resets stop-words' do
+      response = index.update_stop_words(stop_words_string)
+      index.wait_for_pending_update(response['updateId'])
+
       response = index.reset_stop_words
       expect(response).to be_a(Hash)
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
+
       expect(index.stop_words).to be_a(Array)
       expect(index.stop_words).to be_empty
     end
@@ -398,16 +447,24 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'updates filterable attributes at null' do
+      response = index.update_filterable_attributes(filterable_attributes)
+      expect(response).to have_key('updateId')
+
       response = index.update_filterable_attributes(nil)
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
+
       expect(index.filterable_attributes).to be_empty
     end
 
     it 'resets filterable attributes' do
+      response = index.update_filterable_attributes(filterable_attributes)
+      expect(response).to have_key('updateId')
+
       response = index.reset_filterable_attributes
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
+
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
       expect(index.filterable_attributes).to be_empty
     end
@@ -436,16 +493,24 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'updates sortable attributes at null' do
+      response = index.update_sortable_attributes(sortable_attributes)
+      index.wait_for_pending_update(response['updateId'])
+
       response = index.update_sortable_attributes(nil)
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
+
       expect(index.sortable_attributes).to be_empty
     end
 
     it 'resets sortable attributes' do
+      response = index.update_sortable_attributes(sortable_attributes)
+      index.wait_for_pending_update(response['updateId'])
+
       response = index.reset_sortable_attributes
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
+
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
       expect(index.sortable_attributes).to be_empty
     end
@@ -496,9 +561,20 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'resets all settings' do
+      response = index.update_settings(
+        rankingRules: ['title:asc', 'typo'],
+        distinctAttribute: 'title',
+        stopWords: ['the'],
+        synonyms: {
+          wow: ['world of warcraft']
+        }
+      )
+      index.wait_for_pending_update(response['updateId'])
+
       response = index.reset_settings
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
+
       settings = index.settings
       expect(settings['rankingRules']).to eq(default_ranking_rules)
       expect(settings['distinctAttribute']).to be_nil
@@ -508,12 +584,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   end
 
   context 'Manipulation of searchable/displayed attributes with the primary-key' do
-    before do
-      @uid = random_uid
-      client.create_index(@uid)
-    end
-
-    let(:index) { client.index(@uid) }
+    let(:index) { client.index(random_uid) }
 
     it 'does not add document when there is no primary-key' do
       response = index.add_documents(title: 'Test')
@@ -531,14 +602,23 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'resets searchable/displayed attributes' do
+      response = index.update_displayed_attributes(['title', 'description'])
+      index.wait_for_pending_update(response['updateId'])
+      response = index.update_searchable_attributes(['title'])
+      expect(response).to have_key('updateId')
+      index.wait_for_pending_update(response['updateId'])
+
       response = index.reset_displayed_attributes
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
+
       response = index.reset_searchable_attributes
       expect(response).to have_key('updateId')
       index.wait_for_pending_update(response['updateId'])
       expect(index.get_update_status(response['updateId'])['status']).to eq('processed')
+
+      expect(index.displayed_attributes).to eq(['*'])
       expect(index.searchable_attributes).to eq(['*'])
     end
   end
