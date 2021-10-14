@@ -48,11 +48,11 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
     response = index.update_filterable_attributes(['genre'])
     index.wait_for_pending_update(response['updateId'])
     response = index.search('prinec',
-                             {
-                               filter: ['genre = fantasy'],
-                               attributesToRetrieve: ['title'],
-                               attributesToHighlight: ['*']
-                             })
+                            {
+                              filter: ['genre = fantasy'],
+                              attributesToRetrieve: ['title'],
+                              attributesToHighlight: ['*']
+                            })
     expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['nbHits']).to eq(1)
     expect(response['hits'].first).to have_key('_formatted')
