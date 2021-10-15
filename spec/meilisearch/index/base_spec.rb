@@ -6,6 +6,10 @@ RSpec.describe MeiliSearch::Index do
     index.fetch_info
     expect(index).to be_a(MeiliSearch::Index)
     expect(index.uid).to eq('new_index')
+    expect(index.created_at).to be_a(Time)
+    expect(index.created_at).to be_within(60).of(Time.now)
+    expect(index.updated_at).to be_a(Time)
+    expect(index.created_at).to be_within(60).of(Time.now)
     expect(index.primary_key).to be_nil
   end
 
@@ -33,6 +37,10 @@ RSpec.describe MeiliSearch::Index do
     expect(index.uid).to eq('uid')
     expect(index.primary_key).to eq('new_primary_key')
     expect(index.fetch_primary_key).to eq('new_primary_key')
+    expect(index.created_at).to be_a(Time)
+    expect(index.created_at).to be_within(60).of(Time.now)
+    expect(index.updated_at).to be_a(Time)
+    expect(index.updated_at).to be_within(60).of(Time.now)
   end
 
   it 'returns error if trying to update primary-key if it is already defined' do
@@ -60,7 +68,9 @@ RSpec.describe MeiliSearch::Index do
         max_retries: 1,
         timeout: 2
       }
-    ).and_return(double(success?: true, parsed_response: ''))
+    ).and_return(double(success?: true,
+                        parsed_response: { 'createdAt' => '2021-10-16T14:57:35Z',
+                                           'updatedAt' => '2021-10-16T14:57:35Z' }))
     index.fetch_info
   end
 
