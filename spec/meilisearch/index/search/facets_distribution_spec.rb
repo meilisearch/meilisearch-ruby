@@ -1,86 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
-  before(:all) do
-    @documents = [
-      {
-        objectId: 123,
-        title: 'Pride and Prejudice',
-        year: 1813,
-        author: 'Jane Austen',
-        genre: 'romance'
-      },
-      {
-        objectId: 456,
-        title: 'Le Petit Prince',
-        year: 1943,
-        author: 'Antoine de Saint-Exupéry',
-        genre: 'adventure'
-      },
-      {
-        objectId: 1,
-        title: 'Alice In Wonderland',
-        year: 1865,
-        author: 'Lewis Carroll',
-        genre: 'adventure'
-      },
-      {
-        objectId: 2,
-        title: 'Le Rouge et le Noir',
-        year: 1830,
-        author: 'Stendhal',
-        genre: 'romance'
-      },
-      {
-        objectId: 1344,
-        title: 'The Hobbit',
-        year: 1937,
-        author: 'J. R. R. Tolkien',
-        genre: 'adventure'
-      },
-      {
-        objectId: 4,
-        title: 'Harry Potter and the Half-Blood Prince',
-        year: 2005,
-        author: 'J. K. Rowling',
-        genre: 'fantasy'
-      },
-      {
-        objectId: 2056,
-        title: 'Harry Potter and the Deathly Hallows',
-        year: 2007,
-        author: 'J. K. Rowling',
-        genre: 'fantasy'
-      },
-      {
-        objectId: 42,
-        title: 'The Hitchhiker\'s Guide to the Galaxy',
-        year: 1978,
-        author: 'Douglas Adams'
-      },
-      {
-        objectId: 190,
-        title: 'A Game of Thrones',
-        year: 1996,
-        author: 'George R. R. Martin',
-        genre: 'fantasy'
-      }
-    ]
-    client = MeiliSearch::Client.new(URL, MASTER_KEY)
-    clear_all_indexes(client)
-    @index = client.create_index('books')
-    response = @index.add_documents(@documents)
-    @index.wait_for_pending_update(response['updateId'])
-    response = @index.update_filterable_attributes(['genre', 'year', 'author'])
-    @index.wait_for_pending_update(response['updateId'])
-  end
+  include_context 'search books with author, genre, year'
 
-  after(:all) do
-    @index.delete
+  before do
+    response = index.update_filterable_attributes(['genre', 'year', 'author'])
+    index.wait_for_pending_update(response['updateId'])
   end
 
   it 'does a custom search with facetsDistribution' do
-    response = @index.search('prinec', facetsDistribution: ['genre', 'author'])
+    response = index.search('prinec', facetsDistribution: ['genre', 'author'])
     expect(response.keys).to contain_exactly(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetsDistribution',
@@ -97,14 +26,14 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
   end
 
   it 'does a placeholder search with facetsDistribution' do
-    response = @index.search('', facetsDistribution: ['genre', 'author'])
+    response = index.search('', facetsDistribution: ['genre', 'author'])
     expect(response.keys).to contain_exactly(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetsDistribution',
       'exhaustiveFacetsCount'
     )
     expect(response['exhaustiveFacetsCount']).to be false
-    expect(response['nbHits']).to eq(@documents.count)
+    expect(response['nbHits']).to eq(documents.count)
     expect(response['facetsDistribution'].keys).to contain_exactly('genre', 'author')
     expect(response['facetsDistribution']['genre'].keys).to contain_exactly('romance', 'adventure', 'fantasy')
     expect(response['facetsDistribution']['genre']['romance']).to eq(2)
@@ -114,16 +43,16 @@ RSpec.describe 'MeiliSearch::Index - Search with facetsDistribution' do
   end
 
   it 'does a placeholder search with facetsDistribution on number' do
-    response = @index.search('', facetsDistribution: ['year'])
+    response = index.search('', facetsDistribution: ['year'])
     expect(response.keys).to contain_exactly(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetsDistribution',
       'exhaustiveFacetsCount'
     )
     expect(response['exhaustiveFacetsCount']).to be false
-    expect(response['nbHits']).to eq(@documents.count)
+    expect(response['nbHits']).to eq(documents.count)
     expect(response['facetsDistribution'].keys).to contain_exactly('year')
-    expect(response['facetsDistribution']['year'].keys).to contain_exactly(*@documents.map { |o| o[:year].to_s })
+    expect(response['facetsDistribution']['year'].keys).to contain_exactly(*documents.map { |o| o[:year].to_s })
     expect(response['facetsDistribution']['year']['1943']).to eq(1)
   end
 end
