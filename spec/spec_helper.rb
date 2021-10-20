@@ -20,7 +20,9 @@
 # it won't be able to track your files and their coverage!
 # The SimpleCov.start must be issued before any of your application code is required!
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start do
+  add_filter %r{^/spec/}
+end
 
 require 'meilisearch'
 require 'byebug'
