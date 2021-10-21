@@ -41,6 +41,16 @@ It's [Hacktoberfest month](https://blog.meilisearch.com/contribute-hacktoberfest
 
 ## Development Workflow
 
+### (optional) Docker <!-- omit in toc -->
+If you have Docker/Docker Composer installed, it's preferable to use it over installing basic dependencies one by one.
+```bash
+# Create/run the containers
+docker compose up -d
+
+# Run the bash of meilisearch_ruby
+docker compose exec meilisearch_ruby bash
+```
+
 ### Setup <!-- omit in toc -->
 
 ```bash
@@ -51,10 +61,22 @@ bundle install
 
 Each PR should pass the tests to be accepted.
 
+#### Download and run MeiliSearch <!-- omit in toc -->
+> **NOTE**: _Ignore these steps if you're running the project using the Docker Compose file._
+
+
 ```bash
-# Tests
-curl -L https://install.meilisearch.com | sh # download MeiliSearch
-./meilisearch --master-key=masterKey --no-analytics=true # run MeiliSearch
+# Download MeiliSearch
+curl -L https://install.meilisearch.com | sh
+
+# Run MeiliSearch:
+./meilisearch --master-key=masterKey --no-analytics=true
+```
+
+#### Run tests <!-- omit in toc -->
+
+Run all tests:
+```bash
 bundle exec rspec
 ```
 
@@ -77,6 +99,7 @@ Each PR should pass the linter to be accepted.
 ```bash
 # Check the linter errors
 bundle exec rubocop lib/ spec/
+
 # Auto-correct the linter errors
 bundle exec rubocop -a lib/ spec/
 ```
