@@ -21,6 +21,14 @@ module MeiliSearch
       self
     end
 
+    def fetch_raw_info
+      index_hash = http_get "/indexes/#{@uid}"
+      @primary_key = index_hash['primaryKey']
+      @created_at = Time.parse(index_hash['createdAt'])
+      @updated_at = Time.parse(index_hash['updatedAt'])
+      index_hash.to_json
+    end
+
     def update(body)
       index_hash = http_put "/indexes/#{@uid}", body
       @primary_key = index_hash['primaryKey']
