@@ -15,28 +15,29 @@ module MeiliSearch
 
     def fetch_info
       index_hash = http_get "/indexes/#{@uid}"
-      @primary_key = index_hash['primaryKey']
-      @created_at = Time.parse(index_hash['createdAt'])
-      @updated_at = Time.parse(index_hash['updatedAt'])
+      set_base_properties index_hash
       self
     end
 
     def fetch_raw_info
       index_hash = http_get "/indexes/#{@uid}"
-      @primary_key = index_hash['primaryKey']
-      @created_at = Time.parse(index_hash['createdAt'])
-      @updated_at = Time.parse(index_hash['updatedAt'])
+      set_base_properties index_hash
       index_hash
     end
 
     def update(body)
       index_hash = http_put "/indexes/#{@uid}", body
-      @primary_key = index_hash['primaryKey']
-      @created_at = Time.parse(index_hash['createdAt'])
-      @updated_at = Time.parse(index_hash['updatedAt'])
+      set_base_properties index_hash
       self
     end
     alias update_index update
+
+    def set_base_properties(index_hash)
+      @primary_key = index_hash['primaryKey']
+      @created_at = Time.parse(index_hash['createdAt'])
+      @updated_at = Time.parse(index_hash['updatedAt'])
+    end
+    private :set_base_properties
 
     def delete
       http_delete "/indexes/#{@uid}"
