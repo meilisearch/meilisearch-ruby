@@ -26,7 +26,7 @@ module MeiliSearch
       @primary_key = index_hash['primaryKey']
       @created_at = Time.parse(index_hash['createdAt'])
       @updated_at = Time.parse(index_hash['updatedAt'])
-      index_hash.to_json
+      index_hash
     end
 
     def update(body)

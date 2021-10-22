@@ -101,18 +101,18 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     expect(response.fetch_primary_key).to eq('primary_key')
   end
 
-  it 'fetch a specific index raw JSON response based on uid' do
-    client.create_index('specific_index_fetch_raw', primaryKey: 'primary_key')
+  it 'fetch a specific index raw Hash response based on uid' do
+    index = client.create_index('specific_index_fetch_raw', primaryKey: 'primary_key')
 
-    raw_response_json = JSON.parse(client.fetch_raw_index('specific_index_fetch_raw'))
+    raw_response = index.fetch_raw_info
 
-    expect(raw_response_json).to be_truthy
-    expect(raw_response_json['uid']).to eq('specific_index_fetch_raw')
-    expect(raw_response_json['primaryKey']).to eq('primary_key')
-    expect(Time.parse(raw_response_json['createdAt'])).to be_a(Time)
-    expect(Time.parse(raw_response_json['createdAt'])).to be_within(60).of(Time.now)
-    expect(Time.parse(raw_response_json['updatedAt'])).to be_a(Time)
-    expect(Time.parse(raw_response_json['updatedAt'])).to be_within(60).of(Time.now)
+    expect(raw_response).to be_a(Hash)
+    expect(raw_response['uid']).to eq('specific_index_fetch_raw')
+    expect(raw_response['primaryKey']).to eq('primary_key')
+    expect(Time.parse(raw_response['createdAt'])).to be_a(Time)
+    expect(Time.parse(raw_response['createdAt'])).to be_within(60).of(Time.now)
+    expect(Time.parse(raw_response['updatedAt'])).to be_a(Time)
+    expect(Time.parse(raw_response['updatedAt'])).to be_within(60).of(Time.now)
   end
 
   it 'returns an index object based on uid' do
