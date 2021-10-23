@@ -170,7 +170,7 @@ Note that MeiliSearch will rebuild your index whenever you update `filterableAtt
 Then, you can perform the search:
 
 ```ruby
-index.search('road', { filter: ['id > 2 AND genres = Adventure'] })
+index.search('wonder', { filter: ['id > 1 AND genres = Action'] })
 ```
 
 JSON output:
@@ -179,17 +179,17 @@ JSON output:
 {
   "hits": [
     {
-      "id": 4,
-      "title": "Mad Max: Fury Road",
+      "id": 2,
+      "title": "Wonder Woman",
       "genres": [
-        "Adventure",
-        "Science Fiction"
+        "Action",
+        "Adventure"
       ]
     }
   ],
   "nbHits": 1,
   "exhaustiveNbHits": false,
-  "query": "road",
+  "query": "wonder",
   "limit": 20,
   "offset": 0,
   "processingTimeMs": 0
