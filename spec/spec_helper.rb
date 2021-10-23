@@ -16,11 +16,16 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
+# NOTE: If SimpleCov starts after your application code is already loaded (via require),
+# it won't be able to track your files and their coverage!
+# The SimpleCov.start must be issued before any of your application code is required!
+require 'simplecov'
+SimpleCov.start do
+  add_filter %r{^/spec/}
+end
+
 require 'meilisearch'
 require 'byebug'
-require 'simplecov'
-
-SimpleCov.start
 
 # Globals for all tests
 URL = 'http://localhost:7700'
@@ -112,13 +117,15 @@ RSpec.configure do |config|
   #   # order dependency and want to debug it, you can fix the order by providing
   #   # the seed, which is printed after each run.
   #   #     --seed 1234
-  #   config.order = :random
+  config.order = :random
   #
   #   # Seed global randomization in this process using the `--seed` CLI option.
   #   # Setting this allows you to use `--seed` to deterministically reproduce
   #   # test failures related to randomization by passing the same `--seed` value
   #   # as the one that triggered the failure.
   #   Kernel.srand config.seed
+
+  config.include_context 'test defaults'
 
   # Helpers
   config.include IndexesHelpers

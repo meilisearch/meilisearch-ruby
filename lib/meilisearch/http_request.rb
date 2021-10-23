@@ -54,6 +54,8 @@ module MeiliSearch
 
     private
 
+    SNAKE_CASE = /[^a-zA-Z0-9]+(.)/.freeze
+
     def send_request(http_method, relative_path, query_params = nil, body = nil)
       config = http_config(query_params, body)
       begin
@@ -65,7 +67,8 @@ module MeiliSearch
     end
 
     def http_config(query_params, body)
-      body = body.to_json
+      body = transform_attributes(body).to_json
+
       {
         headers: @headers,
         query: query_params,
@@ -73,6 +76,25 @@ module MeiliSearch
         timeout: @options[:timeout] || 1,
         max_retries: @options[:max_retries] || 0
       }.compact
+    end
+
+    def transform_attributes(body)
+      case body
+      when Array
+        body.map { |item| transform_attributes(item) }
+      when Hash
+        parse(body)
+      else
+        body
+      end
+    end
+
+    def parse(body)
+      body
+        .transform_keys(&:to_s)
+        .transform_keys do |key|
+          key.include?('_') ? key.downcase.gsub(SNAKE_CASE, &:upcase).gsub('_', '') : key
+        end
     end
 
     def validate(response)
