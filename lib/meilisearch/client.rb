@@ -11,8 +11,8 @@ module MeiliSearch
     end
 
     def indexes
-      raw_indexes.map do |info|
-        index_object(info['uid'], info['primaryKey'])
+      raw_indexes.map do |index_hash|
+        index_object(index_hash['uid'], index_hash['primaryKey'])
       end
     end
 
