@@ -17,13 +17,17 @@ module MeiliSearch
         'Content-Type' => 'application/json',
         'X-Meili-API-Key' => api_key
       }.compact
+      @headers_no_body = {
+        'X-Meili-API-Key' => api_key
+      }.compact
     end
 
     def http_get(relative_path = '', query_params = {})
       send_request(
         proc { |path, config| self.class.get(path, config) },
         relative_path,
-        query_params
+        query_params: query_params,
+        headers: @headers_no_body
       )
     end
 
@@ -31,8 +35,9 @@ module MeiliSearch
       send_request(
         proc { |path, config| self.class.post(path, config) },
         relative_path,
-        query_params,
-        body
+        query_params: query_params,
+        body: body,
+        headers: @headers
       )
     end
 
@@ -40,15 +45,17 @@ module MeiliSearch
       send_request(
         proc { |path, config| self.class.put(path, config) },
         relative_path,
-        query_params,
-        body
+        query_params: query_params,
+        body: body,
+        headers: @headers
       )
     end
 
     def http_delete(relative_path = '')
       send_request(
         proc { |path, config| self.class.delete(path, config) },
-        relative_path
+        relative_path,
+        headers: @headers_no_body
       )
     end
 
@@ -56,8 +63,8 @@ module MeiliSearch
 
     SNAKE_CASE = /[^a-zA-Z0-9]+(.)/.freeze
 
-    def send_request(http_method, relative_path, query_params = nil, body = nil)
-      config = http_config(query_params, body)
+    def send_request(http_method, relative_path, query_params: nil, body: nil, headers: nil)
+      config = http_config(query_params, body, headers)
       begin
         response = http_method.call(@base_url + relative_path, config)
       rescue Errno::ECONNREFUSED => e
@@ -66,11 +73,10 @@ module MeiliSearch
       validate(response)
     end
 
-    def http_config(query_params, body)
+    def http_config(query_params, body, headers)
       body = transform_attributes(body).to_json
-
       {
-        headers: @headers,
+        headers: headers,
         query: query_params,
         body: body,
         timeout: @options[:timeout] || 1,
