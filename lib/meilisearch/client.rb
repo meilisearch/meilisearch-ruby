@@ -6,8 +6,14 @@ module MeiliSearch
   class Client < HTTPRequest
     ### INDEXES
 
+    def raw_indexes
+      http_get('/indexes')
+    end
+
     def indexes
-      http_get '/indexes'
+      raw_indexes.map do |index_hash|
+        index_object(index_hash['uid'], index_hash['primaryKey'])
+      end
     end
 
     # Usage:
