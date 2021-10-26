@@ -13,6 +13,20 @@ RSpec.describe MeiliSearch::Index do
     expect(index.primary_key).to be_nil
   end
 
+  it 'fetch the raw Hash info of the index' do
+    client.create_index('specific_index_fetch_raw', primaryKey: 'primary_key')
+
+    raw_index = client.fetch_raw_index('specific_index_fetch_raw')
+
+    expect(raw_index).to be_a(Hash)
+    expect(raw_index['uid']).to eq('specific_index_fetch_raw')
+    expect(raw_index['primaryKey']).to eq('primary_key')
+    expect(Time.parse(raw_index['createdAt'])).to be_a(Time)
+    expect(Time.parse(raw_index['createdAt'])).to be_within(60).of(Time.now)
+    expect(Time.parse(raw_index['updatedAt'])).to be_a(Time)
+    expect(Time.parse(raw_index['updatedAt'])).to be_within(60).of(Time.now)
+  end
+
   it 'get primary-key of index if null' do
     index = client.create_index('index_without_primary_key')
     expect(index.primary_key).to be_nil

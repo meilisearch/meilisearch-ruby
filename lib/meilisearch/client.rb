@@ -61,6 +61,10 @@ module MeiliSearch
       index_object(index_uid).fetch_info
     end
 
+    def fetch_raw_index(index_uid)
+      index_object(index_uid).fetch_raw_info
+    end
+
     ### KEYS
 
     def keys

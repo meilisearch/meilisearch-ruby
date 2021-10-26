@@ -14,31 +14,46 @@ module MeiliSearch
     end
 
     def fetch_info
-      index_hash = http_get "/indexes/#{@uid}"
-      @primary_key = index_hash['primaryKey']
-      @created_at = Time.parse(index_hash['createdAt'])
-      @updated_at = Time.parse(index_hash['updatedAt'])
+      index_hash = http_get indexes_path(id: @uid)
+      set_base_properties index_hash
       self
     end
-
-    def update(body)
-      index_hash = http_put "/indexes/#{@uid}", body
-      @primary_key = index_hash['primaryKey']
-      @created_at = Time.parse(index_hash['createdAt'])
-      @updated_at = Time.parse(index_hash['updatedAt'])
-      self
-    end
-    alias update_index update
-
-    def delete
-      http_delete "/indexes/#{@uid}"
-    end
-    alias delete_index delete
 
     def fetch_primary_key
       fetch_info.primary_key
     end
     alias get_primary_key fetch_primary_key
+
+    def fetch_raw_info
+      index_hash = http_get indexes_path(id: @uid)
+      set_base_properties index_hash
+      index_hash
+    end
+
+    def update(body)
+      index_hash = http_put indexes_path(id: @uid), body
+      set_base_properties index_hash
+      self
+    end
+
+    alias update_index update
+
+    def delete
+      http_delete indexes_path(id: @uid)
+    end
+    alias delete_index delete
+
+    def indexes_path(id: nil)
+      "/indexes/#{id}"
+    end
+    private :indexes_path
+
+    def set_base_properties(index_hash)
+      @primary_key = index_hash['primaryKey']
+      @created_at = Time.parse(index_hash['createdAt'])
+      @updated_at = Time.parse(index_hash['updatedAt'])
+    end
+    private :set_base_properties
 
     ### DOCUMENTS
 

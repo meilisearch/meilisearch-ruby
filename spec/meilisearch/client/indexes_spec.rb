@@ -157,6 +157,22 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     end
   end
 
+  describe '#fetch_raw_index' do
+    it 'fetch a specific index raw Hash response based on uid' do
+      index = client.create_index('specific_index_fetch_raw', primaryKey: 'primary_key')
+
+      raw_response = index.fetch_raw_info
+
+      expect(raw_response).to be_a(Hash)
+      expect(raw_response['uid']).to eq('specific_index_fetch_raw')
+      expect(raw_response['primaryKey']).to eq('primary_key')
+      expect(Time.parse(raw_response['createdAt'])).to be_a(Time)
+      expect(Time.parse(raw_response['createdAt'])).to be_within(60).of(Time.now)
+      expect(Time.parse(raw_response['updatedAt'])).to be_a(Time)
+      expect(Time.parse(raw_response['updatedAt'])).to be_within(60).of(Time.now)
+    end
+  end
+
   describe '#index' do
     it 'returns an index object with the provided uid' do
       client.create_index('existing_index', primaryKey: 'primary_key')
