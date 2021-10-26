@@ -89,8 +89,9 @@ To update it, run the following command:
 bundle exec rubocop --auto-gen-config
 ```
 
-### Docker <!-- omit in toc -->
-If you have Docker/Docker Composer installed, you can alternatively setup your local development environment following the steps below.
+### Using Docker Compose <!-- omit in toc -->
+
+If you have Docker and Docker Compose installed, you can alternatively set up your local development environment following the steps below.
 
 ```bash
 # Create/run the containers
