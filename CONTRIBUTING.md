@@ -100,7 +100,13 @@ docker compose up -d
 docker compose exec meilisearch_ruby bash
 ```
 
+You can now run the previous steps in the `meilisearc_ruby` container:
 
+```bash
+bundle install
+bundle exec rspec
+bundle exec rubocop lib/ spec/
+...
 ### Want to debug? <!-- omit in toc -->
 
 You can use the [`byebug` gem](https://github.com/deivid-rodriguez/byebug).
