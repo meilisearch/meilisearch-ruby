@@ -2,7 +2,6 @@
 
 RSpec.shared_context 'test defaults' do
   let(:client) { MeiliSearch::Client.new(URL, MASTER_KEY) }
-  let(:test_uid) { random_uid }
 
   before do
     clear_all_indexes(client)
