@@ -28,7 +28,8 @@ require 'meilisearch'
 require 'byebug'
 
 # Globals for all tests
-URL = 'http://localhost:7700'
+URL = format('http://%<host>s:%<port>s',
+             host: ENV.fetch('MEILISEARCH_HOST', 'localhost'), port: ENV.fetch('MEILISEARCH_PORT', '7700'))
 MASTER_KEY = 'masterKey'
 DEFAULT_SEARCH_RESPONSE_KEYS = [
   'hits',
