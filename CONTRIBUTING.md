@@ -89,6 +89,24 @@ To update it, run the following command:
 bundle exec rubocop --auto-gen-config
 ```
 
+### Using Docker Compose <!-- omit in toc -->
+
+If you have Docker and Docker Compose installed, you can alternatively set up your local development environment following the steps below.
+
+```bash
+# Create/run the containers
+docker compose up -d
+# Run bash in meilisearch_ruby container
+docker compose exec meilisearch_ruby bash
+```
+
+You can now run the previous steps in the `meilisearc_ruby` container:
+
+```bash
+bundle install
+bundle exec rspec
+bundle exec rubocop lib/ spec/
+...
 ### Want to debug? <!-- omit in toc -->
 
 You can use the [`byebug` gem](https://github.com/deivid-rodriguez/byebug).

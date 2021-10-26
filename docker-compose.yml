@@ -1,0 +1,26 @@
+version: "3.7"
+
+services:
+  meilisearch_ruby:
+    image: ruby
+    tty: true
+    stdin_open: true
+    working_dir: /home/app
+    environment:
+      - MEILISEARCH_HOST=meilisearch
+      - MEILISEARCH_PORT=7700
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./:/home/app
+
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    tty: true
+    stdin_open: true
+    container_name: meilisearch
+    ports:
+      - "7700:7700"
+    # Uncomment this to run the test suite
+    # environment:
+    #   - MEILI_MASTER_KEY=masterKey
