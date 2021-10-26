@@ -21,4 +21,6 @@ services:
     container_name: meilisearch
     ports:
       - "7700:7700"
-
+    # Uncomment this to run the test suite
+    # environment:
+    #   - MEILI_MASTER_KEY=masterKey
