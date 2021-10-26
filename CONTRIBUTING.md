@@ -107,6 +107,8 @@ bundle install
 bundle exec rspec
 bundle exec rubocop lib/ spec/
 ...
+```
+
 ### Want to debug? <!-- omit in toc -->
 
 You can use the [`byebug` gem](https://github.com/deivid-rodriguez/byebug).
