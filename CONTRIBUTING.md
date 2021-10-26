@@ -96,9 +96,8 @@ If you have Docker and Docker Compose installed, you can alternatively set up yo
 ```bash
 # Create/run the containers
 docker compose up -d
-# Run the bash of meilisearch_ruby
+# Run bash in meilisearch_ruby container
 docker compose exec meilisearch_ruby bash
-# Then now you can run `bundle install`, tests, linter, code etc.
 ```
 
 
