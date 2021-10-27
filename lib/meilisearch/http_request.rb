@@ -66,16 +66,17 @@ module MeiliSearch
       }.compact
     end
 
-    def merge_options(defaults, added = {})
-      merged = defaults.merge(added)
-      merged[:headers].merge(added[:headers]) if added.key?(:headers)
-      merged
+    def merge_options(default_options, added_options = {})
+      default_cloned_headers = default_options[:headers].clone
+      merged_options = default_options.merge(added_options)
+      merged_options[:headers] = default_cloned_headers.merge(added_options[:headers]) if added_options.key?(:headers)
+      merged_options
     end
 
     def remove_options_header(options, key)
-      new_options = clone_options(options)
-      new_options[:headers].tap { |headers| headers.delete(key) }
-      new_options
+      cloned_options = clone_options(options)
+      cloned_options[:headers].tap { |headers| headers.delete(key) }
+      cloned_options
     end
 
     def clone_options(options)
@@ -97,7 +98,7 @@ module MeiliSearch
     end
 
     def http_config(query_params, body, options)
-      body = transform_attributes(body).to_json
+      body = transform_attributes(body).to_json if options[:transform_body?] == true
       {
         headers: options[:headers],
         query: query_params,

@@ -25,6 +25,52 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
         expect(index.documents.count).to eq(documents.count)
       end
 
+      it 'adds JSON documents (as a array of documents)' do
+        documents = <<JSON
+        [
+          { "objectId": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" },
+          { "objectId": 456,  "title": "Le Petit Prince",                        "comment": "A french book" },
+          { "objectId": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" },
+          { "objectId": 1344, "title": "The Hobbit",                             "comment": "An awesome book" },
+          { "objectId": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
+        ]
+JSON
+        response = index.add_documents_json(documents)
+
+        expect(response).to be_a(Hash)
+        expect(response).to have_key('updateId')
+        index.wait_for_pending_update(response['updateId'])
+        expect(index.documents.count).to eq(5)
+      end
+
+      it 'adds NDJSON documents (as a array of documents)' do
+        documents = <<NDJSON
+        { "objectId": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" }
+        { "objectId": 456,  "title": "Le Petit Prince",                        "comment": "A french book" }
+        { "objectId": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" }
+        { "objectId": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
+NDJSON
+        response = index.add_documents_ndjson(documents)
+        expect(response).to be_a(Hash)
+        expect(response).to have_key('updateId')
+        index.wait_for_pending_update(response['updateId'])
+        expect(index.documents.count).to eq(4)
+      end
+
+      it 'adds CSV documents (as a array of documents)' do
+        documents = <<CSV
+"objectId:number","title:string","comment:string"
+"1239","Pride and Prejudice","A great book"
+"4569","Le Petit Prince","A french book"
+"49","Harry Potter and the Half-Blood Prince","The best book"
+CSV
+        response = index.add_documents_csv(documents)
+        expect(response).to be_a(Hash)
+        expect(response).to have_key('updateId')
+        index.wait_for_pending_update(response['updateId'])
+        expect(index.documents.count).to eq(3)
+      end
+
       it 'adds documents in a batch (as a array of documents)' do
         response = index.add_documents_in_batches(documents, 5)
         expect(response).to be_a(Array)

@@ -83,6 +83,27 @@ module MeiliSearch
     alias replace_documents! add_documents!
     alias add_or_replace_documents! add_documents!
 
+    def add_documents_json(documents, primary_key = nil)
+      options = { headers: { 'Content-Type' => 'application/json' }, transform_body?: false }
+      http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+    end
+    alias replace_documents_json add_documents_json
+    alias add_or_replace_documents_json add_documents_json
+
+    def add_documents_ndjson(documents, primary_key = nil)
+      options = { headers: { 'Content-Type' => 'application/x-ndjson' }, transform_body?: false }
+      http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+    end
+    alias replace_documents_ndjson add_documents_ndjson
+    alias add_or_replace_documents_ndjson add_documents_ndjson
+
+    def add_documents_csv(documents, primary_key = nil)
+      options = { headers: { 'Content-Type' => 'text/csv' }, transform_body?: false }
+      http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+    end
+    alias replace_documents_csv add_documents_csv
+    alias add_or_replace_documents_csv add_documents_csv
+
     def update_documents(documents, primary_key = nil)
       documents = [documents] if documents.is_a?(Hash)
       http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
