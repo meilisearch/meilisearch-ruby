@@ -56,7 +56,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
         expect do
           client.create_index('existing_index')
-        end.to raise_meilisearch_api_error_with(400, 'index_already_exists', 'invalid_request_error')
+        end.to raise_meilisearch_api_error_with(409, 'index_already_exists', 'invalid_request')
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
       it 'raises an error' do
         expect do
           client.create_index('two words')
-        end.to raise_meilisearch_api_error_with(400, 'invalid_index_uid', 'invalid_request_error')
+        end.to raise_meilisearch_api_error_with(400, 'invalid_index_uid', 'invalid_request')
       end
     end
   end

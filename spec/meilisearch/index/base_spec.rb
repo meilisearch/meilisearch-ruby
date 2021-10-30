@@ -63,8 +63,8 @@ RSpec.describe MeiliSearch::Index do
       index.update(primaryKey: 'new_primary_key')
     end.to raise_meilisearch_api_error_with(
       400,
-      'primary_key_already_present',
-      'invalid_request_error'
+      'index_primary_key_already_exists',
+      'invalid_request'
     )
   end
 

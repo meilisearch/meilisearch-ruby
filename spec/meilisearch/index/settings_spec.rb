@@ -128,7 +128,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       response = index.get_update_status(response['updateId'])
 
       expect(response.keys).to include('message')
-      expect(response['errorCode']).to eq('invalid_request')
+      expect(response['code']).to eq('invalid_request')
     end
 
     it 'resets ranking rules' do
@@ -563,7 +563,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       index.wait_for_pending_update(response['updateId'])
       response = index.get_update_status(response['updateId'])
       expect(response.keys).to include('message')
-      expect(response['errorCode']).to eq('missing_primary_key')
+      expect(response['code']).to eq('missing_primary_key')
     end
 
     it 'adds documents when there is a primary-key' do
