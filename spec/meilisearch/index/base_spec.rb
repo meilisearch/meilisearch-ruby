@@ -45,6 +45,19 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'updates primary-key of index if not defined before' do
+    index = client.create_index('uid', primaryKey: 'primary_key')
+    index.update(primaryKey: 'new_primary_key')
+    expect(index).to be_a(MeiliSearch::Index)
+    expect(index.uid).to eq('uid')
+    expect(index.primary_key).to eq('new_primary_key')
+    expect(index.fetch_primary_key).to eq('new_primary_key')
+    expect(index.created_at).to be_a(Time)
+    expect(index.created_at).to be_within(60).of(Time.now)
+    expect(index.updated_at).to be_a(Time)
+    expect(index.updated_at).to be_within(60).of(Time.now)
+  end
+
+  it 'updates primary-key of index if has been defined before but there is not docs' do
     index = client.create_index('uid')
     index.update(primaryKey: 'new_primary_key')
     expect(index).to be_a(MeiliSearch::Index)
@@ -58,13 +71,15 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'returns error if trying to update primary-key if it is already defined' do
-    index = client.create_index('uid', primaryKey: 'primary_key')
+    index = client.index('uid')
+    update = index.add_documents({ id: 1, title: 'My Title' })
+    index.wait_for_pending_update(update['updateId'])
     expect do
       index.update(primaryKey: 'new_primary_key')
     end.to raise_meilisearch_api_error_with(
       400,
-      'primary_key_already_present',
-      'invalid_request_error'
+      'index_primary_key_already_exists',
+      'invalid_request'
     )
   end
 

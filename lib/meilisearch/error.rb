@@ -29,10 +29,10 @@ module MeiliSearch
 
     def get_meilisearch_error_info(http_body)
       @http_body = JSON.parse(http_body)
-      @ms_code = @http_body['errorCode']
+      @ms_code = @http_body['code']
       @ms_message = @http_body['message']
-      @ms_type = @http_body['errorType']
-      @ms_link = @http_body['errorLink']
+      @ms_type = @http_body['type']
+      @ms_link = @http_body['link']
     rescue JSON::ParserError
       # We might receive a JSON::ParserError when, for example, MeiliSearch is running behind
       # some proxy (ELB or Nginx, for example), and the request timeouts, returning us

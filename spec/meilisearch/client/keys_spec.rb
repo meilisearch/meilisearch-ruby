@@ -15,7 +15,7 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
     new_client = MeiliSearch::Client.new(URL, public_key)
     expect do
       new_client.index(random_uid).settings
-    end.to raise_meilisearch_api_error_with(403, 'invalid_token', 'authentication_error')
+    end.to raise_meilisearch_api_error_with(403, 'invalid_api_key', 'auth')
   end
 
   it 'fails to get keys if private key used' do
@@ -23,14 +23,14 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
     new_client = MeiliSearch::Client.new(URL, private_key)
     expect do
       new_client.keys
-    end.to raise_meilisearch_api_error_with(403, 'invalid_token', 'authentication_error')
+    end.to raise_meilisearch_api_error_with(403, 'invalid_api_key', 'auth')
   end
 
   it 'fails to search if no key used' do
     new_client = MeiliSearch::Client.new(URL)
     expect do
       new_client.index(random_uid).settings
-    end.to raise_meilisearch_api_error_with(401, 'missing_authorization_header', 'authentication_error')
+    end.to raise_meilisearch_api_error_with(401, 'missing_authorization_header', 'auth')
   end
 
   it 'succeeds to search when using public key' do
