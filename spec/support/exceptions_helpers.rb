@@ -37,7 +37,7 @@ module ExceptionsHelpers
   def raise_missing_primary_key_meilisearch_api_error
     raise_meilisearch_api_error_with(
       400,
-      'missing_primary_key',
+      'primary_key_inference_failed',
       'invalid_request'
     )
   end

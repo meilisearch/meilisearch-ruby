@@ -486,7 +486,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       response = index.add_documents!(documents)
       update = index.get_update_status(response['updateId'])
       expect(update['status']).to eq('failed')
-      expect(update['code']).to eq('missing_primary_key')
+      expect(update['error']['code']).to eq('primary_key_inference_failed')
     end
   end
 

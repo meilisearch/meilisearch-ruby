@@ -20,7 +20,7 @@ RSpec.describe 'MeiliSearch::Client - Dumps' do
   it 'fails to get dump status without uid' do
     expect do
       client.dump_status('uid_not_exists')
-    end.to raise_meilisearch_api_error_with(404, 'not_found', 'invalid_request')
+    end.to raise_meilisearch_api_error_with(404, 'dump_not_found', 'invalid_request')
   end
 
   it 'works with method aliases' do
