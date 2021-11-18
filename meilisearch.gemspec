@@ -19,7 +19,8 @@ Gem::Specification.new do |s|
     'lib/meilisearch/http_request.rb',
     'lib/meilisearch/client.rb',
     'lib/meilisearch/index.rb',
-    'lib/meilisearch/version.rb'
+    'lib/meilisearch/version.rb',
+    'lib/meilisearch/utils.rb'
   ]
 
   s.required_ruby_version = '>= 2.6.0'
