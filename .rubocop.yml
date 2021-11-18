@@ -20,3 +20,6 @@ Style/SymbolArray:
 
 Style/WordArray:
   EnforcedStyle: brackets
+
+Style/Documentation:
+  Enabled: false

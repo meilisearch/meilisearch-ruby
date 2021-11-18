@@ -89,6 +89,23 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(settings['stopWords']).to be_empty
       expect(settings['synonyms']).to be_empty
     end
+
+    context 'with snake_case options' do
+      it 'does the request with camelCase attributes' do
+        response = index.update_settings(
+          ranking_rules: ['typo'],
+          distinct_ATTribute: 'title',
+          stopWords: ['a']
+        )
+
+        index.wait_for_pending_update(response['updateId'])
+        settings = index.settings
+
+        expect(settings['rankingRules']).to eq(['typo'])
+        expect(settings['distinctAttribute']).to eq('title')
+        expect(settings['stopWords']).to eq(['a'])
+      end
+    end
   end
 
   context 'On ranking-rules sub-routes' do

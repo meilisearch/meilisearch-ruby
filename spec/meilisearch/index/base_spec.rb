@@ -126,4 +126,16 @@ RSpec.describe MeiliSearch::Index do
     expect(index.method(:update) == index.method(:update_index)).to be_truthy
     expect(index.method(:delete) == index.method(:delete_index)).to be_truthy
   end
+
+  context 'with snake_case options' do
+    it 'does the request with camelCase attributes' do
+      index = client.create_index('uid')
+      index.update(primary_key: 'new_primary_key')
+
+      expect(index).to be_a(MeiliSearch::Index)
+      expect(index.uid).to eq('uid')
+      expect(index.primary_key).to eq('new_primary_key')
+      expect(index.fetch_primary_key).to eq('new_primary_key')
+    end
+  end
 end

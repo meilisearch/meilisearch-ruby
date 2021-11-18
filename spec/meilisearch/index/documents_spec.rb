@@ -25,6 +25,17 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
         expect(index.documents.count).to eq(documents.count)
       end
 
+      it 'keeps the structure of the original documents' do
+        docs = [
+          { object_id: 123, my_title: 'Pride and Prejudice', 'my-comment': 'A great book' }
+        ]
+
+        response = index.add_documents(docs)
+        index.wait_for_pending_update(response['updateId'])
+
+        expect(index.documents.first.keys).to eq(docs.first.keys.map(&:to_s))
+      end
+
       it 'adds documents in a batch (as a array of documents)' do
         response = index.add_documents_in_batches(documents, 5)
         expect(response).to be_a(Array)
