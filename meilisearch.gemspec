@@ -11,7 +11,6 @@ Gem::Specification.new do |s|
   s.description = 'An easy-to-use ruby client for Meilisearch API. See https://github.com/meilisearch/MeiliSearch'
   s.homepage    = 'https://github.com/meilisearch/meilisearch-ruby'
   s.licenses    = ['MIT']
-  s.date        = Time.now
 
   s.files       = Dir['{lib}/**/*', 'LICENSE', 'README.md']
 
