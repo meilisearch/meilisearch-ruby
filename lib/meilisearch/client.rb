@@ -20,7 +20,8 @@ module MeiliSearch
     # client.create_index('indexUID')
     # client.create_index('indexUID', primaryKey: 'id')
     def create_index(index_uid, options = {})
-      body = options.merge(uid: index_uid)
+      body = Utils.transform_attributes(options.merge(uid: index_uid))
+
       index_hash = http_post '/indexes', body
       index_object(index_hash['uid'], index_hash['primaryKey'])
     end

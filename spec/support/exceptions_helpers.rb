@@ -14,7 +14,7 @@ module ExceptionsHelpers
     raise_meilisearch_api_error_with(
       400,
       'bad_request',
-      'invalid_request_error'
+      'invalid_request'
     )
   end
 
@@ -22,7 +22,7 @@ module ExceptionsHelpers
     raise_meilisearch_api_error_with(
       404,
       'index_not_found',
-      'invalid_request_error'
+      'invalid_request'
     )
   end
 
@@ -30,15 +30,15 @@ module ExceptionsHelpers
     raise_meilisearch_api_error_with(
       404,
       'document_not_found',
-      'invalid_request_error'
+      'invalid_request'
     )
   end
 
   def raise_missing_primary_key_meilisearch_api_error
     raise_meilisearch_api_error_with(
       400,
-      'missing_primary_key',
-      'invalid_request_error'
+      'primary_key_inference_failed',
+      'invalid_request'
     )
   end
 end

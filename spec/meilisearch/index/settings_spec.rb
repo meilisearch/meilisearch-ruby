@@ -89,6 +89,23 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(settings['stopWords']).to be_empty
       expect(settings['synonyms']).to be_empty
     end
+
+    context 'with snake_case options' do
+      it 'does the request with camelCase attributes' do
+        response = index.update_settings(
+          ranking_rules: ['typo'],
+          distinct_ATTribute: 'title',
+          stopWords: ['a']
+        )
+
+        index.wait_for_pending_update(response['updateId'])
+        settings = index.settings
+
+        expect(settings['rankingRules']).to eq(['typo'])
+        expect(settings['distinctAttribute']).to eq('title')
+        expect(settings['stopWords']).to eq(['a'])
+      end
+    end
   end
 
   context 'On ranking-rules sub-routes' do
@@ -127,8 +144,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
       response = index.get_update_status(response['updateId'])
 
-      expect(response.keys).to include('message')
-      expect(response['errorCode']).to eq('invalid_request')
+      expect(response.keys).to include('error')
+      expect(response['error']['code']).to eq('invalid_ranking_rule')
     end
 
     it 'resets ranking rules' do
@@ -562,8 +579,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       response = index.add_documents(title: 'Test')
       index.wait_for_pending_update(response['updateId'])
       response = index.get_update_status(response['updateId'])
-      expect(response.keys).to include('message')
-      expect(response['errorCode']).to eq('missing_primary_key')
+      expect(response.keys).to include('error')
+      expect(response['error']['code']).to eq('primary_key_inference_failed')
     end
 
     it 'adds documents when there is a primary-key' do

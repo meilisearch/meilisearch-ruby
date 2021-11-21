@@ -25,6 +25,17 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
         expect(index.documents.count).to eq(documents.count)
       end
 
+      it 'keeps the structure of the original documents' do
+        docs = [
+          { object_id: 123, my_title: 'Pride and Prejudice', 'my-comment': 'A great book' }
+        ]
+
+        response = index.add_documents(docs)
+        index.wait_for_pending_update(response['updateId'])
+
+        expect(index.documents.first.keys).to eq(docs.first.keys.map(&:to_s))
+      end
+
       it 'adds JSON documents (as a array of documents)' do
         documents = <<JSON
         [
@@ -532,7 +543,7 @@ CSV
       response = index.add_documents!(documents)
       update = index.get_update_status(response['updateId'])
       expect(update['status']).to eq('failed')
-      expect(update['errorCode']).to eq('missing_primary_key')
+      expect(update['error']['code']).to eq('primary_key_inference_failed')
     end
   end
 

@@ -31,8 +31,9 @@ module MeiliSearch
     end
 
     def update(body)
-      index_hash = http_put indexes_path(id: @uid), body
+      index_hash = http_put indexes_path(id: @uid), Utils.transform_attributes(body)
       set_base_properties index_hash
+
       self
     end
 
@@ -65,7 +66,7 @@ module MeiliSearch
     alias get_one_document document
 
     def documents(options = {})
-      http_get "/indexes/#{@uid}/documents", options
+      http_get "/indexes/#{@uid}/documents", Utils.transform_attributes(options)
     end
     alias get_documents documents
 
@@ -189,8 +190,9 @@ module MeiliSearch
     ### SEARCH
 
     def search(query, options = {})
-      parsed_options = options.compact
-      http_post "/indexes/#{@uid}/search", { q: query.to_s }.merge(parsed_options)
+      parsed_options = Utils.transform_attributes({ q: query.to_s }.merge(options.compact))
+
+      http_post "/indexes/#{@uid}/search", parsed_options
     end
 
     ### UPDATES
@@ -250,7 +252,7 @@ module MeiliSearch
     alias get_settings settings
 
     def update_settings(settings)
-      http_post "/indexes/#{@uid}/settings", settings
+      http_post "/indexes/#{@uid}/settings", Utils.transform_attributes(settings)
     end
     alias settings= update_settings
 
