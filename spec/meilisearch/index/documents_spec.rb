@@ -39,14 +39,14 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       it 'adds JSON documents (as a array of documents)' do
         documents = <<JSON
         [
-          { "objectId": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" },
-          { "objectId": 456,  "title": "Le Petit Prince",                        "comment": "A french book" },
-          { "objectId": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" },
-          { "objectId": 1344, "title": "The Hobbit",                             "comment": "An awesome book" },
-          { "objectId": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
+          { "objectRef": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" },
+          { "objectRef": 456,  "title": "Le Petit Prince",                        "comment": "A french book" },
+          { "objectRef": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" },
+          { "objectRef": 1344, "title": "The Hobbit",                             "comment": "An awesome book" },
+          { "objectRef": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
         ]
 JSON
-        response = index.add_documents_json(documents)
+        response = index.add_documents_json(documents, 'objectRef')
 
         expect(response).to be_a(Hash)
         expect(response).to have_key('updateId')
@@ -56,12 +56,12 @@ JSON
 
       it 'adds NDJSON documents (as a array of documents)' do
         documents = <<NDJSON
-        { "objectId": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" }
-        { "objectId": 456,  "title": "Le Petit Prince",                        "comment": "A french book" }
-        { "objectId": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" }
-        { "objectId": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
+        { "objectRef": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" }
+        { "objectRef": 456,  "title": "Le Petit Prince",                        "comment": "A french book" }
+        { "objectRef": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" }
+        { "objectRef": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
 NDJSON
-        response = index.add_documents_ndjson(documents)
+        response = index.add_documents_ndjson(documents, 'objectRef')
         expect(response).to be_a(Hash)
         expect(response).to have_key('updateId')
         index.wait_for_pending_update(response['updateId'])
@@ -70,12 +70,12 @@ NDJSON
 
       it 'adds CSV documents (as a array of documents)' do
         documents = <<CSV
-"objectId:number","title:string","comment:string"
+"objectRef:number","title:string","comment:string"
 "1239","Pride and Prejudice","A great book"
 "4569","Le Petit Prince","A french book"
 "49","Harry Potter and the Half-Blood Prince","The best book"
 CSV
-        response = index.add_documents_csv(documents)
+        response = index.add_documents_csv(documents, 'objectRef')
         expect(response).to be_a(Hash)
         expect(response).to have_key('updateId')
         index.wait_for_pending_update(response['updateId'])
