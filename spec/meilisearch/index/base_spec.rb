@@ -94,7 +94,7 @@ RSpec.describe MeiliSearch::Index do
                                   },
                                   max_retries: 1,
                                   timeout: 2,
-                                  transform_body?: true
+                                  convert_body?: true
                                 })
     expect(MeiliSearch::Index).to receive(:get).with(
       "#{URL}/indexes/options",

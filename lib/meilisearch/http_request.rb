@@ -16,7 +16,7 @@ module MeiliSearch
                                  timeout: 1,
                                  max_retries: 0,
                                  headers: build_default_options_headers(api_key),
-                                 transform_body?: true
+                                 convert_body?: true
                                }, options)
     end
 
@@ -96,7 +96,7 @@ module MeiliSearch
     end
 
     def http_config(query_params, body, options)
-      body = body.to_json if options[:transform_body?] == true
+      body = body.to_json if options[:convert_body?] == true
       {
         headers: options[:headers],
         query: query_params,
