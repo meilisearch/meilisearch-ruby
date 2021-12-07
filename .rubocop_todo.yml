@@ -10,14 +10,6 @@
 # Cop supports --auto-correct.
 # Configuration parameters: Include.
 # Include: **/*.gemspec
-Gemspec/DateAssignment:
-  Exclude:
-    - 'meilisearch.gemspec'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: Include.
-# Include: **/*.gemspec
 Gemspec/RequireMFA:
   Exclude:
     - 'meilisearch.gemspec'
