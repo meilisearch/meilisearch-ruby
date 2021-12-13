@@ -44,9 +44,9 @@ delete_documents_1: |-
 search_post_1: |-
   client.index('movies').search('american ninja')
 get_update_1: |-
-  client.index('movies').get_update_status(1)
+  client.index('movies').task(1)
 get_all_updates_1: |-
-  client.index('movies').get_all_update_status
+  client.index('movies').tasks
 get_keys_1: |-
   client.keys
 get_settings_1: |-

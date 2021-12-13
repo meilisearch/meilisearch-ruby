@@ -4,7 +4,7 @@ RSpec.describe 'MeiliSearch::Index - Sorted search' do
   include_context 'search books with author, genre, year'
   before do
     response = index.update_sortable_attributes(['year', 'author'])
-    index.wait_for_pending_update(response['updateId'])
+    index.wait_for_task(response['uid'])
 
     response = index.update_ranking_rules([
                                             'sort',
@@ -14,7 +14,7 @@ RSpec.describe 'MeiliSearch::Index - Sorted search' do
                                             'attribute',
                                             'exactness'
                                           ])
-    index.wait_for_pending_update(response['updateId'])
+    index.wait_for_task(response['uid'])
   end
 
   it 'does a custom search with one sort' do

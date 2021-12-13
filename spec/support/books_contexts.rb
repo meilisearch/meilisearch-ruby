@@ -16,7 +16,7 @@ RSpec.shared_context 'search books with genre' do
 
   before do
     response = index.add_documents(documents)
-    index.wait_for_pending_update(response['updateId'])
+    index.wait_for_task(response['uid'])
   end
 end
 
@@ -91,6 +91,6 @@ RSpec.shared_context 'search books with author, genre, year' do
 
   before do
     response = index.add_documents(documents)
-    index.wait_for_pending_update(response['updateId'])
+    index.wait_for_task(response['uid'])
   end
 end

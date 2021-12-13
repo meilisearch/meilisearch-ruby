@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe 'MeiliSearch::Index - Cropped search' do
-  let(:index) { client.create_index('books') }
+  let(:index) { client.index('books') }
   let(:document) do
     {
       objectId: 42,
@@ -10,10 +10,7 @@ RSpec.describe 'MeiliSearch::Index - Cropped search' do
     }
   end
 
-  before do
-    response = index.add_documents(document)
-    index.wait_for_pending_update(response['updateId'])
-  end
+  before { response = index.add_documents!(document) }
 
   it 'does a custom search with attributes to crop' do
     response = index.search('galaxy', { attributesToCrop: ['description'], cropLength: 15 })
