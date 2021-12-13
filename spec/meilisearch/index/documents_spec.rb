@@ -21,7 +21,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
         task = index.add_documents(documents)
         expect(task).to be_a(Hash)
         expect(task).to have_key('uid')
-        expect(task['type']).to eq('documentAddition')
+        expect(task['type']).to eq('documentsAddition')
         client.wait_for_task(task['uid'])
         expect(index.documents.count).to eq(documents.count)
       end
@@ -50,8 +50,8 @@ JSON
         response = index.add_documents_json(documents, 'objectRef')
 
         expect(response).to be_a(Hash)
-        expect(response).to have_key('updateId')
-        index.wait_for_pending_update(response['updateId'])
+        expect(response).to have_key('uid')
+        index.wait_for_task(response['uid'])
         expect(index.documents.count).to eq(5)
       end
 
@@ -64,8 +64,8 @@ JSON
 NDJSON
         response = index.add_documents_ndjson(documents, 'objectRef')
         expect(response).to be_a(Hash)
-        expect(response).to have_key('updateId')
-        index.wait_for_pending_update(response['updateId'])
+        expect(response).to have_key('uid')
+        index.wait_for_task(response['uid'])
         expect(index.documents.count).to eq(4)
       end
 
@@ -78,8 +78,8 @@ NDJSON
 CSV
         response = index.add_documents_csv(documents, 'objectRef')
         expect(response).to be_a(Hash)
-        expect(response).to have_key('updateId')
-        index.wait_for_pending_update(response['updateId'])
+        expect(response).to have_key('uid')
+        index.wait_for_task(response['uid'])
         expect(index.documents.count).to eq(3)
       end
 
@@ -133,33 +133,35 @@ CSV
         task = new_index.add_documents(documents)
         expect(task).to be_a(Hash)
         expect(task).to have_key('uid')
-        new_client.wait_for_task(task['uid'])
+        new_index.wait_for_task(task['uid'])
         expect(client.index('newIndex').fetch_primary_key).to eq('objectId')
         expect(client.index('newIndex').documents.count).to eq(documents.count)
       end
 
       it 'adds only one document to index (as an hash of one document)' do
         new_doc = { objectId: 30, title: 'Hamlet' }
+        client.create_index!('newIndex')
+        new_index = client.index('newIndex')
         expect do
-          task = index.add_documents(new_doc)
-          client.wait_for_task(task['uid'])
-
+          task = new_index.add_documents!(new_doc)
           expect(task).to be_a(Hash)
           expect(task).to have_key('uid')
-          expect(index.document(30)['title']).to eq('Hamlet')
-        end.to(change { index.documents.length }.by(1))
+          expect(new_index.document(30)['title']).to eq('Hamlet')
+        end.to(change { new_index.documents.length }.by(1))
       end
 
       it 'adds only one document synchronously to index (as an hash of one document)' do
         new_doc = { objectId: 30, title: 'Hamlet' }
+        client.create_index!('newIndex')
+        new_index = client.index('newIndex')
         expect do
-          task = index.add_documents!(new_doc)
+          task = new_index.add_documents!(new_doc)
           expect(task).to be_a(Hash)
           expect(task).to have_key('uid')
           expect(task).to have_key('status')
           expect(task['status']).to eq('succeeded')
-          expect(index.document(30)['title']).to eq('Hamlet')
-        end.to(change { index.documents.length }.by(1))
+          expect(new_index.document(30)['title']).to eq('Hamlet')
+        end.to(change { new_index.documents.length }.by(1))
       end
 
       it 'fails to add document with bad primary-key format' do

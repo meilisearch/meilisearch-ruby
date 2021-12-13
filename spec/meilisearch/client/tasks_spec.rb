@@ -1,55 +1,54 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Client - Tasks' do
+RSpec.describe 'MeiliSearch::Tasks' do
   include_context 'search books with genre'
 
-  it 'gets an empty array when nothing happened before' do
-    tasks = client.tasks
-    expect(tasks).to be_a(Array)
-    expect(tasks).to be_empty
+  # Ensure there is at least 1 task
+  before do
+    task = index.add_documents!(documents)
+    @task_uid = task['uid']
   end
 
   it 'gets a task of an index' do
-    task = index.add_documents(documents)
-    task_uid = task['uid']
-    index.wait_for_pending_task(task_uid)
-    task = index.task(task_uid)
+    task = index.task(@task_uid)
     expect(task).to be_a(Hash)
-    expect(task['uid']).to eq(task_uid)
-    expect(task['status']).to eq('succeeded')
-    expect(task['type']).to be_a('documentsAddition')
+    expect(task['uid']).to eq(@task_uid)
+    expect(task).to have_key('status')
+    expect(task).to have_key('indexUid')
+    expect(task).to have_key('type')
   end
 
   it 'gets all the tasks of an index' do
     tasks = index.tasks
-    expect(tasks).to be_a(Array)
-    expect(tasks.count).to eq(1)
+    expect(tasks['results']).to be_a(Array)
+    expect(tasks['results'].first).to have_key('uid')
+    expect(tasks['results'].first).to have_key('status')
+    expect(tasks['results'].first).to have_key('indexUid')
+    expect(tasks['results'].first).to have_key('type')
   end
 
   it 'gets a task of the MeiliSearch instance' do
-    task = client.task(task_uid)
+    task = client.task(0)
     expect(task).to be_a(Hash)
-    expect(task['uid']).to eq(task_uid)
-    expect(task['status']).to eq('succeeded')
-    expect(task['type']).to be_a('documentsAddition')
+    expect(task['uid']).to eq(0)
+    expect(task).to have_key('status')
+    expect(task).to have_key('indexUid')
+    expect(task).to have_key('type')
   end
 
   it 'gets all the tasks of the MeiliSearch instance' do
     tasks = client.tasks
-    expect(tasks).to be_a(Array)
-    expect(tasks.count).to eq(1)
-  end
-
-  it 'achieved_task? method returns true' do
-    boolean = index.achieved_task?(index.task(0))
-    expect(boolean).to be_truthy
+    expect(tasks['results']).to be_a(Array)
+    expect(tasks['results'].first).to have_key('uid')
+    expect(tasks['results'].first).to have_key('status')
+    expect(tasks['results'].first).to have_key('indexUid')
+    expect(tasks['results'].first).to have_key('type')
   end
 
   it 'waits for pending update with default values' do
-    task = index.add_documents(documents)
-    status = index.wait_for_pending_task(task['uid'])
-    expect(status).to be_a(Hash)
-    expect(status['status']).not_to eq('enqueued')
+    task = index.add_documents!(documents)
+    expect(task).to be_a(Hash)
+    expect(task['status']).not_to eq('enqueued')
   end
 
   it 'waits for pending update with default values after several updates' do
@@ -59,7 +58,7 @@ RSpec.describe 'MeiliSearch::Client - Tasks' do
     index.add_documents(documents)
     index.add_documents(documents)
     task = index.add_documents(documents)
-    status = index.wait_for_pending_task(task['uid'])
+    status = index.wait_for_task(task['uid'])
     expect(status).to be_a(Hash)
     expect(status['status']).not_to eq('enqueued')
   end
@@ -68,7 +67,7 @@ RSpec.describe 'MeiliSearch::Client - Tasks' do
     index.add_documents(documents)
     task = index.add_documents(documents)
     expect do
-      index.wait_for_pending_task(task['uid'], 1)
+      index.wait_for_task(task['uid'], 1)
     end.to raise_error(MeiliSearch::TimeoutError)
   end
 
@@ -77,7 +76,7 @@ RSpec.describe 'MeiliSearch::Client - Tasks' do
     task = index.add_documents(documents)
     expect do
       Timeout.timeout(0.1) do
-        index.wait_for_pending_task(task['uid'], 5000, 200)
+        index.wait_for_task(task['uid'], 5000, 200)
       end
     end.to raise_error(Timeout::Error)
   end

@@ -116,34 +116,25 @@ module MeiliSearch
     ### TASKS
 
     def tasks
-      http_get '/tasks'
+      task_endpoint.global_tasks
     end
 
     def task(task_uid)
-      http_get "/tasks/#{task_uid}"
+      task_endpoint.global_task(task_uid)
     end
 
     def wait_for_task(task_uid, timeout_in_ms = 5000, interval_in_ms = 50)
-      Timeout.timeout(timeout_in_ms.to_f / 1000) do
-        loop do
-          task = task(task_uid) # TO CHANGE!!!
-          return task if achieved_task?(task)
-
-          sleep interval_in_ms.to_f / 1000
-        end
-      end
-    rescue Timeout::Error
-      raise MeiliSearch::TimeoutError
+      task_endpoint.wait_for_task(task_uid, timeout_in_ms, interval_in_ms)
     end
 
     private
 
-    def achieved_task?(task)
-      task['status'] != 'enqueued' && task['status'] != 'processing'
-    end
-
     def index_object(uid, primary_key = nil)
       Index.new(uid, @base_url, @api_key, primary_key, @options)
+    end
+
+    def task_endpoint
+      Task.new(@base_url, @api_key, @options)
     end
   end
 end

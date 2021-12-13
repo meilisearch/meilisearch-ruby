@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require 'meilisearch/http_request'
-require 'timeout'
 
 module MeiliSearch
   class Index < HTTPRequest
     attr_reader :uid, :primary_key, :created_at, :updated_at
 
     def initialize(index_uid, url, api_key = nil, primary_key = nil, options = {})
+      @url = url
       @uid = index_uid
       @primary_key = primary_key
       super(url, api_key, options)
@@ -194,29 +194,21 @@ module MeiliSearch
 
     ### TASKS
 
+    def task_endpoint
+      Task.new(@url, @api_key, @options)
+    end
+    private :task_endpoint
+
     def task(task_uid)
-      http_get "/indexes/#{@uid}/tasks/#{task_uid}"
+      task_endpoint.index_task(@uid, task_uid)
     end
 
     def tasks
-      http_get "/indexes/#{@uid}/tasks"
-    end
-
-    def achieved_task?(task)
-      task['status'] != 'enqueued' && task['status'] != 'processing'
+      task_endpoint.index_tasks(@uid)
     end
 
     def wait_for_task(task_uid, timeout_in_ms = 5000, interval_in_ms = 50)
-      Timeout.timeout(timeout_in_ms.to_f / 1000) do
-        loop do
-          task = task(task_uid) # TO CHANGE!!!
-          return task if achieved_task?(task)
-
-          sleep interval_in_ms.to_f / 1000
-        end
-      end
-    rescue Timeout::Error
-      raise MeiliSearch::TimeoutError
+      task_endpoint.wait_for_task(task_uid, timeout_in_ms, interval_in_ms)
     end
 
     ### STATS
