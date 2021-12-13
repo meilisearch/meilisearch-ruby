@@ -91,7 +91,7 @@ RSpec.describe MeiliSearch::Index do
     expect(MeiliSearch::Index).to receive(:get).with(
       "#{URL}/indexes/options",
       {
-        headers: { 'X-Meili-API-Key' => MASTER_KEY },
+        headers: { 'Authorization' => "Bearer #{MASTER_KEY}" },
         body: 'null',
         query: {},
         max_retries: 1,

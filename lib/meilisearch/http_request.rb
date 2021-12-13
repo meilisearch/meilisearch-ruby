@@ -15,10 +15,10 @@ module MeiliSearch
       @options = options
       @headers = {
         'Content-Type' => 'application/json',
-        'X-Meili-API-Key' => api_key
+        'Authorization' => "Bearer #{api_key}"
       }.compact
       @headers_no_body = {
-        'X-Meili-API-Key' => api_key
+        'Authorization' => "Bearer #{api_key}"
       }.compact
     end
 
