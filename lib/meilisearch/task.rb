@@ -5,7 +5,6 @@ require 'timeout'
 
 module MeiliSearch
   class Task < HTTPRequest
-
     def global_tasks
       http_get '/tasks/'
     end

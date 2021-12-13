@@ -89,7 +89,7 @@ RSpec.describe MeiliSearch::Index do
 
   it 'returns a failing task if primary-key is already defined' do
     index = client.index('uid')
-    task = index.add_documents!({ id: 1, title: 'My Title' })
+    index.add_documents!({ id: 1, title: 'My Title' })
 
     task = index.update(primaryKey: 'new_primary_key')
     expect(task['type']).to eq('indexUpdate')
@@ -107,7 +107,7 @@ RSpec.describe MeiliSearch::Index do
     expect(index.options).to eq({
                                   headers: {
                                     'Content-Type' => 'application/json',
-                                    'Authorization' => "Bearer #{MASTER_KEY}",
+                                    'Authorization' => "Bearer #{MASTER_KEY}"
                                   },
                                   max_retries: 1,
                                   timeout: 2,
@@ -144,7 +144,7 @@ RSpec.describe MeiliSearch::Index do
 
     task = client.index('uid').delete
     expect(task['type']).to eq('indexDeletion')
-    achieved_task = client.wait_for_task(task['uid'])
+    client.wait_for_task(task['uid'])
 
     index = client.index('uid')
     expect { index.fetch_primary_key }.to raise_index_not_found_meilisearch_api_error
@@ -152,7 +152,7 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'works with method aliases' do
-    task = client.create_index!('uid', primaryKey: 'primary_key')
+    client.create_index!('uid', primaryKey: 'primary_key')
 
     index = client.fetch_index('uid')
     expect(index.method(:fetch_primary_key) == index.method(:get_primary_key)).to be_truthy
@@ -162,7 +162,7 @@ RSpec.describe MeiliSearch::Index do
 
   context 'with snake_case options' do
     it 'does the request with camelCase attributes' do
-      task = client.create_index!('uid')
+      client.create_index!('uid')
 
       task = client.index('uid').update(primary_key: 'new_primary_key')
       expect(task['type']).to eq('indexUpdate')

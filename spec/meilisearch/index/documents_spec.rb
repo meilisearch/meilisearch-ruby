@@ -491,10 +491,10 @@ CSV
     it 'does not take into account the new primary key' do
       index.add_documents!(documents, 'unique')
       task = index.update_documents({
-                                          unique: 3,
-                                          id: 1,
-                                          title: 'The Red and the Black'
-                                        }, 'id')
+                                      unique: 3,
+                                      id: 1,
+                                      title: 'The Red and the Black'
+                                    }, 'id')
       expect(task).to be_a(Hash)
       expect(task).to have_key('uid')
       client.wait_for_task(task['uid'])

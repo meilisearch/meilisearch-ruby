@@ -10,7 +10,7 @@ RSpec.describe 'MeiliSearch::Index - Cropped search' do
     }
   end
 
-  before { response = index.add_documents!(document) }
+  before { index.add_documents!(document) }
 
   it 'does a custom search with attributes to crop' do
     response = index.search('galaxy', { attributesToCrop: ['description'], cropLength: 15 })

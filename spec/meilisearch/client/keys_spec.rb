@@ -37,7 +37,7 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
     uid = random_uid
     public_key = client.keys['public']
     index = client.index(uid)
-    response = index.add_documents!(title: 'Test')
+    index.add_documents!(title: 'Test')
 
     new_client = MeiliSearch::Client.new(URL, public_key)
     response = new_client.index(uid).search('test')
