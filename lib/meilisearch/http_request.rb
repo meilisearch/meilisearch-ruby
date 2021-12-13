@@ -62,7 +62,7 @@ module MeiliSearch
     def build_default_options_headers(api_key = nil)
       {
         'Content-Type' => 'application/json',
-        'X-Meili-API-Key' => api_key
+        'Authorization' => "Bearer #{api_key}"
       }.compact
     end
 
