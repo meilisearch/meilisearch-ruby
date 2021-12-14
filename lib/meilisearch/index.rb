@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require 'meilisearch/http_request'
-require 'timeout'
 
 module MeiliSearch
   class Index < HTTPRequest
     attr_reader :uid, :primary_key, :created_at, :updated_at
 
     def initialize(index_uid, url, api_key = nil, primary_key = nil, options = {})
+      @url = url
       @uid = index_uid
       @primary_key = primary_key
       super(url, api_key, options)
@@ -31,10 +31,7 @@ module MeiliSearch
     end
 
     def update(body)
-      index_hash = http_put indexes_path(id: @uid), Utils.transform_attributes(body)
-      set_base_properties index_hash
-
-      self
+      http_put indexes_path(id: @uid), Utils.transform_attributes(body)
     end
 
     alias update_index update
@@ -78,8 +75,8 @@ module MeiliSearch
     alias add_or_replace_documents add_documents
 
     def add_documents!(documents, primary_key = nil)
-      update = add_documents(documents, primary_key)
-      wait_for_pending_update(update['updateId'])
+      task = add_documents(documents, primary_key)
+      wait_for_task(task['uid'])
     end
     alias replace_documents! add_documents!
     alias add_or_replace_documents! add_documents!
@@ -112,41 +109,41 @@ module MeiliSearch
     alias add_or_update_documents update_documents
 
     def update_documents!(documents, primary_key = nil)
-      update = update_documents(documents, primary_key)
-      wait_for_pending_update(update['updateId'])
+      task = update_documents(documents, primary_key)
+      wait_for_task(task['uid'])
     end
     alias add_or_update_documents! update_documents!
 
     def add_documents_in_batches(documents, batch_size = 1000, primary_key = nil)
-      update_ids = []
+      tasks = []
       documents.each_slice(batch_size) do |batch|
-        update_ids.append(add_documents(batch, primary_key))
+        tasks.append(add_documents(batch, primary_key))
       end
-      update_ids
+      tasks
     end
 
     def add_documents_in_batches!(documents, batch_size = 1000, primary_key = nil)
-      update_ids = add_documents_in_batches(documents, batch_size, primary_key)
+      tasks = add_documents_in_batches(documents, batch_size, primary_key)
       responses = []
-      update_ids.each do |update_object|
-        responses.append(wait_for_pending_update(update_object['updateId']))
+      tasks.each do |task_obj|
+        responses.append(wait_for_task(task_obj['uid']))
       end
       responses
     end
 
     def update_documents_in_batches(documents, batch_size = 1000, primary_key = nil)
-      update_ids = []
+      tasks = []
       documents.each_slice(batch_size) do |batch|
-        update_ids.append(update_documents(batch, primary_key))
+        tasks.append(update_documents(batch, primary_key))
       end
-      update_ids
+      tasks
     end
 
     def update_documents_in_batches!(documents, batch_size = 1000, primary_key = nil)
-      update_ids = update_documents_in_batches(documents, batch_size, primary_key)
+      tasks = update_documents_in_batches(documents, batch_size, primary_key)
       responses = []
-      update_ids.each do |update_object|
-        responses.append(wait_for_pending_update(update_object['updateId']))
+      tasks.each do |task_obj|
+        responses.append(wait_for_task(task_obj['uid']))
       end
       responses
     end
@@ -161,8 +158,8 @@ module MeiliSearch
     alias delete_multiple_documents delete_documents
 
     def delete_documents!(documents_ids)
-      update = delete_documents(documents_ids)
-      wait_for_pending_update(update['updateId'])
+      task = delete_documents(documents_ids)
+      wait_for_task(task['uid'])
     end
     alias delete_multiple_documents! delete_documents!
 
@@ -173,8 +170,8 @@ module MeiliSearch
     alias delete_one_document delete_document
 
     def delete_document!(document_id)
-      update = delete_document(document_id)
-      wait_for_pending_update(update['updateId'])
+      task = delete_document(document_id)
+      wait_for_task(task['uid'])
     end
     alias delete_one_document! delete_document!
 
@@ -183,8 +180,8 @@ module MeiliSearch
     end
 
     def delete_all_documents!
-      update = delete_all_documents
-      wait_for_pending_update(update['updateId'])
+      task = delete_all_documents
+      wait_for_task(task['uid'])
     end
 
     ### SEARCH
@@ -195,31 +192,23 @@ module MeiliSearch
       http_post "/indexes/#{@uid}/search", parsed_options
     end
 
-    ### UPDATES
+    ### TASKS
 
-    def get_update_status(update_id)
-      http_get "/indexes/#{@uid}/updates/#{update_id}"
+    def task_endpoint
+      Task.new(@url, @api_key, @options)
+    end
+    private :task_endpoint
+
+    def task(task_uid)
+      task_endpoint.index_task(@uid, task_uid)
     end
 
-    def get_all_update_status
-      http_get "/indexes/#{@uid}/updates"
+    def tasks
+      task_endpoint.index_tasks(@uid)
     end
 
-    def achieved_upate?(update)
-      update['status'] != 'enqueued' && update['status'] != 'processing'
-    end
-
-    def wait_for_pending_update(update_id, timeout_in_ms = 5000, interval_in_ms = 50)
-      Timeout.timeout(timeout_in_ms.to_f / 1000) do
-        loop do
-          get_update = get_update_status(update_id)
-          return get_update if achieved_upate?(get_update)
-
-          sleep interval_in_ms.to_f / 1000
-        end
-      end
-    rescue Timeout::Error
-      raise MeiliSearch::TimeoutError
+    def wait_for_task(task_uid, timeout_in_ms = 5000, interval_in_ms = 50)
+      task_endpoint.wait_for_task(task_uid, timeout_in_ms, interval_in_ms)
     end
 
     ### STATS
@@ -234,10 +223,6 @@ module MeiliSearch
 
     def indexing?
       stats['isIndexing']
-    end
-
-    def last_update
-      stats['lastUpdate']
     end
 
     def field_distribution

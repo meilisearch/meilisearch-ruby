@@ -22,35 +22,41 @@ module MeiliSearch
     def create_index(index_uid, options = {})
       body = Utils.transform_attributes(options.merge(uid: index_uid))
 
-      index_hash = http_post '/indexes', body
-      index_object(index_hash['uid'], index_hash['primaryKey'])
+      http_post '/indexes', body
     end
 
-    def get_or_create_index(index_uid, options = {})
-      begin
-        index_instance = fetch_index(index_uid)
-      rescue ApiError => e
-        raise e unless e.code == 'index_not_found'
-
-        index_instance = create_index(index_uid, options)
-      end
-      index_instance
+    # Synchronous version of create_index.
+    # Waits for the task to be achieved, be careful when using it.
+    def create_index!(index_uid, options = {})
+      task = create_index(index_uid, options)
+      wait_for_task(task['uid'])
     end
+
+    # def get_or_create_index(index_uid, options = {})
+    #   begin
+    #     index_instance = fetch_index(index_uid)
+    #   rescue ApiError => e
+    #     raise e unless e.code == 'index_not_found'
+
+    #     index_instance = create_index(index_uid, options)
+    #   end
+    #   index_instance
+    # end
 
     def delete_index(index_uid)
       index_object(index_uid).delete
     end
 
-    # Usage:
-    # client.delete_index_if_exists('indexUID')
-    def delete_index_if_exists(index_uid)
-      index_object(index_uid).delete
-      true
-    rescue ApiError => e
-      raise e if e.code != 'index_not_found'
+    # # Usage:
+    # # client.delete_index_if_exists('indexUID')
+    # def delete_index_if_exists(index_uid)
+    #   index_object(index_uid).delete
+    #   true
+    # rescue ApiError => e
+    #   raise e if e.code != 'index_not_found'
 
-      false
-    end
+    #   false
+    # end
 
     # Usage:
     # client.index('indexUID')
@@ -107,10 +113,28 @@ module MeiliSearch
     end
     alias get_dump_status dump_status
 
+    ### TASKS
+
+    def tasks
+      task_endpoint.global_tasks
+    end
+
+    def task(task_uid)
+      task_endpoint.global_task(task_uid)
+    end
+
+    def wait_for_task(task_uid, timeout_in_ms = 5000, interval_in_ms = 50)
+      task_endpoint.wait_for_task(task_uid, timeout_in_ms, interval_in_ms)
+    end
+
     private
 
     def index_object(uid, primary_key = nil)
       Index.new(uid, @base_url, @api_key, primary_key, @options)
+    end
+
+    def task_endpoint
+      Task.new(@base_url, @api_key, @options)
     end
   end
 end

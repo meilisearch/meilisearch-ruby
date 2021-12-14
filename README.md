@@ -92,10 +92,10 @@ documents = [
   { id: 6, title: 'Philadelphia', genres: ['Drama'] },
 ]
 # If the index 'movies' does not exist, MeiliSearch creates it when you first add the documents.
-index.add_documents(documents) # => { "updateId": 0 }
+index.add_documents(documents) # => { "uid": 0 }
 ```
 
-With the `updateId`, you can check the status (`enqueued`, `processing`, `processed` or `failed`) of your documents addition using the [update endpoint](https://docs.meilisearch.com/reference/api/updates.html#get-an-update-status).
+With the `uid`, you can check the status (`enqueued`, `processing`, `succeeded` or `failed`) of your documents addition using the [update endpoint](https://docs.meilisearch.com/reference/api/updates.html#get-an-update-status).
 
 💡 To customize the `Client`, for example, increasing the default timeout, please check out [this section](https://github.com/meilisearch/meilisearch-ruby/wiki/Client-Options) of the Wiki.
 

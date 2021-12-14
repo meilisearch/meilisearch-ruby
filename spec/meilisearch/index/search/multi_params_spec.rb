@@ -5,7 +5,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
 
   before do
     response = index.update_filterable_attributes(['genre'])
-    index.wait_for_pending_update(response['updateId'])
+    index.wait_for_task(response['uid'])
   end
 
   it 'does a custom search with attributes to crop, filter and attributes to highlight' do
@@ -46,7 +46,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
 
   it 'does a custom search with filter, attributesToRetrieve and attributesToHighlight' do
     response = index.update_filterable_attributes(['genre'])
-    index.wait_for_pending_update(response['updateId'])
+    index.wait_for_task(response['uid'])
     response = index.search('prinec',
                             {
                               filter: ['genre = fantasy'],
@@ -64,7 +64,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
 
   it 'does a custom search with facetsDistribution and limit' do
     response = index.update_filterable_attributes(['genre'])
-    index.wait_for_pending_update(response['updateId'])
+    index.wait_for_task(response['uid'])
     response = index.search('prinec', facetsDistribution: ['genre'], limit: 1)
     expect(response.keys).to contain_exactly(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
