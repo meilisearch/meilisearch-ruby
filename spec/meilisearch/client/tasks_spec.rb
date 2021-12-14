@@ -45,39 +45,85 @@ RSpec.describe 'MeiliSearch::Tasks' do
     expect(tasks['results'].first).to have_key('type')
   end
 
-  it 'waits for pending update with default values' do
-    task = index.add_documents!(documents)
-    expect(task).to be_a(Hash)
-    expect(task['status']).not_to eq('enqueued')
+  describe '#index.wait_for_task' do
+
+    it 'waits for task with default values' do
+      task = index.add_documents(documents)
+      task = index.wait_for_task(task['uid'])
+
+      expect(task).to be_a(Hash)
+      expect(task['status']).not_to eq('enqueued')
+    end
+
+    it 'waits for task with default values after several updates' do
+      index.add_documents(documents)
+      index.add_documents(documents)
+      index.add_documents(documents)
+      index.add_documents(documents)
+      index.add_documents(documents)
+      task = index.add_documents(documents)
+      status = index.wait_for_task(task['uid'])
+      expect(status).to be_a(Hash)
+      expect(status['status']).not_to eq('enqueued')
+    end
+
+    it 'waits for task with custom timeout_in_ms and raises MeiliSearchTimeoutError' do
+      index.add_documents(documents)
+      task = index.add_documents(documents)
+      expect do
+        index.wait_for_task(task['uid'], 1)
+      end.to raise_error(MeiliSearch::TimeoutError)
+    end
+
+    it 'waits for task with custom interval_in_ms and raises Timeout::Error' do
+      index.add_documents(documents)
+      task = index.add_documents(documents)
+      expect do
+        Timeout.timeout(0.1) do
+          index.wait_for_task(task['uid'], 5000, 200)
+        end
+      end.to raise_error(Timeout::Error)
+    end
   end
 
-  it 'waits for pending update with default values after several updates' do
-    index.add_documents(documents)
-    index.add_documents(documents)
-    index.add_documents(documents)
-    index.add_documents(documents)
-    index.add_documents(documents)
-    task = index.add_documents(documents)
-    status = index.wait_for_task(task['uid'])
-    expect(status).to be_a(Hash)
-    expect(status['status']).not_to eq('enqueued')
-  end
+  describe '#client.wait_for_task' do
 
-  it 'waits for pending update with custom timeout_in_ms and raises MeiliSearchTimeoutError' do
-    index.add_documents(documents)
-    task = index.add_documents(documents)
-    expect do
-      index.wait_for_task(task['uid'], 1)
-    end.to raise_error(MeiliSearch::TimeoutError)
-  end
+    it 'waits for task with default values' do
+      task = index.add_documents!(documents)
+      task = client.wait_for_task(task['uid'])
 
-  it 'waits for pending update with custom interval_in_ms and raises Timeout::Error' do
-    index.add_documents(documents)
-    task = index.add_documents(documents)
-    expect do
-      Timeout.timeout(0.1) do
-        index.wait_for_task(task['uid'], 5000, 200)
-      end
-    end.to raise_error(Timeout::Error)
+      expect(task).to be_a(Hash)
+      expect(task['status']).not_to eq('enqueued')
+    end
+
+    it 'waits for task with default values after several updates' do
+      index.add_documents(documents)
+      index.add_documents(documents)
+      index.add_documents(documents)
+      index.add_documents(documents)
+      index.add_documents(documents)
+      task = index.add_documents(documents)
+      status = client.wait_for_task(task['uid'])
+      expect(status).to be_a(Hash)
+      expect(status['status']).not_to eq('enqueued')
+    end
+
+    it 'waits for task with custom timeout_in_ms and raises MeiliSearchTimeoutError' do
+      index.add_documents(documents)
+      task = index.add_documents(documents)
+      expect do
+        client.wait_for_task(task['uid'], 1)
+      end.to raise_error(MeiliSearch::TimeoutError)
+    end
+
+    it 'waits for task with custom interval_in_ms and raises Timeout::Error' do
+      index.add_documents(documents)
+      task = index.add_documents(documents)
+      expect do
+        Timeout.timeout(0.1) do
+          client.wait_for_task(task['uid'], 5000, 200)
+        end
+      end.to raise_error(Timeout::Error)
+    end
   end
 end
