@@ -46,7 +46,6 @@ RSpec.describe 'MeiliSearch::Tasks' do
   end
 
   describe '#index.wait_for_task' do
-
     it 'waits for task with default values' do
       task = index.add_documents(documents)
       task = index.wait_for_task(task['uid'])
@@ -87,7 +86,6 @@ RSpec.describe 'MeiliSearch::Tasks' do
   end
 
   describe '#client.wait_for_task' do
-
     it 'waits for task with default values' do
       task = index.add_documents!(documents)
       task = client.wait_for_task(task['uid'])
