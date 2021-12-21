@@ -55,7 +55,26 @@ module MeiliSearch
     def keys
       http_get '/keys'
     end
-    alias get_keys keys
+
+    def key(key_uid)
+      http_get "/keys/#{key_uid}"
+    end
+
+    def create_key(key_options)
+      body = Utils.transform_attributes(key_options)
+
+      http_post '/keys', body
+    end
+
+    def update_key(key_uid, key_options)
+      body = Utils.transform_attributes(key_options)
+
+      http_patch "/keys/#{key_uid}", body
+    end
+
+    def delete_key(key_uid)
+      http_delete "/keys/#{key_uid}"
+    end
 
     ### HEALTH
 
