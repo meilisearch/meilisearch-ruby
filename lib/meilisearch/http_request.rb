@@ -49,6 +49,16 @@ module MeiliSearch
       )
     end
 
+    def http_patch(relative_path = '', body = nil, query_params = nil)
+      send_request(
+        proc { |path, config| self.class.patch(path, config) },
+        relative_path,
+        query_params: query_params,
+        body: body,
+        options: @options
+      )
+    end
+
     def http_delete(relative_path = '')
       send_request(
         proc { |path, config| self.class.delete(path, config) },
@@ -60,10 +70,13 @@ module MeiliSearch
     private
 
     def build_default_options_headers(api_key = nil)
-      {
-        'Content-Type' => 'application/json',
-        'Authorization' => "Bearer #{api_key}"
-      }.compact
+      header = {
+        'Content-Type' => 'application/json'
+      }
+      unless api_key.nil?
+        header = header.merge('Authorization' => "Bearer #{api_key}")
+      end
+      header
     end
 
     def merge_options(default_options, added_options = {})
