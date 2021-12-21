@@ -21,7 +21,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
         task = index.add_documents(documents)
         expect(task).to be_a(Hash)
         expect(task).to have_key('uid')
-        expect(task['type']).to eq('documentsAddition')
+        expect(task['type']).to eq('documentAddition')
         client.wait_for_task(task['uid'])
         expect(index.documents.count).to eq(documents.count)
       end
