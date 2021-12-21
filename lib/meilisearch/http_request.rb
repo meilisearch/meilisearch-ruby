@@ -73,9 +73,7 @@ module MeiliSearch
       header = {
         'Content-Type' => 'application/json'
       }
-      unless api_key.nil?
-        header = header.merge('Authorization' => "Bearer #{api_key}")
-      end
+      header = header.merge('Authorization' => "Bearer #{api_key}") unless api_key.nil?
       header
     end
 
