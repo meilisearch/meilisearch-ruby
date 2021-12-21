@@ -105,38 +105,6 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     end
   end
 
-  # describe '#get_or_create_index' do
-  #   it 'creates a new index' do
-  #     expect do
-  #       new_index = client.get_or_create_index('new_index')
-
-  #       expect(new_index).to be_a(MeiliSearch::Index)
-  #     end.to change { client.indexes.length }.by(1)
-
-  #     found_index = client.fetch_index('new_index')
-  #     expect(found_index.uid).to eq('new_index')
-  #     expect(found_index.primary_key).to be_nil
-  #   end
-
-  #   it 'gets an index that already exists' do
-  #     client.create_index('existing_index')
-
-  #     expect do
-  #       client.get_or_create_index('existing_index')
-  #     end.not_to(change { client.indexes.length })
-  #   end
-
-  #   context 'when a primary key is provided' do
-  #     it 'creates a new index' do
-  #       expect do
-  #         index = client.get_or_create_index('new_index', primaryKey: 'primary_key')
-
-  #         expect(index).to be_a(MeiliSearch::Index)
-  #       end.to change { client.indexes.length }.by(1)
-  #     end
-  #   end
-  # end
-
   describe '#indexes' do
     it 'returns MeiliSearch::Index objects' do
       client.create_index!('index')
