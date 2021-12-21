@@ -32,17 +32,6 @@ module MeiliSearch
       wait_for_task(task['uid'])
     end
 
-    # def get_or_create_index(index_uid, options = {})
-    #   begin
-    #     index_instance = fetch_index(index_uid)
-    #   rescue ApiError => e
-    #     raise e unless e.code == 'index_not_found'
-
-    #     index_instance = create_index(index_uid, options)
-    #   end
-    #   index_instance
-    # end
-
     def delete_index(index_uid)
       index_object(index_uid).delete
     end
