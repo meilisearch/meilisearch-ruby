@@ -2,8 +2,8 @@
 
 RSpec.describe 'MeiliSearch::Client - Keys' do
   context 'Test the default key roles' do
-    let(:public_key) { client.keys.filter { |k| k['description'].start_with? 'Default Search API Key' }.first }
-    let(:private_key) { client.keys.filter { |k| k['description'].start_with? 'Default Admin API Key' }.first }
+    let(:public_key) { client.keys['results'].filter { |k| k['description'].start_with? 'Default Search API Key' }.first }
+    let(:private_key) { client.keys['results'].filter { |k| k['description'].start_with? 'Default Admin API Key' }.first }
 
     it 'fails to get settings if public key used' do
       new_client = MeiliSearch::Client.new(URL, public_key['key'])
@@ -47,9 +47,9 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
 
   context 'Test the key managements' do
     it 'gets the list of the default keys' do
-      response = client.keys
-      expect(response).to be_a(Array)
-      expect(response.count).to be >= 2
+      results = client.keys['results']
+      expect(results).to be_a(Array)
+      expect(results.count).to be >= 2
     end
 
     it 'creates a key' do
