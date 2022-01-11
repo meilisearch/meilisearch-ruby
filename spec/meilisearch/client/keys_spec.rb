@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe 'MeiliSearch::Client - Keys' do
-
   context 'When a client uses default key roles' do
     let(:search_key) { client.keys['results'].find { |k| k['description'].start_with? 'Default Search' } }
     let(:admin_key) { client.keys['results'].find { |k| k['description'].start_with? 'Default Admin' } }

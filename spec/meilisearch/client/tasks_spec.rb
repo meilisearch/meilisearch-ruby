@@ -4,7 +4,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
   include_context 'search books with genre'
 
   let(:enqueued_task_keys) { ['uid', 'indexUid', 'status', 'type', 'enqueuedAt'] }
-  let(:succeeded_task_keys) { [ *enqueued_task_keys, 'details', 'duration', 'startedAt', 'finishedAt' ] }
+  let(:succeeded_task_keys) { [*enqueued_task_keys, 'details', 'duration', 'startedAt', 'finishedAt'] }
   let!(:doc_addition_task) { index.add_documents!(documents) }
   let(:task_uid) { doc_addition_task['uid'] }
 
