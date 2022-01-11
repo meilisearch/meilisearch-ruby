@@ -438,7 +438,7 @@ delete_a_key_1: |-
   client.delete_key('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
 security_guide_search_key_1: |-
   client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'apiKey')
-  client.index('patient_medical_records').search(...)
+  client.index('patient_medical_records').search
 security_guide_update_key_1: |-
   client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
   client.update_key('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4', indexes: ['doctors'])
