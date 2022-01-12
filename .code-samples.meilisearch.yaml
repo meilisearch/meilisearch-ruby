@@ -43,10 +43,14 @@ delete_documents_1: |-
   client.index('movies').delete_documents([23488, 153738, 437035, 363869])
 search_post_1: |-
   client.index('movies').search('american ninja')
-get_update_1: |-
-  client.index('movies').get_update_status(1)
-get_all_updates_1: |-
-  client.index('movies').get_all_update_status
+get_task_by_index_1: |-
+  client.index('movies').task(1)
+get_all_tasks_by_index_1: |-
+  client.index('movies').tasks
+get_task_1: |-
+  client.task(1)
+get_all_tasks_1: |-
+  client.tasks
 get_keys_1: |-
   client.keys
 get_settings_1: |-
@@ -400,3 +404,55 @@ geosearch_guide_sort_usage_1: |-
   client.index('restaurants').search('', { sort: ['_geoPoint(48.8583701,2.2922926):asc'] })
 geosearch_guide_sort_usage_2: |-
   client.index('restaurants').search('', { sort: ['_geoPoint(48.8583701,2.2922926):asc', 'rating:desc'] })
+authorization_header_1: |-
+  client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
+  client.keys
+get_one_key_1: |-
+  client.key('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
+get_all_keys_1: |-
+  client.keys
+create_a_key_1: |-
+  client.create_key(
+    description: 'Add documents: Products API key',
+    actions: ['documents.add'],
+    indexes: ['products'],
+    expires_at: '2042-04-02T00:42:42Z'
+  )
+update_a_key_1: |-
+  client.update_key(
+      'd0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4',
+      {
+        description: 'Manage documents: Products/Reviews API key',
+        actions: [
+          'documents.add',
+          'documents.delete'
+        ],
+        indexes: [
+          'products',
+          'reviews'
+        ],
+        expires_at: '2042-04-02T00:42:42Z'
+      }
+    )
+delete_a_key_1: |-
+  client.delete_key('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
+security_guide_search_key_1: |-
+  client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'apiKey')
+  client.index('patient_medical_records').search
+security_guide_update_key_1: |-
+  client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
+  client.update_key('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4', indexes: ['doctors'])
+security_guide_create_key_1: |-
+  client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
+  client.create_key(
+    description: 'Search patient records key',
+    actions: ['search'],
+    indexes: ['patient_medical_records'],
+    expires_at: '2023-01-01T00:00:00Z'
+  )
+security_guide_list_keys_1: |-
+  client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
+  client.keys
+security_guide_delete_key_1: |-
+  client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
+  client.delete_key('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')

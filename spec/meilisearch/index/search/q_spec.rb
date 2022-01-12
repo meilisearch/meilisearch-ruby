@@ -36,7 +36,7 @@ RSpec.describe 'MeiliSearch::Index - Basic search' do
                                             'exactness',
                                             'objectId:asc'
                                           ])
-    index.wait_for_pending_update(response['updateId'])
+    index.wait_for_task(response['uid'])
     response = index.search('')
     expect(response['nbHits']).to eq(documents.count)
     expect(response['hits'].first['objectId']).to eq(1)
