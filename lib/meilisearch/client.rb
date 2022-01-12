@@ -113,11 +113,11 @@ module MeiliSearch
     ### TASKS
 
     def tasks
-      task_endpoint.global_tasks
+      task_endpoint.task_list
     end
 
     def task(task_uid)
-      task_endpoint.global_task(task_uid)
+      task_endpoint.task(task_uid)
     end
 
     def wait_for_task(task_uid, timeout_in_ms = 5000, interval_in_ms = 50)
@@ -131,7 +131,7 @@ module MeiliSearch
     end
 
     def task_endpoint
-      Task.new(@base_url, @api_key, @options)
+      @task_endpoint ||= Task.new(@base_url, @api_key, @options)
     end
   end
 end

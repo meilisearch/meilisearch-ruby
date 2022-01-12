@@ -5,10 +5,12 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     context 'without a primary key' do
       it 'creates an index' do
         task = client.create_index('new_index')
-        expect(task['type']).to eq('indexCreation')
-        client.wait_for_task(task['uid'])
 
+        expect(task['type']).to eq('indexCreation')
+
+        client.wait_for_task(task['uid'])
         index = client.fetch_index('new_index')
+
         expect(index).to be_a(MeiliSearch::Index)
         expect(index.uid).to eq('new_index')
         expect(index.primary_key).to be_nil
@@ -16,10 +18,12 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
       it 'creates an index synchronously' do
         task = client.create_index!('new_index')
+
         expect(task['type']).to eq('indexCreation')
         expect(task['status']).to eq('succeeded')
 
         index = client.fetch_index('new_index')
+
         expect(index).to be_a(MeiliSearch::Index)
         expect(index.uid).to eq('new_index')
         expect(index.primary_key).to be_nil
@@ -29,10 +33,12 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     context 'with a primary key' do
       it 'creates an index' do
         task = client.create_index('new_index', primaryKey: 'primary_key')
-        expect(task['type']).to eq('indexCreation')
-        client.wait_for_task(task['uid'])
 
+        expect(task['type']).to eq('indexCreation')
+
+        client.wait_for_task(task['uid'])
         index = client.fetch_index('new_index')
+
         expect(index).to be_a(MeiliSearch::Index)
         expect(index.uid).to eq('new_index')
         expect(index.primary_key).to eq('primary_key')
@@ -41,10 +47,12 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
       it 'creates an index synchronously' do
         task = client.create_index!('new_index', primaryKey: 'primary_key')
+
         expect(task['type']).to eq('indexCreation')
         expect(task['status']).to eq('succeeded')
 
         index = client.fetch_index('new_index')
+
         expect(index).to be_a(MeiliSearch::Index)
         expect(index.uid).to eq('new_index')
         expect(index.primary_key).to eq('primary_key')
@@ -72,10 +80,12 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
             primaryKey: 'primary_key',
             uid: 'not_primary_key'
           )
-          expect(task['type']).to eq('indexCreation')
-          client.wait_for_task(task['uid'])
 
+          expect(task['type']).to eq('indexCreation')
+
+          client.wait_for_task(task['uid'])
           index = client.fetch_index('new_index')
+
           expect(index).to be_a(MeiliSearch::Index)
           expect(index.uid).to eq('new_index')
           expect(index.primary_key).to eq('primary_key')
@@ -86,13 +96,14 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
     context 'when an index with a given uid already exists' do
       it 'returns a failing task' do
-        task1 = client.create_index!('existing_index')
-        task2 = client.create_index!('existing_index')
-        expect(task1['type']).to eq('indexCreation')
-        expect(task2['type']).to eq('indexCreation')
-        expect(task1['status']).to eq('succeeded')
-        expect(task2['status']).to eq('failed')
-        expect(task2['error']['code']).to eq('index_already_exists')
+        initial_task = client.create_index!('existing_index')
+        last_task = client.create_index!('existing_index')
+
+        expect(initial_task['type']).to eq('indexCreation')
+        expect(last_task['type']).to eq('indexCreation')
+        expect(initial_task['status']).to eq('succeeded')
+        expect(last_task['status']).to eq('failed')
+        expect(last_task['error']['code']).to eq('index_already_exists')
       end
     end
 
@@ -108,7 +119,9 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
   describe '#indexes' do
     it 'returns MeiliSearch::Index objects' do
       client.create_index!('index')
+
       index = client.indexes.first
+
       expect(index).to be_a(MeiliSearch::Index)
     end
 
@@ -162,7 +175,6 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
   describe '#fetch_raw_index' do
     it 'fetch a specific index raw Hash response based on uid' do
       client.create_index!('specific_index_fetch_raw', primaryKey: 'primary_key')
-
       index = client.fetch_index('specific_index_fetch_raw')
       raw_response = index.fetch_raw_info
 
@@ -179,7 +191,6 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
   describe '#index' do
     it 'returns an index object with the provided uid' do
       client.create_index!('existing_index', primaryKey: 'primary_key')
-
       # this index is in memory, without metadata from server
       index = client.index('existing_index')
 
@@ -197,9 +208,10 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     context 'when the index exists' do
       it 'deletes the index' do
         client.create_index!('existing_index')
-
         task = client.delete_index('existing_index')
+
         expect(task['type']).to eq('indexDeletion')
+
         achieved_task = client.wait_for_task(task['uid'])
 
         expect(achieved_task['status']).to eq('succeeded')

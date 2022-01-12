@@ -7,7 +7,6 @@ module MeiliSearch
     attr_reader :uid, :primary_key, :created_at, :updated_at
 
     def initialize(index_uid, url, api_key = nil, primary_key = nil, options = {})
-      @url = url
       @uid = index_uid
       @primary_key = primary_key
       super(url, api_key, options)
@@ -195,7 +194,7 @@ module MeiliSearch
     ### TASKS
 
     def task_endpoint
-      Task.new(@url, @api_key, @options)
+      @task_endpoint ||= Task.new(@base_url, @api_key, @options)
     end
     private :task_endpoint
 
