@@ -165,7 +165,7 @@ index.update_filterable_attributes([
 
 You only need to perform this operation once.
 
-Note that MeiliSearch will rebuild your index whenever you update `filterableAttributes`. Depending on the size of your dataset, this might take time. You can track the process using the [update status](https://docs.meilisearch.com/reference/api/updates.html#get-an-update-status).
+Note that MeiliSearch will rebuild your index whenever you update `filterableAttributes`. Depending on the size of your dataset, this might take time. You can track the process using the [tasks](https://docs.meilisearch.com/reference/api/tasks.html#get-task)).
 
 Then, you can perform the search:
 
