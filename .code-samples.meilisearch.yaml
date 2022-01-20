@@ -51,8 +51,6 @@ get_task_1: |-
   client.task(1)
 get_all_tasks_1: |-
   client.tasks
-get_keys_1: |-
-  client.keys
 get_settings_1: |-
   client.index('movies').settings
 update_settings_1: |-
