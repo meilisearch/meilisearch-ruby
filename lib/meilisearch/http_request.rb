@@ -26,9 +26,11 @@ module MeiliSearch
       send_request(
         proc { |path, config| self.class.get(path, config) },
         relative_path,
-        query_params: query_params,
-        headers: remove_headers(@headers.dup, 'Content-Type'),
-        options: @options
+        config: {
+          query_params: query_params,
+          headers: remove_headers(@headers.dup, 'Content-Type'),
+          options: @options
+        }
       )
     end
 
@@ -36,10 +38,12 @@ module MeiliSearch
       send_request(
         proc { |path, config| self.class.post(path, config) },
         relative_path,
-        query_params: query_params,
-        body: body,
-        headers: @headers.dup.merge(options[:headers] || {}),
-        options: @options.merge(options)
+        config: {
+          query_params: query_params,
+          body: body,
+          headers: @headers.dup.merge(options[:headers] || {}),
+          options: @options.merge(options)
+        }
       )
     end
 
@@ -47,10 +51,12 @@ module MeiliSearch
       send_request(
         proc { |path, config| self.class.put(path, config) },
         relative_path,
-        query_params: query_params,
-        body: body,
-        headers: @headers,
-        options: @options
+        config: {
+          query_params: query_params,
+          body: body,
+          headers: @headers,
+          options: @options
+        }
       )
     end
 
@@ -58,10 +64,12 @@ module MeiliSearch
       send_request(
         proc { |path, config| self.class.patch(path, config) },
         relative_path,
-        query_params: query_params,
-        body: body,
-        headers: @headers,
-        options: @options
+        config: {
+          query_params: query_params,
+          body: body,
+          headers: @headers,
+          options: @options
+        }
       )
     end
 
@@ -69,8 +77,10 @@ module MeiliSearch
       send_request(
         proc { |path, config| self.class.delete(path, config) },
         relative_path,
-        headers: remove_headers(@headers.dup, 'Content-Type'),
-        options: @options
+        config: {
+          headers: remove_headers(@headers.dup, 'Content-Type'),
+          options: @options
+        }
       )
     end
 
@@ -87,13 +97,15 @@ module MeiliSearch
       data.delete_if { |k| keys.include?(k) }
     end
 
-    def send_request(http_method, relative_path, query_params: nil, body: nil, options: {}, headers: {})
-      config = http_config(query_params, body, options, headers)
+    def send_request(http_method, relative_path, config: {})
+      config = http_config(config[:query_params], config[:body], config[:options], config[:headers])
+
       begin
         response = http_method.call(@base_url + relative_path, config)
       rescue Errno::ECONNREFUSED => e
         raise CommunicationError, e.message
       end
+
       validate(response)
     end
 
