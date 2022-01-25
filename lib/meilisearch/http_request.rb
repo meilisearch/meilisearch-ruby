@@ -7,17 +7,19 @@ module MeiliSearch
   class HTTPRequest
     include HTTParty
 
-    attr_reader :options
+    attr_reader :options, :headers
+
+    DEFAULT_OPTIONS = {
+      timeout: 1,
+      max_retries: 0,
+      convert_body?: true
+    }.freeze
 
     def initialize(url, api_key = nil, options = {})
       @base_url = url
       @api_key = api_key
-      @options = merge_options({
-                                 timeout: 1,
-                                 max_retries: 0,
-                                 headers: build_default_options_headers(api_key),
-                                 convert_body?: true
-                               }, options)
+      @options = DEFAULT_OPTIONS.merge(options)
+      @headers = build_default_options_headers
     end
 
     def http_get(relative_path = '', query_params = {})
@@ -25,7 +27,8 @@ module MeiliSearch
         proc { |path, config| self.class.get(path, config) },
         relative_path,
         query_params: query_params,
-        options: remove_options_header(@options, 'Content-Type')
+        headers: remove_headers(@headers.dup, 'Content-Type'),
+        options: @options
       )
     end
 
@@ -35,7 +38,8 @@ module MeiliSearch
         relative_path,
         query_params: query_params,
         body: body,
-        options: merge_options(@options, options)
+        headers: @headers.dup.merge(options[:headers] || {}),
+        options: @options.merge(options)
       )
     end
 
@@ -45,6 +49,7 @@ module MeiliSearch
         relative_path,
         query_params: query_params,
         body: body,
+        headers: @headers,
         options: @options
       )
     end
@@ -55,6 +60,7 @@ module MeiliSearch
         relative_path,
         query_params: query_params,
         body: body,
+        headers: @headers,
         options: @options
       )
     end
@@ -63,41 +69,26 @@ module MeiliSearch
       send_request(
         proc { |path, config| self.class.delete(path, config) },
         relative_path,
-        options: remove_options_header(@options, 'Content-Type')
+        headers: remove_headers(@headers.dup, 'Content-Type'),
+        options: @options
       )
     end
 
     private
 
-    def build_default_options_headers(api_key = nil)
-      header = {
-        'Content-Type' => 'application/json'
-      }
-      header = header.merge('Authorization' => "Bearer #{api_key}") unless api_key.nil?
-      header
+    def build_default_options_headers
+      {
+        'Content-Type' => 'application/json',
+        'Authorization' => ("Bearer #{@api_key}" unless @api_key.nil?)
+      }.compact
     end
 
-    def merge_options(default_options, added_options = {})
-      default_cloned_headers = default_options[:headers].clone
-      merged_options = default_options.merge(added_options)
-      merged_options[:headers] = default_cloned_headers.merge(added_options[:headers]) if added_options.key?(:headers)
-      merged_options
+    def remove_headers(data, *keys)
+      data.delete_if { |k| keys.include?(k) }
     end
 
-    def remove_options_header(options, key)
-      cloned_options = clone_options(options)
-      cloned_options[:headers].tap { |headers| headers.delete(key) }
-      cloned_options
-    end
-
-    def clone_options(options)
-      cloned_options = options.clone
-      cloned_options[:headers] = options[:headers].clone
-      cloned_options
-    end
-
-    def send_request(http_method, relative_path, query_params: nil, body: nil, options: {})
-      config = http_config(query_params, body, options)
+    def send_request(http_method, relative_path, query_params: nil, body: nil, options: {}, headers: {})
+      config = http_config(query_params, body, options, headers)
       begin
         response = http_method.call(@base_url + relative_path, config)
       rescue Errno::ECONNREFUSED => e
@@ -106,10 +97,10 @@ module MeiliSearch
       validate(response)
     end
 
-    def http_config(query_params, body, options)
+    def http_config(query_params, body, options, headers)
       body = body.to_json if options[:convert_body?] == true
       {
-        headers: options[:headers],
+        headers: headers,
         query: query_params,
         body: body,
         timeout: options[:timeout],
