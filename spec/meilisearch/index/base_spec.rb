@@ -102,7 +102,7 @@ RSpec.describe MeiliSearch::Index do
   it 'supports options' do
     options = { timeout: 2, max_retries: 1 }
     expected_headers = {
-      'Authorization' => "Bearer #{MASTER_KEY}",
+      'Authorization' => "Bearer #{MASTER_KEY}"
     }
 
     new_client = MeiliSearch::Client.new(URL, MASTER_KEY, options)
