@@ -5,7 +5,7 @@
 <h1 align="center">Meilisearch Ruby</h1>
 
 <h4 align="center">
-  <a href="https://github.com/meilisearch/Meilisearch">Meilisearch</a> |
+  <a href="https://github.com/meilisearch/meilisearch">Meilisearch</a> |
   <a href="https://docs.meilisearch.com">Documentation</a> |
   <a href="https://slack.meilisearch.com">Slack</a> |
   <a href="https://roadmap.meilisearch.com/tabs/1-under-consideration">Roadmap</a> |
