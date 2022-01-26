@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://res.cloudinary.com/meilisearch/image/upload/v1587402338/SDKs/meilisearch_ruby.svg" alt="Meilisearch-Ruby" width="200" height="200" />
+  <img src="https://raw.githubusercontent.com/meilisearch/integration-guides/main/assets/logos/meilisearch_ruby.svg" alt="Meilisearch-Ruby" width="200" height="200" />
 </p>
 
 <h1 align="center">Meilisearch Ruby</h1>
@@ -78,7 +78,7 @@ NB: you can also download Meilisearch from **Homebrew** or **APT** or even run i
 ```ruby
 require 'meilisearch'
 
-client = Meilisearch::Client.new('http://127.0.0.1:7700', 'masterKey')
+client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
 
 # An index is where the documents are stored.
 index = client.index('movies')
@@ -198,7 +198,7 @@ JSON output:
 
 ## 🤖 Compatibility with Meilisearch
 
-This package only guarantees the compatibility with the [version v0.25.0 of Meilisearch](https://github.com/meilisearch/Meilisearch/releases/tag/v0.25.0).
+This package only guarantees the compatibility with the [version v0.25.0 of Meilisearch](https://github.com/meilisearch/meilisearch/releases/tag/v0.25.0).
 
 ## 💡 Learn More
 

@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.authors     = ['Meili']
   s.email       = 'bonjour@meilisearch.com'
   s.summary     = 'An easy-to-use ruby client for Meilisearch API'
-  s.description = 'An easy-to-use ruby client for Meilisearch API. See https://github.com/meilisearch/MeiliSearch'
+  s.description = 'An easy-to-use ruby client for Meilisearch API. See https://github.com/meilisearch/meilisearch'
   s.homepage    = 'https://github.com/meilisearch/meilisearch-ruby'
   s.licenses    = ['MIT']
 
