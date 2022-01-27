@@ -101,23 +101,19 @@ RSpec.describe MeiliSearch::Index do
 
   it 'supports options' do
     options = { timeout: 2, max_retries: 1 }
+    expected_headers = {
+      'Authorization' => "Bearer #{MASTER_KEY}"
+    }
+
     new_client = MeiliSearch::Client.new(URL, MASTER_KEY, options)
     new_client.create_index!('options')
     index = new_client.fetch_index('options')
-    expect(index.options).to eq({
-                                  headers: {
-                                    'Content-Type' => 'application/json',
-                                    'Authorization' => "Bearer #{MASTER_KEY}"
-                                  },
-                                  max_retries: 1,
-                                  timeout: 2,
-                                  convert_body?: true
-                                })
+    expect(index.options).to eq({ max_retries: 1, timeout: 2, convert_body?: true })
 
     expect(MeiliSearch::Index).to receive(:get).with(
       "#{URL}/indexes/options",
       {
-        headers: { 'Authorization' => "Bearer #{MASTER_KEY}" },
+        headers: expected_headers,
         body: 'null',
         query: {},
         max_retries: 1,

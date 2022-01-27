@@ -81,7 +81,7 @@ module MeiliSearch
     alias add_or_replace_documents! add_documents!
 
     def add_documents_json(documents, primary_key = nil)
-      options = { headers: { 'Content-Type' => 'application/json' }, convert_body?: false }
+      options = { convert_body?: false }
       http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
     end
     alias replace_documents_json add_documents_json
