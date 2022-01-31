@@ -5,6 +5,10 @@ RSpec.describe MeiliSearch do
     expect(MeiliSearch::VERSION).not_to be nil
   end
 
+  it 'has a qualified version number' do
+    expect(MeiliSearch.qualified_version).to eq("Meilisearch Ruby (v#{MeiliSearch::VERSION})")
+  end
+
   it 'raises an exception when it is impossible to connect' do
     new_client = MeiliSearch::Client.new('http://127.0.0.1:8800', 'masterKey')
     expect do
@@ -23,5 +27,12 @@ RSpec.describe MeiliSearch do
     expect do
       new_client.indexes
     end.to raise_error(Timeout::Error)
+  end
+
+  it 'has a pre-defined header with current version' do
+    new_client = MeiliSearch::Client.new(URL, MASTER_KEY)
+
+    expect(new_client.headers).to have_key('User-Agent')
+    expect(new_client.headers['User-Agent']).to eq(MeiliSearch.qualified_version)
   end
 end

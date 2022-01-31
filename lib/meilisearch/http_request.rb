@@ -89,7 +89,8 @@ module MeiliSearch
     def build_default_options_headers
       {
         'Content-Type' => 'application/json',
-        'Authorization' => ("Bearer #{@api_key}" unless @api_key.nil?)
+        'Authorization' => ("Bearer #{@api_key}" unless @api_key.nil?),
+        'User-Agent' => MeiliSearch.qualified_version
       }.compact
     end
 
