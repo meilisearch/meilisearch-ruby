@@ -64,7 +64,7 @@ module MeiliSearch
   end
 
   module TenantToken
-    class ExpiredSignature < StandardError; end
+    class ExpireOrInvalidSignature < StandardError; end
     class InvalidApiKey < StandardError; end
     class InvalidSearchRules < StandardError; end
   end

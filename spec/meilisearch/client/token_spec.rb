@@ -22,7 +22,7 @@ RSpec.describe MeiliSearch::TenantToken do
   let(:search_rules) { {} }
   let(:api_key) { SecureRandom.hex(24) }
   let(:client_key) { SecureRandom.hex(24) }
-  let(:expires_at) { Time.now + 10_000 }
+  let(:expires_at) { Time.now.utc + 10_000 }
 
   it 'responds to #generate_tenant_token' do
     expect(instance).to respond_to(:generate_tenant_token)
@@ -82,8 +82,8 @@ RSpec.describe MeiliSearch::TenantToken do
     context 'with expires_at' do
       it 'raises error when expires_at is in the past' do
         expect do
-          instance.generate_tenant_token(search_rules, expires_at: Time.now - 10)
-        end.to raise_error(described_class::ExpiredSignature)
+          instance.generate_tenant_token(search_rules, expires_at: Time.now.utc - 10)
+        end.to raise_error(described_class::ExpireOrInvalidSignature)
       end
 
       it 'allows generate token with a nil expires_at' do
@@ -102,8 +102,14 @@ RSpec.describe MeiliSearch::TenantToken do
         ['2042-01-01', 78_126_717_684, []].each do |exp|
           expect do
             instance.generate_tenant_token(search_rules, expires_at: exp)
-          end.to raise_error(described_class::ExpiredSignature)
+          end.to raise_error(described_class::ExpireOrInvalidSignature)
         end
+      end
+
+      it 'raises error when expires_at is not a UTC' do
+        expect do
+          instance.generate_tenant_token(search_rules, expires_at: Time.now + 10)
+        end.to raise_error(described_class::ExpireOrInvalidSignature)
       end
     end
 

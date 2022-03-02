@@ -25,18 +25,18 @@ module MeiliSearch
         searchRules: rules,
         apiKeyPrefix: signature[0..7],
         exp: expiration
-      }.compact
+      }
 
       combine(encode(HEADER), encode(payload))
     end
 
     def validate_expires_at!(expires_at)
       return unless expires_at
-      return expires_at.to_i if expires_at > Time.now
+      return expires_at.to_i if expires_at.utc? && expires_at > Time.now.utc
 
-      raise ExpiredSignature
+      raise
     rescue StandardError
-      raise ExpiredSignature
+      raise ExpireOrInvalidSignature
     end
 
     def validate_search_rules!(data)
