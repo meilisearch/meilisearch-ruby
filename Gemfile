@@ -11,6 +11,9 @@ group :development, :test do
   gem 'byebug'
   gem 'rspec', '~> 3.0'
   gem 'simplecov'
+
+  # Used only for testing, none of the classes are exposed to the public API.
+  gem 'jwt'
 end
 
 group :development do

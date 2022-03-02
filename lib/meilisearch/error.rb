@@ -62,4 +62,10 @@ module MeiliSearch
       super(@message)
     end
   end
+
+  module TenantToken
+    class ExpireOrInvalidSignature < StandardError; end
+    class InvalidApiKey < StandardError; end
+    class InvalidSearchRules < StandardError; end
+  end
 end
