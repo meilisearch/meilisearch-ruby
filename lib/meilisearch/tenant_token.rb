@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'openssl/hmac'
-
 module MeiliSearch
   module TenantToken
     HEADER = {
