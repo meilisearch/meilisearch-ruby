@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'meilisearch/http_request'
-
 module MeiliSearch
   class Client < HTTPRequest
+    include MeiliSearch::TenantToken
+
     ### INDEXES
 
     def raw_indexes
