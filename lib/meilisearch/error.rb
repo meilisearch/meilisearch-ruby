@@ -57,8 +57,8 @@ module MeiliSearch
   class TimeoutError < StandardError
     attr_reader :message
 
-    def initialize
-      @message = 'The update was not processed in the expected time'
+    def initialize(message = nil)
+      @message = "The request was not processed in the expected time. #{message}"
       super(@message)
     end
   end
