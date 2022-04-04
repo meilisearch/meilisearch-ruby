@@ -393,15 +393,15 @@ search_parameter_guide_sort_1: |-
 geosearch_guide_filter_settings_1: |-
   client.index('restaurants').update_filterable_attributes(['_geo'])
 geosearch_guide_filter_usage_1: |-
-  client.index('restaurants').search('', { filter: '_geoRadius(45.4628328, 9.1076931, 2000)' })
+  client.index('restaurants').search('', { filter: '_geoRadius(45.472735, 9.184019, 2000)' })
 geosearch_guide_filter_usage_2: |-
-  client.index('restaurants').search('', { filter: '_geoRadius(45.4628328, 9.1076931, 2000) AND type = pizza' })
+  client.index('restaurants').search('', { filter: '_geoRadius(45.472735, 9.184019, 2000) AND type = pizza' })
 geosearch_guide_sort_settings_1: |-
   client.index('restaurants').update_sortable_attributes(['_geo'])
 geosearch_guide_sort_usage_1: |-
-  client.index('restaurants').search('', { sort: ['_geoPoint(48.8583701,2.2922926):asc'] })
+  client.index('restaurants').search('', { sort: ['_geoPoint(48.8561446, 2.2978204):asc'] })
 geosearch_guide_sort_usage_2: |-
-  client.index('restaurants').search('', { sort: ['_geoPoint(48.8583701,2.2922926):asc', 'rating:desc'] })
+  client.index('restaurants').search('', { sort: ['_geoPoint(48.8561446, 2.2978204):asc', 'rating:desc'] })
 authorization_header_1: |-
   client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
   client.keys
