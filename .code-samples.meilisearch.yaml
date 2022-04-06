@@ -488,7 +488,10 @@ getting_started_communicating_with_a_protected_instance: |-
   client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'apiKey')
   client.index('movies').search
 getting_started_add_meteorites: |-
- should we add a file.read ?
+  file = File.read("meteorites.json")
+  json = JSON.parse(file)
+
+  client.index('meteorites').add_documents(json)
 getting_started_configure_settings: |-
   client.index('meteorites').update_settings({
     filterable_attributes: ['mass', '_geo'],
