@@ -8,7 +8,7 @@ get_one_index_1: |-
 list_all_indexes_1: |-
   client.indexes
 create_an_index_1: |-
-  client.create_index('movies')
+  client.create_index('movies', primary_key: 'id')
 document_guide_create_index_primary_key: |-
   client.create_index('movies', primary_key: 'reference_number')
 update_an_index_1: |-
@@ -20,7 +20,7 @@ get_one_document_1: |-
 get_documents_1: |-
   client.index('movies').documents(limit: 2)
 document_guide_add_document_primary_key: |-
-  client.index('movies', primary_key: 'reference_number').add_documents([
+  client.index('movies').add_documents([
     {
       reference_number: 287947,
       title: 'Shazam',
@@ -28,7 +28,7 @@ document_guide_add_document_primary_key: |-
       overview: 'A boy is given the ability to become an adult superhero in times of need with a single magic word.',
       release_date: '2019-03-23'
     }
-  ])
+  ], 'reference_number')
 add_or_replace_documents_1: |-
   client.index('movies').add_documents([
     {
@@ -466,9 +466,7 @@ getting_started_update_searchableAttributes: |-
     'title'
   ])
 getting_started_update_stop_words: |-
-  client.index('movies').update_searchable_attributes([
-    'title'
-  ])
+  client.index('movies').update_stop_words(['the'])
 getting_started_check_task_status_md: |-
   ```rb
   client.index('movies').task(0)
@@ -488,7 +486,7 @@ getting_started_communicating_with_a_protected_instance: |-
   client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'apiKey')
   client.index('movies').search
 getting_started_add_meteorites: |-
-  file = File.read("meteorites.json")
+  file = File.read('meteorites.json')
   json = JSON.parse(file)
 
   client.index('meteorites').add_documents(json)
