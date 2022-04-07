@@ -26,7 +26,7 @@ RSpec.describe MeiliSearch do
 
     expect do
       new_client.indexes
-    end.to raise_error(Timeout::Error)
+    end.to raise_error(MeiliSearch::TimeoutError)
   end
 
   it 'has a pre-defined header with current version' do

@@ -103,8 +103,10 @@ module MeiliSearch
 
       begin
         response = http_method.call(@base_url + relative_path, config)
-      rescue Errno::ECONNREFUSED => e
+      rescue Errno::ECONNREFUSED, Errno::EPIPE => e
         raise CommunicationError, e.message
+      rescue Net::ReadTimeout, Net::OpenTimeout => e
+        raise TimeoutError, e.message
       end
 
       validate(response)
