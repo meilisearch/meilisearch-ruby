@@ -1,18 +1,25 @@
-version: "3.7"
+version: "3.8"
+
+volumes:
+  bundle:
 
 services:
-  meilisearch_ruby:
-    image: ruby
+  package:
+    image: ruby:3.0
     tty: true
     stdin_open: true
     working_dir: /home/app
     environment:
       - MEILISEARCH_HOST=meilisearch
       - MEILISEARCH_PORT=7700
+      - BUNDLE_PATH=/vendor/bundle
     ports:
       - "3001:3000"
     volumes:
       - ./:/home/app
+      - bundle:/vendor/bundle
+    links:
+      - meilisearch
 
   meilisearch:
     image: getmeili/meilisearch:latest
@@ -21,6 +28,5 @@ services:
     container_name: meilisearch
     ports:
       - "7700:7700"
-    # Uncomment this to run the test suite
-    # environment:
-    #   - MEILI_MASTER_KEY=masterKey
+    environment:
+      - MEILI_MASTER_KEY=masterKey
