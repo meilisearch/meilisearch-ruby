@@ -18,7 +18,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
                             })
     expect(response['hits'].count).to be(1)
     expect(response['hits'].first).to have_key('_formatted')
-    expect(response['hits'].first['_formatted']['title']).to eq('Petit <em>Prince</em>')
+    expect(response['hits'].first['_formatted']['title']).to eq('…Petit <em>Prince</em>')
   end
 
   it 'does a custom search with attributesToRetrieve and a limit' do
@@ -94,7 +94,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
 
       expect(response['hits'].count).to be(1)
       expect(response['hits'].first).to have_key('_formatted')
-      expect(response['hits'].first['_formatted']['title']).to eq('Petit <em>Prince</em>')
+      expect(response['hits'].first['_formatted']['title']).to eq('…Petit <em>Prince</em>')
     end
   end
 end

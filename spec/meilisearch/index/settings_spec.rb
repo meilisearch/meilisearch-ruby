@@ -22,7 +22,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       'stopWords',
       'synonyms',
       'filterableAttributes',
-      'sortableAttributes'
+      'sortableAttributes',
+      'typoTolerance'
     ]
   end
   let(:uid) { random_uid }
