@@ -130,6 +130,7 @@ RSpec.configure do |config|
 
   # Helpers
   config.include IndexesHelpers
+  config.include TaskHelpers
   config.include ExceptionsHelpers
   config.include DumpsHelpers
 end
