@@ -224,11 +224,22 @@ search_parameter_guide_retrieve_1: |-
 search_parameter_guide_crop_1: |-
   client.index('movies').search('shifu', {
     attributes_to_crop: ['overview'],
-    cropLength: 10
+    crop_length: 5
+  })
+search_parameter_guide_crop_marker_1: |-
+  client.index('movies').search('shifu', {
+    attributes_to_crop: ['overview'],
+    crop_marker: "[…]"
   })
 search_parameter_guide_highlight_1: |-
   client.index('movies').search('winter feast', {
     attributes_to_highlight: ['overview']
+  })
+search_parameter_guide_highlight_tag_1: |-
+  client.index('movies').search('winter feast', {
+    attributes_to_highlight: ['overview'],
+    highlight_pre_tag: '<span class="highlight">',
+    highlight_post_tag: "</span>"
   })
 search_parameter_guide_matches_1: |-
   client.index('movies').search('winter feast', {
