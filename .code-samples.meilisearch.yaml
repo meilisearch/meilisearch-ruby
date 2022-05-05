@@ -239,7 +239,7 @@ search_parameter_guide_highlight_tag_1: |-
   client.index('movies').search('winter feast', {
     attributes_to_highlight: ['overview'],
     highlight_pre_tag: '<span class="highlight">',
-    highlight_post_tag: "</span>"
+    highlight_post_tag: '</span>'
   })
 search_parameter_guide_matches_1: |-
   client.index('movies').search('winter feast', {
