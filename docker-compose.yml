@@ -8,25 +8,21 @@ services:
     image: ruby:3.0
     tty: true
     stdin_open: true
-    working_dir: /home/app
+    working_dir: /home/package
     environment:
       - MEILISEARCH_HOST=meilisearch
       - MEILISEARCH_PORT=7700
       - BUNDLE_PATH=/vendor/bundle
-    ports:
-      - "3001:3000"
     volumes:
-      - ./:/home/app
+      - ./:/home/package
       - bundle:/vendor/bundle
     links:
       - meilisearch
 
   meilisearch:
     image: getmeili/meilisearch:latest
-    tty: true
-    stdin_open: true
-    container_name: meilisearch
     ports:
-      - "7700:7700"
+      - "7700"
     environment:
       - MEILI_MASTER_KEY=masterKey
+      - MEILI_NO_ANALYTICS=true
