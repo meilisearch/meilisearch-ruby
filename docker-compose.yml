@@ -13,11 +13,13 @@ services:
       - MEILISEARCH_HOST=meilisearch
       - MEILISEARCH_PORT=7700
       - BUNDLE_PATH=/vendor/bundle
+    depends_on:
+      - meilisearch
+    links:
+      - meilisearch
     volumes:
       - ./:/home/package
       - bundle:/vendor/bundle
-    links:
-      - meilisearch
 
   meilisearch:
     image: getmeili/meilisearch:latest
