@@ -32,6 +32,14 @@ First of all, thank you for contributing to Meilisearch! The goal of this docume
 
 ### Setup <!-- omit in toc -->
 
+You can set up your local environment natively or using `docker`, check out the [`docker-compose.yml`](/docker-compose.yml).
+
+Example of running all the checks with docker:
+```bash
+docker-compose run --rm package bash -c "bundle install && bundle exec rspec && bundle exec rubocop"
+```
+
+To install dependencies:
 ```bash
 bundle install
 ```
@@ -76,26 +84,6 @@ To update it, run the following command:
 
 ```bash
 bundle exec rubocop --auto-gen-config
-```
-
-### Using Docker Compose <!-- omit in toc -->
-
-If you have Docker and Docker Compose installed, you can alternatively set up your local development environment following the steps below.
-
-```bash
-# Create/run the containers
-docker compose up -d
-# Run bash in meilisearch_ruby container
-docker compose exec meilisearch_ruby bash
-```
-
-You can now run the previous steps in the `meilisearc_ruby` container:
-
-```bash
-bundle install
-bundle exec rspec
-bundle exec rubocop lib/ spec/
-...
 ```
 
 ### Want to debug? <!-- omit in toc -->
