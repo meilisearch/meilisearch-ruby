@@ -14,7 +14,7 @@ RSpec.describe 'MeiliSearch::Index - Search with facets' do
       *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetDistribution'
     )
-    expect(response['estimatedNbHits']).to eq(2)
+    expect(response['estimatedTotalHits']).to eq(2)
     expect(response['facetDistribution'].keys).to contain_exactly('genre', 'author')
     expect(response['facetDistribution']['genre'].keys).to contain_exactly('adventure', 'fantasy')
     expect(response['facetDistribution']['genre']['adventure']).to eq(1)
@@ -29,7 +29,7 @@ RSpec.describe 'MeiliSearch::Index - Search with facets' do
       *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetDistribution'
     )
-    expect(response['estimatedNbHits']).to eq(documents.count)
+    expect(response['estimatedTotalHits']).to eq(documents.count)
     expect(response['facetDistribution'].keys).to contain_exactly('genre', 'author')
     expect(response['facetDistribution']['genre'].keys).to contain_exactly('romance', 'adventure', 'fantasy')
     expect(response['facetDistribution']['genre']['romance']).to eq(2)
@@ -44,7 +44,7 @@ RSpec.describe 'MeiliSearch::Index - Search with facets' do
       *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetDistribution'
     )
-    expect(response['estimatedNbHits']).to eq(documents.count)
+    expect(response['estimatedTotalHits']).to eq(documents.count)
     expect(response['facetDistribution'].keys).to contain_exactly('year')
     expect(response['facetDistribution']['year'].keys).to contain_exactly(*documents.map { |o| o[:year].to_s })
     expect(response['facetDistribution']['year']['1943']).to eq(1)

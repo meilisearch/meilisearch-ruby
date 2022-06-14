@@ -187,7 +187,7 @@ JSON output:
       ]
     }
   ],
-  "estimatedNbHits": 1,
+  "estimatedTotalHits": 1,
   "query": "wonder",
   "limit": 20,
   "offset": 0,

@@ -35,7 +35,7 @@ DEFAULT_SEARCH_RESPONSE_KEYS = [
   'hits',
   'offset',
   'limit',
-  'estimatedNbHits',
+  'estimatedTotalHits',
   'processingTimeMs',
   'query'
 ].freeze

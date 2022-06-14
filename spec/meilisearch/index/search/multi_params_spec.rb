@@ -54,7 +54,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
                               attributesToHighlight: ['*']
                             })
     expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
-    expect(response['estimatedNbHits']).to eq(1)
+    expect(response['estimatedTotalHits']).to eq(1)
     expect(response['hits'].first).to have_key('_formatted')
     expect(response['hits'].first).not_to have_key('objectId')
     expect(response['hits'].first).not_to have_key('genre')
@@ -70,7 +70,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
       *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetDistribution'
     )
-    expect(response['estimatedNbHits']).to eq(2)
+    expect(response['estimatedTotalHits']).to eq(2)
     expect(response['hits'].count).to eq(1)
     expect(response['facetDistribution'].keys).to contain_exactly('genre')
     expect(response['facetDistribution']['genre'].keys).to contain_exactly('adventure', 'fantasy')
