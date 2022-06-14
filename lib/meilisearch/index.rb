@@ -30,7 +30,7 @@ module MeiliSearch
     end
 
     def update(body)
-      http_put indexes_path(id: @uid), Utils.transform_attributes(body)
+      http_patch indexes_path(id: @uid), Utils.transform_attributes(body)
     end
 
     alias update_index update
@@ -236,7 +236,7 @@ module MeiliSearch
     alias get_settings settings
 
     def update_settings(settings)
-      http_post "/indexes/#{@uid}/settings", Utils.transform_attributes(settings)
+      http_patch "/indexes/#{@uid}/settings", Utils.transform_attributes(settings)
     end
     alias settings= update_settings
 
@@ -252,7 +252,7 @@ module MeiliSearch
     alias get_ranking_rules ranking_rules
 
     def update_ranking_rules(ranking_rules)
-      http_post "/indexes/#{@uid}/settings/ranking-rules", ranking_rules
+      http_put "/indexes/#{@uid}/settings/ranking-rules", ranking_rules
     end
     alias ranking_rules= update_ranking_rules
 
@@ -268,7 +268,7 @@ module MeiliSearch
     alias get_synonyms synonyms
 
     def update_synonyms(synonyms)
-      http_post "/indexes/#{@uid}/settings/synonyms", synonyms
+      http_put "/indexes/#{@uid}/settings/synonyms", synonyms
     end
     alias synonyms= update_synonyms
 
@@ -285,7 +285,7 @@ module MeiliSearch
 
     def update_stop_words(stop_words)
       body = stop_words.nil? || stop_words.is_a?(Array) ? stop_words : [stop_words]
-      http_post "/indexes/#{@uid}/settings/stop-words", body
+      http_put "/indexes/#{@uid}/settings/stop-words", body
     end
     alias stop_words= update_stop_words
 
@@ -301,7 +301,7 @@ module MeiliSearch
     alias get_distinct_attribute distinct_attribute
 
     def update_distinct_attribute(distinct_attribute)
-      http_post "/indexes/#{@uid}/settings/distinct-attribute", distinct_attribute
+      http_put "/indexes/#{@uid}/settings/distinct-attribute", distinct_attribute
     end
     alias distinct_attribute= update_distinct_attribute
 
@@ -317,7 +317,7 @@ module MeiliSearch
     alias get_searchable_attributes searchable_attributes
 
     def update_searchable_attributes(searchable_attributes)
-      http_post "/indexes/#{@uid}/settings/searchable-attributes", searchable_attributes
+      http_put "/indexes/#{@uid}/settings/searchable-attributes", searchable_attributes
     end
     alias searchable_attributes= update_searchable_attributes
 
@@ -333,7 +333,7 @@ module MeiliSearch
     alias get_displayed_attributes displayed_attributes
 
     def update_displayed_attributes(displayed_attributes)
-      http_post "/indexes/#{@uid}/settings/displayed-attributes", displayed_attributes
+      http_put "/indexes/#{@uid}/settings/displayed-attributes", displayed_attributes
     end
     alias displayed_attributes= update_displayed_attributes
 
@@ -349,7 +349,7 @@ module MeiliSearch
     alias get_filterable_attributes filterable_attributes
 
     def update_filterable_attributes(filterable_attributes)
-      http_post "/indexes/#{@uid}/settings/filterable-attributes", filterable_attributes
+      http_put "/indexes/#{@uid}/settings/filterable-attributes", filterable_attributes
     end
     alias filterable_attributes= update_filterable_attributes
 
@@ -365,7 +365,7 @@ module MeiliSearch
     alias get_sortable_attributes sortable_attributes
 
     def update_sortable_attributes(sortable_attributes)
-      http_post "/indexes/#{@uid}/settings/sortable-attributes", sortable_attributes
+      http_put "/indexes/#{@uid}/settings/sortable-attributes", sortable_attributes
     end
     alias sortable_attributes= update_sortable_attributes
 
