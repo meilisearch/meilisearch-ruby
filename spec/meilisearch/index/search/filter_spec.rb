@@ -46,14 +46,14 @@ RSpec.describe 'MeiliSearch::Index - Filtered search' do
   it 'does a custom search with filter and array syntax' do
     response = index.search('prinec', filter: ['genre = fantasy'])
     expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
-    expect(response['nbHits']).to eq(1)
+    expect(response['estimatedNbHits']).to eq(1)
     expect(response['hits'][0]['objectId']).to eq(4)
   end
 
   it 'does a custom search with multiple filter and array syntax' do
     response = index.search('potter', filter: ['genre = fantasy', ['year = 2005']])
     expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
-    expect(response['nbHits']).to eq(1)
+    expect(response['estimatedNbHits']).to eq(1)
     expect(response['hits'][0]['objectId']).to eq(4)
   end
 end

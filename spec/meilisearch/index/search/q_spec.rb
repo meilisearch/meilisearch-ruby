@@ -38,7 +38,7 @@ RSpec.describe 'MeiliSearch::Index - Basic search' do
                                           ])
     index.wait_for_task(response['uid'])
     response = index.search('')
-    expect(response['nbHits']).to eq(documents.count)
+    expect(response['estimatedNbHits']).to eq(documents.count)
     expect(response['hits'].first['objectId']).to eq(1)
   end
 

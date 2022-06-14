@@ -245,7 +245,7 @@ search_parameter_guide_highlight_tag_1: |-
   })
 search_parameter_guide_matches_1: |-
   client.index('movies').search('winter feast', {
-    matches: true
+    show_matches_position: true
   })
 settings_guide_synonyms_1: |-
   client.index('tops').update_settings({
