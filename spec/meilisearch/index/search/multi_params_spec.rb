@@ -54,7 +54,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
                               attributesToHighlight: ['*']
                             })
     expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
-    expect(response['nbHits']).to eq(1)
+    expect(response['estimatedTotalHits']).to eq(1)
     expect(response['hits'].first).to have_key('_formatted')
     expect(response['hits'].first).not_to have_key('objectId')
     expect(response['hits'].first).not_to have_key('genre')
@@ -62,22 +62,20 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
     expect(response['hits'].first['_formatted']['title']).to eq('Harry Potter and the Half-Blood <em>Princ</em>e')
   end
 
-  it 'does a custom search with facetsDistribution and limit' do
+  it 'does a custom search with facets and limit' do
     response = index.update_filterable_attributes(['genre'])
     index.wait_for_task(response['uid'])
-    response = index.search('prinec', facetsDistribution: ['genre'], limit: 1)
+    response = index.search('prinec', facets: ['genre'], limit: 1)
     expect(response.keys).to contain_exactly(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
-      'facetsDistribution',
-      'exhaustiveFacetsCount'
+      'facetDistribution'
     )
-    expect(response['nbHits']).to eq(2)
+    expect(response['estimatedTotalHits']).to eq(2)
     expect(response['hits'].count).to eq(1)
-    expect(response['facetsDistribution'].keys).to contain_exactly('genre')
-    expect(response['facetsDistribution']['genre'].keys).to contain_exactly('adventure', 'fantasy')
-    expect(response['facetsDistribution']['genre']['adventure']).to eq(1)
-    expect(response['facetsDistribution']['genre']['fantasy']).to eq(1)
-    expect(response['exhaustiveFacetsCount']).to be false
+    expect(response['facetDistribution'].keys).to contain_exactly('genre')
+    expect(response['facetDistribution']['genre'].keys).to contain_exactly('adventure', 'fantasy')
+    expect(response['facetDistribution']['genre']['adventure']).to eq(1)
+    expect(response['facetDistribution']['genre']['fantasy']).to eq(1)
   end
 
   context 'with snake_case options' do
