@@ -3,9 +3,22 @@
 # the documentation on build
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
+get_all_tasks_filtering_1: |-
+get_all_tasks_filtering_2: |-
+get_all_tasks_paginating_1: |-
+get_all_tasks_paginating_2: |-
+get_pagination_settings_1: |-
+update_pagination_settings_1: |-
+reset_pagination_settings_1: |-
+get_faceting_settings_1: |-
+update_faceting_settings_1: |-
+reset_faceting_settings_1: |-
+settings_guide_faceting_1: |-
+settings_guide_pagination_1: |-
+
 get_one_index_1: |-
   client.fetch_index('movies')
-list_all_indexes_1: |-
+PLEASE_UPDATE_ME>>>>>>>>>>>>>list_all_indexes_1: |-
   client.indexes
 create_an_index_1: |-
   client.create_index('movies', primary_key: 'id')
@@ -17,7 +30,7 @@ update_an_index_1: |-
   client.index('movies').update(primary_key: 'movie_id')
 delete_an_index_1: |-
   client.delete_index('movies')
-get_one_document_1: |-
+PLEASE_UPDATE_ME>>>>>>>>>>>>>get_one_document_1: |-
   client.index('movies').document(25684)
 get_documents_1: |-
   client.index('movies').documents(limit: 2)
@@ -57,9 +70,9 @@ delete_documents_1: |-
   client.index('movies').delete_documents([23488, 153738, 437035, 363869])
 search_post_1: |-
   client.index('movies').search('american ninja')
-get_task_by_index_1: |-
+PLEASE_REMOVE_ME>>>>>>>>>>>>>get_task_by_index_1: |-
   client.index('movies').task(1)
-get_all_tasks_by_index_1: |-
+PLEASE_REMOVE_ME>>>>>>>>>>>>>get_all_tasks_by_index_1: |-
   client.index('movies').tasks
 get_task_1: |-
   client.task(1)
@@ -67,7 +80,7 @@ get_all_tasks_1: |-
   client.tasks
 get_settings_1: |-
   client.index('movies').settings
-update_settings_1: |-
+PLEASE_UPDATE_ME>>>>>>>>>>>>>update_settings_1: |-
   client.index('movies').update_settings({
     ranking_rules: [
       'words',
@@ -243,7 +256,7 @@ search_parameter_guide_highlight_tag_1: |-
     highlight_pre_tag: '<span class="highlight">',
     highlight_post_tag: '</span>'
   })
-search_parameter_guide_matches_1: |-
+PLEASE_UPDATE_ME>>>>>>>>>>>>>search_parameter_guide_matches_1: |-
   client.index('movies').search('winter feast', {
     show_matches_position: true
   })
@@ -336,7 +349,7 @@ getting_started_search_md: |-
   ```
 
   [About this SDK](https://www.github.com/meilisearch/meilisearch-ruby)
-faceted_search_update_settings_1: |-
+faceted_search_PLEASE_UPDATE_ME>>>>>>>>>>>>>update_settings_1: |-
   client.index('movies').update_filterable_attributes([
     'director',
     'genres'
@@ -345,7 +358,7 @@ faceted_search_filter_1: |-
   client.index('movies').search('thriller', {
     filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
   })
-faceted_search_facets_distribution_1: |-
+PLEASE_UPDATE_ME>>>>>>>>>>>>>faceted_search_facets_distribution_1: |-
   client.index('movies').search('Batman', {
     facets_distribution: ['genres']
   })
@@ -355,7 +368,7 @@ faceted_search_walkthrough_filter_1: |-
   })
 post_dump_1: |-
   client.create_dump
-get_dump_status_1: |-
+PLEASE_REMOVE_ME>>>>>>>>>>>>>get_dump_status_1: |-
   client.get_dump_status('20201006-053243949')
 phrase_search_1: |-
   client.index('movies').search('"african american" horror')
@@ -402,7 +415,7 @@ authorization_header_1: |-
   client.keys
 get_one_key_1: |-
   client.key('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
-get_all_keys_1: |-
+PLEASE_UPDATE_ME>>>>>>>>>>>>>get_all_keys_1: |-
   client.keys
 create_a_key_1: |-
   client.create_key(
@@ -411,7 +424,7 @@ create_a_key_1: |-
     indexes: ['products'],
     expires_at: '2042-04-02T00:42:42Z'
   )
-update_a_key_1: |-
+PLEASE_UPDATE_ME>>>>>>>>>>>>>update_a_key_1: |-
   client.update_key(
     'd0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4',
     {
@@ -427,12 +440,12 @@ update_a_key_1: |-
       expires_at: '2042-04-02T00:42:42Z'
     }
   )
-delete_a_key_1: |-
+PLEASE_UPDATE_ME>>>>>>>>>>>>>delete_a_key_1: |-
   client.delete_key('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
 security_guide_search_key_1: |-
   client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'apiKey')
   client.index('patient_medical_records').search
-security_guide_update_key_1: |-
+PLEASE_UPDATE_ME>>>>>>>>>>>>>security_guide_update_key_1: |-
   client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
   client.update_key('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4', indexes: ['doctors'])
 security_guide_create_key_1: |-
@@ -446,7 +459,7 @@ security_guide_create_key_1: |-
 security_guide_list_keys_1: |-
   client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
   client.keys
-security_guide_delete_key_1: |-
+PLEASE_UPDATE_ME>>>>>>>>>>>>>security_guide_delete_key_1: |-
   client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
   client.delete_key('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
 tenant_token_guide_generate_sdk_1: |-
@@ -480,7 +493,7 @@ getting_started_update_searchable_attributes: |-
   ])
 getting_started_update_stop_words: |-
   client.index('movies').update_stop_words(['the'])
-getting_started_check_task_status: |-
+PLEASE_UPDATE_ME>>>>>>>>>>>>>PLEASE_UPDATE_ME>>>>>>>>>>>>>getting_started_check_task_status: |-
   client.index('movies').task(0)
 getting_started_synonyms: |-
   client.index('movies').update_synonyms({
