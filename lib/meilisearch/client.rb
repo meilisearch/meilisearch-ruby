@@ -58,8 +58,8 @@ module MeiliSearch
       http_get '/keys', body
     end
 
-    def key(key_uid)
-      http_get "/keys/#{key_uid}"
+    def key(uid_or_key)
+      http_get "/keys/#{uid_or_key}"
     end
 
     def create_key(key_options)
@@ -68,15 +68,15 @@ module MeiliSearch
       http_post '/keys', body
     end
 
-    def update_key(key_uid, key_options)
+    def update_key(uid_or_key, key_options)
       body = Utils.transform_attributes(key_options)
       body = body.slice('description', 'name')
 
-      http_patch "/keys/#{key_uid}", body
+      http_patch "/keys/#{uid_or_key}", body
     end
 
-    def delete_key(key_uid)
-      http_delete "/keys/#{key_uid}"
+    def delete_key(uid_or_key)
+      http_delete "/keys/#{uid_or_key}"
     end
 
     ### HEALTH
