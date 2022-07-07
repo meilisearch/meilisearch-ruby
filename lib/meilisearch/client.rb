@@ -52,8 +52,10 @@ module MeiliSearch
 
     ### KEYS
 
-    def keys
-      http_get '/keys'
+    def keys(limit: nil, offset: nil)
+      body = { limit: limit, offset: offset }.compact
+
+      http_get '/keys', body
     end
 
     def key(key_uid)
