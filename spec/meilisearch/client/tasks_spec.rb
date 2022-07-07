@@ -6,7 +6,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
   let(:enqueued_task_keys) { ['uid', 'indexUid', 'status', 'type', 'enqueuedAt'] }
   let(:succeeded_task_keys) { [*enqueued_task_keys, 'details', 'duration', 'startedAt', 'finishedAt'] }
   let!(:doc_addition_task) { index.add_documents!(documents) }
-  let(:task_uid) { doc_addition_task['taskUid'] }
+  let(:task_uid) { doc_addition_task['uid'] }
 
   it 'gets a task of an index' do
     task = index.task(task_uid)
@@ -28,7 +28,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
     task = client.task(0)
 
     expect(task).to be_a(Hash)
-    expect(task['taskUid']).to eq(0)
+    expect(task['uid']).to eq(0)
     expect(task.keys).to include(*succeeded_task_keys)
   end
 
