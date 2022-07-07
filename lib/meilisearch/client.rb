@@ -105,11 +105,6 @@ module MeiliSearch
       http_post '/dumps'
     end
 
-    def dump_status(dump_uid)
-      http_get "/dumps/#{dump_uid}/status"
-    end
-    alias get_dump_status dump_status
-
     ### TASKS
 
     def tasks
