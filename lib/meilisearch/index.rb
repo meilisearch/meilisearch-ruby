@@ -75,7 +75,7 @@ module MeiliSearch
 
     def add_documents!(documents, primary_key = nil)
       task = add_documents(documents, primary_key)
-      wait_for_task(task['uid'])
+      wait_for_task(task['taskUid'])
     end
     alias replace_documents! add_documents!
     alias add_or_replace_documents! add_documents!
@@ -109,7 +109,7 @@ module MeiliSearch
 
     def update_documents!(documents, primary_key = nil)
       task = update_documents(documents, primary_key)
-      wait_for_task(task['uid'])
+      wait_for_task(task['taskUid'])
     end
     alias add_or_update_documents! update_documents!
 
@@ -125,7 +125,7 @@ module MeiliSearch
       tasks = add_documents_in_batches(documents, batch_size, primary_key)
       responses = []
       tasks.each do |task_obj|
-        responses.append(wait_for_task(task_obj['uid']))
+        responses.append(wait_for_task(task_obj['taskUid']))
       end
       responses
     end
@@ -142,7 +142,7 @@ module MeiliSearch
       tasks = update_documents_in_batches(documents, batch_size, primary_key)
       responses = []
       tasks.each do |task_obj|
-        responses.append(wait_for_task(task_obj['uid']))
+        responses.append(wait_for_task(task_obj['taskUid']))
       end
       responses
     end
@@ -158,7 +158,7 @@ module MeiliSearch
 
     def delete_documents!(documents_ids)
       task = delete_documents(documents_ids)
-      wait_for_task(task['uid'])
+      wait_for_task(task['taskUid'])
     end
     alias delete_multiple_documents! delete_documents!
 
@@ -170,7 +170,7 @@ module MeiliSearch
 
     def delete_document!(document_id)
       task = delete_document(document_id)
-      wait_for_task(task['uid'])
+      wait_for_task(task['taskUid'])
     end
     alias delete_one_document! delete_document!
 
@@ -180,7 +180,7 @@ module MeiliSearch
 
     def delete_all_documents!
       task = delete_all_documents
-      wait_for_task(task['uid'])
+      wait_for_task(task['taskUid'])
     end
 
     ### SEARCH
@@ -199,7 +199,7 @@ module MeiliSearch
     private :task_endpoint
 
     def task(task_uid)
-      task_endpoint.index_task(@uid, task_uid)
+      task_endpoint.index_task(task_uid)
     end
 
     def tasks

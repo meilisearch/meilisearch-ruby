@@ -29,7 +29,7 @@ module MeiliSearch
     # Waits for the task to be achieved, be careful when using it.
     def create_index!(index_uid, options = {})
       task = create_index(index_uid, options)
-      wait_for_task(task['uid'])
+      wait_for_task(task['taskUid'])
     end
 
     def delete_index(index_uid)

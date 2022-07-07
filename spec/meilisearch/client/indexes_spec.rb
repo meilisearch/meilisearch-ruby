@@ -8,7 +8,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
         expect(task['type']).to eq('indexCreation')
 
-        client.wait_for_task(task['uid'])
+        client.wait_for_task(task['taskUid'])
         index = client.fetch_index('new_index')
 
         expect(index).to be_a(MeiliSearch::Index)
@@ -36,7 +36,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
         expect(task['type']).to eq('indexCreation')
 
-        client.wait_for_task(task['uid'])
+        client.wait_for_task(task['taskUid'])
         index = client.fetch_index('new_index')
 
         expect(index).to be_a(MeiliSearch::Index)
@@ -63,7 +63,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
         it 'creates an index' do
           task = client.create_index('new_index', primary_key: 'primary_key')
           expect(task['type']).to eq('indexCreation')
-          client.wait_for_task(task['uid'])
+          client.wait_for_task(task['taskUid'])
 
           index = client.fetch_index('new_index')
           expect(index).to be_a(MeiliSearch::Index)
@@ -83,7 +83,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
           expect(task['type']).to eq('indexCreation')
 
-          client.wait_for_task(task['uid'])
+          client.wait_for_task(task['taskUid'])
           index = client.fetch_index('new_index')
 
           expect(index).to be_a(MeiliSearch::Index)
@@ -212,7 +212,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
         expect(task['type']).to eq('indexDeletion')
 
-        achieved_task = client.wait_for_task(task['uid'])
+        achieved_task = client.wait_for_task(task['taskUid'])
 
         expect(achieved_task['status']).to eq('succeeded')
         expect { client.fetch_index('existing_index') }.to raise_index_not_found_meilisearch_api_error

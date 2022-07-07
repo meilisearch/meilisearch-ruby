@@ -14,11 +14,11 @@ module MeiliSearch
     end
 
     def index_tasks(index_uid)
-      http_get "/indexes/#{index_uid}/tasks"
+      http_get "/tasks", { indexUid: [index_uid].flatten.join(',') }
     end
 
-    def index_task(index_uid, task_uid)
-      http_get "/indexes/#{index_uid}/tasks/#{task_uid}"
+    def index_task(task_uid)
+      http_get "/tasks/#{task_uid}"
     end
 
     def wait_for_task(task_uid, timeout_in_ms = 5000, interval_in_ms = 50)
