@@ -14,7 +14,7 @@ module MeiliSearch
     end
 
     def index_tasks(index_uid)
-      http_get "/tasks", { indexUid: [index_uid].flatten.join(',') }
+      http_get '/tasks', { indexUid: [index_uid].flatten.join(',') }
     end
 
     def index_task(task_uid)
