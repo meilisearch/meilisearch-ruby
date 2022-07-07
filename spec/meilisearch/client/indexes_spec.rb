@@ -141,7 +141,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     it 'returns raw indexes' do
       client.create_index!('index')
 
-      response = client.raw_indexes.first
+      response = client.raw_indexes['results'].first
 
       expect(response).to be_a(Hash)
       expect(response['uid']).to eq('index')
@@ -150,7 +150,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     it 'gets a list of raw indexes' do
       ['first_index', 'second_index', 'third_index'].each { |name| client.create_index!(name) }
 
-      indexes = client.raw_indexes
+      indexes = client.raw_indexes['results']
 
       expect(indexes).to be_a(Array)
       expect(indexes.length).to eq(3)
