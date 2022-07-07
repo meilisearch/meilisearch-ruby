@@ -52,9 +52,9 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
         rankingRules: ['title:asc', 'typo'],
         distinctAttribute: 'title'
       )
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
       settings = index.settings
       expect(settings['rankingRules']).to eq(['title:asc', 'typo'])
       expect(settings['distinctAttribute']).to eq('title')
@@ -63,9 +63,9 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'updates one setting without reset the others' do
       task = index.update_settings(stopWords: ['the'])
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
       settings = index.settings
       expect(settings['rankingRules']).to eq(default_ranking_rules)
       expect(settings['distinctAttribute']).to be_nil
@@ -80,12 +80,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
         stopWords: ['the', 'a'],
         synonyms: { wow: ['world of warcraft'] }
       )
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       task = index.reset_settings
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       settings = index.settings
       expect(settings['rankingRules']).to eq(default_ranking_rules)
@@ -102,7 +102,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
           stopWords: ['a']
         )
 
-        client.wait_for_task(task['uid'])
+        client.wait_for_task(task['taskUid'])
         settings = index.settings
 
         expect(settings['rankingRules']).to eq(['typo'])
@@ -126,29 +126,27 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'updates ranking rules' do
       task = index.update_ranking_rules(ranking_rules)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
       expect(index.ranking_rules).to eq(ranking_rules)
     end
 
     it 'updates ranking rules at null' do
       task = index.update_ranking_rules(ranking_rules)
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       task = index.update_ranking_rules(nil)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       expect(index.ranking_rules).to eq(default_ranking_rules)
     end
 
     it 'fails when updating with wrong ranking rules name' do
       task = index.update_ranking_rules(wrong_ranking_rules)
-      client.wait_for_task(task['uid'])
-
-      task = index.task(task['uid'])
+      task = client.wait_for_task(task['taskUid'])
 
       expect(task['type']).to eq('settingsUpdate')
       expect(task.keys).to include('error')
@@ -157,12 +155,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'resets ranking rules' do
       task = index.update_ranking_rules(ranking_rules)
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       task = index.reset_ranking_rules
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       expect(index.ranking_rules).to eq(default_ranking_rules)
     end
@@ -181,9 +179,9 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'updates distinct attribute' do
       task = index.update_distinct_attribute(distinct_attribute)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       expect(index.distinct_attribute).to eq(distinct_attribute)
     end
@@ -191,11 +189,11 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'updates distinct attribute at null' do
       task = index.update_distinct_attribute(distinct_attribute)
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       task = index.update_distinct_attribute(nil)
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       expect(index.distinct_attribute).to be_nil
     end
@@ -203,11 +201,11 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'resets distinct attribute' do
       task = index.update_distinct_attribute(distinct_attribute)
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       task = index.reset_distinct_attribute
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       expect(index.distinct_attribute).to be_nil
     end
@@ -226,21 +224,21 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'updates searchable attributes' do
       task = index.update_searchable_attributes(searchable_attributes)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
       expect(index.searchable_attributes).to eq(searchable_attributes)
     end
 
     it 'updates searchable attributes at null' do
       task = index.update_searchable_attributes(searchable_attributes)
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       task = index.update_searchable_attributes(nil)
       expect(task['type']).to eq('settingsUpdate')
-      expect(task).to have_key('uid')
-      client.wait_for_task(task['uid'])
+
+      client.wait_for_task(task['taskUid'])
 
       expect(index.searchable_attributes).to eq(default_searchable_attributes)
     end
@@ -248,14 +246,14 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'resets searchable attributes' do
       task = index.update_searchable_attributes(searchable_attributes)
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       task = index.reset_searchable_attributes
-      expect(task).to have_key('uid')
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
 
-      expect(index.task(task['uid'])['status']).to eq('succeeded')
+      expect(task['type']).to eq('settingsUpdate')
+      client.wait_for_task(task['taskUid'])
+
+      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
       expect(index.searchable_attributes).to eq(default_searchable_attributes)
     end
   end
@@ -273,9 +271,9 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'updates displayed attributes' do
       task = index.update_displayed_attributes(displayed_attributes)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       expect(index.displayed_attributes).to contain_exactly(*displayed_attributes)
     end
@@ -283,12 +281,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'updates displayed attributes at null' do
       task = index.update_displayed_attributes(displayed_attributes)
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       task = index.update_displayed_attributes(nil)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       expect(index.displayed_attributes).to eq(default_displayed_attributes)
     end
@@ -296,14 +294,14 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'resets displayed attributes' do
       task = index.update_displayed_attributes(displayed_attributes)
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       task = index.reset_displayed_attributes
-      expect(task).to have_key('uid')
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
 
-      expect(index.task(task['uid'])['status']).to eq('succeeded')
+      expect(task['type']).to eq('settingsUpdate')
+      client.wait_for_task(task['taskUid'])
+
+      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
       expect(index.displayed_attributes).to eq(default_displayed_attributes)
     end
   end
@@ -329,9 +327,9 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'returns an uid when updating' do
       task = index.update_synonyms(synonyms)
       expect(task).to be_a(Hash)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
     end
 
     it 'gets all the synonyms' do
@@ -370,9 +368,9 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
         task = index.reset_synonyms
 
         expect(task).to be_a(Hash)
-        expect(task).to have_key('uid')
+
         expect(task['type']).to eq('settingsUpdate')
-        client.wait_for_task(task['uid'])
+        client.wait_for_task(task['taskUid'])
 
         expect(index.synonyms).to be_a(Hash)
       end.to(change { index.synonyms.length }.from(3).to(0))
@@ -395,14 +393,14 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'updates stop-words when the body is valid (as an array)' do
       task = index.update_stop_words(stop_words_array)
       expect(task).to be_a(Hash)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
     end
 
     it 'gets list of stop-words' do
       task = index.update_stop_words(stop_words_array)
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
       settings = index.stop_words
       expect(settings).to be_a(Array)
       expect(settings).to contain_exactly(*stop_words_array)
@@ -411,9 +409,9 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'updates stop-words when the body is valid (as single string)' do
       task = index.update_stop_words(stop_words_string)
       expect(task).to be_a(Hash)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
       sw = index.stop_words
       expect(sw).to be_a(Array)
       expect(sw).to contain_exactly(stop_words_string)
@@ -422,12 +420,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'updates stop-words at null' do
       task = index.update_stop_words(stop_words_string)
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       task = index.update_stop_words(nil)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       expect(index.stop_words).to be_empty
     end
@@ -441,13 +439,13 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'resets stop-words' do
       task = index.update_stop_words(stop_words_string)
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       task = index.reset_stop_words
       expect(task).to be_a(Hash)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       expect(index.stop_words).to be_a(Array)
       expect(index.stop_words).to be_empty
@@ -468,36 +466,36 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'updates filterable attributes' do
       task = index.update_filterable_attributes(filterable_attributes)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
       expect(index.filterable_attributes).to contain_exactly(*filterable_attributes)
     end
 
     it 'updates filterable attributes at null' do
       task = index.update_filterable_attributes(filterable_attributes)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
 
       task = index.update_filterable_attributes(nil)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       expect(index.filterable_attributes).to be_empty
     end
 
     it 'resets filterable attributes' do
       task = index.update_filterable_attributes(filterable_attributes)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
 
       task = index.reset_filterable_attributes
-      expect(task).to have_key('uid')
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
 
-      expect(index.task(task['uid'])['status']).to eq('succeeded')
+      expect(task['type']).to eq('settingsUpdate')
+      client.wait_for_task(task['taskUid'])
+
+      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
       expect(index.filterable_attributes).to be_empty
     end
   end
@@ -516,8 +514,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'updates sortable attributes' do
       task = index.update_sortable_attributes(sortable_attributes)
-      expect(task).to have_key('uid')
-      client.wait_for_task(task['uid'])
+
+      client.wait_for_task(task['taskUid'])
       expect(task['type']).to eq('settingsUpdate')
       expect(index.sortable_attributes).to contain_exactly(*sortable_attributes)
     end
@@ -525,12 +523,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'updates sortable attributes at null' do
       task = index.update_sortable_attributes(sortable_attributes)
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       task = index.update_sortable_attributes(nil)
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       expect(index.sortable_attributes).to be_empty
     end
@@ -538,14 +536,14 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'resets sortable attributes' do
       task = index.update_sortable_attributes(sortable_attributes)
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       task = index.reset_sortable_attributes
-      expect(task).to have_key('uid')
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
 
-      expect(index.task(task['uid'])['status']).to eq('succeeded')
+      expect(task['type']).to eq('settingsUpdate')
+      client.wait_for_task(task['taskUid'])
+
+      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
       expect(index.sortable_attributes).to be_empty
     end
   end
@@ -572,9 +570,9 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
         rankingRules: ['title:asc', 'typo'],
         distinctAttribute: 'title'
       )
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
       settings = index.settings
       expect(settings['rankingRules']).to eq(['title:asc', 'typo'])
       expect(settings['distinctAttribute']).to eq('title')
@@ -583,9 +581,9 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'updates one setting without reset the others' do
       task = index.update_settings(stopWords: ['the'])
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
       settings = index.settings
       expect(settings['rankingRules']).to eq(default_ranking_rules)
       expect(settings['distinctAttribute']).to be_nil
@@ -603,12 +601,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
         }
       )
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       task = index.reset_settings
-      expect(task).to have_key('uid')
+
       expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       settings = index.settings
       expect(settings['rankingRules']).to eq(default_ranking_rules)
@@ -623,35 +621,35 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'does not add document when there is no primary-key' do
       task = index.add_documents(title: 'Test')
-      client.wait_for_task(task['uid'])
-      task = index.task(task['uid'])
+      task = client.wait_for_task(task['taskUid'])
+
       expect(task.keys).to include('error')
       expect(task['error']['code']).to eq('primary_key_inference_failed')
     end
 
     it 'adds documents when there is a primary-key' do
       task = index.add_documents(objectId: 1, title: 'Test')
-      expect(task).to have_key('uid')
-      client.wait_for_task(task['uid'])
-      expect(index.documents.count).to eq(1)
+
+      client.wait_for_task(task['taskUid'])
+      expect(index.documents['results'].count).to eq(1)
     end
 
     it 'resets searchable/displayed attributes' do
       task = index.update_displayed_attributes(['title', 'description'])
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
       task = index.update_searchable_attributes(['title'])
-      expect(task).to have_key('uid')
-      client.wait_for_task(task['uid'])
+
+      client.wait_for_task(task['taskUid'])
 
       task = index.reset_displayed_attributes
-      expect(task).to have_key('uid')
-      client.wait_for_task(task['uid'])
-      expect(index.task(task['uid'])['status']).to eq('succeeded')
+
+      client.wait_for_task(task['taskUid'])
+      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
 
       task = index.reset_searchable_attributes
-      expect(task).to have_key('uid')
-      client.wait_for_task(task['uid'])
-      expect(index.task(task['uid'])['status']).to eq('succeeded')
+
+      client.wait_for_task(task['taskUid'])
+      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
 
       expect(index.displayed_attributes).to eq(['*'])
       expect(index.searchable_attributes).to eq(['*'])
@@ -678,6 +676,6 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   def update_synonyms(index, synonyms)
     task = index.update_synonyms(synonyms)
 
-    client.wait_for_task(task['uid'])
+    client.wait_for_task(task['taskUid'])
   end
 end
