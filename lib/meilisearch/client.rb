@@ -4,12 +4,10 @@ module MeiliSearch
   class Client < HTTPRequest
     include MeiliSearch::TenantToken
 
-    ALLOWED_PARAMS = [:limit, :offset].freeze
-
     ### INDEXES
 
     def raw_indexes(options = {})
-      body = Utils.transform_attributes(options.transform_keys(&:to_sym).slice(*ALLOWED_PARAMS))
+      body = Utils.transform_attributes(options.transform_keys(&:to_sym).slice(:limit, :offset))
 
       http_get('/indexes', body)
     end

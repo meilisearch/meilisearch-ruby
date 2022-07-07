@@ -196,6 +196,13 @@ CSV
         expect(docs.size).to eq(5)
         expect(docs.first['objectId']).to eq(index.documents['results'][2]['objectId'])
       end
+
+      it 'browses documents with fields' do
+        docs = index.documents(fields: ['title'])['results']
+
+        expect(docs).to be_a(Array)
+        expect(docs.first.keys).to eq(['title'])
+      end
     end
 
     describe 'updating documents' do

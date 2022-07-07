@@ -62,7 +62,10 @@ module MeiliSearch
     alias get_one_document document
 
     def documents(options = {})
-      http_get "/indexes/#{@uid}/documents", Utils.transform_attributes(options)
+      body = Utils.transform_attributes(options.transform_keys(&:to_sym).slice(:limit, :offset, :fields))
+      body = body.transform_values { |v| v.respond_to?(:join) ? v.join(',') : v }
+
+      http_get "/indexes/#{@uid}/documents", body
     end
     alias get_documents documents
 
