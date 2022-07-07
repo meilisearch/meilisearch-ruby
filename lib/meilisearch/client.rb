@@ -68,6 +68,7 @@ module MeiliSearch
 
     def update_key(key_uid, key_options)
       body = Utils.transform_attributes(key_options)
+      body = body.slice('description', 'name')
 
       http_patch "/keys/#{key_uid}", body
     end

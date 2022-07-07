@@ -3,7 +3,7 @@
 require 'jwt'
 
 VERIFY_OPTIONS = {
-  required_claims: ['exp', 'apiKeyPrefix', 'searchRules'],
+  required_claims: ['exp', 'apiKeyUid', 'searchRules'],
   algorithm: 'HS256'
 }.freeze
 
@@ -30,7 +30,7 @@ RSpec.describe MeiliSearch::TenantToken do
 
   describe '#generate_tenant_token' do
     subject(:token) do
-      instance.generate_tenant_token(search_rules, api_key: api_key, expires_at: expires_at)
+      instance.generate_tenant_token('uid', search_rules, api_key: api_key, expires_at: expires_at)
     end
 
     context 'with api_key param' do
@@ -66,7 +66,7 @@ RSpec.describe MeiliSearch::TenantToken do
         client = dummy_class.new(nil)
 
         expect do
-          client.generate_tenant_token(search_rules)
+          client.generate_tenant_token('uid', search_rules)
         end.to raise_error(described_class::InvalidApiKey)
       end
 
@@ -74,7 +74,7 @@ RSpec.describe MeiliSearch::TenantToken do
         client = dummy_class.new('')
 
         expect do
-          client.generate_tenant_token(search_rules, api_key: '')
+          client.generate_tenant_token('uid', search_rules, api_key: '')
         end.to raise_error(described_class::InvalidApiKey)
       end
     end
@@ -82,13 +82,13 @@ RSpec.describe MeiliSearch::TenantToken do
     context 'with expires_at' do
       it 'raises error when expires_at is in the past' do
         expect do
-          instance.generate_tenant_token(search_rules, expires_at: Time.now.utc - 10)
+          instance.generate_tenant_token('uid', search_rules, expires_at: Time.now.utc - 10)
         end.to raise_error(described_class::ExpireOrInvalidSignature)
       end
 
       it 'allows generate token with a nil expires_at' do
         expect do
-          instance.generate_tenant_token(search_rules, expires_at: nil)
+          instance.generate_tenant_token('uid', search_rules, expires_at: nil)
         end.to_not raise_error
       end
 
@@ -101,14 +101,14 @@ RSpec.describe MeiliSearch::TenantToken do
       it 'raises error when expires_at has a invalid type' do
         ['2042-01-01', 78_126_717_684, []].each do |exp|
           expect do
-            instance.generate_tenant_token(search_rules, expires_at: exp)
+            instance.generate_tenant_token('uid', search_rules, expires_at: exp)
           end.to raise_error(described_class::ExpireOrInvalidSignature)
         end
       end
 
       it 'raises error when expires_at is not a UTC' do
         expect do
-          instance.generate_tenant_token(search_rules, expires_at: Time.now + 10)
+          instance.generate_tenant_token('uid', search_rules, expires_at: Time.now + 10)
         end.to raise_error(described_class::ExpireOrInvalidSignature)
       end
     end
@@ -116,7 +116,7 @@ RSpec.describe MeiliSearch::TenantToken do
     context 'without expires_at param' do
       it 'allows generate token without expires_at' do
         expect do
-          instance.generate_tenant_token(search_rules)
+          instance.generate_tenant_token('uid', search_rules)
         end.to_not raise_error
       end
     end
@@ -126,7 +126,7 @@ RSpec.describe MeiliSearch::TenantToken do
 
       before do
         filterable_task = index.update_filterable_attributes(['genre', 'objectId'])
-        index.wait_for_task(filterable_task['uid'])
+        index.wait_for_task(filterable_task['taskUid'])
       end
 
       let(:adm_client) { MeiliSearch::Client.new(URL, adm_key['key']) }
@@ -153,7 +153,7 @@ RSpec.describe MeiliSearch::TenantToken do
 
       it 'accepts the token in the search request' do
         rules.each do |data|
-          token = adm_client.generate_tenant_token(data)
+          token = adm_client.generate_tenant_token(adm_key['uid'], data)
           custom = MeiliSearch::Client.new(URL, token)
 
           expect(custom.index('books').search('')).to have_key('hits')
@@ -162,16 +162,15 @@ RSpec.describe MeiliSearch::TenantToken do
 
       it 'requires a non-nil payload in the search_rules' do
         expect do
-          client.generate_tenant_token(nil)
+          client.generate_tenant_token('uid', nil)
         end.to raise_error(described_class::InvalidSearchRules)
       end
     end
 
-    it 'has apiKeyPrefix with first 8 characters of the signature' do
-      decoded = JWT.decode(token, api_key, true, VERIFY_OPTIONS).dig(0, 'apiKeyPrefix')
+    it 'has apiKeyUid with the uid of the key' do
+      decoded = JWT.decode(token, api_key, true, VERIFY_OPTIONS).dig(0, 'apiKeyUid')
 
-      expect(decoded.size).to eq(8)
-      expect(decoded).to eq(api_key[0, 8])
+      expect(decoded).to eq('uid')
     end
   end
 end
