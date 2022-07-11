@@ -110,8 +110,8 @@ module MeiliSearch
 
     ### TASKS
 
-    def tasks
-      task_endpoint.task_list
+    def tasks(options = {})
+      task_endpoint.task_list(options)
     end
 
     def task(task_uid)

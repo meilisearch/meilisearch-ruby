@@ -95,7 +95,7 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
     end
 
     it 'updates a key with their uid data' do
-      new_key = client.create_key(delete_docs_key_options.merge(uid: uuid_v4))
+      client.create_key(delete_docs_key_options.merge(uid: uuid_v4))
       new_updated_key = client.update_key(uuid_v4, name: 'coco')
 
       expect(new_updated_key['name']).to eq('coco')
@@ -105,9 +105,9 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
       new_key = client.create_key(add_docs_key_options)
       client.delete_key(new_key['key'])
 
-      expect {
+      expect do
         client.key(new_key['key'])
-      }.to raise_error(MeiliSearch::ApiError)
+      end.to raise_error(MeiliSearch::ApiError)
     end
   end
 end

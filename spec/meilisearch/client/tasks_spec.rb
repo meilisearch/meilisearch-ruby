@@ -24,7 +24,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
     expect(last_task.keys).to include(*succeeded_task_keys)
   end
 
-  it 'gets a task of the MeiliSearch instance' do
+  it 'gets a task of the Meilisearch instance' do
     task = client.task(0)
 
     expect(task).to be_a(Hash)
@@ -32,7 +32,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
     expect(task.keys).to include(*succeeded_task_keys)
   end
 
-  it 'gets all the tasks of the MeiliSearch instance' do
+  it 'gets tasks of the Meilisearch instance' do
     tasks = client.tasks
 
     expect(tasks['results']).to be_a(Array)
@@ -40,6 +40,24 @@ RSpec.describe 'MeiliSearch::Tasks' do
     last_task = tasks['results'].first
 
     expect(last_task.keys).to include(*succeeded_task_keys)
+  end
+
+  it 'paginates tasks with limit/from/next' do
+    tasks = client.tasks(limit: 2)
+
+    expect(tasks['results'].count).to be <= 2
+    expect(tasks['from']).to be_a(Integer)
+    expect(tasks['next']).to be_a(Integer)
+  end
+
+  it 'filters tasks with index_uid/type/status' do
+    tasks = client.tasks(index_uid: ['a-cool-index-name'])
+
+    expect(tasks['results'].count).to eq(0)
+
+    tasks = client.tasks(index_uid: ['books'], type: ['documentAdditionOrUpdate'], status: ['succeeded'])
+
+    expect(tasks['results'].count).to be > 1
   end
 
   describe '#index.wait_for_task' do
