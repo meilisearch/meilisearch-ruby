@@ -3,10 +3,26 @@
 # the documentation on build
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
+get_all_tasks_filtering_1: |-
+  client.index('movies').tasks
+get_all_tasks_filtering_2: |-
+  client.tasks(status: ['succeeded', 'failed'], type: ['documentAdditionOrUpdate'])
+get_all_tasks_paginating_1: |-
+  client.tasks(limit: 2, from: 10)
+get_all_tasks_paginating_2: |-
+  client.tasks(limit: 2, from: 8)
+get_pagination_settings_1: |-
+update_pagination_settings_1: |-
+reset_pagination_settings_1: |-
+get_faceting_settings_1: |-
+update_faceting_settings_1: |-
+reset_faceting_settings_1: |-
+settings_guide_faceting_1: |-
+settings_guide_pagination_1: |-
 get_one_index_1: |-
   client.fetch_index('movies')
 list_all_indexes_1: |-
-  client.indexes
+  client.indexes(limit: 3)
 create_an_index_1: |-
   client.create_index('movies', primary_key: 'id')
 primary_field_guide_create_index_primary_key: |-
@@ -18,7 +34,7 @@ update_an_index_1: |-
 delete_an_index_1: |-
   client.delete_index('movies')
 get_one_document_1: |-
-  client.index('movies').document(25684)
+  client.index('movies').document(25684, fields: ['id', 'title', 'poster', 'release_date'])
 get_documents_1: |-
   client.index('movies').documents(limit: 2)
 primary_field_guide_add_document_primary_key: |-
@@ -57,10 +73,6 @@ delete_documents_1: |-
   client.index('movies').delete_documents([23488, 153738, 437035, 363869])
 search_post_1: |-
   client.index('movies').search('american ninja')
-get_task_by_index_1: |-
-  client.index('movies').task(1)
-get_all_tasks_by_index_1: |-
-  client.index('movies').tasks
 get_task_1: |-
   client.task(1)
 get_all_tasks_1: |-
@@ -103,6 +115,12 @@ update_settings_1: |-
     synonyms: {
       wolverine: ['xmen', 'logan'],
       logan: ['wolverine']
+    },
+    pagination: {
+      max_total_hits: 5000
+    },
+    faceting: {
+      max_values_per_facet: 200
     }
   })
 reset_settings_1: |-
@@ -243,9 +261,9 @@ search_parameter_guide_highlight_tag_1: |-
     highlight_pre_tag: '<span class="highlight">',
     highlight_post_tag: '</span>'
   })
-search_parameter_guide_matches_1: |-
+search_parameter_guide_show_matches_position_1: |-
   client.index('movies').search('winter feast', {
-    matches: true
+    show_matches_position: true
   })
 settings_guide_synonyms_1: |-
   client.index('tops').update_settings({
@@ -345,18 +363,14 @@ faceted_search_filter_1: |-
   client.index('movies').search('thriller', {
     filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
   })
-faceted_search_facets_distribution_1: |-
-  client.index('movies').search('Batman', {
-    facets_distribution: ['genres']
-  })
+faceted_search_facets_1: |-
+  client.index('movies').search('Batman', { facets: ['genres'] })
 faceted_search_walkthrough_filter_1: |-
   client.index('movies').search('thriller', {
     filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
   })
 post_dump_1: |-
   client.create_dump
-get_dump_status_1: |-
-  client.get_dump_status('20201006-053243949')
 phrase_search_1: |-
   client.index('movies').search('"african american" horror')
 sorting_guide_update_sortable_attributes_1: |-
@@ -401,9 +415,9 @@ authorization_header_1: |-
   client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
   client.keys
 get_one_key_1: |-
-  client.key('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
+  client.key('6062abda-a5aa-4414-ac91-ecd7944c0f8d')
 get_all_keys_1: |-
-  client.keys
+  client.keys(limit: 3)
 create_a_key_1: |-
   client.create_key(
     description: 'Add documents: Products API key',
@@ -413,28 +427,20 @@ create_a_key_1: |-
   )
 update_a_key_1: |-
   client.update_key(
-    'd0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4',
+    '6062abda-a5aa-4414-ac91-ecd7944c0f8d',
     {
       description: 'Manage documents: Products/Reviews API key',
-      actions: [
-        'documents.add',
-        'documents.delete'
-      ],
-      indexes: [
-        'products',
-        'reviews'
-      ],
-      expires_at: '2042-04-02T00:42:42Z'
+      name: 'Products/Reviews API key'
     }
   )
 delete_a_key_1: |-
-  client.delete_key('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
+  client.delete_key('6062abda-a5aa-4414-ac91-ecd7944c0f8d')
 security_guide_search_key_1: |-
   client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'apiKey')
   client.index('patient_medical_records').search
 security_guide_update_key_1: |-
   client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
-  client.update_key('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4', indexes: ['doctors'])
+  client.update_key('74c9c733-3368-4738-bbe5-1d18a5fecb37', description: 'Default Search API Key')
 security_guide_create_key_1: |-
   client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
   client.create_key(
@@ -448,8 +454,9 @@ security_guide_list_keys_1: |-
   client.keys
 security_guide_delete_key_1: |-
   client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
-  client.delete_key('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
+  client.delete_key('ac5cd97d-5a4b-4226-a868-2d0eb6d197ab')
 tenant_token_guide_generate_sdk_1: |-
+  uid = '85c3c2f9-bdd6-41f1-abd8-11fcf80e0f76'
   api_key = 'B5KdX2MY2jV6EXfUs6scSfmC...'
   expires_at = Time.new(2025, 12, 20).utc
   search_rules = {
@@ -458,7 +465,7 @@ tenant_token_guide_generate_sdk_1: |-
     }
   }
 
-  token = client.generate_tenant_token(search_rules, api_key: api_key, expires_at: expires_at)
+  token = client.generate_tenant_token(uid, search_rules, api_key: api_key, expires_at: expires_at)
 tenant_token_guide_search_sdk_1: |-
   front_end_client = MeiliSearch::Client.new('http://127.0.0.1:7700', token)
 
@@ -481,7 +488,7 @@ getting_started_update_searchable_attributes: |-
 getting_started_update_stop_words: |-
   client.index('movies').update_stop_words(['the'])
 getting_started_check_task_status: |-
-  client.index('movies').task(0)
+  client.task(0)
 getting_started_synonyms: |-
   client.index('movies').update_synonyms({
     winnie: ['piglet'],

@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Search with matches' do
+RSpec.describe 'MeiliSearch::Index - Search with showMatchesPosition' do
   include_context 'search books with genre'
 
-  it 'does a custom search with matches' do
-    response = index.search('the', matches: true)
+  it 'does a custom search with showMatchesPosition' do
+    response = index.search('the', show_matches_position: true)
     expect(response).to be_a(Hash)
     expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
-    expect(response['hits'].first).to have_key('_matchesInfo')
-    expect(response['hits'].first['_matchesInfo']).to have_key('title')
+    expect(response['hits'].first).to have_key('_matchesPosition')
+    expect(response['hits'].first['_matchesPosition']).to have_key('title')
   end
 
-  it 'does a placeholder search with matches' do
-    response = index.search('', matches: true)
+  it 'does a placeholder search with showMatchesPosition' do
+    response = index.search('', show_matches_position: true)
     expect(response).to be_a(Hash)
     expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
-    expect(response['hits'].first).to have_key('_matchesInfo')
+    expect(response['hits'].first).to have_key('_matchesPosition')
   end
 end

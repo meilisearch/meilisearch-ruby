@@ -5,6 +5,7 @@ RSpec.shared_context 'test defaults' do
 
   before do
     clear_all_indexes(client)
+    clear_all_keys(client)
   end
 
   def random_uid

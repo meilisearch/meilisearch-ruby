@@ -1,55 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe 'MeiliSearch::Client - Keys' do
-  context 'When a client uses default key roles' do
-    let(:search_key) { client.keys['results'].find { |k| k['description'].start_with? 'Default Search' } }
-    let(:admin_key) { client.keys['results'].find { |k| k['description'].start_with? 'Default Admin' } }
-
-    it 'fails to get settings if public key used' do
-      new_client = MeiliSearch::Client.new(URL, search_key['key'])
-
-      expect do
-        new_client.index(random_uid).settings
-      end.to raise_meilisearch_api_error_with(403, 'invalid_api_key', 'auth')
-    end
-
-    it 'fails to get keys if private key used' do
-      new_client = MeiliSearch::Client.new(URL, admin_key['key'])
-
-      expect do
-        new_client.keys
-      end.to raise_meilisearch_api_error_with(403, 'invalid_api_key', 'auth')
-    end
-
-    it 'fails to get settings if no key is used' do
-      new_client = MeiliSearch::Client.new(URL)
-
-      expect do
-        new_client.index(random_uid).settings
-      end.to raise_meilisearch_api_error_with(401, 'missing_authorization_header', 'auth')
-    end
-
-    it 'succeeds to search when using public key' do
-      uid = random_uid
-      index = client.index(uid)
-      index.add_documents!(title: 'Test')
-      new_client = MeiliSearch::Client.new(URL, search_key['key'])
-      response = new_client.index(uid).search('test')
-
-      expect(response).to have_key('hits')
-    end
-
-    it 'succeeds to get settings when using private key' do
-      uid = random_uid
-      client.create_index!(uid)
-      new_client = MeiliSearch::Client.new(URL, admin_key['key'])
-      response = new_client.index(uid).settings
-
-      expect(response).to have_key('rankingRules')
-    end
-  end
-
   context 'When managing keys' do
+    let(:uuid_v4) { 'c483e150-cff1-4a45-ac26-bb8eb8e01d36' }
     let(:delete_docs_key_options) do
       {
         description: 'A new key to delete docs',
@@ -67,13 +20,6 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
       }
     end
 
-    it 'gets the list of the default keys' do
-      results = client.keys['results']
-
-      expect(results).to be_a(Array)
-      expect(results.count).to be >= 2
-    end
-
     it 'creates a key' do
       new_key = client.create_key(add_docs_key_options)
 
@@ -85,10 +31,12 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
       expect(new_key['description']).to eq('A new key to add docs')
     end
 
-    it 'creates a key using snake_case' do
-      new_key = client.create_key(add_docs_key_options)
+    it 'creates a key with setting uid' do
+      new_key = client.create_key(add_docs_key_options.merge(uid: uuid_v4))
 
       expect(new_key['expiresAt']).to be_nil
+      expect(new_key['name']).to be_nil
+      expect(new_key['uid']).to eq(uuid_v4)
       expect(new_key['key']).to be_a(String)
       expect(new_key['createdAt']).to be_a(String)
       expect(new_key['updatedAt']).to be_a(String)
@@ -96,7 +44,7 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
       expect(new_key['description']).to eq('A new key to add docs')
     end
 
-    it 'gets a key' do
+    it 'gets a key with their key data' do
       new_key = client.create_key(delete_docs_key_options)
 
       expect(client.key(new_key['key'])['description']).to eq('A new key to delete docs')
@@ -111,29 +59,55 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
       expect(key['description']).to eq('A new key to delete docs')
     end
 
-    it 'updates a key' do
-      new_key = client.create_key(delete_docs_key_options)
-      new_updated_key = client.update_key(new_key['key'], indexes: ['coco'])
+    it 'retrieves a list of keys' do
+      new_key = client.create_key(add_docs_key_options)
 
-      expect(new_updated_key['key']).to eq(new_key['key'])
-      expect(new_updated_key['description']).to eq(new_key['description'])
-      expect(new_updated_key['indexes']).to eq(['coco'])
+      list = client.keys
+
+      expect(list.keys).to contain_exactly('limit', 'offset', 'results', 'total')
+      expect(list['results']).to eq([new_key])
+      expect(list['total']).to eq(1)
     end
 
-    it 'updates a key using snake_case' do
+    it 'paginates keys list with limit/offset' do
+      client.create_key(add_docs_key_options)
+
+      expect(client.keys(limit: 0, offset: 20)['results']).to be_empty
+      expect(client.keys(limit: 5, offset: 199)['results']).to be_empty
+    end
+
+    it 'gets a key with their uid' do
+      new_key = client.create_key(delete_docs_key_options.merge(uid: uuid_v4))
+
+      key = client.key(uuid_v4)
+
+      expect(key).to eq(new_key)
+    end
+
+    it 'updates a key with their key data' do
       new_key = client.create_key(delete_docs_key_options)
-      new_updated_key = client.update_key(new_key['key'], indexes: ['coco'])
+      new_updated_key = client.update_key(new_key['key'], indexes: ['coco'], description: 'no coco')
 
       expect(new_updated_key['key']).to eq(new_key['key'])
-      expect(new_updated_key['description']).to eq(new_key['description'])
-      expect(new_updated_key['indexes']).to eq(['coco'])
+      expect(new_updated_key['description']).to eq('no coco')
+      # remain untouched since v0.28.0 Meilisearch just support updating name/description.
+      expect(new_updated_key['indexes']).to eq(['*'])
+    end
+
+    it 'updates a key with their uid data' do
+      client.create_key(delete_docs_key_options.merge(uid: uuid_v4))
+      new_updated_key = client.update_key(uuid_v4, name: 'coco')
+
+      expect(new_updated_key['name']).to eq('coco')
     end
 
     it 'deletes a key' do
       new_key = client.create_key(add_docs_key_options)
       client.delete_key(new_key['key'])
 
-      expect(client.keys.filter { |k| k['key'] == new_key['key'] }).to be_empty
+      expect do
+        client.key(new_key['key'])
+      end.to raise_error(MeiliSearch::ApiError)
     end
   end
 end

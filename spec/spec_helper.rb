@@ -35,8 +35,7 @@ DEFAULT_SEARCH_RESPONSE_KEYS = [
   'hits',
   'offset',
   'limit',
-  'nbHits',
-  'exhaustiveNbHits',
+  'estimatedTotalHits',
   'processingTimeMs',
   'query'
 ].freeze
@@ -132,5 +131,5 @@ RSpec.configure do |config|
   config.include IndexesHelpers
   config.include TaskHelpers
   config.include ExceptionsHelpers
-  config.include DumpsHelpers
+  config.include KeysHelpers
 end

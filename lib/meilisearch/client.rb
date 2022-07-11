@@ -6,14 +6,20 @@ module MeiliSearch
 
     ### INDEXES
 
-    def raw_indexes
-      http_get('/indexes')
+    def raw_indexes(options = {})
+      body = Utils.transform_attributes(options.transform_keys(&:to_sym).slice(:limit, :offset))
+
+      http_get('/indexes', body)
     end
 
-    def indexes
-      raw_indexes.map do |index_hash|
+    def indexes(options = {})
+      response = raw_indexes(options)
+
+      response['results'].map! do |index_hash|
         index_object(index_hash['uid'], index_hash['primaryKey'])
       end
+
+      response
     end
 
     # Usage:
@@ -29,7 +35,7 @@ module MeiliSearch
     # Waits for the task to be achieved, be careful when using it.
     def create_index!(index_uid, options = {})
       task = create_index(index_uid, options)
-      wait_for_task(task['uid'])
+      wait_for_task(task['taskUid'])
     end
 
     def delete_index(index_uid)
@@ -52,12 +58,14 @@ module MeiliSearch
 
     ### KEYS
 
-    def keys
-      http_get '/keys'
+    def keys(limit: nil, offset: nil)
+      body = { limit: limit, offset: offset }.compact
+
+      http_get '/keys', body
     end
 
-    def key(key_uid)
-      http_get "/keys/#{key_uid}"
+    def key(uid_or_key)
+      http_get "/keys/#{uid_or_key}"
     end
 
     def create_key(key_options)
@@ -66,14 +74,15 @@ module MeiliSearch
       http_post '/keys', body
     end
 
-    def update_key(key_uid, key_options)
+    def update_key(uid_or_key, key_options)
       body = Utils.transform_attributes(key_options)
+      body = body.slice('description', 'name')
 
-      http_patch "/keys/#{key_uid}", body
+      http_patch "/keys/#{uid_or_key}", body
     end
 
-    def delete_key(key_uid)
-      http_delete "/keys/#{key_uid}"
+    def delete_key(uid_or_key)
+      http_delete "/keys/#{uid_or_key}"
     end
 
     ### HEALTH
@@ -105,15 +114,10 @@ module MeiliSearch
       http_post '/dumps'
     end
 
-    def dump_status(dump_uid)
-      http_get "/dumps/#{dump_uid}/status"
-    end
-    alias get_dump_status dump_status
-
     ### TASKS
 
-    def tasks
-      task_endpoint.task_list
+    def tasks(options = {})
+      task_endpoint.task_list(options)
     end
 
     def task(task_uid)

@@ -56,7 +56,7 @@ RSpec.describe MeiliSearch::Index do
 
     task = client.index('uid').update(primaryKey: 'new_primary_key')
     expect(task['type']).to eq('indexUpdate')
-    client.wait_for_task(task['uid'])
+    client.wait_for_task(task['taskUid'])
 
     index = client.fetch_index('uid')
     expect(index).to be_a(MeiliSearch::Index)
@@ -74,7 +74,7 @@ RSpec.describe MeiliSearch::Index do
 
     task = client.index('uid').update(primaryKey: 'new_primary_key')
     expect(task['type']).to eq('indexUpdate')
-    client.wait_for_task(task['uid'])
+    client.wait_for_task(task['taskUid'])
 
     index = client.fetch_index('uid')
     expect(index).to be_a(MeiliSearch::Index)
@@ -93,7 +93,7 @@ RSpec.describe MeiliSearch::Index do
 
     task = index.update(primaryKey: 'new_primary_key')
     expect(task['type']).to eq('indexUpdate')
-    achieved_task = client.wait_for_task(task['uid'])
+    achieved_task = client.wait_for_task(task['taskUid'])
 
     expect(achieved_task['status']).to eq('failed')
     expect(achieved_task['error']['code']).to eq('index_primary_key_already_exists')
@@ -131,7 +131,7 @@ RSpec.describe MeiliSearch::Index do
 
     task = client.index('uid').delete
     expect(task['type']).to eq('indexDeletion')
-    achieved_task = client.wait_for_task(task['uid'])
+    achieved_task = client.wait_for_task(task['taskUid'])
     expect(achieved_task['status']).to eq('succeeded')
     expect { client.fetch_index('uid') }.to raise_index_not_found_meilisearch_api_error
   end
@@ -141,7 +141,7 @@ RSpec.describe MeiliSearch::Index do
 
     task = client.index('uid').delete
     expect(task['type']).to eq('indexDeletion')
-    client.wait_for_task(task['uid'])
+    client.wait_for_task(task['taskUid'])
 
     index = client.index('uid')
     expect { index.fetch_primary_key }.to raise_index_not_found_meilisearch_api_error
@@ -163,7 +163,7 @@ RSpec.describe MeiliSearch::Index do
 
       task = client.index('uid').update(primary_key: 'new_primary_key')
       expect(task['type']).to eq('indexUpdate')
-      client.wait_for_task(task['uid'])
+      client.wait_for_task(task['taskUid'])
 
       index = client.fetch_index('uid')
       expect(index).to be_a(MeiliSearch::Index)

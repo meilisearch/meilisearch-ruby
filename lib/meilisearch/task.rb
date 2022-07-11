@@ -5,8 +5,13 @@ require 'timeout'
 
 module MeiliSearch
   class Task < HTTPRequest
-    def task_list
-      http_get '/tasks/'
+    ALLOWED_PARAMS = [:limit, :from, :index_uid, :type, :status].freeze
+
+    def task_list(options = {})
+      body = Utils.transform_attributes(options.transform_keys(&:to_sym).slice(*ALLOWED_PARAMS))
+      body = body.transform_values { |v| v.respond_to?(:join) ? v.join(',') : v }
+
+      http_get '/tasks/', body
     end
 
     def task(task_uid)
@@ -14,11 +19,11 @@ module MeiliSearch
     end
 
     def index_tasks(index_uid)
-      http_get "/indexes/#{index_uid}/tasks"
+      http_get '/tasks', { indexUid: [index_uid].flatten.join(',') }
     end
 
-    def index_task(index_uid, task_uid)
-      http_get "/indexes/#{index_uid}/tasks/#{task_uid}"
+    def index_task(task_uid)
+      http_get "/tasks/#{task_uid}"
     end
 
     def wait_for_task(task_uid, timeout_in_ms = 5000, interval_in_ms = 50)

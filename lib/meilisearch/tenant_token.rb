@@ -7,21 +7,21 @@ module MeiliSearch
       alg: 'HS256'
     }.freeze
 
-    def generate_tenant_token(search_rules, api_key: nil, expires_at: nil)
+    def generate_tenant_token(api_key_uid, search_rules, api_key: nil, expires_at: nil)
       signature = retrieve_valid_key!(api_key, @api_key)
       expiration = validate_expires_at!(expires_at)
       rules = validate_search_rules!(search_rules)
-      unsigned_data = build_payload(expiration, rules, signature)
+      unsigned_data = build_payload(expiration, rules, api_key_uid)
 
       combine(unsigned_data, to_base64(sign_data(signature, unsigned_data)))
     end
 
     private
 
-    def build_payload(expiration, rules, signature)
+    def build_payload(expiration, rules, api_key_uid)
       payload = {
         searchRules: rules,
-        apiKeyPrefix: signature[0..7],
+        apiKeyUid: api_key_uid,
         exp: expiration
       }
 

@@ -8,7 +8,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
         expect(task['type']).to eq('indexCreation')
 
-        client.wait_for_task(task['uid'])
+        client.wait_for_task(task['taskUid'])
         index = client.fetch_index('new_index')
 
         expect(index).to be_a(MeiliSearch::Index)
@@ -36,7 +36,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
         expect(task['type']).to eq('indexCreation')
 
-        client.wait_for_task(task['uid'])
+        client.wait_for_task(task['taskUid'])
         index = client.fetch_index('new_index')
 
         expect(index).to be_a(MeiliSearch::Index)
@@ -63,7 +63,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
         it 'creates an index' do
           task = client.create_index('new_index', primary_key: 'primary_key')
           expect(task['type']).to eq('indexCreation')
-          client.wait_for_task(task['uid'])
+          client.wait_for_task(task['taskUid'])
 
           index = client.fetch_index('new_index')
           expect(index).to be_a(MeiliSearch::Index)
@@ -83,7 +83,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
           expect(task['type']).to eq('indexCreation')
 
-          client.wait_for_task(task['uid'])
+          client.wait_for_task(task['taskUid'])
           index = client.fetch_index('new_index')
 
           expect(index).to be_a(MeiliSearch::Index)
@@ -120,7 +120,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     it 'returns MeiliSearch::Index objects' do
       client.create_index!('index')
 
-      index = client.indexes.first
+      index = client.indexes['results'].first
 
       expect(index).to be_a(MeiliSearch::Index)
     end
@@ -128,12 +128,24 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     it 'gets a list of indexes' do
       ['first_index', 'second_index', 'third_index'].each { |name| client.create_index!(name) }
 
-      indexes = client.indexes
+      indexes = client.indexes['results']
 
       expect(indexes).to be_a(Array)
       expect(indexes.length).to eq(3)
       uids = indexes.map(&:uid)
       expect(uids).to contain_exactly('first_index', 'second_index', 'third_index')
+    end
+
+    it 'paginates indexes list with limit and offset' do
+      ['first_index', 'second_index', 'third_index'].each { |name| client.create_index!(name) }
+
+      indexes = client.indexes(limit: 1, offset: 2)
+
+      expect(indexes['results']).to be_a(Array)
+      expect(indexes['total']).to eq(3)
+      expect(indexes['limit']).to eq(1)
+      expect(indexes['offset']).to eq(2)
+      expect(indexes['results'].map(&:uid)).to eq(['third_index'])
     end
   end
 
@@ -141,7 +153,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     it 'returns raw indexes' do
       client.create_index!('index')
 
-      response = client.raw_indexes.first
+      response = client.raw_indexes['results'].first
 
       expect(response).to be_a(Hash)
       expect(response['uid']).to eq('index')
@@ -150,7 +162,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     it 'gets a list of raw indexes' do
       ['first_index', 'second_index', 'third_index'].each { |name| client.create_index!(name) }
 
-      indexes = client.raw_indexes
+      indexes = client.raw_indexes['results']
 
       expect(indexes).to be_a(Array)
       expect(indexes.length).to eq(3)
@@ -212,7 +224,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
         expect(task['type']).to eq('indexDeletion')
 
-        achieved_task = client.wait_for_task(task['uid'])
+        achieved_task = client.wait_for_task(task['taskUid'])
 
         expect(achieved_task['status']).to eq('succeeded')
         expect { client.fetch_index('existing_index') }.to raise_index_not_found_meilisearch_api_error

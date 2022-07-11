@@ -24,7 +24,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
     expect(last_task.keys).to include(*succeeded_task_keys)
   end
 
-  it 'gets a task of the MeiliSearch instance' do
+  it 'gets a task of the Meilisearch instance' do
     task = client.task(0)
 
     expect(task).to be_a(Hash)
@@ -32,7 +32,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
     expect(task.keys).to include(*succeeded_task_keys)
   end
 
-  it 'gets all the tasks of the MeiliSearch instance' do
+  it 'gets tasks of the Meilisearch instance' do
     tasks = client.tasks
 
     expect(tasks['results']).to be_a(Array)
@@ -42,10 +42,28 @@ RSpec.describe 'MeiliSearch::Tasks' do
     expect(last_task.keys).to include(*succeeded_task_keys)
   end
 
+  it 'paginates tasks with limit/from/next' do
+    tasks = client.tasks(limit: 2)
+
+    expect(tasks['results'].count).to be <= 2
+    expect(tasks['from']).to be_a(Integer)
+    expect(tasks['next']).to be_a(Integer)
+  end
+
+  it 'filters tasks with index_uid/type/status' do
+    tasks = client.tasks(index_uid: ['a-cool-index-name'])
+
+    expect(tasks['results'].count).to eq(0)
+
+    tasks = client.tasks(index_uid: ['books'], type: ['documentAdditionOrUpdate'], status: ['succeeded'])
+
+    expect(tasks['results'].count).to be > 1
+  end
+
   describe '#index.wait_for_task' do
     it 'waits for task with default values' do
       task = index.add_documents(documents)
-      task = index.wait_for_task(task['uid'])
+      task = index.wait_for_task(task['taskUid'])
 
       expect(task).to be_a(Hash)
       expect(task['status']).not_to eq('enqueued')
@@ -54,7 +72,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
     it 'waits for task with default values after several updates' do
       5.times { index.add_documents(documents) }
       task = index.add_documents(documents)
-      status = index.wait_for_task(task['uid'])
+      status = index.wait_for_task(task['taskUid'])
 
       expect(status).to be_a(Hash)
       expect(status['status']).not_to eq('enqueued')
@@ -64,7 +82,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
       index.add_documents(documents)
       task = index.add_documents(documents)
       expect do
-        index.wait_for_task(task['uid'], 1)
+        index.wait_for_task(task['taskUid'], 1)
       end.to raise_error(MeiliSearch::TimeoutError)
     end
 
@@ -73,7 +91,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
       task = index.add_documents(documents)
       expect do
         Timeout.timeout(0.1) do
-          index.wait_for_task(task['uid'], 5000, 200)
+          index.wait_for_task(task['taskUid'], 5000, 200)
         end
       end.to raise_error(Timeout::Error)
     end
@@ -82,7 +100,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
   describe '#client.wait_for_task' do
     it 'waits for task with default values' do
       task = index.add_documents!(documents)
-      task = client.wait_for_task(task['uid'])
+      task = client.wait_for_task(task['taskUid'])
 
       expect(task).to be_a(Hash)
       expect(task['status']).not_to eq('enqueued')
@@ -91,7 +109,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
     it 'waits for task with default values after several updates' do
       5.times { index.add_documents(documents) }
       task = index.add_documents(documents)
-      status = client.wait_for_task(task['uid'])
+      status = client.wait_for_task(task['taskUid'])
 
       expect(status).to be_a(Hash)
       expect(status['status']).not_to eq('enqueued')
@@ -101,7 +119,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
       index.add_documents(documents)
       task = index.add_documents(documents)
       expect do
-        client.wait_for_task(task['uid'], 1)
+        client.wait_for_task(task['taskUid'], 1)
       end.to raise_error(MeiliSearch::TimeoutError)
     end
 
@@ -110,7 +128,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
       task = index.add_documents(documents)
       expect do
         Timeout.timeout(0.1) do
-          client.wait_for_task(task['uid'], 5000, 200)
+          client.wait_for_task(task['taskUid'], 5000, 200)
         end
       end.to raise_error(Timeout::Error)
     end
