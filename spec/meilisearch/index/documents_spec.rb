@@ -66,12 +66,12 @@ NDJSON
       end
 
       it 'adds CSV documents (as a array of documents)' do
-        documents = <<CSV
-"objectRef:number","title:string","comment:string"
-"1239","Pride and Prejudice","A great book"
-"4569","Le Petit Prince","A french book"
-"49","Harry Potter and the Half-Blood Prince","The best book"
-CSV
+        documents = <<~CSV
+          "objectRef:number","title:string","comment:string"
+          "1239","Pride and Prejudice","A great book"
+          "4569","Le Petit Prince","A french book"
+          "49","Harry Potter and the Half-Blood Prince","The best book"
+        CSV
         response = index.add_documents_csv(documents, 'objectRef')
 
         index.wait_for_task(response['taskUid'])
