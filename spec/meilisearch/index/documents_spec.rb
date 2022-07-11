@@ -117,6 +117,14 @@ CSV
         expect(task.keys).to eq(['objectId', 'title', 'comment'])
       end
 
+      it 'slices response fields' do
+        index.add_documents!(documents)
+
+        task = index.document(1, fields: ['title'])
+
+        expect(task.keys).to eq(['title'])
+      end
+
       it 'infers primary-key attribute' do
         index.add_documents!(documents)
         expect(index.fetch_primary_key).to eq('objectId')

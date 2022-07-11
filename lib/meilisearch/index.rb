@@ -54,9 +54,11 @@ module MeiliSearch
 
     ### DOCUMENTS
 
-    def document(document_id)
+    def document(document_id, fields: nil)
       encode_document = URI.encode_www_form_component(document_id)
-      http_get "/indexes/#{@uid}/documents/#{encode_document}"
+      body = { fields: fields&.join(',') }.compact
+
+      http_get("/indexes/#{@uid}/documents/#{encode_document}", body)
     end
     alias get_document document
     alias get_one_document document
