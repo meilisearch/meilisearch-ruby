@@ -120,7 +120,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     it 'returns MeiliSearch::Index objects' do
       client.create_index!('index')
 
-      index = client.indexes.first
+      index = client.indexes['results'].first
 
       expect(index).to be_a(MeiliSearch::Index)
     end
@@ -128,12 +128,24 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
     it 'gets a list of indexes' do
       ['first_index', 'second_index', 'third_index'].each { |name| client.create_index!(name) }
 
-      indexes = client.indexes
+      indexes = client.indexes['results']
 
       expect(indexes).to be_a(Array)
       expect(indexes.length).to eq(3)
       uids = indexes.map(&:uid)
       expect(uids).to contain_exactly('first_index', 'second_index', 'third_index')
+    end
+
+    it 'paginates indexes list with limit and offset' do
+      ['first_index', 'second_index', 'third_index'].each { |name| client.create_index!(name) }
+
+      indexes = client.indexes(limit: 1, offset: 2)
+
+      expect(indexes['results']).to be_a(Array)
+      expect(indexes['total']).to eq(3)
+      expect(indexes['limit']).to eq(1)
+      expect(indexes['offset']).to eq(2)
+      expect(indexes['results'].map(&:uid)).to eq(['third_index'])
     end
   end
 

@@ -54,15 +54,20 @@ module MeiliSearch
 
     ### DOCUMENTS
 
-    def document(document_id)
+    def document(document_id, fields: nil)
       encode_document = URI.encode_www_form_component(document_id)
-      http_get "/indexes/#{@uid}/documents/#{encode_document}"
+      body = { fields: fields&.join(',') }.compact
+
+      http_get("/indexes/#{@uid}/documents/#{encode_document}", body)
     end
     alias get_document document
     alias get_one_document document
 
     def documents(options = {})
-      http_get "/indexes/#{@uid}/documents", Utils.transform_attributes(options)
+      body = Utils.transform_attributes(options.transform_keys(&:to_sym).slice(:limit, :offset, :fields))
+      body = body.transform_values { |v| v.respond_to?(:join) ? v.join(',') : v }
+
+      http_get "/indexes/#{@uid}/documents", body
     end
     alias get_documents documents
 
