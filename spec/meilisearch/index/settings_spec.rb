@@ -13,6 +13,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   end
   let(:default_searchable_attributes) { ['*'] }
   let(:default_displayed_attributes) { ['*'] }
+  let(:default_pagination) { { maxTotalHits: 1000 } }
   let(:settings_keys) do
     [
       'rankingRules',
@@ -45,6 +46,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(settings['displayedAttributes']).to eq(default_displayed_attributes)
       expect(settings['stopWords']).to eq([])
       expect(settings['synonyms']).to eq({})
+      expect(settings['pagination'].transform_keys(&:to_sym)).to eq(default_pagination)
       expect(settings['filterableAttributes']).to eq([])
       expect(settings['sortableAttributes']).to eq([])
     end
@@ -679,5 +681,52 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     task = index.update_synonyms(synonyms)
 
     client.wait_for_task(task['taskUid'])
+  end
+
+  context 'On pagination sub-routes' do
+    let(:index) { client.index(uid) }
+    let(:pagination) { { maxTotalHits: 3141 } }
+
+    before { client.create_index!(uid) }
+
+    it 'gets default values of pagination' do
+      settings = index.pagination.transform_keys(&:to_sym)
+      expect(settings).to be_a(Hash)
+      expect(settings).to eq(default_pagination)
+    end
+
+    it 'updates pagination' do
+      task = index.update_pagination(pagination)
+      client.wait_for_task(task['taskUid'])
+      expect(task['type']).to eq('settingsUpdate')
+      expect(index.pagination.transform_keys(&:to_sym)).to eq(pagination)
+    end
+
+    it 'updates pagination at null' do
+      task = index.update_pagination(pagination)
+      expect(task['type']).to eq('settingsUpdate')
+      client.wait_for_task(task['taskUid'])
+
+      task = index.update_pagination(nil)
+
+      expect(task['type']).to eq('settingsUpdate')
+      client.wait_for_task(task['taskUid'])
+
+      expect(index.pagination.transform_keys(&:to_sym)).to eq(default_pagination)
+    end
+
+    it 'resets pagination' do
+      task = index.update_pagination(pagination)
+      expect(task['type']).to eq('settingsUpdate')
+      client.wait_for_task(task['taskUid'])
+
+      task = index.reset_pagination
+
+      expect(task['type']).to eq('settingsUpdate')
+      client.wait_for_task(task['taskUid'])
+
+      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
+      expect(index.pagination.transform_keys(&:to_sym)).to eq(default_pagination)
+    end
   end
 end
