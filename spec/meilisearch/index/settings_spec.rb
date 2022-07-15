@@ -691,7 +691,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'gets default values of pagination' do
       settings = index.pagination.transform_keys(&:to_sym)
-      expect(settings).to be_a(Hash)
+
       expect(settings).to eq(default_pagination)
     end
 
