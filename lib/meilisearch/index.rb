@@ -377,5 +377,21 @@ module MeiliSearch
     def reset_sortable_attributes
       http_delete "/indexes/#{@uid}/settings/sortable-attributes"
     end
+
+    ### SETTINGS - PAGINATION
+
+    def pagination
+      http_get("/indexes/#{@uid}/settings/pagination")
+    end
+    alias get_pagination pagination
+
+    def update_pagination(pagination)
+      http_patch "/indexes/#{@uid}/settings/pagination", pagination
+    end
+    alias pagination= update_sortable_attributes
+
+    def reset_pagination
+      http_delete "/indexes/#{@uid}/settings/pagination"
+    end
   end
 end
