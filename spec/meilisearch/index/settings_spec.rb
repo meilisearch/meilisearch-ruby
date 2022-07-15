@@ -714,15 +714,11 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'resets pagination' do
       task = index.update_pagination(pagination)
-      expect(task['type']).to eq('settingsUpdate')
       client.wait_for_task(task['taskUid'])
 
       task = index.reset_pagination
-
-      expect(task['type']).to eq('settingsUpdate')
       client.wait_for_task(task['taskUid'])
 
-      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
       expect(index.pagination.transform_keys(&:to_sym)).to eq(default_pagination)
     end
   end
