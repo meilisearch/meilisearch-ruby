@@ -722,4 +722,58 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.pagination.transform_keys(&:to_sym)).to eq(default_pagination)
     end
   end
+
+  context 'On typo tolerance' do
+    let(:index) { client.index(uid) }
+
+    let(:default_typo_tolerance) do
+      {
+        'enabled' => true,
+        'minWordSizeForTypos' =>
+         {
+           'oneTypo' => 5,
+           'twoTypos' => 9
+         },
+        'disableOnWords' => [],
+        'disableOnAttributes' => []
+      }
+    end
+
+    let(:new_typo_tolerance) do
+      {
+        'enabled' => true,
+        'minWordSizeForTypos' => {
+          'oneTypo' => 6,
+          'twoTypos' => 10
+        },
+        'disableOnWords' => [],
+        'disableOnAttributes' => ['title']
+      }
+    end
+
+    before { client.create_index!(uid) }
+
+    it 'gets default typo tolerance settings' do
+      settings = index.typo_tolerance
+
+      expect(settings).to eq(default_typo_tolerance)
+    end
+
+    it 'updates typo tolerance settings' do
+      update_task = index.update_typo_tolerance(new_typo_tolerance)
+      client.wait_for_task(update_task['taskUid'])
+
+      expect(index.typo_tolerance).to eq(new_typo_tolerance)
+    end
+
+    it 'resets typo tolerance settings' do
+      update_task = index.update_typo_tolerance(new_typo_tolerance)
+      client.wait_for_task(update_task['taskUid'])
+
+      reset_task = index.reset_typo_tolerance
+      client.wait_for_task(reset_task['taskUid'])
+
+      expect(index.typo_tolerance).to eq(default_typo_tolerance)
+    end
+  end
 end

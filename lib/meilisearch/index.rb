@@ -396,5 +396,20 @@ module MeiliSearch
     def reset_pagination
       http_delete "/indexes/#{@uid}/settings/pagination"
     end
+
+    def typo_tolerance
+      http_get("/indexes/#{@uid}/settings/typo-tolerance")
+    end
+    alias get_typo_tolerance typo_tolerance
+
+    def update_typo_tolerance(typo_tolerance_attributes)
+      attributes = Utils.transform_attributes(typo_tolerance_attributes)
+      http_patch("/indexes/#{@uid}/settings/typo-tolerance", attributes)
+    end
+    alias typo_tolerance= update_typo_tolerance
+
+    def reset_typo_tolerance
+      http_delete("/indexes/#{@uid}/settings/typo-tolerance")
+    end
   end
 end
