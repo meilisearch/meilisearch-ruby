@@ -26,6 +26,17 @@ RSpec.describe 'MeiliSearch::Index - Basic search' do
     expect(response['hits'].first).not_to have_key('_formatted')
   end
 
+  it 'has nbHits to maintain backward compatibility' do
+    response = index.search('')
+
+    expect(response).to be_a(Hash)
+    expect(response).to have_key('nbHits')
+    expect(response['nbHits']).to eq(response['estimatedTotalHits'])
+    expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
+    expect(response['hits'].count).to eq(documents.count)
+    expect(response['hits'].first).not_to have_key('_formatted')
+  end
+
   it 'does a basic search with an empty query and a custom ranking rule' do
     response = index.update_ranking_rules([
                                             'words',

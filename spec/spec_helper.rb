@@ -37,7 +37,8 @@ DEFAULT_SEARCH_RESPONSE_KEYS = [
   'limit',
   'estimatedTotalHits',
   'processingTimeMs',
-  'query'
+  'query',
+  'nbHits'
 ].freeze
 
 Dir["#{Dir.pwd}/spec/support/**/*.rb"].sort.each { |file| require file }
