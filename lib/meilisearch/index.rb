@@ -411,5 +411,20 @@ module MeiliSearch
     def reset_typo_tolerance
       http_delete("/indexes/#{@uid}/settings/typo-tolerance")
     end
+
+    def faceting
+      http_get("/indexes/#{@uid}/settings/faceting")
+    end
+    alias get_faceting faceting
+
+    def update_faceting(faceting_attributes)
+      attributes = Utils.transform_attributes(faceting_attributes)
+      http_patch("/indexes/#{@uid}/settings/faceting", attributes)
+    end
+    alias faceting= update_faceting
+
+    def reset_faceting
+      http_delete("/indexes/#{@uid}/settings/faceting")
+    end
   end
 end

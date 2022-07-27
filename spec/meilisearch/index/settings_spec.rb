@@ -776,4 +776,45 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.typo_tolerance).to eq(default_typo_tolerance)
     end
   end
+
+  context 'On faceting' do
+    let(:index) { client.index(uid) }
+    let(:faceting) { { maxValuesPerFacet: 333 } }
+    let(:default_faceting) { { maxValuesPerFacet: 100 } }
+
+    before { client.create_index!(uid) }
+
+    it 'gets default values of faceting' do
+      settings = index.faceting.transform_keys(&:to_sym)
+
+      expect(settings).to eq(default_faceting)
+    end
+
+    it 'updates faceting' do
+      update_task = index.update_faceting(faceting)
+      client.wait_for_task(update_task['taskUid'])
+
+      expect(index.faceting.transform_keys(&:to_sym)).to eq(faceting)
+    end
+
+    it 'updates faceting at null' do
+      update_task = index.update_faceting(faceting)
+      client.wait_for_task(update_task['taskUid'])
+
+      update_task = index.update_faceting(nil)
+      client.wait_for_task(update_task['taskUid'])
+
+      expect(index.faceting.transform_keys(&:to_sym)).to eq(default_faceting)
+    end
+
+    it 'resets faceting' do
+      update_task = index.update_faceting(faceting)
+      client.wait_for_task(update_task['taskUid'])
+
+      reset_task = index.reset_faceting
+      client.wait_for_task(reset_task['taskUid'])
+
+      expect(index.faceting.transform_keys(&:to_sym)).to eq(default_faceting)
+    end
+  end
 end
