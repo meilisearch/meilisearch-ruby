@@ -12,13 +12,21 @@ get_all_tasks_paginating_1: |-
 get_all_tasks_paginating_2: |-
   client.tasks(limit: 2, from: 8)
 get_pagination_settings_1: |-
+  index('books').pagination
 update_pagination_settings_1: |-
+  index('books').update_pagination({ max_total_hits: 100 })
 reset_pagination_settings_1: |-
+  index('books').reset_pagination
 get_faceting_settings_1: |-
+  index('books').faceting
 update_faceting_settings_1: |-
+  index('books').update_faceting({ max_values_per_facet: 2 })
 reset_faceting_settings_1: |-
+  index('books').reset_faceting
 settings_guide_faceting_1: |-
+  index('books').update_faceting({ max_values_per_facet: 5 })
 settings_guide_pagination_1: |-
+  index('books').update_pagination({ max_total_hits: 50 })
 get_one_index_1: |-
   client.fetch_index('movies')
 list_all_indexes_1: |-
