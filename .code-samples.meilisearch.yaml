@@ -543,3 +543,35 @@ landing_getting_started_1: |-
     { id: 5, title: 'Moana' },
     { id: 6, title: 'Philadelphia' }
   ])
+get_typo_tolerance_1: |-
+  index('books').typo_tolerance
+update_typo_tolerance_1: |-
+  index('books').update_typo_tolerance({
+    min_word_size_for_typos: {
+      one_typo: 4,
+      two_typos: 10
+    },
+    disable_on_attributes: ['title']
+  })
+reset_typo_tolerance_1: |-
+  index('books').reset_typo_tolerance
+typo_tolerance_guide_1: |-
+  index('books').update_typo_tolerance({ enabled: false })
+typo_tolerance_guide_2: |-
+  index('books').update_typo_tolerance({ disable_on_attributes: ['title'] })
+typo_tolerance_guide_3: |-
+  index('books').update_typo_tolerance({ disable_on_words: ['shrek'] })
+typo_tolerance_guide_4: |-
+  index('books').update_typo_tolerance({
+    min_word_size_for_typos: {
+      one_typo: 4,
+      two_typos: 10
+    }
+  })
+settings_guide_typo_tolerance_1: |-
+  index('books').update_typo_tolerance({
+    min_word_size_for_typos: {
+      two_typos: 12
+    },
+    disable_on_attributes: ['title']
+  })
