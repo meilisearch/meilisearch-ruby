@@ -12,13 +12,21 @@ get_all_tasks_paginating_1: |-
 get_all_tasks_paginating_2: |-
   client.tasks(limit: 2, from: 8)
 get_pagination_settings_1: |-
+  index('books').pagination
 update_pagination_settings_1: |-
+  index('books').update_pagination({ max_total_hits: 100 })
 reset_pagination_settings_1: |-
+  index('books').reset_pagination
 get_faceting_settings_1: |-
+  index('books').faceting
 update_faceting_settings_1: |-
+  index('books').update_faceting({ max_values_per_facet: 2 })
 reset_faceting_settings_1: |-
+  index('books').reset_faceting
 settings_guide_faceting_1: |-
+  index('books').update_faceting({ max_values_per_facet: 5 })
 settings_guide_pagination_1: |-
+  index('books').update_pagination({ max_total_hits: 50 })
 get_one_index_1: |-
   client.fetch_index('movies')
 list_all_indexes_1: |-
@@ -535,3 +543,35 @@ landing_getting_started_1: |-
     { id: 5, title: 'Moana' },
     { id: 6, title: 'Philadelphia' }
   ])
+get_typo_tolerance_1: |-
+  index('books').typo_tolerance
+update_typo_tolerance_1: |-
+  index('books').update_typo_tolerance({
+    min_word_size_for_typos: {
+      one_typo: 4,
+      two_typos: 10
+    },
+    disable_on_attributes: ['title']
+  })
+reset_typo_tolerance_1: |-
+  index('books').reset_typo_tolerance
+typo_tolerance_guide_1: |-
+  index('books').update_typo_tolerance({ enabled: false })
+typo_tolerance_guide_2: |-
+  index('books').update_typo_tolerance({ disable_on_attributes: ['title'] })
+typo_tolerance_guide_3: |-
+  index('books').update_typo_tolerance({ disable_on_words: ['shrek'] })
+typo_tolerance_guide_4: |-
+  index('books').update_typo_tolerance({
+    min_word_size_for_typos: {
+      one_typo: 4,
+      two_typos: 10
+    }
+  })
+settings_guide_typo_tolerance_1: |-
+  index('books').update_typo_tolerance({
+    min_word_size_for_typos: {
+      two_typos: 12
+    },
+    disable_on_attributes: ['title']
+  })
