@@ -90,7 +90,10 @@ module MeiliSearch
       {
         'Content-Type' => 'application/json',
         'Authorization' => ("Bearer #{@api_key}" unless @api_key.nil?),
-        'User-Agent' => MeiliSearch.qualified_version
+        'User-Agent' => [
+          @options.fetch(:client_agents, []),
+          MeiliSearch.qualified_version
+        ].flatten.join(';')
       }.compact
     end
 

@@ -126,6 +126,34 @@ RSpec.describe MeiliSearch::Index do
     index.fetch_info
   end
 
+  it 'supports client_agents' do
+    custom_agent = 'Meilisearch Rails (v0.0.1)'
+    options = { timeout: 2, max_retries: 1, client_agents: [custom_agent] }
+    expected_headers = {
+      'Authorization' => "Bearer #{MASTER_KEY}",
+      'User-Agent' => "#{custom_agent};#{MeiliSearch.qualified_version}"
+    }
+
+    new_client = MeiliSearch::Client.new(URL, MASTER_KEY, options)
+    new_client.create_index!('options')
+    index = new_client.fetch_index('options')
+    expect(index.options).to eq(options.merge({ convert_body?: true }))
+
+    expect(MeiliSearch::Index).to receive(:get).with(
+      "#{URL}/indexes/options",
+      {
+        headers: expected_headers,
+        body: 'null',
+        query: {},
+        max_retries: 1,
+        timeout: 2
+      }
+    ).and_return(double(success?: true,
+                        parsed_response: { 'createdAt' => '2021-10-16T14:57:35Z',
+                                           'updatedAt' => '2021-10-16T14:57:35Z' }))
+    index.fetch_info
+  end
+
   it 'deletes index' do
     client.create_index!('uid')
 
