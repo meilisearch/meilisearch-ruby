@@ -4,6 +4,7 @@
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
 getting_started_typo_tolerance: |-
+   client.index('movies').update_typo_tolerance({ min_word_size_for_typos: { one_typo: 4 } })
 
 get_all_tasks_filtering_1: |-
   client.index('movies').tasks
