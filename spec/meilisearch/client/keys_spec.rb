@@ -31,6 +31,12 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
       expect(new_key['description']).to eq('A new key to add docs')
     end
 
+    it 'creates a key with wildcarded action' do
+      new_key = client.create_key(add_docs_key_options.merge(actions: ['documents.*']))
+
+      expect(new_key['actions']).to eq(['documents.*'])
+    end
+
     it 'creates a key with setting uid' do
       new_key = client.create_key(add_docs_key_options.merge(uid: uuid_v4))
 
