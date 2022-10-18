@@ -71,15 +71,15 @@ module MeiliSearch
     end
     alias get_documents documents
 
-    def add_documents(documents, primary_key = nil)
+    def add_documents(documents, primary_key = nil, wait: true)
       documents = [documents] if documents.is_a?(Hash)
       http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
     end
     alias replace_documents add_documents
     alias add_or_replace_documents add_documents
 
-    def add_documents!(documents, primary_key = nil)
-      task = add_documents(documents, primary_key)
+    def add_documents(documents, primary_key = nil, wait_for_completion: true)
+      task = add_documents(documents, primary_key, wait: true)
       wait_for_task(task['taskUid'])
     end
     alias replace_documents! add_documents!
@@ -121,7 +121,7 @@ module MeiliSearch
     def add_documents_in_batches(documents, batch_size = 1000, primary_key = nil)
       tasks = []
       documents.each_slice(batch_size) do |batch|
-        tasks.append(add_documents(batch, primary_key))
+        tasks.append(add_documents(batch, primary_key, wait: true))
       end
       tasks
     end
