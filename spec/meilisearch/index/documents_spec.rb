@@ -141,7 +141,7 @@ NDJSON
 
       it 'adds only one document to index (as an hash of one document)' do
         new_doc = { objectId: 30, title: 'Hamlet' }
-        client.create_index!('newIndex')
+        client.create_index('newIndex', wait_for_completion: true)
         new_index = client.index('newIndex')
         expect do
           new_index.add_documents!(new_doc)
@@ -152,7 +152,7 @@ NDJSON
 
       it 'adds only one document synchronously to index (as an hash of one document)' do
         new_doc = { objectId: 30, title: 'Hamlet' }
-        client.create_index!('newIndex')
+        client.create_index('newIndex', wait_for_completion: true)
         new_index = client.index('newIndex')
         expect do
           task = new_index.add_documents!(new_doc)
