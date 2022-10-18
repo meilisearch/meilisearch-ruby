@@ -89,7 +89,7 @@ RSpec.describe MeiliSearch::Index do
 
   it 'returns a failing task if primary-key is already defined' do
     index = client.index('uid')
-    index.add_documents!({ id: 1, title: 'My Title' })
+    index.add_documents({ id: 1, title: 'My Title' }, wait_for_completion: true)
 
     task = index.update(primaryKey: 'new_primary_key')
     expect(task['type']).to eq('indexUpdate')
