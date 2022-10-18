@@ -15,7 +15,7 @@ RSpec.shared_context 'search books with genre' do
   end
 
   before do
-    response = index.add_documents(documents)
+    response = index.add_documents(documents, wait: true)
     index.wait_for_task(response['taskUid'])
   end
 end
@@ -90,7 +90,7 @@ RSpec.shared_context 'search books with author, genre, year' do
   end
 
   before do
-    response = index.add_documents(documents)
+    response = index.add_documents(documents, wait: true)
     index.wait_for_task(response['taskUid'])
   end
 end
@@ -155,7 +155,7 @@ RSpec.shared_context 'search books with nested fields' do
   end
 
   before do
-    response = index.add_documents(documents)
+    response = index.add_documents(documents, wait: true)
     index.wait_for_task(response['taskUid'])
   end
 end
