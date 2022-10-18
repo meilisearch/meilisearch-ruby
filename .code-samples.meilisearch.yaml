@@ -57,7 +57,7 @@ primary_field_guide_add_document_primary_key: |-
       genres: ['comedy', 'humor'],
       price: 5.00
     }
-  ], 'reference_number')
+  ], 'reference_number', wait: true)
 add_or_replace_documents_1: |-
   client.index('movies').add_documents([
     {
@@ -67,7 +67,7 @@ add_or_replace_documents_1: |-
       overview: 'A boy is given the ability to become an adult superhero in times of need with a single magic word.',
       release_date: '2019-03-23'
     }
-  ])
+  ], wait: true)
 add_or_update_documents_1: |-
   client.index('movies').update_documents([
     {
@@ -335,12 +335,12 @@ add_movies_json_1: |-
 
   movies_json = File.read('movies.json')
   movies = JSON.parse(movies_json)
-  client.index('movies').add_documents(movies)
+  client.index('movies').add_documents(movies, wait: true)
 documents_guide_add_movie_1: |-
   client.index('movies').add_documents([{
     "movie_id": "123sq178",
     "title": "Amelie Poulain"
-  }])
+  }], wait: true)
 getting_started_add_documents_md: |-
   ```bash
   $ bundle add meilisearch
@@ -355,7 +355,7 @@ getting_started_add_documents_md: |-
   movies_json = File.read('movies.json')
   movies = JSON.parse(movies_json)
 
-  client.index('movies').add_documents(movies)
+  client.index('movies').add_documents(movies, wait: true)
   ```
 
   [About this SDK](https://www.github.com/meilisearch/meilisearch-ruby)
@@ -518,7 +518,7 @@ getting_started_add_meteorites: |-
   file = File.read('meteorites.json')
   json = JSON.parse(file)
 
-  client.index('meteorites').add_documents(json)
+  client.index('meteorites').add_documents(json, wait: true)
 getting_started_configure_settings: |-
   client.index('meteorites').update_settings({
     filterable_attributes: ['mass', '_geo'],
@@ -545,7 +545,7 @@ landing_getting_started_1: |-
     { id: 4, title: 'Mad Max: Fury Road' },
     { id: 5, title: 'Moana' },
     { id: 6, title: 'Philadelphia' }
-  ])
+  ], wait: true)
 get_typo_tolerance_1: |-
   index('books').typo_tolerance
 update_typo_tolerance_1: |-
