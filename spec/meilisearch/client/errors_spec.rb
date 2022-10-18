@@ -18,7 +18,7 @@ RSpec.describe 'MeiliSearch::Client - Errors' do
       allow(index.class).to receive(:post).and_raise(Errno::EPIPE)
 
       expect do
-        index.add_documents([{ id: 1, text: 'my_text' }])
+        index.add_documents([{ id: 1, text: 'my_text' }], wait: true)
       end.to raise_error(MeiliSearch::CommunicationError)
     end
   end
