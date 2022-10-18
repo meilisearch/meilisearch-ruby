@@ -18,7 +18,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
 
     describe 'adding documents' do
       it 'adds documents (as a array of documents)' do
-        task = index.add_documents(documents, wait: true)
+        task = index.add_documents(documents)
 
         expect(task['type']).to eq('documentAdditionOrUpdate')
         client.wait_for_task(task['taskUid'])
@@ -30,7 +30,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
           { object_id: 123, my_title: 'Pride and Prejudice', 'my-comment': 'A great book' }
         ]
 
-        task = index.add_documents(docs, wait: true)
+        task = index.add_documents(docs)
         client.wait_for_task(task['taskUid'])
 
         expect(index.documents['results'].first.keys).to eq(docs.first.keys.map(&:to_s))
@@ -90,7 +90,7 @@ NDJSON
       end
 
       it 'adds documents synchronously (as an array of documents)' do
-        task = index.add_documents(documents, wait_for_completion: true)
+        task = index.add_documents(documents, wait: true)
 
         expect(task).to have_key('status')
         expect(task['status']).not_to eql('enqueued')
@@ -112,13 +112,13 @@ NDJSON
       end
 
       it 'infers order of fields' do
-        index.add_documents(documents, wait_for_completion: true)
+        index.add_documents(documents, wait: true)
         task = index.document(1)
         expect(task.keys).to eq(['objectId', 'title', 'comment'])
       end
 
       it 'slices response fields' do
-        index.add_documents(documents, wait_for_completion: true)
+        index.add_documents(documents, wait: true)
 
         task = index.document(1, fields: ['title'])
 
@@ -126,13 +126,13 @@ NDJSON
       end
 
       it 'infers primary-key attribute' do
-        index.add_documents(documents, wait_for_completion: true)
+        index.add_documents(documents, wait: true)
         expect(index.fetch_primary_key).to eq('objectId')
       end
 
       it 'create the index during document addition' do
         new_index = client.index('newIndex')
-        task = new_index.add_documents(documents, wait: true)
+        task = new_index.add_documents(documents)
 
         new_index.wait_for_task(task['taskUid'])
         expect(client.index('newIndex').fetch_primary_key).to eq('objectId')
@@ -141,10 +141,10 @@ NDJSON
 
       it 'adds only one document to index (as an hash of one document)' do
         new_doc = { objectId: 30, title: 'Hamlet' }
-        client.create_index('newIndex', wait_for_completion: true)
+        client.create_index('newIndex', wait: true)
         new_index = client.index('newIndex')
         expect do
-          new_index.add_documents(new_doc, wait_for_completion: true)
+          new_index.add_documents(new_doc, wait: true)
 
           expect(new_index.document(30)['title']).to eq('Hamlet')
         end.to(change { new_index.documents['results'].length }.by(1))
@@ -152,10 +152,10 @@ NDJSON
 
       it 'adds only one document synchronously to index (as an hash of one document)' do
         new_doc = { objectId: 30, title: 'Hamlet' }
-        client.create_index('newIndex', wait_for_completion: true)
+        client.create_index('newIndex', wait: true)
         new_index = client.index('newIndex')
         expect do
-          task = new_index.add_documents(new_doc, wait_for_completion: true)
+          task = new_index.add_documents(new_doc, wait: true)
 
           expect(task).to have_key('status')
           expect(task['status']).to eq('succeeded')
@@ -164,22 +164,22 @@ NDJSON
       end
 
       it 'fails to add document with bad primary-key format' do
-        index.add_documents(documents, wait_for_completion: true)
-        task = index.add_documents(objectId: 'toto et titi', title: 'Unknown', wait: true)
+        index.add_documents(documents, wait: true)
+        task = index.add_documents(objectId: 'toto et titi', title: 'Unknown')
         client.wait_for_task(task['taskUid'])
         expect(index.task(task['taskUid'])['status']).to eq('failed')
       end
 
       it 'fails to add document with no primary-key' do
-        index.add_documents(documents, wait_for_completion: true)
-        task = index.add_documents(id: 0, title: 'Unknown', wait: true)
+        index.add_documents(documents, wait: true)
+        task = index.add_documents(id: 0, title: 'Unknown')
         client.wait_for_task(task['taskUid'])
         expect(index.task(task['taskUid'])['status']).to eq('failed')
       end
     end
 
     describe 'accessing documents' do
-      before { index.add_documents(documents, wait_for_completion: true) }
+      before { index.add_documents(documents, wait: true) }
 
       it 'gets one document from its primary-key' do
         task = index.document(123)
@@ -214,7 +214,7 @@ NDJSON
     end
 
     describe 'updating documents' do
-      before { index.add_documents(documents, wait_for_completion: true) }
+      before { index.add_documents(documents, wait: true) }
 
       it 'updates documents in index (as an array of documents)' do
         id1 = 123
@@ -333,7 +333,7 @@ NDJSON
     end
 
     describe 'deleting documents' do
-      before { index.add_documents(documents, wait_for_completion: true) }
+      before { index.add_documents(documents, wait: true) }
 
       it 'deletes one document from index' do
         id = 456
@@ -463,14 +463,14 @@ NDJSON
     end
 
     it 'adds documents and the primary-key' do
-      task = index.add_documents(documents, 'unique', wait: true)
+      task = index.add_documents(documents, 'unique')
       expect(task).to be_a(Hash)
       client.wait_for_task(task['taskUid'])
       expect(index.fetch_primary_key).to eq('unique')
     end
 
     it 'does not take into account the new primary key' do
-      index.add_documents(documents, 'unique', wait_for_completion: true)
+      index.add_documents(documents, 'unique', wait: true)
       task = index.update_documents({
                                       unique: 3,
                                       id: 1,
@@ -504,7 +504,7 @@ NDJSON
     end
 
     it 'does not add the primary key and the documents either' do
-      task = index.add_documents(documents, 'title', wait: true)
+      task = index.add_documents(documents, 'title')
       client.wait_for_task(task['taskUid'])
       expect(index.fetch_primary_key).to be_nil
       expect(index.task(task['taskUid'])['status']).to eq('failed')
@@ -518,7 +518,7 @@ NDJSON
     end
 
     it 'Impossible to push docs if the pk is missing' do
-      task = index.add_documents(documents, wait_for_completion: true)
+      task = index.add_documents(documents, wait: true)
       update = index.task(task['uid'])
       expect(update['status']).to eq('failed')
       expect(update['error']['code']).to eq('primary_key_inference_failed')
@@ -531,7 +531,7 @@ NDJSON
     end
 
     it 'adds the documents anyway' do
-      task = index.add_documents(documents, 'unique', wait: true)
+      task = index.add_documents(documents, 'unique')
       expect(task).to be_a(Hash)
       client.wait_for_task(task['taskUid'])
       expect(index.fetch_primary_key).to eq('unique')
