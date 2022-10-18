@@ -624,7 +624,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     let(:index) { client.index(random_uid) }
 
     it 'does not add document when there is no primary-key' do
-      task = index.add_documents(title: 'Test')
+      task = index.add_documents(title: 'Test', wait: true)
       task = client.wait_for_task(task['taskUid'])
 
       expect(task.keys).to include('error')
@@ -632,7 +632,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'adds documents when there is a primary-key' do
-      task = index.add_documents(objectId: 1, title: 'Test')
+      task = index.add_documents(objectId: 1, title: 'Test', wait: true)
 
       client.wait_for_task(task['taskUid'])
       expect(index.documents['results'].count).to eq(1)
