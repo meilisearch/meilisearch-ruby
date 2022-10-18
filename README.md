@@ -101,7 +101,7 @@ documents = [
   { id: 6, title: 'Philadelphia', genres: ['Drama'] },
 ]
 # If the index 'movies' does not exist, Meilisearch creates it when you first add the documents.
-index.add_documents(documents, wait: true) # => { "uid": 0 }
+index.add_documents(documents) # => { "uid": 0 }
 ```
 
 With the `uid`, you can check the status (`enqueued`, `processing`, `succeeded` or `failed`) of your documents addition using the [task](https://docs.meilisearch.com/reference/api/tasks.html#get-task).
