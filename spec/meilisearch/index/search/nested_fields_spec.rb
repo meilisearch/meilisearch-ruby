@@ -13,7 +13,7 @@ RSpec.describe 'MeiliSearch::Index - nested fields search' do
 
   it 'searches within index with searchableAttributes setting' do
     wait_for_it index.update_searchable_attributes(['title', 'info.comment'])
-    wait_for_it index.add_documents(documents, wait: true)
+    wait_for_it index.add_documents(documents)
 
     response = index.search('An awesome')
 
@@ -25,7 +25,7 @@ RSpec.describe 'MeiliSearch::Index - nested fields search' do
   it 'searches within index with searchableAttributes and sortableAttributes settings' do
     wait_for_it index.update_searchable_attributes(['title', 'info.comment'])
     wait_for_it index.update_sortable_attributes(['info.reviewNb'])
-    wait_for_it index.add_documents(documents, wait: true)
+    wait_for_it index.add_documents(documents)
 
     response = index.search('An awesome')
 
