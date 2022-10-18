@@ -5,7 +5,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
 
   let(:enqueued_task_keys) { ['uid', 'indexUid', 'status', 'type', 'enqueuedAt'] }
   let(:succeeded_task_keys) { [*enqueued_task_keys, 'details', 'duration', 'startedAt', 'finishedAt'] }
-  let!(:doc_addition_task) { index.add_documents(documents, wait_for_completion: true) }
+  let!(:doc_addition_task) { index.add_documents(documents, wait: true) }
   let(:task_uid) { doc_addition_task['uid'] }
 
   it 'gets a task of an index' do
@@ -62,7 +62,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
 
   describe '#index.wait_for_task' do
     it 'waits for task with default values' do
-      task = index.add_documents(documents, wait: true)
+      task = index.add_documents(documents)
       task = index.wait_for_task(task['taskUid'])
 
       expect(task).to be_a(Hash)
@@ -70,8 +70,8 @@ RSpec.describe 'MeiliSearch::Tasks' do
     end
 
     it 'waits for task with default values after several updates' do
-      5.times { index.add_documents(documents, wait: true) }
-      task = index.add_documents(documents, wait: true)
+      5.times { index.add_documents(documents) }
+      task = index.add_documents(documents)
       status = index.wait_for_task(task['taskUid'])
 
       expect(status).to be_a(Hash)
@@ -79,16 +79,16 @@ RSpec.describe 'MeiliSearch::Tasks' do
     end
 
     it 'waits for task with custom timeout_in_ms and raises MeiliSearchTimeoutError' do
-      index.add_documents(documents, wait: true)
-      task = index.add_documents(documents, wait: true)
+      index.add_documents(documents)
+      task = index.add_documents(documents)
       expect do
         index.wait_for_task(task['taskUid'], 1)
       end.to raise_error(MeiliSearch::TimeoutError)
     end
 
     it 'waits for task with custom interval_in_ms and raises Timeout::Error' do
-      index.add_documents(documents, wait: true)
-      task = index.add_documents(documents, wait: true)
+      index.add_documents(documents)
+      task = index.add_documents(documents)
       expect do
         Timeout.timeout(0.1) do
           index.wait_for_task(task['taskUid'], 5000, 200)
@@ -99,7 +99,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
 
   describe '#client.wait_for_task' do
     it 'waits for task with default values' do
-      task = index.add_documents(documents, wait_for_completion: true)
+      task = index.add_documents(documents, wait: true)
       task = client.wait_for_task(task['taskUid'])
 
       expect(task).to be_a(Hash)
@@ -107,8 +107,8 @@ RSpec.describe 'MeiliSearch::Tasks' do
     end
 
     it 'waits for task with default values after several updates' do
-      5.times { index.add_documents(documents, wait: true) }
-      task = index.add_documents(documents, wait: true)
+      5.times { index.add_documents(documents) }
+      task = index.add_documents(documents)
       status = client.wait_for_task(task['taskUid'])
 
       expect(status).to be_a(Hash)
@@ -116,16 +116,16 @@ RSpec.describe 'MeiliSearch::Tasks' do
     end
 
     it 'waits for task with custom timeout_in_ms and raises MeiliSearchTimeoutError' do
-      index.add_documents(documents, wait: true)
-      task = index.add_documents(documents, wait: true)
+      index.add_documents(documents)
+      task = index.add_documents(documents)
       expect do
         client.wait_for_task(task['taskUid'], 1)
       end.to raise_error(MeiliSearch::TimeoutError)
     end
 
     it 'waits for task with custom interval_in_ms and raises Timeout::Error' do
-      index.add_documents(documents, wait: true)
-      task = index.add_documents(documents, wait: true)
+      index.add_documents(documents)
+      task = index.add_documents(documents)
       expect do
         Timeout.timeout(0.1) do
           client.wait_for_task(task['taskUid'], 5000, 200)
