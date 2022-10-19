@@ -191,8 +191,11 @@ module MeiliSearch
     ### SEARCH
 
     def search(query, options = {})
-      parsed_options = Utils.transform_attributes({ q: query.to_s }.merge(options.compact))
+      attributes = { q: query.to_s }.merge(options.compact)
 
+      Utils.warn_on_non_conforming_attribute_names(attributes)
+
+      parsed_options = Utils.transform_attributes(attributes)
       response = http_post "/indexes/#{@uid}/search", parsed_options
       response['nbHits'] ||= response['estimatedTotalHits']
 
