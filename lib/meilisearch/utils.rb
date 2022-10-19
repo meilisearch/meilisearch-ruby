@@ -52,6 +52,20 @@ module MeiliSearch
       raise e.class, message_builder(e.message, method_name)
     end
 
+    def self.warn_on_non_conforming_attribute_names(body)
+      non_snake_case = body.keys.grep_v(/^[a-z0-9_]+$/)
+
+      return if non_snake_case.empty?
+
+      message = <<~MSG
+        Attributes will be expected to be snake_case in future versions of MeiliSearch.
+
+        Non-conforming attributes: #{non_snake_case.join(', ')}
+      MSG
+
+      warn(message)
+    end
+
     private_class_method :parse, :message_builder
   end
 end
