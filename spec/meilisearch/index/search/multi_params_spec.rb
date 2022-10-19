@@ -77,22 +77,4 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
     expect(response['facetDistribution']['genre']['adventure']).to eq(1)
     expect(response['facetDistribution']['genre']['fantasy']).to eq(1)
   end
-
-  context 'with snake_case options' do
-    it 'does a custom search with attributes in a unusual formatting' do
-      response = index.search(
-        'prince',
-        {
-          aTTributes_TO_Crop: ['title'],
-          crop_length: 2,
-          filter: 'genre = adventure',
-          attributes_to_highlight: ['title']
-        }
-      )
-
-      expect(response['hits'].count).to be(1)
-      expect(response['hits'].first).to have_key('_formatted')
-      expect(response['hits'].first['_formatted']['title']).to eq('…Petit <em>Prince</em>')
-    end
-  end
 end
