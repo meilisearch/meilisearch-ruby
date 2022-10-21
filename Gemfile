@@ -17,5 +17,5 @@ group :development, :test do
 end
 
 group :development do
-  gem 'rubocop', '~> 1.36.0', require: false
+  gem 'rubocop', '~> 1.37.0', require: false
 end
