@@ -74,7 +74,7 @@ module MeiliSearch
     def add_documents(documents, primary_key = nil)
       documents = [documents] if documents.is_a?(Hash)
       http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
-      ask = add_documents(documents, primary_key)
+      task = add_documents(documents, primary_key)
       wait_for_task(task['taskUid'])
     end
     alias replace_documents add_documents
