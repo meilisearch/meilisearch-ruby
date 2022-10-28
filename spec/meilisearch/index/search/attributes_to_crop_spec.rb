@@ -57,6 +57,6 @@ RSpec.describe 'MeiliSearch::Index - Cropped search' do
     response = index.search('', { attributesToCrop: ['description'], cropLength: 5 })
     expect(response['hits'].first).to have_key('_formatted')
     expect(response['hits'].first['description']).to eq(document[:description])
-    expect(response['hits'].first['_formatted']['description']).to eq("The Hitchhiker\'s Guide to…")
+    expect(response['hits'].first['_formatted']['description']).to eq("The Hitchhiker's Guide to…")
   end
 end
