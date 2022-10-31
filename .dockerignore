@@ -51,3 +51,4 @@ Gemfile.lock
 # Local editor configurations
 .vscode/
 .idea/
+.git/

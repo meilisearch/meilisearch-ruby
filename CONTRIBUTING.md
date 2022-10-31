@@ -4,12 +4,12 @@ First of all, thank you for contributing to Meilisearch! The goal of this docume
 
 <!-- MarkdownTOC autolink="true" style="ordered" indent="   " -->
 
-- [Hacktoberfest](#hacktoberfest-2022)
+- [Hacktoberfest 2022](#hacktoberfest-2022)
 - [Assumptions](#assumptions)
 - [How to Contribute](#how-to-contribute)
 - [Development Workflow](#development-workflow)
 - [Git Guidelines](#git-guidelines)
-- [Release Process (for internal team only)](#release-process-for-internal-team-only)
+- [Release Process (for the internal team only)](#release-process-for-the-internal-team-only)
 
 <!-- /MarkdownTOC -->
 
@@ -48,13 +48,21 @@ You can check out the longer, more complete guideline documentation [here](https
 You can set up your local environment natively or using `docker`, check out the [`docker-compose.yml`](/docker-compose.yml).
 
 Example of running all the checks with docker:
+
 ```bash
-docker-compose run --rm package bash -c "bundle install && bundle exec rspec && bundle exec rubocop"
+docker-compose run --rm package bash -c "bundle exec rspec && bundle exec rubocop"
 ```
 
 To install dependencies:
+
 ```bash
 bundle install
+```
+
+If you add new dependencies to the Gemfile, rebuild the Docker image:
+
+```bash
+docker compose build --no-cache 
 ```
 
 ### Tests <!-- omit in toc -->
@@ -128,6 +136,7 @@ We do not enforce any branch naming style, but please use something descriptive 
 ### Git Commits <!-- omit in toc -->
 
 As minimal requirements, your commit message should:
+
 - be capitalized
 - not finish by a dot or any other punctuation character (!,?)
 - start with a verb so that we can read your commit message this way: "This commit will ...", where "..." is the commit message.
