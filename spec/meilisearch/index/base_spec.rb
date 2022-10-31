@@ -2,11 +2,11 @@
 
 RSpec.describe MeiliSearch::Index do
   it 'fetch the info of the index' do
-    client.create_index!('new_index')
+    client.create_index!('books')
 
-    index = client.fetch_index('new_index')
+    index = client.fetch_index('books')
     expect(index).to be_a(MeiliSearch::Index)
-    expect(index.uid).to eq('new_index')
+    expect(index.uid).to eq('books')
     expect(index.created_at).to be_a(Time)
     expect(index.created_at).to be_within(60).of(Time.now)
     expect(index.updated_at).to be_a(Time)
@@ -15,13 +15,13 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'fetch the raw Hash info of the index' do
-    client.create_index!('specific_index_fetch_raw', primaryKey: 'primary_key')
+    client.create_index!('books', primaryKey: 'reference_number')
 
-    raw_index = client.fetch_raw_index('specific_index_fetch_raw')
+    raw_index = client.fetch_raw_index('books')
 
     expect(raw_index).to be_a(Hash)
-    expect(raw_index['uid']).to eq('specific_index_fetch_raw')
-    expect(raw_index['primaryKey']).to eq('primary_key')
+    expect(raw_index['uid']).to eq('books')
+    expect(raw_index['primaryKey']).to eq('reference_number')
     expect(Time.parse(raw_index['createdAt'])).to be_a(Time)
     expect(Time.parse(raw_index['createdAt'])).to be_within(60).of(Time.now)
     expect(Time.parse(raw_index['updatedAt'])).to be_a(Time)
@@ -70,17 +70,17 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'updates primary-key of index if has been defined before but there is not docs' do
-    client.create_index!('uid', primaryKey: 'primary_key')
+    client.create_index!('books', primaryKey: 'reference_number')
 
-    task = client.index('uid').update(primaryKey: 'new_primary_key')
+    task = client.index('books').update(primaryKey: 'international_standard_book_number')
     expect(task['type']).to eq('indexUpdate')
     client.wait_for_task(task['taskUid'])
 
-    index = client.fetch_index('uid')
+    index = client.fetch_index('books')
     expect(index).to be_a(MeiliSearch::Index)
-    expect(index.uid).to eq('uid')
-    expect(index.primary_key).to eq('new_primary_key')
-    expect(index.fetch_primary_key).to eq('new_primary_key')
+    expect(index.uid).to eq('books')
+    expect(index.primary_key).to eq('international_standard_book_number')
+    expect(index.fetch_primary_key).to eq('international_standard_book_number')
     expect(index.created_at).to be_a(Time)
     expect(index.created_at).to be_within(60).of(Time.now)
     expect(index.updated_at).to be_a(Time)
@@ -107,12 +107,12 @@ RSpec.describe MeiliSearch::Index do
     }
 
     new_client = MeiliSearch::Client.new(URL, MASTER_KEY, options)
-    new_client.create_index!('options')
-    index = new_client.fetch_index('options')
+    new_client.create_index!('books')
+    index = new_client.fetch_index('books')
     expect(index.options).to eq({ max_retries: 1, timeout: 2, convert_body?: true })
 
     expect(MeiliSearch::Index).to receive(:get).with(
-      "#{URL}/indexes/options",
+      "#{URL}/indexes/books",
       {
         headers: expected_headers,
         body: 'null',
@@ -135,12 +135,12 @@ RSpec.describe MeiliSearch::Index do
     }
 
     new_client = MeiliSearch::Client.new(URL, MASTER_KEY, options)
-    new_client.create_index!('options')
-    index = new_client.fetch_index('options')
+    new_client.create_index!('books')
+    index = new_client.fetch_index('books')
     expect(index.options).to eq(options.merge({ convert_body?: true }))
 
     expect(MeiliSearch::Index).to receive(:get).with(
-      "#{URL}/indexes/options",
+      "#{URL}/indexes/books",
       {
         headers: expected_headers,
         body: 'null',
