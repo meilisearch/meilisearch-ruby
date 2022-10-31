@@ -5,6 +5,8 @@ module MeiliSearch
     SNAKE_CASE = /[^a-zA-Z0-9]+(.)/.freeze
 
     def self.transform_attributes(body)
+      warn_on_non_conforming_attribute_names(body)
+
       case body
       when Array
         body.map { |item| transform_attributes(item) }
@@ -24,8 +26,9 @@ module MeiliSearch
     end
 
     def self.warn_on_non_conforming_attribute_names(body)
-      non_snake_case = body.keys.grep_v(/^[a-z0-9_]+$/)
+      return if body.nil?
 
+      non_snake_case = body.keys.grep_v(/^[a-z0-9_]+$/)
       return if non_snake_case.empty?
 
       message = <<~MSG
