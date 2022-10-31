@@ -223,8 +223,6 @@ module MeiliSearch
     def search(query, options = {})
       attributes = { q: query.to_s }.merge(options.compact)
 
-      Utils.warn_on_non_conforming_attribute_names(attributes)
-
       parsed_options = Utils.transform_attributes(attributes)
       response = http_post "/indexes/#{@uid}/search", parsed_options
 
