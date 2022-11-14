@@ -60,6 +60,25 @@ RSpec.describe 'MeiliSearch::Tasks' do
     expect(tasks['results'].count).to be > 1
   end
 
+  it 'ensures supports to all available filters' do
+    allow(MeiliSearch::Utils).to receive(:transform_attributes).and_call_original
+
+    client.tasks(
+      canceled_by: [1, 2], uids: [2], foo: 'bar',
+      before_enqueued_at: '2022-01-20', after_enqueued_at: '2022-01-20',
+      before_started_at: '2022-01-20', after_started_at: '2022-01-20',
+      before_finished_at: '2022-01-20', after_finished_at: '2022-01-20'
+    )
+
+    expect(MeiliSearch::Utils).to have_received(:transform_attributes)
+      .with(
+        canceled_by: [1, 2], uids: [2],
+        before_enqueued_at: '2022-01-20', after_enqueued_at: '2022-01-20',
+        before_started_at: '2022-01-20', after_started_at: '2022-01-20',
+        before_finished_at: '2022-01-20', after_finished_at: '2022-01-20'
+      )
+  end
+
   describe '#index.wait_for_task' do
     it 'waits for task with default values' do
       task = index.add_documents(documents)

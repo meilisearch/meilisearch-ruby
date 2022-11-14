@@ -5,7 +5,11 @@ require 'timeout'
 
 module MeiliSearch
   class Task < HTTPRequest
-    ALLOWED_PARAMS = [:limit, :from, :index_uids, :types, :statuses].freeze
+    ALLOWED_PARAMS = [
+      :limit, :from, :index_uids, :types, :statuses, :uids, :canceled_by,
+      :before_enqueued_at, :after_enqueued_at, :before_started_at, :after_started_at,
+      :before_finished_at, :after_finished_at
+    ].freeze
 
     def task_list(options = {})
       body = Utils.transform_attributes(options.transform_keys(&:to_sym).slice(*ALLOWED_PARAMS))
