@@ -10,6 +10,7 @@ module MeiliSearch
       :before_enqueued_at, :after_enqueued_at, :before_started_at, :after_started_at,
       :before_finished_at, :after_finished_at
     ].freeze
+    ALLOWED_CANCELATION_PARAMS = (ALLOWED_PARAMS - [:limit, :from]).freeze
 
     def task_list(options = {})
       http_get '/tasks/', Utils.parse_query(options, ALLOWED_PARAMS)
@@ -25,6 +26,10 @@ module MeiliSearch
 
     def index_task(task_uid)
       http_get "/tasks/#{task_uid}"
+    end
+
+    def cancel_tasks(options)
+      http_post '/tasks/cancel', nil, Utils.parse_query(options, ALLOWED_CANCELATION_PARAMS)
     end
 
     def wait_for_task(task_uid, timeout_in_ms = 5000, interval_in_ms = 50)
