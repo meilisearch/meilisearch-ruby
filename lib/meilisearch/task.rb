@@ -12,10 +12,7 @@ module MeiliSearch
     ].freeze
 
     def task_list(options = {})
-      body = Utils.transform_attributes(options.transform_keys(&:to_sym).slice(*ALLOWED_PARAMS))
-      body = body.transform_values { |v| v.respond_to?(:join) ? v.join(',') : v }
-
-      http_get '/tasks/', body
+      http_get '/tasks/', Utils.parse_query(options, ALLOWED_PARAMS)
     end
 
     def task(task_uid)
