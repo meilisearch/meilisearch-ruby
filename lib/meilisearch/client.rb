@@ -12,6 +12,12 @@ module MeiliSearch
       http_get('/indexes', body)
     end
 
+    def swap_indexes(*options)
+      mapped_array = options.map { |arr| { indexes: arr } }
+
+      http_post '/swap-indexes', mapped_array
+    end
+
     def indexes(options = {})
       response = raw_indexes(options)
 
