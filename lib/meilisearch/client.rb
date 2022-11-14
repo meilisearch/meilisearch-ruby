@@ -126,6 +126,10 @@ module MeiliSearch
       task_endpoint.cancel_tasks(options)
     end
 
+    def delete_tasks(options = {})
+      task_endpoint.delete_tasks(options)
+    end
+
     def tasks(options = {})
       task_endpoint.task_list(options)
     end

@@ -73,11 +73,12 @@ module MeiliSearch
       )
     end
 
-    def http_delete(relative_path = '')
+    def http_delete(relative_path = '', query_params = nil)
       send_request(
         proc { |path, config| self.class.delete(path, config) },
         relative_path,
         config: {
+          query_params: query_params,
           headers: remove_headers(@headers.dup, 'Content-Type'),
           options: @options
         }

@@ -32,6 +32,10 @@ module MeiliSearch
       http_post '/tasks/cancel', nil, Utils.parse_query(options, ALLOWED_CANCELATION_PARAMS)
     end
 
+    def delete_tasks(options)
+      http_delete '/tasks', Utils.parse_query(options, ALLOWED_CANCELATION_PARAMS)
+    end
+
     def wait_for_task(task_uid, timeout_in_ms = 5000, interval_in_ms = 50)
       Timeout.timeout(timeout_in_ms.to_f / 1000) do
         loop do
