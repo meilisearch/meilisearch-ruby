@@ -152,4 +152,34 @@ RSpec.describe 'MeiliSearch::Tasks' do
       end.to raise_error(Timeout::Error)
     end
   end
+
+  describe '#client.cancel_tasks' do
+    it 'ensures supports to all available filters' do
+      allow(MeiliSearch::Utils).to receive(:transform_attributes).and_call_original
+
+      client.cancel_tasks(
+        canceled_by: [1, 2], uids: [2], foo: 'bar',
+        before_enqueued_at: '2022-01-20', after_enqueued_at: '2022-01-20',
+        before_started_at: '2022-01-20', after_started_at: '2022-01-20',
+        before_finished_at: '2022-01-20', after_finished_at: '2022-01-20'
+      )
+
+      expect(MeiliSearch::Utils).to have_received(:transform_attributes)
+        .with(
+          canceled_by: [1, 2], uids: [2],
+          before_enqueued_at: '2022-01-20', after_enqueued_at: '2022-01-20',
+          before_started_at: '2022-01-20', after_started_at: '2022-01-20',
+          before_finished_at: '2022-01-20', after_finished_at: '2022-01-20'
+        )
+    end
+
+    it 'has fields in the details field' do
+      task = client.cancel_tasks(uids: [1, 2])
+      task = client.wait_for_task(task['taskUid'])
+
+      expect(task['details']['originalFilters']).to eq('uids=1%2C2')
+      expect(task['details']['matchedTasks']).to be_a(Integer)
+      expect(task['details']['canceledTasks']).to be_a(Integer)
+    end
+  end
 end
