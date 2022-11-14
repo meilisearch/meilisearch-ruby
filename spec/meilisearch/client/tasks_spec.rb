@@ -50,12 +50,12 @@ RSpec.describe 'MeiliSearch::Tasks' do
     expect(tasks['next']).to be_a(Integer)
   end
 
-  it 'filters tasks with index_uid/type/status' do
-    tasks = client.tasks(index_uid: ['a-cool-index-name'])
+  it 'filters tasks with index_uidx/typex/statuses' do
+    tasks = client.tasks(index_uids: ['a-cool-index-name'])
 
     expect(tasks['results'].count).to eq(0)
 
-    tasks = client.tasks(index_uid: ['books'], type: ['documentAdditionOrUpdate'], status: ['succeeded'])
+    tasks = client.tasks(index_uids: ['books'], types: ['documentAdditionOrUpdate'], statuses: ['succeeded'])
 
     expect(tasks['results'].count).to be > 1
   end
