@@ -50,7 +50,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
     expect(tasks['next']).to be_a(Integer)
   end
 
-  it 'filters tasks with index_uidx/typex/statuses' do
+  it 'filters tasks with index_uids/types/statuses' do
     tasks = client.tasks(index_uids: ['a-cool-index-name'])
 
     expect(tasks['results'].count).to eq(0)
