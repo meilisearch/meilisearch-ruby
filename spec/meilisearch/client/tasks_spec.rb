@@ -50,14 +50,33 @@ RSpec.describe 'MeiliSearch::Tasks' do
     expect(tasks['next']).to be_a(Integer)
   end
 
-  it 'filters tasks with index_uid/type/status' do
-    tasks = client.tasks(index_uid: ['a-cool-index-name'])
+  it 'filters tasks with index_uids/types/statuses' do
+    tasks = client.tasks(index_uids: ['a-cool-index-name'])
 
     expect(tasks['results'].count).to eq(0)
 
-    tasks = client.tasks(index_uid: ['books'], type: ['documentAdditionOrUpdate'], status: ['succeeded'])
+    tasks = client.tasks(index_uids: ['books'], types: ['documentAdditionOrUpdate'], statuses: ['succeeded'])
 
     expect(tasks['results'].count).to be > 1
+  end
+
+  it 'ensures supports to all available filters' do
+    allow(MeiliSearch::Utils).to receive(:transform_attributes).and_call_original
+
+    client.tasks(
+      canceled_by: [1, 2], uids: [2], foo: 'bar',
+      before_enqueued_at: '2022-01-20', after_enqueued_at: '2022-01-20',
+      before_started_at: '2022-01-20', after_started_at: '2022-01-20',
+      before_finished_at: '2022-01-20', after_finished_at: '2022-01-20'
+    )
+
+    expect(MeiliSearch::Utils).to have_received(:transform_attributes)
+      .with(
+        canceled_by: [1, 2], uids: [2],
+        before_enqueued_at: '2022-01-20', after_enqueued_at: '2022-01-20',
+        before_started_at: '2022-01-20', after_started_at: '2022-01-20',
+        before_finished_at: '2022-01-20', after_finished_at: '2022-01-20'
+      )
   end
 
   describe '#index.wait_for_task' do
