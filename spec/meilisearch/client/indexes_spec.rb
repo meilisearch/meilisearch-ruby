@@ -237,4 +237,15 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
       end
     end
   end
+
+  describe '#swap_indexes' do
+    it 'swaps two indexes' do
+      task = client.swap_indexes(['indexA', 'indexB'], ['indexC', 'indexD'])
+      task = client.wait_for_task(task['taskUid'])
+
+      expect(task['type']).to eq('indexSwap')
+      expect(task['details']['swaps']).to eq([{ 'indexes' => ['indexA', 'indexB'] },
+                                              { 'indexes' => ['indexC', 'indexD'] }])
+    end
+  end
 end
