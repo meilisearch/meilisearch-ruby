@@ -191,7 +191,10 @@ module MeiliSearch
       parsed_options = Utils.transform_attributes({ q: query.to_s }.merge(options.compact))
 
       response = http_post "/indexes/#{@uid}/search", parsed_options
-      response['nbHits'] ||= response['estimatedTotalHits']
+
+      if !response.key?('totalPages')
+        response['nbHits'] ||= response['estimatedTotalHits']
+      end
 
       response
     end
