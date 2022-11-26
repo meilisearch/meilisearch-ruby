@@ -192,9 +192,7 @@ module MeiliSearch
 
       response = http_post "/indexes/#{@uid}/search", parsed_options
 
-      if !response.key?('totalPages')
-        response['nbHits'] ||= response['estimatedTotalHits']
-      end
+      response['nbHits'] ||= response['estimatedTotalHits'] unless response.key?('totalPages')
 
       response
     end
