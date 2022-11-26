@@ -185,21 +185,23 @@ RSpec.describe 'MeiliSearch::Tasks' do
 
   describe '#client.delete_tasks' do
     it 'ensures supports to all available filters' do
+      date = DateTime.new(2022, 01, 20)
+
       allow(MeiliSearch::Utils).to receive(:transform_attributes).and_call_original
 
       client.delete_tasks(
         canceled_by: [1, 2], uids: [2], foo: 'bar',
-        before_enqueued_at: '2022-01-20', after_enqueued_at: '2022-01-20',
-        before_started_at: '2022-01-20', after_started_at: '2022-01-20',
-        before_finished_at: '2022-01-20', after_finished_at: '2022-01-20'
+        before_enqueued_at: date, after_enqueued_at: date,
+        before_started_at: date, after_started_at: date,
+        before_finished_at: date, after_finished_at: date
       )
 
       expect(MeiliSearch::Utils).to have_received(:transform_attributes)
         .with(
           canceled_by: [1, 2], uids: [2],
-          before_enqueued_at: '2022-01-20', after_enqueued_at: '2022-01-20',
-          before_started_at: '2022-01-20', after_started_at: '2022-01-20',
-          before_finished_at: '2022-01-20', after_finished_at: '2022-01-20'
+          before_enqueued_at: date, after_enqueued_at: date,
+          before_started_at: date, after_started_at: date,
+          before_finished_at: date, after_finished_at: date
         )
     end
 
