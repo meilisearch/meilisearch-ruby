@@ -185,7 +185,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
 
   describe '#client.delete_tasks' do
     it 'ensures supports to all available filters' do
-      date = DateTime.new(2022, 01, 20)
+      date = DateTime.new(2022, 1, 20)
 
       allow(MeiliSearch::Utils).to receive(:transform_attributes).and_call_original
 

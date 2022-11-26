@@ -48,7 +48,7 @@ FINITE_PAGINATED_SEARCH_RESPONSE_KEYS = [
   'hitsPerPage',
   'page',
   'totalPages',
-  'totalHits',
+  'totalHits'
 ].freeze
 
 Dir["#{Dir.pwd}/spec/support/**/*.rb"].sort.each { |file| require file }
