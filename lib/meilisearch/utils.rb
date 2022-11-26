@@ -28,7 +28,7 @@ module MeiliSearch
 
       Utils.transform_attributes(only_allowed_params).then do |body|
         body.transform_values do |v|
-          v.respond_to?(:join) ? v.join(',') : v
+          v.respond_to?(:join) ? v.join(',') : v.to_s
         end
       end
     end
