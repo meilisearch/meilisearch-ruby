@@ -64,10 +64,7 @@ module MeiliSearch
     alias get_one_document document
 
     def documents(options = {})
-      body = Utils.transform_attributes(options.transform_keys(&:to_sym).slice(:limit, :offset, :fields))
-      body = body.transform_values { |v| v.respond_to?(:join) ? v.join(',') : v }
-
-      http_get "/indexes/#{@uid}/documents", body
+      http_get "/indexes/#{@uid}/documents", Utils.parse_query(options, [:limit, :offset, :fields])
     end
     alias get_documents documents
 
@@ -194,7 +191,8 @@ module MeiliSearch
       parsed_options = Utils.transform_attributes({ q: query.to_s }.merge(options.compact))
 
       response = http_post "/indexes/#{@uid}/search", parsed_options
-      response['nbHits'] ||= response['estimatedTotalHits']
+
+      response['nbHits'] ||= response['estimatedTotalHits'] unless response.key?('totalPages')
 
       response
     end
