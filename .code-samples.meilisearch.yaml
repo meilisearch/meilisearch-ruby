@@ -28,10 +28,10 @@ cancel_tasks_1: |-
   client.cancel_tasks(uids: [1, 2])
 
 async_guide_canceled_by: |-
-  client.get_tasks(canceled_by: [9])
+  client.get_tasks(canceled_by: [9, 15])
 
 swap_indexes_1: |-
-  client.swap_indexes([['indexA', 'indexB'], ['indexX', 'indexY']]);
+  client.swap_indexes(['indexA', 'indexB'], ['indexX', 'indexY'])
 
 search_parameter_guide_hitsperpage_1: |-
   client.index('movies').search('', hits_per_page: 15)
