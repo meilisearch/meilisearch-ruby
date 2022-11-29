@@ -27,7 +27,7 @@ delete_tasks_1: |-
 cancel_tasks_1: |-
   client.cancel_tasks(uids: [1, 2])
 
-async_guide_canceled_by: |-
+async_guide_canceled_by_1: |-
   client.get_tasks(canceled_by: [9, 15])
 
 swap_indexes_1: |-
