@@ -476,12 +476,12 @@ NDJSON
                                       id: 1,
                                       title: 'The Red and the Black'
                                     }, 'id')
-      client.wait_for_task(task['taskUid'])
-      expect(index.fetch_primary_key).to eq('unique')
-      doc = index.document(3)
-      expect(doc['unique']).to eq(3)
-      expect(doc['id']).to eq(1)
-      expect(doc['title']).to eq('The Red and the Black')
+
+      task = client.wait_for_task(task['taskUid'])
+
+      expect(task['status']).to eq('failed')
+      expect(task['type']).to eq('documentAdditionOrUpdate')
+      expect(task['error']['code']).to eq('index_primary_key_already_exists')
     end
   end
 
@@ -521,7 +521,7 @@ NDJSON
       task = index.add_documents!(documents)
       update = index.task(task['uid'])
       expect(update['status']).to eq('failed')
-      expect(update['error']['code']).to eq('primary_key_inference_failed')
+      expect(update['error']['code']).to eq('index_primary_key_no_candidate_found')
     end
   end
 
