@@ -130,7 +130,7 @@ module MeiliSearch
     def validate(response)
       raise ApiError.new(response.code, response.message, response.body) unless response.success?
 
-      response.parsed_response
+      response.parsed_response || {}
     end
   end
 end
