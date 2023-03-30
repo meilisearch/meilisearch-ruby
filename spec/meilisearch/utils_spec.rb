@@ -20,4 +20,29 @@ RSpec.describe MeiliSearch::Utils do
       expect(data).to eq({ 'date' => '2012-12-21T19:05:00+00:00' })
     end
   end
+
+  describe '.transform_attributes' do
+    it 'transforms snake_case into camelCased keys' do
+      data = described_class.transform_attributes({
+        index_name: 'books',
+        my_UID: '123'
+      })
+
+      expect(data).to eq({ 'indexName' => 'books', 'myUid' => '123' })
+    end
+
+    it 'transforms snake_case into camel cased keys from array' do
+      data = described_class.transform_attributes([
+        { index_uid: 'books', q: 'prince' },
+        { index_uid: 'movies', q: 'prince' }
+      ])
+
+      expect(data).to eq(
+        [
+          { 'indexUid' => 'books', 'q' => 'prince' },
+          { 'indexUid' => 'movies', 'q' => 'prince' }
+        ]
+      )
+    end
+  end
 end
