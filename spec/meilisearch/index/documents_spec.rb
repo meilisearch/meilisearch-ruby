@@ -78,6 +78,23 @@ NDJSON
         expect(index.documents['results'].count).to eq(3)
       end
 
+      it 'adds CSV documents (as an array of documents with a different separator)' do
+        documents = <<~CSV
+          "objectRef:number"|"title:string"|"comment:string"
+          "1239"|"Pride and Prejudice"|"A great book"
+          "4569"|"Le Petit Prince"|"A french book"
+          "49"|"Harry Potter and the Half-Blood Prince"|"The best book"
+        CSV
+
+        response = index.add_documents_csv(documents, 'objectRef', '|')
+        index.wait_for_task(response['taskUid'])
+
+        expect(index.documents['results'].count).to eq(3)
+        expect(index.documents['results'][1]['objectRef']).to eq(4569)
+        expect(index.documents['results'][1]['title']).to eq('Le Petit Prince')
+        expect(index.documents['results'][1]['comment']).to eq('A french book')
+      end
+
       it 'adds documents in a batch (as a array of documents)' do
         task = index.add_documents_in_batches(documents, 5)
         expect(task).to be_a(Array)
