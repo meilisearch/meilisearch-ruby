@@ -69,10 +69,6 @@ update_faceting_settings_1: |-
   index('books').update_faceting({ max_values_per_facet: 2 })
 reset_faceting_settings_1: |-
   index('books').reset_faceting
-settings_guide_faceting_1: |-
-  index('books').update_faceting({ max_values_per_facet: 5 })
-settings_guide_pagination_1: |-
-  index('books').update_pagination({ max_total_hits: 50 })
 get_one_index_1: |-
   client.fetch_index('movies')
 list_all_indexes_1: |-
@@ -281,6 +277,10 @@ filtering_guide_3: |-
   client.index('movies').search('Planet of the Apes', {
     filter: 'rating >= 3 AND (NOT director = "Tim Burton")'
   })
+filtering_guide_nested_1: |-
+  client.index('movies_ratings').search('thriller', {
+    filter: 'rating.users >= 90'
+  })
 search_parameter_guide_query_1: |-
   client.index('movies').search('shifu')
 search_parameter_guide_offset_1: |-
@@ -326,60 +326,6 @@ search_parameter_guide_matching_strategy_1: |-
 search_parameter_guide_matching_strategy_2: |-
   client.index('movies').search('big fat liar', {
     matching_strategy: 'all'
-  })
-settings_guide_synonyms_1: |-
-  client.index('tops').update_settings({
-    synonyms: {
-      sweater: ['jumper'],
-      jumper: ['sweater']
-    }
-  })
-settings_guide_stop_words_1: |-
-  client.index('movies').update_settings({
-    stop_words: [
-      'the',
-      'a',
-      'an'
-    ]
-  })
-settings_guide_ranking_rules_1: |-
-  client.index('movies').update_settings({
-    ranking_rules: [
-      'words',
-      'typo',
-      'proximity',
-      'attribute',
-      'sort',
-      'exactness',
-      'release_date:asc',
-      'rank:desc'
-    ]
-  })
-settings_guide_distinct_1: |-
-  client.index('jackets').update_distinct_attribute('product_id')
-settings_guide_searchable_1: |-
-  client.index('movies').update_settings({
-    searchable_attributes: [
-      'title',
-      'overview',
-      'genres'
-    ]
-  })
-settings_guide_displayed_1: |-
-  client.index('movies').update_settings({
-    displayed_attributes: [
-      'title',
-      'overview',
-      'genres',
-      'release_date'
-    ]
-  })
-settings_guide_sortable_1: |-
-  client.index('books').update_settings({
-    sortable_attributes: [
-      'price',
-      'author'
-    ]
   })
 add_movies_json_1: |-
   require 'json'
@@ -481,6 +427,8 @@ update_sortable_attributes_1: |-
     'price',
     'author'
   ])
+sorting_guide_sort_nested_1: |-
+  client.index('books').search('science fiction', { sort: ['rating.users:asc'] })
 reset_sortable_attributes_1: |-
   client.index('books').reset_sortable_attributes
 search_parameter_guide_sort_1: |-
@@ -647,13 +595,6 @@ typo_tolerance_guide_4: |-
       one_typo: 4,
       two_typos: 10
     }
-  })
-settings_guide_typo_tolerance_1: |-
-  index('books').update_typo_tolerance({
-    min_word_size_for_typos: {
-      two_typos: 12
-    },
-    disable_on_attributes: ['title']
   })
 multi_search_1: |-
   client.multi_search([
