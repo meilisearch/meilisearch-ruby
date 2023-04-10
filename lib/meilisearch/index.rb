@@ -96,9 +96,13 @@ module MeiliSearch
     alias replace_documents_ndjson add_documents_ndjson
     alias add_or_replace_documents_ndjson add_documents_ndjson
 
-    def add_documents_csv(documents, primary_key = nil)
+    def add_documents_csv(documents, primary_key = nil, delimiter = nil)
       options = { headers: { 'Content-Type' => 'text/csv' }, convert_body?: false }
-      http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+
+      http_post "/indexes/#{@uid}/documents", documents, {
+        primaryKey: primary_key,
+        csvDelimiter: delimiter
+      }.compact, options
     end
     alias replace_documents_csv add_documents_csv
     alias add_or_replace_documents_csv add_documents_csv

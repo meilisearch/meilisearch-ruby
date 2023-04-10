@@ -12,7 +12,8 @@ RSpec.describe 'MeiliSearch::Index - Search with facets' do
     response = index.search('prinec', facets: ['genre', 'author'])
     expect(response.keys).to contain_exactly(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
-      'facetDistribution'
+      'facetDistribution',
+      'facetStats'
     )
     expect(response['estimatedTotalHits']).to eq(2)
     expect(response['facetDistribution'].keys).to contain_exactly('genre', 'author')
@@ -27,7 +28,8 @@ RSpec.describe 'MeiliSearch::Index - Search with facets' do
     response = index.search('', facets: ['genre', 'author'])
     expect(response.keys).to contain_exactly(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
-      'facetDistribution'
+      'facetDistribution',
+      'facetStats'
     )
     expect(response['estimatedTotalHits']).to eq(documents.count)
     expect(response['facetDistribution'].keys).to contain_exactly('genre', 'author')
@@ -42,7 +44,8 @@ RSpec.describe 'MeiliSearch::Index - Search with facets' do
     response = index.search('', facets: ['year'])
     expect(response.keys).to contain_exactly(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
-      'facetDistribution'
+      'facetDistribution',
+      'facetStats'
     )
     expect(response['estimatedTotalHits']).to eq(documents.count)
     expect(response['facetDistribution'].keys).to contain_exactly('year')

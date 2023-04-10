@@ -66,9 +66,11 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
     response = index.update_filterable_attributes(['genre'])
     index.wait_for_task(response['taskUid'])
     response = index.search('prinec', facets: ['genre'], limit: 1)
+
     expect(response.keys).to contain_exactly(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
-      'facetDistribution'
+      'facetDistribution',
+      'facetStats'
     )
     expect(response['estimatedTotalHits']).to eq(2)
     expect(response['hits'].count).to eq(1)

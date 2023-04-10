@@ -3,6 +3,7 @@
 module MeiliSearch
   class Client < HTTPRequest
     include MeiliSearch::TenantToken
+    include MeiliSearch::MultiSearch
 
     ### INDEXES
 
