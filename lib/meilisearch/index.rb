@@ -153,11 +153,20 @@ module MeiliSearch
       responses
     end
 
-    def delete_documents(documents_ids)
-      if documents_ids.is_a?(Array)
-        http_post "/indexes/#{@uid}/documents/delete-batch", documents_ids
+    # Public: Delete documents from an index
+    #
+    # documents_ids - An array with document ids (deprecated, optional)
+    # filter - A hash containing a filter that should match documents.
+    #          Available ONLY with Meilisearch v1.2 and newer (optional)
+    #
+    # Returns a Task object.
+    def delete_documents(documents_ids = nil, filter: nil)
+      if documents_ids.nil?
+        http_post "/indexes/#{@uid}/documents/delete", { filter: filter }
       else
-        delete_document(documents_ids)
+        documents_ids = [documents_ids] unless documents_ids.is_a?(Array)
+
+        http_post "/indexes/#{@uid}/documents/delete-batch", documents_ids
       end
     end
     alias delete_multiple_documents delete_documents

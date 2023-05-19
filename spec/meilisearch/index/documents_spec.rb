@@ -390,6 +390,32 @@ NDJSON
         expect { index.document(id) }.to raise_document_not_found_meilisearch_api_error
       end
 
+      it 'deletes documents based on filter from index (with delete route)' do
+        expect do
+          index.update_filterable_attributes(['objectId'])
+          task = index.delete_documents(nil, filter: ['objectId > 0'])
+
+          client.wait_for_task(task['taskUid'])
+        end.to(change { index.documents['results'].size }.by(-documents.size))
+      end
+
+      it 'ignores filter even when documents_ids is empty (with delete-batch route)' do
+        expect do
+          task = index.delete_documents([], filter: ['objectId > 0'])
+
+          client.wait_for_task(task['taskUid'])
+        end.to(change { index.documents['results'].size }.by(0))
+      end
+
+      it 'deletes documents based on ids even when receive a filter (with delete-batch route)' do
+        expect do
+          index.update_filterable_attributes(['objectId'])
+          task = index.delete_documents([2], filter: ['objectId > 0'])
+
+          client.wait_for_task(task['taskUid'])
+        end.to(change { index.documents['results'].size }.by(-1))
+      end
+
       it 'deletes one document synchronously from index (with delete-batch route)' do
         id = 2
         expect do
