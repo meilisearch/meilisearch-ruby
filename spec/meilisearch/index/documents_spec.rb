@@ -196,7 +196,12 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     end
 
     describe 'accessing documents' do
-      before { index.add_documents!(documents) }
+      before do
+        index.add_documents(documents)
+
+        task = index.update_filterable_attributes(['title', 'objectId'])
+        client.wait_for_task(task['taskUid'])
+      end
 
       it 'gets one document from its primary-key' do
         task = index.document(123)
@@ -226,6 +231,25 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
         docs = index.documents(fields: ['title'])['results']
 
         expect(docs).to be_a(Array)
+        expect(docs.first.keys).to eq(['title'])
+      end
+
+      it 'retrieves documents by filters' do
+        docs = index.documents(filter: 'objectId > 400')['results']
+
+        expect(docs).to be_a(Array)
+        expect(docs.first).to eq({
+                                   'objectId' => 456,
+                                   'title' => 'Le Petit Prince',
+                                   'comment' => 'A french book'
+                                 })
+      end
+
+      it 'retrieves documents by filters & other parameters' do
+        docs = index.documents(fields: ['title'], filter: 'objectId > 100')['results']
+
+        expect(docs).to be_a(Array)
+        expect(docs.size).to eq(3)
         expect(docs.first.keys).to eq(['title'])
       end
     end

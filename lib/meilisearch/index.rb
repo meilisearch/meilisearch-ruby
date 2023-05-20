@@ -64,7 +64,13 @@ module MeiliSearch
     alias get_one_document document
 
     def documents(options = {})
-      http_get "/indexes/#{@uid}/documents", Utils.parse_query(options, [:limit, :offset, :fields])
+      Utils.version_error_handler(__method__) do
+        if options.key?(:filter)
+          http_post "/indexes/#{@uid}/documents/fetch", Utils.filter(options, [:limit, :offset, :fields, :filter])
+        else
+          http_get "/indexes/#{@uid}/documents", Utils.parse_query(options, [:limit, :offset, :fields])
+        end
+      end
     end
     alias get_documents documents
 
