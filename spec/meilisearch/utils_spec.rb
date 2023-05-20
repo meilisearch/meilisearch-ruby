@@ -46,4 +46,30 @@ RSpec.describe MeiliSearch::Utils do
       )
     end
   end
+
+  describe '.version_error_handler' do
+    it 'spawns same error message' do
+      expect do
+        MeiliSearch::Utils.version_error_handler(:my_method) do
+          raise MeiliSearch::ApiError.new(405, 'I came from Meili server', {})
+        end
+      end.to raise_error(MeiliSearch::ApiError, /I came from Meili server/)
+    end
+
+    it 'spawns message with version hint' do
+      expect do
+        MeiliSearch::Utils.version_error_handler(:my_method) do
+          raise MeiliSearch::ApiError.new(405, 'I came from Meili server', {})
+        end
+      end.to raise_error(MeiliSearch::ApiError, /that `my_method` call requires/)
+    end
+
+    it 'adds hints to all error types' do
+      expect do
+        MeiliSearch::Utils.version_error_handler(:my_method) do
+          raise MeiliSearch::CommunicationError, 'I am an error'
+        end
+      end.to raise_error(MeiliSearch::CommunicationError, /that `my_method` call requires/)
+    end
+  end
 end
