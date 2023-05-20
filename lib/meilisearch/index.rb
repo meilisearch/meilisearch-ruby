@@ -161,12 +161,14 @@ module MeiliSearch
     #
     # Returns a Task object.
     def delete_documents(documents_ids = nil, filter: nil)
-      if documents_ids.nil?
-        http_post "/indexes/#{@uid}/documents/delete", { filter: filter }
-      else
-        documents_ids = [documents_ids] unless documents_ids.is_a?(Array)
+      MeiliSearch::Utils.version_error_handler(__method__) do
+        if documents_ids.nil?
+          http_post "/indexes/#{@uid}/documents/delete", { filter: filter }
+        else
+          documents_ids = [documents_ids] unless documents_ids.is_a?(Array)
 
-        http_post "/indexes/#{@uid}/documents/delete-batch", documents_ids
+          http_post "/indexes/#{@uid}/documents/delete-batch", documents_ids
+        end
       end
     end
     alias delete_multiple_documents delete_documents
