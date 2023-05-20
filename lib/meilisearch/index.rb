@@ -161,7 +161,7 @@ module MeiliSearch
     #
     # Returns a Task object.
     def delete_documents(documents_ids = nil, filter: nil)
-      MeiliSearch::Utils.version_error_handler(__method__) do
+      Utils.version_error_handler(__method__) do
         if documents_ids.nil?
           http_post "/indexes/#{@uid}/documents/delete", { filter: filter }
         else
