@@ -37,15 +37,15 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       end
 
       it 'adds JSON documents (as a array of documents)' do
-        documents = <<JSON
-        [
-          { "objectRef": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" },
-          { "objectRef": 456,  "title": "Le Petit Prince",                        "comment": "A french book" },
-          { "objectRef": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" },
-          { "objectRef": 1344, "title": "The Hobbit",                             "comment": "An awesome book" },
-          { "objectRef": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
-        ]
-JSON
+        documents = <<~JSON
+          [
+            { "objectRef": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" },
+            { "objectRef": 456,  "title": "Le Petit Prince",                        "comment": "A french book" },
+            { "objectRef": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" },
+            { "objectRef": 1344, "title": "The Hobbit",                             "comment": "An awesome book" },
+            { "objectRef": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
+          ]
+        JSON
         response = index.add_documents_json(documents, 'objectRef')
 
         index.wait_for_task(response['taskUid'])
@@ -53,12 +53,12 @@ JSON
       end
 
       it 'adds NDJSON documents (as a array of documents)' do
-        documents = <<NDJSON
-        { "objectRef": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" }
-        { "objectRef": 456,  "title": "Le Petit Prince",                        "comment": "A french book" }
-        { "objectRef": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" }
-        { "objectRef": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
-NDJSON
+        documents = <<~NDJSON
+          { "objectRef": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" }
+          { "objectRef": 456,  "title": "Le Petit Prince",                        "comment": "A french book" }
+          { "objectRef": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" }
+          { "objectRef": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
+        NDJSON
         response = index.add_documents_ndjson(documents, 'objectRef')
 
         index.wait_for_task(response['taskUid'])
