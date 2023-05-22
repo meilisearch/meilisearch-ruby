@@ -3,6 +3,7 @@
 module MeiliSearch
   class Client < HTTPRequest
     include MeiliSearch::TenantToken
+    include MeiliSearch::MultiSearch
 
     ### INDEXES
 
@@ -10,6 +11,12 @@ module MeiliSearch
       body = Utils.transform_attributes(options.transform_keys(&:to_sym).slice(:limit, :offset))
 
       http_get('/indexes', body)
+    end
+
+    def swap_indexes(*options)
+      mapped_array = options.map { |arr| { indexes: arr } }
+
+      http_post '/swap-indexes', mapped_array
     end
 
     def indexes(options = {})
@@ -115,6 +122,14 @@ module MeiliSearch
     end
 
     ### TASKS
+
+    def cancel_tasks(options = {})
+      task_endpoint.cancel_tasks(options)
+    end
+
+    def delete_tasks(options = {})
+      task_endpoint.delete_tasks(options)
+    end
 
     def tasks(options = {})
       task_endpoint.task_list(options)

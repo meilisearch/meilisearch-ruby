@@ -41,6 +41,16 @@ DEFAULT_SEARCH_RESPONSE_KEYS = [
   'nbHits'
 ].freeze
 
+FINITE_PAGINATED_SEARCH_RESPONSE_KEYS = [
+  'hits',
+  'query',
+  'processingTimeMs',
+  'hitsPerPage',
+  'page',
+  'totalPages',
+  'totalHits'
+].freeze
+
 Dir["#{Dir.pwd}/spec/support/**/*.rb"].sort.each { |file| require file }
 
 RSpec.configure do |config|

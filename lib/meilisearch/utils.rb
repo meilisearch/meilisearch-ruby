@@ -23,6 +23,16 @@ module MeiliSearch
         end
     end
 
+    def self.parse_query(original_options, allowed_params = [])
+      only_allowed_params = original_options.transform_keys(&:to_sym).slice(*allowed_params)
+
+      Utils.transform_attributes(only_allowed_params).then do |body|
+        body.transform_values do |v|
+          v.respond_to?(:join) ? v.join(',') : v.to_s
+        end
+      end
+    end
+
     private_class_method :parse
   end
 end

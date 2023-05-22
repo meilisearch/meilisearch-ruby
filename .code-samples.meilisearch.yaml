@@ -3,13 +3,56 @@
 # the documentation on build
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
+getting_started_faceting: |-
+  client.index('movies').update_faceting(max_values_per_facet: 2)
+getting_started_pagination: |-
+  client.index('movies').update_pagination(max_total_hits: 500)
+synonyms_guide_1: |-
+  client.index('movies').update_synonyms({
+    great: ['fantastic'],
+    fantastic: ['great']
+  })
+date_guide_index_1: |-
+  require 'json'
+
+  games = JSON.parse(File.read('games.json'))
+  client.index('games').add_documents(games)
+date_guide_filterable_attributes_1: |-
+  client.index('games').update_filterable_attributes(['release_timestamp'])
+date_guide_filter_1: |-
+  client.index('games').search('', {
+    filter: 'release_timestamp >= 1514761200 AND release_timestamp < 1672527600'
+  })
+date_guide_sortable_attributes_1: |-
+  client.index('games').update_sortable_attributes(['release_timestamp'])
+date_guide_sort_1: |-
+  client.index('games').search('', sort: ['release_timestamp:desc'])
+async_guide_filter_by_date_1: |-
+  client.get_tasks(after_enqueued_at: DateTime.new(2020, 10, 11, 11, 49, 53))
+async_guide_multiple_filters_1: |-
+  client.get_tasks(index_uids: ['movies'], types: ['documentAdditionOrUpdate', 'documentDeletion'], statuses: ['processing'])
+async_guide_filter_by_ids_1: |-
+  client.get_tasks(uids: [5, 10, 13])
+async_guide_filter_by_statuses_1: |-
+  client.get_tasks(statuses: ['failed', 'canceled'])
+async_guide_filter_by_types_1: |-
+  client.get_tasks(types: ['dumpCreation', 'indexSwap'])
+async_guide_filter_by_index_uids_1: |-
+  client.get_tasks(index_uids: ['movies'])
+delete_tasks_1: |-
+  client.delete_tasks(uids: [1, 2])
+cancel_tasks_1: |-
+  client.cancel_tasks(uids: [1, 2])
+async_guide_canceled_by_1: |-
+  client.get_tasks(canceled_by: [9, 15])
+swap_indexes_1: |-
+  client.swap_indexes(['indexA', 'indexB'], ['indexX', 'indexY'])
+search_parameter_guide_hitsperpage_1: |-
+  client.index('movies').search('', hits_per_page: 15)
+search_parameter_guide_page_1: |-
+  client.index('movies').search('', page: 2)
 getting_started_typo_tolerance: |-
    client.index('movies').update_typo_tolerance({ min_word_size_for_typos: { one_typo: 4 } })
-
-get_all_tasks_filtering_1: |-
-  client.index('movies').tasks
-get_all_tasks_filtering_2: |-
-  client.tasks(status: ['succeeded', 'failed'], type: ['documentAdditionOrUpdate'])
 get_all_tasks_paginating_1: |-
   client.tasks(limit: 2, from: 10)
 get_all_tasks_paginating_2: |-
@@ -26,10 +69,6 @@ update_faceting_settings_1: |-
   index('books').update_faceting({ max_values_per_facet: 2 })
 reset_faceting_settings_1: |-
   index('books').reset_faceting
-settings_guide_faceting_1: |-
-  index('books').update_faceting({ max_values_per_facet: 5 })
-settings_guide_pagination_1: |-
-  index('books').update_pagination({ max_total_hits: 50 })
 get_one_index_1: |-
   client.fetch_index('movies')
 list_all_indexes_1: |-
@@ -238,6 +277,10 @@ filtering_guide_3: |-
   client.index('movies').search('Planet of the Apes', {
     filter: 'rating >= 3 AND (NOT director = "Tim Burton")'
   })
+filtering_guide_nested_1: |-
+  client.index('movies_ratings').search('thriller', {
+    filter: 'rating.users >= 90'
+  })
 search_parameter_guide_query_1: |-
   client.index('movies').search('shifu')
 search_parameter_guide_offset_1: |-
@@ -276,59 +319,13 @@ search_parameter_guide_show_matches_position_1: |-
   client.index('movies').search('winter feast', {
     show_matches_position: true
   })
-settings_guide_synonyms_1: |-
-  client.index('tops').update_settings({
-    synonyms: {
-      sweater: ['jumper'],
-      jumper: ['sweater']
-    }
+search_parameter_guide_matching_strategy_1: |-
+  client.index('movies').search('big fat liar', {
+    matching_strategy: 'last'
   })
-settings_guide_stop_words_1: |-
-  client.index('movies').update_settings({
-    stop_words: [
-      'the',
-      'a',
-      'an'
-    ]
-  })
-settings_guide_ranking_rules_1: |-
-  client.index('movies').update_settings({
-    ranking_rules: [
-      'words',
-      'typo',
-      'proximity',
-      'attribute',
-      'sort',
-      'exactness',
-      'release_date:asc',
-      'rank:desc'
-    ]
-  })
-settings_guide_distinct_1: |-
-  client.index('jackets').update_distinct_attribute('product_id')
-settings_guide_searchable_1: |-
-  client.index('movies').update_settings({
-    searchable_attributes: [
-      'title',
-      'overview',
-      'genres'
-    ]
-  })
-settings_guide_displayed_1: |-
-  client.index('movies').update_settings({
-    displayed_attributes: [
-      'title',
-      'overview',
-      'genres',
-      'release_date'
-    ]
-  })
-settings_guide_sortable_1: |-
-  client.index('books').update_settings({
-    sortable_attributes: [
-      'price',
-      'author'
-    ]
+search_parameter_guide_matching_strategy_2: |-
+  client.index('movies').search('big fat liar', {
+    matching_strategy: 'all'
   })
 add_movies_json_1: |-
   require 'json'
@@ -338,8 +335,8 @@ add_movies_json_1: |-
   client.index('movies').add_documents(movies)
 documents_guide_add_movie_1: |-
   client.index('movies').add_documents([{
-    "movie_id": "123sq178",
-    "title": "Amelie Poulain"
+    movie_id: '123sq178',
+    title: 'Amelie Poulain'
   }])
 getting_started_add_documents_md: |-
   ```bash
@@ -365,10 +362,32 @@ getting_started_search_md: |-
   ```
 
   [About this SDK](https://www.github.com/meilisearch/meilisearch-ruby)
-faceted_search_update_settings_1: |-
+filtering_update_settings_1: |-
   client.index('movies').update_filterable_attributes([
     'director',
     'genres'
+  ])
+faceted_search_1: |-
+  client.index('books').search('classic', {
+    facets: ['genres', 'rating', 'language']
+  })
+faceted_search_2: |-
+  client.multi_search([
+    {
+      indexUid: 'books',
+      facets: ['language', 'genres', 'author', 'format'],
+      filter: [['language = English', 'language = French'], ['genres = Fiction']]
+    },
+    {
+      indexUid: 'books',
+      facets: ['language'],
+      filter: [['genres = Fiction']]
+    },
+    {
+      indexUid: 'books',
+      facets: ['genres'],
+      filter: [['language = English', 'language = French']]
+    }
   ])
 faceted_search_filter_1: |-
   client.index('movies').search('thriller', {
@@ -380,6 +399,8 @@ faceted_search_walkthrough_filter_1: |-
   client.index('movies').search('thriller', {
     filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
   })
+faceted_search_update_settings_1: |-
+  client.index('books').update_filterable_attributes(['genres', 'rating', 'language'])
 post_dump_1: |-
   client.create_dump
 phrase_search_1: |-
@@ -406,6 +427,8 @@ update_sortable_attributes_1: |-
     'price',
     'author'
   ])
+sorting_guide_sort_nested_1: |-
+  client.index('books').search('science fiction', { sort: ['rating.users:asc'] })
 reset_sortable_attributes_1: |-
   client.index('books').reset_sortable_attributes
 search_parameter_guide_sort_1: |-
@@ -416,6 +439,8 @@ geosearch_guide_filter_usage_1: |-
   client.index('restaurants').search('', { filter: '_geoRadius(45.472735, 9.184019, 2000)' })
 geosearch_guide_filter_usage_2: |-
   client.index('restaurants').search('', { filter: '_geoRadius(45.472735, 9.184019, 2000) AND type = pizza' })
+geosearch_guide_filter_usage_3: |-
+  client.index('restaurants').search('', { filter: ['_geoBoundingBox([45.494181, 9.179175], [45.449484, 9.214024])'] })
 geosearch_guide_sort_settings_1: |-
   client.index('restaurants').update_sortable_attributes(['_geo'])
 geosearch_guide_sort_usage_1: |-
@@ -571,10 +596,10 @@ typo_tolerance_guide_4: |-
       two_typos: 10
     }
   })
-settings_guide_typo_tolerance_1: |-
-  index('books').update_typo_tolerance({
-    min_word_size_for_typos: {
-      two_typos: 12
-    },
-    disable_on_attributes: ['title']
-  })
+multi_search_1: |-
+  client.multi_search([
+    { index_uid: 'books', q: 'prince' },
+    { index_uid: 'movies', q: 'pooh', limit: 5 }
+    { index_uid: 'movies', q: 'nemo', limit: 5 }
+    { index_uid: 'movie_ratings', q: 'us' }
+  ])

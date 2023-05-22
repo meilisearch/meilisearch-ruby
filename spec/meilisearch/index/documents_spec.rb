@@ -78,6 +78,23 @@ NDJSON
         expect(index.documents['results'].count).to eq(3)
       end
 
+      it 'adds CSV documents (as an array of documents with a different separator)' do
+        documents = <<~CSV
+          "objectRef:number"|"title:string"|"comment:string"
+          "1239"|"Pride and Prejudice"|"A great book"
+          "4569"|"Le Petit Prince"|"A french book"
+          "49"|"Harry Potter and the Half-Blood Prince"|"The best book"
+        CSV
+
+        response = index.add_documents_csv(documents, 'objectRef', '|')
+        index.wait_for_task(response['taskUid'])
+
+        expect(index.documents['results'].count).to eq(3)
+        expect(index.documents['results'][1]['objectRef']).to eq(4569)
+        expect(index.documents['results'][1]['title']).to eq('Le Petit Prince')
+        expect(index.documents['results'][1]['comment']).to eq('A french book')
+      end
+
       it 'adds documents in a batch (as a array of documents)' do
         task = index.add_documents_in_batches(documents, 5)
         expect(task).to be_a(Array)
@@ -131,18 +148,18 @@ NDJSON
       end
 
       it 'create the index during document addition' do
-        new_index = client.index('newIndex')
+        new_index = client.index('books')
         task = new_index.add_documents(documents)
 
         new_index.wait_for_task(task['taskUid'])
-        expect(client.index('newIndex').fetch_primary_key).to eq('objectId')
-        expect(client.index('newIndex').documents['results'].count).to eq(documents.count)
+        expect(client.index('books').fetch_primary_key).to eq('objectId')
+        expect(client.index('books').documents['results'].count).to eq(documents.count)
       end
 
       it 'adds only one document to index (as an hash of one document)' do
         new_doc = { objectId: 30, title: 'Hamlet' }
-        client.create_index!('newIndex')
-        new_index = client.index('newIndex')
+        client.create_index!('books')
+        new_index = client.index('books')
         expect do
           new_index.add_documents!(new_doc)
 
@@ -152,8 +169,8 @@ NDJSON
 
       it 'adds only one document synchronously to index (as an hash of one document)' do
         new_doc = { objectId: 30, title: 'Hamlet' }
-        client.create_index!('newIndex')
-        new_index = client.index('newIndex')
+        client.create_index!('books')
+        new_index = client.index('books')
         expect do
           task = new_index.add_documents!(new_doc)
 
@@ -476,12 +493,12 @@ NDJSON
                                       id: 1,
                                       title: 'The Red and the Black'
                                     }, 'id')
-      client.wait_for_task(task['taskUid'])
-      expect(index.fetch_primary_key).to eq('unique')
-      doc = index.document(3)
-      expect(doc['unique']).to eq(3)
-      expect(doc['id']).to eq(1)
-      expect(doc['title']).to eq('The Red and the Black')
+
+      task = client.wait_for_task(task['taskUid'])
+
+      expect(task['status']).to eq('failed')
+      expect(task['type']).to eq('documentAdditionOrUpdate')
+      expect(task['error']['code']).to eq('index_primary_key_already_exists')
     end
   end
 
@@ -521,7 +538,7 @@ NDJSON
       task = index.add_documents!(documents)
       update = index.task(task['uid'])
       expect(update['status']).to eq('failed')
-      expect(update['error']['code']).to eq('primary_key_inference_failed')
+      expect(update['error']['code']).to eq('index_primary_key_no_candidate_found')
     end
   end
 

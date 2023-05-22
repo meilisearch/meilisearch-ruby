@@ -7,7 +7,7 @@
 <h4 align="center">
   <a href="https://github.com/meilisearch/meilisearch">Meilisearch</a> |
   <a href="https://docs.meilisearch.com">Documentation</a> |
-  <a href="https://slack.meilisearch.com">Slack</a> |
+  <a href="https://discord.meilisearch.com">Discord</a> |
   <a href="https://roadmap.meilisearch.com/tabs/1-under-consideration">Roadmap</a> |
   <a href="https://www.meilisearch.com">Website</a> |
   <a href="https://docs.meilisearch.com/faq">FAQ</a>
@@ -28,21 +28,12 @@
 
 ## Table of Contents <!-- omit in toc -->
 
-- [🎃 Hacktoberfest](#-hacktoberfest)
 - [📖 Documentation](#-documentation)
 - [🔧 Installation](#-installation)
 - [🚀 Getting started](#-getting-started)
 - [🤖 Compatibility with Meilisearch](#-compatibility-with-meilisearch)
 - [💡 Learn more](#-learn-more)
 - [⚙️ Contributing](#️-contributing)
-
-## 🎃 Hacktoberfest
-
-It’s Hacktoberfest 2022 @Meilisearch
-
-[Hacktoberfest](https://hacktoberfest.com/) is a celebration of the open-source community. This year, and for the third time in a row, Meilisearch is participating in this fantastic event.
-
-You’d like to contribute? Don’t hesitate to check out our [contributing guidelines](./CONTRIBUTING.md).
 
 ## 📖 Documentation
 
@@ -209,7 +200,7 @@ JSON output:
 
 ## 🤖 Compatibility with Meilisearch
 
-This package only guarantees the compatibility with the [version v0.29.0 of Meilisearch](https://github.com/meilisearch/meilisearch/releases/tag/v0.29.0).
+This package guarantees compatibility with [version v1.x of Meilisearch](https://github.com/meilisearch/meilisearch/releases/latest), but some features may not be present. Please check the [issues](https://github.com/meilisearch/meilisearch-ruby/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22+label%3Aenhancement) for more info.
 
 ## 💡 Learn more
 

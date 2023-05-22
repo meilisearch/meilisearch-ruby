@@ -149,12 +149,9 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'fails when updating with wrong ranking rules name' do
-      task = index.update_ranking_rules(wrong_ranking_rules)
-      task = client.wait_for_task(task['taskUid'])
-
-      expect(task['type']).to eq('settingsUpdate')
-      expect(task.keys).to include('error')
-      expect(task['error']['code']).to eq('invalid_ranking_rule')
+      expect do
+        index.update_ranking_rules(wrong_ranking_rules)
+      end.to raise_meilisearch_api_error_with(400, 'invalid_settings_ranking_rules', 'invalid_request')
     end
 
     it 'resets ranking rules' do
@@ -437,7 +434,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'returns an error when the body is invalid' do
       expect do
         index.update_stop_words(test: 'test')
-      end.to raise_bad_request_meilisearch_api_error
+      end.to raise_meilisearch_api_error_with(400, 'invalid_settings_stop_words', 'invalid_request')
     end
 
     it 'resets stop-words' do
@@ -628,7 +625,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       task = client.wait_for_task(task['taskUid'])
 
       expect(task.keys).to include('error')
-      expect(task['error']['code']).to eq('primary_key_inference_failed')
+      expect(task['error']['code']).to eq('index_primary_key_no_candidate_found')
     end
 
     it 'adds documents when there is a primary-key' do
