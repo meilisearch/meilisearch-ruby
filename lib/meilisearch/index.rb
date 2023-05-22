@@ -155,19 +155,21 @@ module MeiliSearch
 
     # Public: Delete documents from an index
     #
-    # documents_ids - An array with document ids (deprecated, optional)
-    # filter - A hash containing a filter that should match documents.
-    #          Available ONLY with Meilisearch v1.2 and newer (optional)
+    # options: A Hash or an Array containing documents_ids or a hash with filter:.
+    #   filter: - A hash containing a filter that should match documents.
+    #             Available ONLY with Meilisearch v1.2 and newer (optional)
     #
     # Returns a Task object.
-    def delete_documents(documents_ids = nil, filter: nil)
+    def delete_documents(options = {})
       Utils.version_error_handler(__method__) do
-        if documents_ids.nil?
-          http_post "/indexes/#{@uid}/documents/delete", { filter: filter }
+        if options.is_a?(Hash) && options.key?(:filter)
+          http_post "/indexes/#{@uid}/documents/delete", options
         else
-          documents_ids = [documents_ids] unless documents_ids.is_a?(Array)
+          # backwards compatibility:
+          # expect to be a array or/number/string to send alongside as documents_ids.
+          options = [options] unless options.is_a?(Array)
 
-          http_post "/indexes/#{@uid}/documents/delete-batch", documents_ids
+          http_post "/indexes/#{@uid}/documents/delete-batch", options
         end
       end
     end
