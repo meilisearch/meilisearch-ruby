@@ -63,14 +63,13 @@ module MeiliSearch
     alias get_document document
     alias get_one_document document
 
-
     # Public: Retrieve documents from a index.
     #
     # options - The hash options used to refine the selection (default: {}):
     #           :limit  - Number of documents to return (optional).
     #           :offset - Number of documents to skip (optional).
     #           :fields - Array of document attributes to show (optional).
-    #           :filter - Filter queries by an attribute's value. 
+    #           :filter - Filter queries by an attribute's value.
     #                     Available ONLY with Meilisearch v1.2 and newer (optional).
     #
     # Returns the documents results object.
