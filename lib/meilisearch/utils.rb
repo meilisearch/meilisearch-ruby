@@ -23,8 +23,12 @@ module MeiliSearch
         end
     end
 
+    def self.filter(original_options, allowed_params = [])
+      original_options.transform_keys(&:to_sym).slice(*allowed_params)
+    end
+
     def self.parse_query(original_options, allowed_params = [])
-      only_allowed_params = original_options.transform_keys(&:to_sym).slice(*allowed_params)
+      only_allowed_params = filter(original_options, allowed_params)
 
       Utils.transform_attributes(only_allowed_params).then do |body|
         body.transform_values do |v|
