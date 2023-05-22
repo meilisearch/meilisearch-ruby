@@ -59,7 +59,7 @@ RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
     expect(response['hits'].first).not_to have_key('objectId')
     expect(response['hits'].first).not_to have_key('genre')
     expect(response['hits'].first).to have_key('title')
-    expect(response['hits'].first['_formatted']['title']).to eq('Harry Potter and the Half-Blood <em>Princ</em>e')
+    expect(response['hits'].first['_formatted']['title']).to eq('Harry Potter and the Half-Blood <em>Prince</em>')
   end
 
   it 'does a custom search with facets and limit' do
