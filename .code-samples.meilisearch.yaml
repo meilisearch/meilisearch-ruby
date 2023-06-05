@@ -95,8 +95,6 @@ delete_an_index_1: |-
   client.delete_index('movies')
 get_one_document_1: |-
   client.index('movies').document(25684, fields: ['id', 'title', 'poster', 'release_date'])
-get_documents_1: |-
-  client.index('movies').documents(limit: 2)
 primary_field_guide_add_document_primary_key: |-
   client.index('books').add_documents([
     {
