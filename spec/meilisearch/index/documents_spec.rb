@@ -37,15 +37,15 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       end
 
       it 'adds JSON documents (as a array of documents)' do
-        documents = <<JSON
-        [
-          { "objectRef": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" },
-          { "objectRef": 456,  "title": "Le Petit Prince",                        "comment": "A french book" },
-          { "objectRef": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" },
-          { "objectRef": 1344, "title": "The Hobbit",                             "comment": "An awesome book" },
-          { "objectRef": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
-        ]
-JSON
+        documents = <<~JSON
+          [
+            { "objectRef": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" },
+            { "objectRef": 456,  "title": "Le Petit Prince",                        "comment": "A french book" },
+            { "objectRef": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" },
+            { "objectRef": 1344, "title": "The Hobbit",                             "comment": "An awesome book" },
+            { "objectRef": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
+          ]
+        JSON
         response = index.add_documents_json(documents, 'objectRef')
 
         index.wait_for_task(response['taskUid'])
@@ -53,12 +53,12 @@ JSON
       end
 
       it 'adds NDJSON documents (as a array of documents)' do
-        documents = <<NDJSON
-        { "objectRef": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" }
-        { "objectRef": 456,  "title": "Le Petit Prince",                        "comment": "A french book" }
-        { "objectRef": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" }
-        { "objectRef": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
-NDJSON
+        documents = <<~NDJSON
+          { "objectRef": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" }
+          { "objectRef": 456,  "title": "Le Petit Prince",                        "comment": "A french book" }
+          { "objectRef": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" }
+          { "objectRef": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
+        NDJSON
         response = index.add_documents_ndjson(documents, 'objectRef')
 
         index.wait_for_task(response['taskUid'])
@@ -196,7 +196,12 @@ NDJSON
     end
 
     describe 'accessing documents' do
-      before { index.add_documents!(documents) }
+      before do
+        index.add_documents(documents)
+
+        task = index.update_filterable_attributes(['title', 'objectId'])
+        client.wait_for_task(task['taskUid'])
+      end
 
       it 'gets one document from its primary-key' do
         task = index.document(123)
@@ -226,6 +231,25 @@ NDJSON
         docs = index.documents(fields: ['title'])['results']
 
         expect(docs).to be_a(Array)
+        expect(docs.first.keys).to eq(['title'])
+      end
+
+      it 'retrieves documents by filters' do
+        docs = index.documents(filter: 'objectId > 400')['results']
+
+        expect(docs).to be_a(Array)
+        expect(docs.first).to eq({
+                                   'objectId' => 456,
+                                   'title' => 'Le Petit Prince',
+                                   'comment' => 'A french book'
+                                 })
+      end
+
+      it 'retrieves documents by filters & other parameters' do
+        docs = index.documents(fields: ['title'], filter: 'objectId > 100')['results']
+
+        expect(docs).to be_a(Array)
+        expect(docs.size).to eq(3)
         expect(docs.first.keys).to eq(['title'])
       end
     end
@@ -388,6 +412,23 @@ NDJSON
           client.wait_for_task(task['taskUid'])
         end.to(change { index.documents['results'].size }.by(-1))
         expect { index.document(id) }.to raise_document_not_found_meilisearch_api_error
+      end
+
+      it 'deletes documents based on filter from index (with delete route)' do
+        expect do
+          index.update_filterable_attributes(['objectId'])
+          task = index.delete_documents(filter: ['objectId > 0'])
+
+          client.wait_for_task(task['taskUid'])
+        end.to(change { index.documents['results'].size }.by(-documents.size))
+      end
+
+      it 'ignores filter even when documents_ids is empty (with delete-batch route)' do
+        expect do
+          task = index.delete_documents(filter: ['objectId > 0'])
+
+          client.wait_for_task(task['taskUid'])
+        end.to(change { index.documents['results'].size }.by(0))
       end
 
       it 'deletes one document synchronously from index (with delete-batch route)' do
