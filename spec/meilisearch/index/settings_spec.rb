@@ -34,7 +34,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'On global settings routes' do
     let(:index) { client.index(uid) }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid, wait: true) }
 
     it 'gets default values of settings' do
       settings = index.settings
@@ -121,7 +121,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     let(:ranking_rules) { ['title:asc', 'words', 'typo'] }
     let(:wrong_ranking_rules) { ['title:asc', 'typos'] }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid, wait: true) }
 
     it 'gets default values of ranking rules' do
       settings = index.ranking_rules
@@ -172,7 +172,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     let(:distinct_attribute) { 'title' }
 
     it 'gets default values of distinct attribute' do
-      client.create_index!(uid)
+      client.create_index(uid, wait: true)
       settings = index.distinct_attribute
 
       expect(settings).to be_nil
@@ -216,7 +216,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     let(:index) { client.index(uid) }
     let(:searchable_attributes) { ['title', 'description'] }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid, wait: true) }
 
     it 'gets default values of searchable attributes' do
       settings = index.searchable_attributes
@@ -263,7 +263,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     let(:index) { client.index(uid) }
     let(:displayed_attributes) { ['title', 'description'] }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid, wait: true) }
 
     it 'gets default values of displayed attributes' do
       settings = index.displayed_attributes
@@ -317,7 +317,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       }
     end
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid, wait: true) }
 
     it 'gets an empty hash of synonyms by default' do
       settings = index.synonyms
@@ -383,7 +383,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     let(:stop_words_array) { ['the', 'of'] }
     let(:stop_words_string) { 'a' }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid, wait: true) }
 
     it 'gets an empty array when there is no stop-words' do
       settings = index.stop_words
@@ -457,7 +457,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     let(:index) { client.index(uid) }
     let(:filterable_attributes) { ['title', 'description'] }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid, wait: true) }
 
     it 'gets default values of filterable attributes' do
       settings = index.filterable_attributes
@@ -505,7 +505,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     let(:index) { client.index(uid) }
     let(:sortable_attributes) { ['title', 'description'] }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid, wait: true) }
 
     it 'gets default values of sortable attributes' do
       settings = index.sortable_attributes
@@ -552,7 +552,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'Index with primary-key' do
     let(:index) { client.index(uid) }
 
-    before { client.create_index!(uid, primaryKey: 'id') }
+    before { client.create_index(uid, primaryKey: 'id', wait: true) }
 
     it 'gets the default values of settings' do
       settings = index.settings
@@ -621,7 +621,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     let(:index) { client.index(random_uid) }
 
     it 'does not add document when there is no primary-key' do
-      task = index.add_documents(title: 'Test')
+      task = index.add_documents({ title: 'Test' })
       task = client.wait_for_task(task['taskUid'])
 
       expect(task.keys).to include('error')
@@ -629,7 +629,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'adds documents when there is a primary-key' do
-      task = index.add_documents(objectId: 1, title: 'Test')
+      task = index.add_documents({ objectId: 1, title: 'Test' })
 
       client.wait_for_task(task['taskUid'])
       expect(index.documents['results'].count).to eq(1)
@@ -660,7 +660,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'Aliases' do
     let(:index) { client.index(uid) }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid, wait: true) }
 
     it 'works with method aliases' do
       expect(index.method(:settings) == index.method(:get_settings)).to be_truthy
@@ -684,7 +684,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     let(:index) { client.index(uid) }
     let(:pagination) { { maxTotalHits: 3141 } }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid, wait: true) }
 
     it 'gets default values of pagination' do
       settings = index.pagination.transform_keys(&:to_sym)
@@ -748,7 +748,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       }
     end
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid, wait: true) }
 
     it 'gets default typo tolerance settings' do
       settings = index.typo_tolerance
@@ -779,7 +779,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     let(:faceting) { { maxValuesPerFacet: 333 } }
     let(:default_faceting) { { maxValuesPerFacet: 100 } }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid, wait: true) }
 
     it 'gets default values of faceting' do
       settings = index.faceting.transform_keys(&:to_sym)

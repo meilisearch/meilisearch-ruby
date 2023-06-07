@@ -107,7 +107,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       end
 
       it 'adds documents synchronously (as an array of documents)' do
-        task = index.add_documents!(documents)
+        task = index.add_documents(documents, wait: true)
 
         expect(task).to have_key('status')
         expect(task['status']).not_to eql('enqueued')
@@ -116,7 +116,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       end
 
       it 'adds document batches synchronously (as an array of documents)' do
-        task = index.add_documents_in_batches!(documents, 5)
+        task = index.add_documents_in_batches(documents, 5, wait: true)
         expect(task).to be_a(Array)
         expect(task.count).to eq(2) # 2 batches, since we start with 5 < documents.count <= 10 documents
         task.each do |task_object|
@@ -129,13 +129,13 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       end
 
       it 'infers order of fields' do
-        index.add_documents!(documents)
+        index.add_documents(documents, wait: true)
         task = index.document(1)
         expect(task.keys).to eq(['objectId', 'title', 'comment'])
       end
 
       it 'slices response fields' do
-        index.add_documents!(documents)
+        index.add_documents(documents, wait: true)
 
         task = index.document(1, fields: ['title'])
 
@@ -143,7 +143,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       end
 
       it 'infers primary-key attribute' do
-        index.add_documents!(documents)
+        index.add_documents(documents, wait: true)
         expect(index.fetch_primary_key).to eq('objectId')
       end
 
@@ -158,10 +158,10 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
 
       it 'adds only one document to index (as an hash of one document)' do
         new_doc = { objectId: 30, title: 'Hamlet' }
-        client.create_index!('books')
+        client.create_index('books', wait: true)
         new_index = client.index('books')
         expect do
-          new_index.add_documents!(new_doc)
+          new_index.add_documents(new_doc, wait: true)
 
           expect(new_index.document(30)['title']).to eq('Hamlet')
         end.to(change { new_index.documents['results'].length }.by(1))
@@ -169,10 +169,10 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
 
       it 'adds only one document synchronously to index (as an hash of one document)' do
         new_doc = { objectId: 30, title: 'Hamlet' }
-        client.create_index!('books')
+        client.create_index('books', wait: true)
         new_index = client.index('books')
         expect do
-          task = new_index.add_documents!(new_doc)
+          task = new_index.add_documents(new_doc, wait: true)
 
           expect(task).to have_key('status')
           expect(task['status']).to eq('succeeded')
@@ -181,15 +181,15 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       end
 
       it 'fails to add document with bad primary-key format' do
-        index.add_documents!(documents)
-        task = index.add_documents(objectId: 'toto et titi', title: 'Unknown')
+        index.add_documents(documents, wait: true)
+        task = index.add_documents({ objectId: 'toto et titi', title: 'Unknown' })
         client.wait_for_task(task['taskUid'])
         expect(index.task(task['taskUid'])['status']).to eq('failed')
       end
 
       it 'fails to add document with no primary-key' do
-        index.add_documents!(documents)
-        task = index.add_documents(id: 0, title: 'Unknown')
+        index.add_documents(documents, wait: true)
+        task = index.add_documents({ id: 0, title: 'Unknown' })
         client.wait_for_task(task['taskUid'])
         expect(index.task(task['taskUid'])['status']).to eq('failed')
       end
@@ -255,7 +255,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     end
 
     describe 'updating documents' do
-      before { index.add_documents!(documents) }
+      before { index.add_documents(documents, wait: true) }
 
       it 'updates documents in index (as an array of documents)' do
         id1 = 123
@@ -282,7 +282,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
           { objectId: id1,  title: 'Sense and Sensibility' },
           { objectId: id2,  title: 'The Little Prince' }
         ]
-        task = index.update_documents!(updated_documents)
+        task = index.update_documents(updated_documents, wait: true)
 
         expect(task).to have_key('status')
         expect(task['status']).not_to eql('enqueued')
@@ -303,7 +303,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
           { objectId: id1,  title: 'Sense and Sensibility' },
           { objectId: id2,  title: 'The Little Prince' }
         ]
-        task = index.update_documents_in_batches!(updated_documents, 1)
+        task = index.update_documents_in_batches(updated_documents, 1, wait: true)
         expect(task).to be_a(Array)
         expect(task.count).to eq(2) # 2 batches, since we have two items with batch size 1
         task.each do |task_object|
@@ -336,7 +336,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       it 'updates one document synchronously in index (as an hash of one document)' do
         id = 123
         updated_document = { objectId: id, title: 'Emma' }
-        task = index.update_documents!(updated_document)
+        task = index.update_documents(updated_document, wait: true)
 
         expect(task).to have_key('status')
         expect(task['status']).not_to eql('enqueued')
@@ -362,7 +362,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       it 'replaces document' do
         id = 123
         new_title = 'Pride & Prejudice'
-        task = index.replace_documents(objectId: id, title: 'Pride & Prejudice', note: '8.5/10')
+        task = index.replace_documents({ objectId: id, title: 'Pride & Prejudice', note: '8.5/10' })
 
         client.wait_for_task(task['taskUid'])
         expect(index.documents['results'].count).to eq(documents.count)
@@ -374,7 +374,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     end
 
     describe 'deleting documents' do
-      before { index.add_documents!(documents) }
+      before { index.add_documents(documents, wait: true) }
 
       it 'deletes one document from index' do
         id = 456
@@ -387,7 +387,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
 
       it 'deletes one document synchronously from index' do
         id = 456
-        task = index.delete_document!(id)
+        task = index.delete_document(id, wait: true)
 
         expect(task).to have_key('status')
         expect(task['status']).not_to eql('enqueued')
@@ -417,7 +417,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       it 'deletes documents based on filter from index (with delete route)' do
         expect do
           index.update_filterable_attributes(['objectId'])
-          task = index.delete_documents(filter: ['objectId > 0'])
+          task = index.delete_documents({ filter: ['objectId > 0'] })
 
           client.wait_for_task(task['taskUid'])
         end.to(change { index.documents['results'].size }.by(-documents.size))
@@ -425,7 +425,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
 
       it 'ignores filter even when documents_ids is empty (with delete-batch route)' do
         expect do
-          task = index.delete_documents(filter: ['objectId > 0'])
+          task = index.delete_documents({ filter: ['objectId > 0'] })
 
           client.wait_for_task(task['taskUid'])
         end.to(change { index.documents['results'].size }.by(0))
@@ -434,7 +434,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       it 'deletes one document synchronously from index (with delete-batch route)' do
         id = 2
         expect do
-          task = index.delete_documents!(id)
+          task = index.delete_documents(id, wait: true)
 
           expect(task['status']).not_to eql('enqueued')
           expect(task['status']).to eql('succeeded')
@@ -454,7 +454,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       it 'deletes one document synchronously from index (with delete-batch route as an array of one uid)' do
         id = 123
         expect do
-          task = index.delete_documents!([id])
+          task = index.delete_documents([id], wait: true)
 
           expect(task['status']).not_to eql('enqueued')
           expect(task['status']).to eql('succeeded')
@@ -473,7 +473,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       it 'deletes multiples documents synchronously from index' do
         docs_to_delete = [1, 4]
         expect do
-          task = index.delete_documents!(docs_to_delete)
+          task = index.delete_documents(docs_to_delete, wait: true)
 
           expect(task['status']).not_to eql('enqueued')
           expect(task['status']).to eql('succeeded')
@@ -489,7 +489,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       end
 
       it 'clears all documents synchronously from index' do
-        task = index.delete_all_documents!
+        task = index.delete_all_documents(wait: true)
 
         expect(task).to have_key('status')
         expect(task['status']).not_to eql('enqueued')
@@ -528,7 +528,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     end
 
     it 'does not take into account the new primary key' do
-      index.add_documents!(documents, 'unique')
+      index.add_documents(documents, 'unique', wait: true)
       task = index.update_documents({
                                       unique: 3,
                                       id: 1,
@@ -576,7 +576,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     end
 
     it 'Impossible to push docs if the pk is missing' do
-      task = index.add_documents!(documents)
+      task = index.add_documents(documents, wait: true)
       update = index.task(task['uid'])
       expect(update['status']).to eq('failed')
       expect(update['error']['code']).to eq('index_primary_key_no_candidate_found')

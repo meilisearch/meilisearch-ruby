@@ -32,16 +32,14 @@ module MeiliSearch
     # Usage:
     # client.create_index('indexUID')
     # client.create_index('indexUID', primaryKey: 'id')
+    # client.create_index('indexUID', primaryKey: 'id', wait: true)
     def create_index(index_uid, options = {})
+      wait = options.delete(:wait) { false }
       body = Utils.transform_attributes(options.merge(uid: index_uid))
 
-      http_post '/indexes', body
-    end
+      task = http_post '/indexes', body
+      return task unless wait
 
-    # Synchronous version of create_index.
-    # Waits for the task to be achieved, be careful when using it.
-    def create_index!(index_uid, options = {})
-      task = create_index(index_uid, options)
       wait_for_task(task['taskUid'])
     end
 

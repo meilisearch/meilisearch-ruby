@@ -5,7 +5,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
 
   let(:enqueued_task_keys) { ['uid', 'indexUid', 'status', 'type', 'enqueuedAt'] }
   let(:succeeded_task_keys) { [*enqueued_task_keys, 'details', 'duration', 'startedAt', 'finishedAt'] }
-  let!(:doc_addition_task) { index.add_documents!(documents) }
+  let!(:doc_addition_task) { index.add_documents(documents, wait: true) }
   let(:task_uid) { doc_addition_task['uid'] }
 
   it 'gets a task of an index' do
@@ -118,7 +118,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
 
   describe '#client.wait_for_task' do
     it 'waits for task with default values' do
-      task = index.add_documents!(documents)
+      task = index.add_documents(documents, wait: true)
       task = client.wait_for_task(task['taskUid'])
 
       expect(task).to be_a(Hash)

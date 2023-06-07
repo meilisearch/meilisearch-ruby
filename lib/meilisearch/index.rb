@@ -84,19 +84,15 @@ module MeiliSearch
     end
     alias get_documents documents
 
-    def add_documents(documents, primary_key = nil)
+    def add_documents(documents, primary_key = nil, wait: false)
       documents = [documents] if documents.is_a?(Hash)
-      http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
+      task = http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
+      return task unless wait
+
+      wait_for_task(task['taskUid'])
     end
     alias replace_documents add_documents
     alias add_or_replace_documents add_documents
-
-    def add_documents!(documents, primary_key = nil)
-      task = add_documents(documents, primary_key)
-      wait_for_task(task['taskUid'])
-    end
-    alias replace_documents! add_documents!
-    alias add_or_replace_documents! add_documents!
 
     def add_documents_json(documents, primary_key = nil)
       options = { convert_body?: false }
@@ -123,50 +119,31 @@ module MeiliSearch
     alias replace_documents_csv add_documents_csv
     alias add_or_replace_documents_csv add_documents_csv
 
-    def update_documents(documents, primary_key = nil)
+    def update_documents(documents, primary_key = nil, wait: false)
       documents = [documents] if documents.is_a?(Hash)
-      http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
+      task = http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
+      return task unless wait
+
+      wait_for_task(task['taskUid'])
     end
     alias add_or_update_documents update_documents
 
-    def update_documents!(documents, primary_key = nil)
-      task = update_documents(documents, primary_key)
-      wait_for_task(task['taskUid'])
-    end
-    alias add_or_update_documents! update_documents!
+    def add_documents_in_batches(documents, batch_size = 1000, primary_key = nil, wait: false)
+      tasks = documents.each_slice(batch_size).map do |batch|
+        add_documents(batch, primary_key)
+      end.flatten
+      return tasks unless wait
 
-    def add_documents_in_batches(documents, batch_size = 1000, primary_key = nil)
-      tasks = []
-      documents.each_slice(batch_size) do |batch|
-        tasks.append(add_documents(batch, primary_key))
-      end
-      tasks
+      tasks.map { |task| wait_for_task(task['taskUid']) }
     end
 
-    def add_documents_in_batches!(documents, batch_size = 1000, primary_key = nil)
-      tasks = add_documents_in_batches(documents, batch_size, primary_key)
-      responses = []
-      tasks.each do |task_obj|
-        responses.append(wait_for_task(task_obj['taskUid']))
+    def update_documents_in_batches(documents, batch_size = 1000, primary_key = nil, wait: false)
+      tasks = documents.each_slice(batch_size).map do |batch|
+        update_documents(batch, primary_key)
       end
-      responses
-    end
+      return tasks unless wait
 
-    def update_documents_in_batches(documents, batch_size = 1000, primary_key = nil)
-      tasks = []
-      documents.each_slice(batch_size) do |batch|
-        tasks.append(update_documents(batch, primary_key))
-      end
-      tasks
-    end
-
-    def update_documents_in_batches!(documents, batch_size = 1000, primary_key = nil)
-      tasks = update_documents_in_batches(documents, batch_size, primary_key)
-      responses = []
-      tasks.each do |task_obj|
-        responses.append(wait_for_task(task_obj['taskUid']))
-      end
-      responses
+      tasks.map { |task| wait_for_task(task['taskUid']) }
     end
 
     # Public: Delete documents from an index
@@ -176,9 +153,10 @@ module MeiliSearch
     #             Available ONLY with Meilisearch v1.2 and newer (optional)
     #
     # Returns a Task object.
-    def delete_documents(options = {})
-      Utils.version_error_handler(__method__) do
+    def delete_documents(options = {}, wait: false)
+      task = Utils.version_error_handler(__method__) do
         if options.is_a?(Hash) && options.key?(:filter)
+          wait = options.delete(:wait) { false }
           http_post "/indexes/#{@uid}/documents/delete", options
         else
           # backwards compatibility:
@@ -188,33 +166,25 @@ module MeiliSearch
           http_post "/indexes/#{@uid}/documents/delete-batch", options
         end
       end
+      return task unless wait
+
+      wait_for_task(task['taskUid'])
     end
     alias delete_multiple_documents delete_documents
 
-    def delete_documents!(documents_ids)
-      task = delete_documents(documents_ids)
-      wait_for_task(task['taskUid'])
-    end
-    alias delete_multiple_documents! delete_documents!
-
-    def delete_document(document_id)
+    def delete_document(document_id, wait: false)
       encode_document = URI.encode_www_form_component(document_id)
-      http_delete "/indexes/#{@uid}/documents/#{encode_document}"
+      task = http_delete "/indexes/#{@uid}/documents/#{encode_document}"
+      return task unless wait
+
+      wait_for_task(task['taskUid'])
     end
     alias delete_one_document delete_document
 
-    def delete_document!(document_id)
-      task = delete_document(document_id)
-      wait_for_task(task['taskUid'])
-    end
-    alias delete_one_document! delete_document!
+    def delete_all_documents(wait: false)
+      task = http_delete "/indexes/#{@uid}/documents"
+      return task unless wait
 
-    def delete_all_documents
-      http_delete "/indexes/#{@uid}/documents"
-    end
-
-    def delete_all_documents!
-      task = delete_all_documents
       wait_for_task(task['taskUid'])
     end
 
