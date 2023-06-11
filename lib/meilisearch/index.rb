@@ -153,7 +153,7 @@ module MeiliSearch
     #             Available ONLY with Meilisearch v1.2 and newer (optional)
     #
     # Returns a Task object.
-    def delete_documents(options = {}, wait: false)
+    def delete_documents(options, wait: false)
       task = Utils.version_error_handler(__method__) do
         if options.is_a?(Hash) && options.key?(:filter)
           wait = options.delete(:wait) { false }
