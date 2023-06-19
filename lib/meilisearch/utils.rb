@@ -23,8 +23,12 @@ module MeiliSearch
         end
     end
 
+    def self.filter(original_options, allowed_params = [])
+      original_options.transform_keys(&:to_sym).slice(*allowed_params)
+    end
+
     def self.parse_query(original_options, allowed_params = [])
-      only_allowed_params = original_options.transform_keys(&:to_sym).slice(*allowed_params)
+      only_allowed_params = filter(original_options, allowed_params)
 
       Utils.transform_attributes(only_allowed_params).then do |body|
         body.transform_values do |v|
@@ -33,6 +37,21 @@ module MeiliSearch
       end
     end
 
-    private_class_method :parse
+    def self.message_builder(current_message, method_name)
+      "#{current_message}\nHint: It might not be working because maybe you're not up " \
+        "to date with the Meilisearch version that `#{method_name}` call requires."
+    end
+
+    def self.version_error_handler(method_name)
+      yield if block_given?
+    rescue MeiliSearch::ApiError => e
+      message = message_builder(e.http_message, method_name)
+
+      raise MeiliSearch::ApiError.new(e.http_code, message, e.http_body)
+    rescue StandardError => e
+      raise e.class, message_builder(e.message, method_name)
+    end
+
+    private_class_method :parse, :message_builder
   end
 end

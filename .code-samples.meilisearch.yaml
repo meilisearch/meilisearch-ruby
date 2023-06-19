@@ -3,6 +3,16 @@
 # the documentation on build
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
+get_documents_post_1: |-
+  client.index('books').get_documents(
+    filter: '(rating > 3 AND (genres = Adventure OR genres = Fiction)) AND language = English', 
+    limit: 3, 
+    fields: ['title', 'genres', 'rating', 'language']
+  )
+delete_documents_by_filter_1: |-
+  client.index('movies').get_documents(filter: 'genres = action OR genres adventure')
+get_documents_1: |- 
+  client.index('movies').get_documents(limit: 2, filter: 'genres = action')
 getting_started_faceting: |-
   client.index('movies').update_faceting(max_values_per_facet: 2)
 getting_started_pagination: |-
@@ -85,8 +95,6 @@ delete_an_index_1: |-
   client.delete_index('movies')
 get_one_document_1: |-
   client.index('movies').document(25684, fields: ['id', 'title', 'poster', 'release_date'])
-get_documents_1: |-
-  client.index('movies').documents(limit: 2)
 primary_field_guide_add_document_primary_key: |-
   client.index('books').add_documents([
     {
@@ -119,7 +127,7 @@ delete_all_documents_1: |-
   client.index('movies').delete_all_documents
 delete_one_document_1: |-
   client.index('movies').delete_document(25684)
-delete_documents_1: |-
+delete_documents_by_batch_1: |-
   client.index('movies').delete_documents([23488, 153738, 437035, 363869])
 search_post_1: |-
   client.index('movies').search('american ninja')
