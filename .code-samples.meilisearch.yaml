@@ -346,7 +346,7 @@ documents_guide_add_movie_1: |-
     movie_id: '123sq178',
     title: 'Amelie Poulain'
   }])
-getting_started_add_documents_md: |-
+PLEASE_UPDATE_ME>>>>>>>>>>>>>getting_started_add_documents_md: |-
   ```bash
   $ bundle add meilisearch
   ```
