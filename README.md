@@ -217,7 +217,7 @@ The following sections in our main documentation website may interest you:
 - **Manage the indexes**: see the [API references](https://www.meilisearch.com/docs/reference/api/indexes) or read more about [indexes](https://www.meilisearch.com/docs/learn/core_concepts/indexes).
 - **Configure the index settings**: see the [API references](https://www.meilisearch.com/docs/reference/api/settings) or follow our guide on [settings parameters](https://www.meilisearch.com/docs/reference/api/settings).
 
-📖 Also, check out the [Wiki](https://github.com/meilisearch/meilisearch-ruby/wiki) of this repository to know what this SDK provdes!
+📖 Also, check out the [Wiki](https://github.com/meilisearch/meilisearch-ruby/wiki) of this repository to know what this SDK provides!
 
 ## ⚙️ Contributing
 
