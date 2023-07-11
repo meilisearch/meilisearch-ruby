@@ -355,7 +355,7 @@ getting_started_add_documents_md: |-
   require 'json'
   require 'meilisearch'
 
-  client = MeiliSearch::Client.new('http://localhost:7700')
+  client = MeiliSearch::Client.new('http://localhost:7700', 'aSampleMasterKey')
 
   movies_json = File.read('movies.json')
   movies = JSON.parse(movies_json)
