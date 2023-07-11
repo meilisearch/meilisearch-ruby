@@ -346,7 +346,7 @@ documents_guide_add_movie_1: |-
     movie_id: '123sq178',
     title: 'Amelie Poulain'
   }])
-PLEASE_UPDATE_ME>>>>>>>>>>>>>getting_started_add_documents_md: |-
+getting_started_add_documents_md: |-
   ```bash
   $ bundle add meilisearch
   ```
@@ -355,7 +355,7 @@ PLEASE_UPDATE_ME>>>>>>>>>>>>>getting_started_add_documents_md: |-
   require 'json'
   require 'meilisearch'
 
-  client = MeiliSearch::Client.new('http://localhost:7700')
+  client = MeiliSearch::Client.new('http://localhost:7700', 'aSampleMasterKey')
 
   movies_json = File.read('movies.json')
   movies = JSON.parse(movies_json)
