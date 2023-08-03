@@ -17,16 +17,16 @@ jobs:
     name: integration-tests-against-rc (ruby ${{ matrix.ruby-version }})
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby-version }}
-    - name: Install ruby dependencies
-      run: bundle install --with test
-    - name: Get the latest Meilisearch RC
-      run: echo "MEILISEARCH_VERSION=$(curl https://raw.githubusercontent.com/meilisearch/integration-guides/main/scripts/get-latest-meilisearch-rc.sh | bash)" >> $GITHUB_ENV
-    - name: Meilisearch (${{ env.MEILISEARCH_VERSION }}) setup with Docker
-      run: docker run -d -p 7700:7700 getmeili/meilisearch:${{ env.MEILISEARCH_VERSION }} meilisearch --master-key=masterKey --no-analytics
-    - name: Run test suite
-      run: bundle exec rspec
+      - uses: actions/checkout@v3
+      - name: Set up Ruby ${{ matrix.ruby-version }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+      - name: Install ruby dependencies
+        run: bundle install --with test
+      - name: Get the latest Meilisearch RC
+        run: echo "MEILISEARCH_VERSION=$(curl https://raw.githubusercontent.com/meilisearch/integration-guides/main/scripts/get-latest-meilisearch-rc.sh | bash)" >> $GITHUB_ENV
+      - name: Meilisearch (${{ env.MEILISEARCH_VERSION }}) setup with Docker
+        run: docker run -d -p 7700:7700 getmeili/meilisearch:${{ env.MEILISEARCH_VERSION }} meilisearch --master-key=masterKey --no-analytics
+      - name: Run test suite
+        run: bundle exec rspec
