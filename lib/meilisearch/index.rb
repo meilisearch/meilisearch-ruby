@@ -220,6 +220,8 @@ module MeiliSearch
 
     ### SEARCH
 
+    # options: A Hash
+    #   showRankingScore - To see the ranking scores for returned documents
     def search(query, options = {})
       parsed_options = Utils.transform_attributes({ q: query.to_s }.merge(options.compact))
 
