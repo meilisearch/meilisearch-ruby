@@ -18,6 +18,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
     tasks = index.tasks
 
     expect(tasks['results']).to be_a(Array)
+    expect(tasks['total']).to be > 0
 
     last_task = tasks['results'].first
 
@@ -36,6 +37,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
     tasks = client.tasks
 
     expect(tasks['results']).to be_a(Array)
+    expect(tasks['total']).to be > 0
 
     last_task = tasks['results'].first
 
@@ -48,16 +50,19 @@ RSpec.describe 'MeiliSearch::Tasks' do
     expect(tasks['results'].count).to be <= 2
     expect(tasks['from']).to be_a(Integer)
     expect(tasks['next']).to be_a(Integer)
+    expect(tasks['total']).to be > 0
   end
 
   it 'filters tasks with index_uids/types/statuses' do
     tasks = client.tasks(index_uids: ['a-cool-index-name'])
 
     expect(tasks['results'].count).to eq(0)
+    expect(tasks['total']).to eq(0)
 
     tasks = client.tasks(index_uids: ['books'], types: ['documentAdditionOrUpdate'], statuses: ['succeeded'])
 
     expect(tasks['results'].count).to be > 1
+    expect(tasks['total']).to be > 1
   end
 
   it 'ensures supports to all available filters' do
