@@ -221,8 +221,9 @@ module MeiliSearch
     ### SEARCH
 
     def search(query, options = {})
-      parsed_options = Utils.transform_attributes({ q: query.to_s }.merge(options.compact))
+      attributes = { q: query.to_s }.merge(options.compact)
 
+      parsed_options = Utils.transform_attributes(attributes)
       response = http_post "/indexes/#{@uid}/search", parsed_options
 
       response['nbHits'] ||= response['estimatedTotalHits'] unless response.key?('totalPages')

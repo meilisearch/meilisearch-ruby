@@ -8,7 +8,7 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
         description: 'A new key to delete docs',
         actions: ['documents.delete'],
         indexes: ['*'],
-        expiresAt: nil
+        expires_at: nil
       }
     end
     let(:add_docs_key_options) do
@@ -16,7 +16,7 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
         description: 'A new key to add docs',
         actions: ['documents.add'],
         indexes: ['*'],
-        expiresAt: nil
+        expires_at: nil
       }
     end
 
