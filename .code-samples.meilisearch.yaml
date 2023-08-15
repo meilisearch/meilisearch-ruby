@@ -276,14 +276,14 @@ field_properties_guide_displayed_1: |-
     ]
   })
 filtering_guide_1: |-
-  client.index('movies').search('Avengers', { filter: 'release_date > 795484800' })
+  client.index('movie_ratings').search('Avengers', { filter: 'release_date > 795484800' })
 filtering_guide_2: |-
-  client.index('movies').search('Batman', {
+  client.index('movie_ratings').search('Batman', {
     filter: 'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan")'
   })
 filtering_guide_3: |-
-  client.index('movies').search('Planet of the Apes', {
-    filter: 'rating >= 3 AND (NOT director = "Tim Burton")'
+  client.index('movie_ratings').search('Planet of the Apes', {
+    filter: "release_date > 1577884550 AND (NOT director = \"Tim Burton\")"
   })
 filtering_guide_nested_1: |-
   client.index('movies_ratings').search('thriller', {
@@ -401,10 +401,6 @@ faceted_search_2: |-
       filter: [['language = English', 'language = French']]
     }
   ])
-faceted_search_filter_1: |-
-  client.index('movies').search('thriller', {
-    filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
-  })
 faceted_search_facets_1: |-
   client.index('movies').search('Batman', { facets: ['genres'] })
 faceted_search_walkthrough_filter_1: |-
@@ -412,7 +408,7 @@ faceted_search_walkthrough_filter_1: |-
     filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
   })
 faceted_search_update_settings_1: |-
-  client.index('books').update_filterable_attributes(['genres', 'rating', 'language'])
+  client.index('movie_ratings').update_filterable_attributes(['genres', 'rating', 'language'])
 post_dump_1: |-
   client.create_dump
 phrase_search_1: |-
@@ -452,7 +448,7 @@ geosearch_guide_filter_usage_1: |-
 geosearch_guide_filter_usage_2: |-
   client.index('restaurants').search('', { filter: '_geoRadius(45.472735, 9.184019, 2000) AND type = pizza' })
 geosearch_guide_filter_usage_3: |-
-  client.index('restaurants').search('', { filter: ['_geoBoundingBox([45.494181, 9.179175], [45.449484, 9.214024])'] })
+  client.index('restaurants').search('', { filter: ['_geoBoundingBox([45.494181, 9.214024], [45.449484, 9.179175])'] })
 geosearch_guide_sort_settings_1: |-
   client.index('restaurants').update_sortable_attributes(['_geo'])
 geosearch_guide_sort_usage_1: |-

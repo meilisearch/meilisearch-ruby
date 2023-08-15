@@ -15,7 +15,7 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'fetch the raw Hash info of the index' do
-    client.create_index!('books', primaryKey: 'reference_number')
+    client.create_index!('books', primary_key: 'reference_number')
 
     raw_index = client.fetch_raw_index('books')
 
@@ -37,7 +37,7 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'get primary-key of index if it exists' do
-    client.create_index!('index_with_prirmary_key', primaryKey: 'primary_key')
+    client.create_index!('index_with_prirmary_key', primary_key: 'primary_key')
 
     index = client.fetch_index('index_with_prirmary_key')
     expect(index.primary_key).to eq('primary_key')
@@ -54,7 +54,7 @@ RSpec.describe MeiliSearch::Index do
   it 'updates primary-key of index if not defined before' do
     client.create_index!('uid')
 
-    task = client.index('uid').update(primaryKey: 'new_primary_key')
+    task = client.index('uid').update(primary_key: 'new_primary_key')
     expect(task['type']).to eq('indexUpdate')
     client.wait_for_task(task['taskUid'])
 
@@ -70,9 +70,9 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'updates primary-key of index if has been defined before but there is not docs' do
-    client.create_index!('books', primaryKey: 'reference_number')
+    client.create_index!('books', primary_key: 'reference_number')
 
-    task = client.index('books').update(primaryKey: 'international_standard_book_number')
+    task = client.index('books').update(primary_key: 'international_standard_book_number')
     expect(task['type']).to eq('indexUpdate')
     client.wait_for_task(task['taskUid'])
 
@@ -91,7 +91,7 @@ RSpec.describe MeiliSearch::Index do
     index = client.index('uid')
     index.add_documents!({ id: 1, title: 'My Title' })
 
-    task = index.update(primaryKey: 'new_primary_key')
+    task = index.update(primary_key: 'new_primary_key')
     expect(task['type']).to eq('indexUpdate')
     achieved_task = client.wait_for_task(task['taskUid'])
 
@@ -177,7 +177,7 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'works with method aliases' do
-    client.create_index!('uid', primaryKey: 'primary_key')
+    client.create_index!('uid', primary_key: 'primary_key')
 
     index = client.fetch_index('uid')
     expect(index.method(:fetch_primary_key) == index.method(:get_primary_key)).to be_truthy
