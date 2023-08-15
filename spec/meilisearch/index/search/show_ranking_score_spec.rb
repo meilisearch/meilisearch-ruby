@@ -4,7 +4,7 @@ RSpec.describe 'MeiliSearch::Index - Search with ranking score' do
   include_context 'search books with genre'
 
   it 'shows the ranking score when showRankingScore is true' do
-    response = index.search('hobbit', { showRankingScore: true })
+    response = index.search('hobbit', { show_ranking_score: true })
     expect(response['hits'][0]).to have_key('_rankingScore')
   end
 
