@@ -773,7 +773,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       update_task = index.update_faceting({ 'max_values_per_facet' => 333 })
       client.wait_for_task(update_task['taskUid'])
 
-      expect(index.faceting).to eq({ 'maxValuesPerFacet' => 333 })
+      expect(index.faceting['maxValuesPerFacet']).to eq(333)
+      expect(index.faceting.transform_keys(&:to_sym).keys).to include(*default_faceting.keys)
     end
 
     it 'updates faceting at null' do

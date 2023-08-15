@@ -5,12 +5,11 @@ module MeiliSearch
     SNAKE_CASE = /[^a-zA-Z0-9]+(.)/.freeze
 
     def self.transform_attributes(body)
-      warn_on_non_conforming_attribute_names(body)
-
       case body
       when Array
         body.map { |item| transform_attributes(item) }
       when Hash
+        warn_on_non_conforming_attribute_names(body)
         parse(body)
       else
         body
