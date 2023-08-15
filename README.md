@@ -202,7 +202,35 @@ JSON output:
   "offset": 0,
   "processingTimeMs": 0
 }
+
+
 ```
+
+#### Custom Search With attributes on at search time  <!-- omit in toc -->
+
+[Customize attributes to search on at search time](https://www.meilisearch.com/docs/reference/api/search#customize-attributes-to-search-on-at-search-time)).Available ONLY with Meilisearch v1.3 and newer (optional). 
+
+
+you can perform the search :
+
+```ruby
+index.search('wonder', { attributes_to_search_on: ['genres'] })
+```
+
+JSON output:
+
+```json
+{
+  "hits":[],
+  "query":"wonder",
+  "processingTimeMs":0,
+  "limit":20,
+  "offset":0,
+  "estimatedTotalHits":0,
+  "nbHits":0
+}
+```
+
 
 ## 🤖 Compatibility with Meilisearch
 
