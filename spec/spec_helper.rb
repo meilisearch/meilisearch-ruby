@@ -20,8 +20,11 @@
 # it won't be able to track your files and their coverage!
 # The SimpleCov.start must be issued before any of your application code is required!
 require 'simplecov'
+require 'codecov'
+
 SimpleCov.start do
   add_filter %r{^/spec/}
+  formatter SimpleCov::Formatter::Codecov if ENV['CI']
 end
 
 require 'meilisearch'
