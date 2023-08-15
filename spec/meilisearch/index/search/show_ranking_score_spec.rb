@@ -9,7 +9,7 @@ RSpec.describe 'MeiliSearch::Index - Search with ranking score' do
   end
 
   it 'hides the ranking score when showRankingScore is false' do
-    response = index.search('hobbit', { showRankingScore: false })
+    response = index.search('hobbit', { show_ranking_score: false })
     expect(response['hits'][0]).not_to have_key('_rankingScore')
   end
 
