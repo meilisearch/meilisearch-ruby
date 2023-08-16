@@ -335,6 +335,11 @@ search_parameter_guide_matching_strategy_2: |-
   client.index('movies').search('big fat liar', {
     matching_strategy: 'all'
   })
+search_parameter_guide_attributes_to_search_on_1: |-
+  POST 'http://localhost:7700/indexes/movies/search' 
+  with data: { 
+    "q": "adventure", "attributesToSearchOn": ["overview"] 
+  }
 add_movies_json_1: |-
   require 'json'
 

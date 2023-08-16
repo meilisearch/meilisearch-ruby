@@ -220,6 +220,10 @@ module MeiliSearch
 
     ### SEARCH
 
+    # option:
+    # attributes_to_search_on: Customize attributes to search on at search time.
+    # Available ONLY with Meilisearch v1.3 and newer (optional).
+
     def search(query, options = {})
       attributes = { q: query.to_s }.merge(options.compact)
 
