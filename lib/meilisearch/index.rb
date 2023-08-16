@@ -220,7 +220,262 @@ module MeiliSearch
 
     ### SEARCH
     # option:
-    # attributes_to_search_on: Customize attributes to search on at search time. Available ONLY with Meilisearch v1.3 and newer (optional).
+    # attributes_to_search_on: Customize attributes to search on at search time. 
+else
+          # backwards compatibility:
+          # expect to be a array or/number/string to send alongside as documents_ids.
+          options = [options] unless options.is_a?(Array)
+
+
+          http_post "/indexes/#{@uid}/documents/delete-batch", options
+        end
+      end
+    end
+    alias delete_multiple_documents delete_documents
+
+
+    def delete_documents!(documents_ids)
+      task = delete_documents(documents_ids)
+      wait_for_task(task['taskUid'])
+    end
+    alias delete_multiple_documents! delete_documents!
+
+
+    def delete_document(document_id)
+      encode_document = URI.encode_www_form_component(document_id)
+      http_delete "/indexes/#{@uid}/documents/#{encode_document}"
+    end
+    alias delete_one_document delete_document
+
+
+    def delete_document!(document_id)
+      task = delete_document(document_id)
+      wait_for_task(task['taskUid'])
+    end
+    alias delete_one_document! delete_document!
+
+
+    def delete_all_documents
+      http_delete "/indexes/#{@uid}/documents"
+    end
+
+
+    def delete_all_documents!
+      task = delete_all_documents
+      wait_for_task(task['taskUid'])
+    end
+
+
+    ### SEARCH
+    # option:
+    # attributes_to_search_on: Customize attributes to search on at search time. 
+    Available ONLY with Meilisearch v1.3 and newer (optional).
+    def search(query, options = {})
+      parsed_options = Utils.transform_attributes({ q: query.to_s }.merge(options.compact))
+
+
+      response = http_post "/indexes/#{@uid}/search", parsed_options
+
+
+      response['nbHits'] ||= response['estimatedTotalHits'] unless response.key?('totalPages')
+
+
+      response
+    end
+
+
+    ### TASKS
+
+
+    def task_endpoint
+      @task_endpoint ||= Task.new(@base_url, @api_key, @options)
+    end
+    private :task_endpoint
+
+
+    def task(task_uid)
+      task_endpoint.index_task(task_uid)
+    end
+
+
+    def tasks
+task_endpoint.index_tasks(@uid)
+    end
+
+
+    def wait_for_task(task_uid, timeout_in_ms = 5000, interval_in_ms = 50)
+      task_endpoint.wait_for_task(task_uid, timeout_in_ms, interval_in_ms)
+    end
+
+
+    ### STATS
+
+
+    def stats
+      http_get "/indexes/#{@uid}/stats"
+    end
+
+
+    def number_of_documents
+      stats['numberOfDocuments']
+    end
+
+
+    def indexing?
+      stats['isIndexing']
+    end
+
+
+    def field_distribution
+      stats['fieldDistribution']
+    end
+
+
+    ### SETTINGS - GENERAL
+
+
+    def settings
+      http_get "/indexes/#{@uid}/settings"
+    end
+    alias get_settings settings
+
+
+    def update_settings(settings)
+      http_patch "/indexes/#{@uid}/settings", Utils.transform_attributes(settings)
+    end
+    alias settings= update_settings
+
+
+    def reset_settings
+      http_delete "/indexes/#{@uid}/settings"
+    endelse
+          # backwards compatibility:
+          # expect to be a array or/number/string to send alongside as documents_ids.
+          options = [options] unless options.is_a?(Array)
+
+
+          http_post "/indexes/#{@uid}/documents/delete-batch", options
+        end
+      end
+    end
+    alias delete_multiple_documents delete_documents
+
+
+    def delete_documents!(documents_ids)
+      task = delete_documents(documents_ids)
+      wait_for_task(task['taskUid'])
+    end
+    alias delete_multiple_documents! delete_documents!
+
+
+    def delete_document(document_id)
+      encode_document = URI.encode_www_form_component(document_id)
+      http_delete "/indexes/#{@uid}/documents/#{encode_document}"
+    end
+    alias delete_one_document delete_document
+
+
+    def delete_document!(document_id)
+      task = delete_document(document_id)
+      wait_for_task(task['taskUid'])
+    end
+    alias delete_one_document! delete_document!
+
+
+    def delete_all_documents
+      http_delete "/indexes/#{@uid}/documents"
+    end
+
+
+    def delete_all_documents!
+      task = delete_all_documents
+      wait_for_task(task['taskUid'])
+    end
+
+
+    ### SEARCH
+    # option:
+    # attributes_to_search_on: Customize attributes to search on at search time. 
+    # Available ONLY with Meilisearch v1.3 and newer (optional).
+    def search(query, options = {})
+      parsed_options = Utils.transform_attributes({ q: query.to_s }.merge(options.compact))
+
+
+      response = http_post "/indexes/#{@uid}/search", parsed_options
+
+
+      response['nbHits'] ||= response['estimatedTotalHits'] unless response.key?('totalPages')
+
+
+      response
+    end
+
+
+    ### TASKS
+
+
+    def task_endpoint
+      @task_endpoint ||= Task.new(@base_url, @api_key, @options)
+    end
+    private :task_endpoint
+
+
+    def task(task_uid)
+      task_endpoint.index_task(task_uid)
+    end
+
+
+    def tasks
+task_endpoint.index_tasks(@uid)
+    end
+
+
+    def wait_for_task(task_uid, timeout_in_ms = 5000, interval_in_ms = 50)
+      task_endpoint.wait_for_task(task_uid, timeout_in_ms, interval_in_ms)
+    end
+
+
+    ### STATS
+
+
+    def stats
+      http_get "/indexes/#{@uid}/stats"
+    end
+
+
+    def number_of_documents
+      stats['numberOfDocuments']
+    end
+
+
+    def indexing?
+      stats['isIndexing']
+    end
+
+
+    def field_distribution
+      stats['fieldDistribution']
+    end
+
+
+    ### SETTINGS - GENERAL
+
+
+    def settings
+      http_get "/indexes/#{@uid}/settings"
+    end
+    alias get_settings settings
+
+
+    def update_settings(settings)
+      http_patch "/indexes/#{@uid}/settings", Utils.transform_attributes(settings)
+    end
+    alias settings= update_settings
+
+
+    def reset_settings
+      http_delete "/indexes/#{@uid}/settings"
+    end#Available ONLY with Meilisearch v1.3 and newer (optional).
     def search(query, options = {})
       parsed_options = Utils.transform_attributes({ q: query.to_s }.merge(options.compact))
 
