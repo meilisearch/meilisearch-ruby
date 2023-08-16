@@ -23,7 +23,7 @@ Metrics/BlockLength:
 # Offense count: 2
 # Configuration parameters: CountComments, CountAsOne.
 Metrics/ClassLength:
-  Max: 327
+  Max: 328
 
 # Offense count: 1
 # Configuration parameters: Max, CountKeywordArgs.

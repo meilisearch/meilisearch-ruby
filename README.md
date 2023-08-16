@@ -17,6 +17,9 @@
 <p align="center">
   <a href="https://badge.fury.io/rb/meilisearch"><img src="https://badge.fury.io/rb/meilisearch.svg" alt="Latest Stable Version"></a>
   <a href="https://github.com/meilisearch/meilisearch-ruby/actions"><img src="https://github.com/meilisearch/meilisearch-ruby/workflows/Tests/badge.svg" alt="Test"></a>
+  <a href="https://app.codecov.io/gh/meilisearch/meilisearch-ruby/tree/main" >
+    <img src="https://codecov.io/gh/meilisearch/meilisearch-ruby/branch/main/graph/badge.svg?token=9J7LRP11IR"/>
+  </a>
   <a href="https://github.com/meilisearch/meilisearch-ruby/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-informational" alt="License"></a>
   <a href="https://ms-bors.herokuapp.com/repositories/6"><img src="https://bors.tech/images/badge_small.svg" alt="Bors enabled"></a>
 </p>
@@ -104,7 +107,7 @@ documents = [
 index.add_documents(documents) # => { "uid": 0 }
 ```
 
-With the `uid`, you can check the status (`enqueued`, `processing`, `succeeded` or `failed`) of your documents addition using the [task](https://www.meilisearch.com/docs/reference/api/tasks#get-tasks).
+With the `uid`, you can check the status (`enqueued`, `canceled`, `processing`, `succeeded` or `failed`) of your documents addition using the [task](https://www.meilisearch.com/docs/reference/api/tasks#get-tasks).
 
 💡 To customize the `Client`, for example, increasing the default timeout, please check out [this section](https://github.com/meilisearch/meilisearch-ruby/wiki/Client-Options) of the Wiki.
 

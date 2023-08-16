@@ -53,8 +53,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'updates multiples settings at the same time' do
       task = index.update_settings(
-        rankingRules: ['title:asc', 'typo'],
-        distinctAttribute: 'title'
+        ranking_rules: ['title:asc', 'typo'],
+        distinct_attribute: 'title'
       )
 
       expect(task['type']).to eq('settingsUpdate')
@@ -66,7 +66,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'updates one setting without reset the others' do
-      task = index.update_settings(stopWords: ['the'])
+      task = index.update_settings(stop_words: ['the'])
 
       expect(task['type']).to eq('settingsUpdate')
       client.wait_for_task(task['taskUid'])
@@ -79,9 +79,9 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'resets all settings' do
       task = index.update_settings(
-        rankingRules: ['title:asc', 'typo'],
-        distinctAttribute: 'title',
-        stopWords: ['the', 'a'],
+        ranking_rules: ['title:asc', 'typo'],
+        distinct_attribute: 'title',
+        stop_words: ['the', 'a'],
         synonyms: { wow: ['world of warcraft'] }
       )
       client.wait_for_task(task['taskUid'])
@@ -96,23 +96,6 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(settings['distinctAttribute']).to be_nil
       expect(settings['stopWords']).to be_empty
       expect(settings['synonyms']).to be_empty
-    end
-
-    context 'with snake_case options' do
-      it 'does the request with camelCase attributes' do
-        task = index.update_settings(
-          ranking_rules: ['typo'],
-          distinct_ATTribute: 'title',
-          stopWords: ['a']
-        )
-
-        client.wait_for_task(task['taskUid'])
-        settings = index.settings
-
-        expect(settings['rankingRules']).to eq(['typo'])
-        expect(settings['distinctAttribute']).to eq('title')
-        expect(settings['stopWords']).to eq(['a'])
-      end
     end
   end
 
@@ -552,7 +535,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'Index with primary-key' do
     let(:index) { client.index(uid) }
 
-    before { client.create_index!(uid, primaryKey: 'id') }
+    before { client.create_index!(uid, primary_key: 'id') }
 
     it 'gets the default values of settings' do
       settings = index.settings
@@ -568,8 +551,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'updates multiples settings at the same time' do
       task = index.update_settings(
-        rankingRules: ['title:asc', 'typo'],
-        distinctAttribute: 'title'
+        ranking_rules: ['title:asc', 'typo'],
+        distinct_attribute: 'title'
       )
 
       expect(task['type']).to eq('settingsUpdate')
@@ -581,7 +564,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'updates one setting without reset the others' do
-      task = index.update_settings(stopWords: ['the'])
+      task = index.update_settings(stop_words: ['the'])
 
       expect(task['type']).to eq('settingsUpdate')
       client.wait_for_task(task['taskUid'])
@@ -594,9 +577,9 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     it 'resets all settings' do
       task = index.update_settings(
-        rankingRules: ['title:asc', 'typo'],
-        distinctAttribute: 'title',
-        stopWords: ['the'],
+        ranking_rules: ['title:asc', 'typo'],
+        distinct_attribute: 'title',
+        stop_words: ['the'],
         synonyms: {
           wow: ['world of warcraft']
         }
@@ -739,12 +722,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     let(:new_typo_tolerance) do
       {
         'enabled' => true,
-        'minWordSizeForTypos' => {
+        'min_word_size_for_typos' => {
           'oneTypo' => 6,
           'twoTypos' => 10
         },
-        'disableOnWords' => [],
-        'disableOnAttributes' => ['title']
+        'disable_on_words' => [],
+        'disable_on_attributes' => ['title']
       }
     end
 
@@ -760,7 +743,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       update_task = index.update_typo_tolerance(new_typo_tolerance)
       client.wait_for_task(update_task['taskUid'])
 
-      expect(index.typo_tolerance).to eq(new_typo_tolerance)
+      expect(index.typo_tolerance).to eq(MeiliSearch::Utils.transform_attributes(new_typo_tolerance))
     end
 
     it 'resets typo tolerance settings' do
@@ -776,7 +759,6 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
   context 'On faceting' do
     let(:index) { client.index(uid) }
-    let(:faceting) { { maxValuesPerFacet: 333, sortFacetValuesBy: { '*' => 'alpha' } } }
     let(:default_faceting) { { maxValuesPerFacet: 100, sortFacetValuesBy: { '*' => 'alpha' } } }
 
     before { client.create_index!(uid) }
@@ -788,14 +770,15 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'updates faceting' do
-      update_task = index.update_faceting(faceting)
+      update_task = index.update_faceting({ 'max_values_per_facet' => 333 })
       client.wait_for_task(update_task['taskUid'])
 
-      expect(index.faceting.transform_keys(&:to_sym)).to eq(faceting)
+      expect(index.faceting['maxValuesPerFacet']).to eq(333)
+      expect(index.faceting.transform_keys(&:to_sym).keys).to include(*default_faceting.keys)
     end
 
     it 'updates faceting at null' do
-      update_task = index.update_faceting(faceting)
+      update_task = index.update_faceting({ 'max_values_per_facet' => 444 })
       client.wait_for_task(update_task['taskUid'])
 
       update_task = index.update_faceting(nil)
@@ -805,7 +788,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'resets faceting' do
-      update_task = index.update_faceting(faceting)
+      update_task = index.update_faceting({ 'max_values_per_facet' => 444 })
       client.wait_for_task(update_task['taskUid'])
 
       reset_task = index.reset_faceting
