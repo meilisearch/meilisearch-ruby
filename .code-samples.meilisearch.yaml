@@ -335,6 +335,10 @@ search_parameter_guide_matching_strategy_2: |-
   client.index('movies').search('big fat liar', {
     matching_strategy: 'all'
   })
+search_parameter_guide_show_ranking_score_1: |-
+  client.index('movies').search('winter feast', {
+    show_ranking_score: true
+  })
 add_movies_json_1: |-
   require 'json'
 
