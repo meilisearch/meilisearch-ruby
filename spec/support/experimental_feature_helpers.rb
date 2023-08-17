@@ -4,7 +4,7 @@ require 'net/http'
 require 'json'
 
 module ExperimentalFeatureHelpers
-  def enable_scoreDetails(toggle)
+  def enable_score_details(toggle)
     uri = URI("http://#{ENV.fetch('MEILISEARCH_URL', 'localhost')}")
     uri.path = '/experimental-features'
     uri.port = ENV.fetch('MEILISEARCH_PORT', '7700')
