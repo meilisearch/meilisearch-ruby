@@ -193,6 +193,21 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
         client.wait_for_task(task['taskUid'])
         expect(index.task(task['taskUid'])['status']).to eq('failed')
       end
+
+      it 'allows the user to store vectors' do
+        enable_vector_store(true)
+
+        new_doc = { objectId: 123, _vectors: [0.1, 0.2, 0.3] }
+        client.create_index!('vector_test')
+        new_index = client.index('vector_test')
+        expect do
+          new_index.add_documents!(new_doc)
+        end.to(change { new_index.documents['results'].length }.by(1))
+        expect(new_index.document(123)).to have_key('_vectors')
+        expect(new_index.document(123)['_vectors']).to be_a(Array)
+        expect(new_index.document(123)['_vectors'].first).to be_a(Float)
+        expect(new_index.document(123)['_vectors'].first).to eq(0.1)
+      end
     end
 
     describe 'accessing documents' do
