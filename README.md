@@ -207,34 +207,6 @@ JSON output:
 }
 ```
 
-#### Custom Search With attributes on at search time  <!-- omit in toc -->
-
-[Customize attributes to search on at search time](https://www.meilisearch.com/docs/reference/api/search#customize-attributes-to-search-on-at-search-time).
-
-Available ONLY with Meilisearch v1.3 and newer (optional). 
-
-
-you can perform the search :
-
-```ruby
-index.search('wonder', { attributes_to_search_on: ['genres'] })
-```
-
-
-JSON output:
-
-```json
-{
-  "hits":[],
-  "query":"wonder",
-  "processingTimeMs":0,
-  "limit":20,
-  "offset":0,
-  "estimatedTotalHits":0,
-  "nbHits":0
-}
-```
-
 #### Display ranking details at search
 
 JSON output:
@@ -287,9 +259,6 @@ This feature is only available with Meilisearch v1.3 and newer (optional).
 
 [Customize attributes to search on at search time](https://www.meilisearch.com/docs/reference/api/search#customize-attributes-to-search-on-at-search-time).
 
-Available ONLY with Meilisearch v1.3 and newer (optional). 
-
-
 you can perform the search :
 
 ```ruby
@@ -311,53 +280,8 @@ JSON output:
 }
 ```
 
-#### Display ranking details at search
-
-JSON output:
-
-```json
-{
-  "hits": [
-    {
-      "id": 15359,
-      "title": "Wonder Woman",
-      "_rankingScoreDetails": {
-        "words": {
-          "order": 0,
-          "matchingWords": 2,
-          "maxMatchingWords": 2,
-          "score": 1.0
-        },
-        "typo": {
-          "order": 1,
-          "typoCount": 0,
-          "maxTypoCount": 2,
-          "score": 1.0
-        },
-        "proximity": {
-          "order": 2,
-          "score": 1.0
-        },
-        "attribute": {
-          "order": 3,
-          "attributeRankingOrderScore": 0.8181818181818182,
-          "queryWordDistanceScore": 1.0,
-          "score": 0.8181818181818182
-        },
-        "exactness": {
-          "order": 4,
-          "matchType": "exactMatch",
-          "score": 1.0
-        }
-      }
-    }
-  ]
-}
-```
-
-You can enable it by querying PATCH /experimental-features with { "scoreDetails": true }
-
 This feature is only available with Meilisearch v1.3 and newer (optional).
+
 
 ## 🤖 Compatibility with Meilisearch
 
