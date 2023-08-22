@@ -146,4 +146,5 @@ RSpec.configure do |config|
   config.include TaskHelpers
   config.include ExceptionsHelpers
   config.include KeysHelpers
+  config.include ExperimentalFeatureHelpers
 end

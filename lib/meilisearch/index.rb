@@ -220,10 +220,11 @@ module MeiliSearch
 
     ### SEARCH
 
-    # option:
+    # options: A Hash
+    # show_ranking_score - To see the ranking scores for returned documents
     # attributes_to_search_on: Customize attributes to search on at search time.
     # Available ONLY with Meilisearch v1.3 and newer (optional).
-
+ 
     def search(query, options = {})
       attributes = { q: query.to_s }.merge(options.compact)
 
