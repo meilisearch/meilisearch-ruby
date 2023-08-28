@@ -30,6 +30,18 @@
 
 **Meilisearch** is an open-source search engine. [Learn more about Meilisearch.](https://github.com/meilisearch/meilisearch)
 
+----
+⚠️⚠️ **NOTICE: Reduced maintenance & support of this SDK** ⚠️⚠️
+
+*Dear Community,*  
+*We'd like to share some updates regarding the future maintenance of this repository:*
+
+*Our team is small, and our availability will be reduced in the upcoming times. As such, response times might be slower, and less frequent updates can be expected.*
+
+**Seeking immediate support?**  Please join us on [our Discord channel](https://discord.meilisearch.com)!
+
+----
+
 ## Table of Contents <!-- omit in toc -->
 
 - [📖 Documentation](#-documentation)
