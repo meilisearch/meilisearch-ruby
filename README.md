@@ -267,6 +267,34 @@ You can enable it by querying PATCH /experimental-features with { "scoreDetails"
 
 This feature is only available with Meilisearch v1.3 and newer (optional).
 
+#### Custom Search With attributes on at search time  <!-- omit in toc -->
+
+[Customize attributes to search on at search time](https://www.meilisearch.com/docs/reference/api/search#customize-attributes-to-search-on-at-search-time).
+
+you can perform the search :
+
+```ruby
+index.search('wonder', { attributes_to_search_on: ['genres'] })
+```
+
+
+JSON output:
+
+```json
+{
+  "hits":[],
+  "query":"wonder",
+  "processingTimeMs":0,
+  "limit":20,
+  "offset":0,
+  "estimatedTotalHits":0,
+  "nbHits":0
+}
+```
+
+This feature is only available with Meilisearch v1.3 and newer (optional).
+
+
 ## 🤖 Compatibility with Meilisearch
 
 This package guarantees compatibility with [version v1.x of Meilisearch](https://github.com/meilisearch/meilisearch/releases/latest), but some features may not be present. Please check the [issues](https://github.com/meilisearch/meilisearch-ruby/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22+label%3Aenhancement) for more info.
