@@ -83,4 +83,41 @@ RSpec.describe 'MeiliSearch::Index - Basic search' do
       expect(response.keys).to contain_exactly(*FINITE_PAGINATED_SEARCH_RESPONSE_KEYS)
     end
   end
+
+  context 'with attributes_to_search_on params' do
+    it 'responds with empty attributes_to_search_on' do
+      response = index.search('prince', { attributes_to_search_on: [] })
+      expect(response).to be_a(Hash)
+      expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
+      expect(response['hits']).to be_empty
+    end
+
+    it 'responds with nil attributes_to_search_on' do
+      response = index.search('prince', { attributes_to_search_on: nil })
+      expect(response).to be_a(Hash)
+      expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
+      expect(response['hits']).not_to be_empty
+    end
+
+    it 'responds with title attributes_to_search_on' do
+      response = index.search('prince', { attributes_to_search_on: ['title'] })
+      expect(response).to be_a(Hash)
+      expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
+      expect(response['hits']).not_to be_empty
+    end
+
+    it 'responds with genre attributes_to_search_on' do
+      response = index.search('prince', { attributes_to_search_on: ['genry'] })
+      expect(response).to be_a(Hash)
+      expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
+      expect(response['hits']).to be_empty
+    end
+
+    it 'responds with nil attributes_to_search_on and empty query' do
+      response = index.search('', { attributes_to_search_on: nil })
+      expect(response).to be_a(Hash)
+      expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
+      expect(response['hits'].count).to eq(documents.count)
+    end
+  end
 end

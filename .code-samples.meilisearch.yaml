@@ -339,6 +339,11 @@ search_parameter_guide_show_ranking_score_1: |-
   client.index('movies').search('winter feast', {
     show_ranking_score: true
   })
+
+search_parameter_guide_attributes_to_search_on_1: |-
+  client.index('movies').search('adventure', {
+    attributes_to_search_on: ['overview']
+  })
 add_movies_json_1: |-
   require 'json'
 
