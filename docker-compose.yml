@@ -22,7 +22,7 @@ services:
       - bundle:/vendor/bundle
 
   meilisearch:
-    image: getmeili/meilisearch:latest
+    image: getmeili/meilisearch:v1.4.0-rc.0
     ports:
       - "7700"
     environment:

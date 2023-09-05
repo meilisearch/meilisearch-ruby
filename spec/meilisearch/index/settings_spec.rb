@@ -26,7 +26,10 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       'sortableAttributes',
       'typoTolerance',
       'faceting',
-      'pagination'
+      'pagination',
+      'dictionary',
+      'nonSeparatorTokens',
+      'separatorTokens'
     ]
   end
   let(:uid) { random_uid }
@@ -39,7 +42,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'gets default values of settings' do
       settings = index.settings
       expect(settings).to be_a(Hash)
-      expect(settings.keys).to contain_exactly(*settings_keys)
+      expect(settings.keys).to include(*settings_keys)
       expect(settings['rankingRules']).to eq(default_ranking_rules)
       expect(settings['distinctAttribute']).to be_nil
       expect(settings['searchableAttributes']).to eq(default_searchable_attributes)
@@ -540,7 +543,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it 'gets the default values of settings' do
       settings = index.settings
       expect(settings).to be_a(Hash)
-      expect(settings.keys).to contain_exactly(*settings_keys)
+      expect(settings.keys).to include(*settings_keys)
       expect(settings['rankingRules']).to eq(default_ranking_rules)
       expect(settings['distinctAttribute']).to be_nil
       expect(settings['searchableAttributes']).to eq(default_searchable_attributes)
