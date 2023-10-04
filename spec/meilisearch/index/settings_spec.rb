@@ -813,14 +813,14 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
 
     it 'updates dictionary' do
-      update_task = index.update_dictionary(["J. R. R.", "W. E. B."])
+      update_task = index.update_dictionary(['J. R. R.', 'W. E. B.'])
       client.wait_for_task(update_task['taskUid'])
 
-      expect(index.dictionary).to contain_exactly("J. R. R.", "W. E. B.")
+      expect(index.dictionary).to contain_exactly('J. R. R.', 'W. E. B.')
     end
 
     it 'resets dictionary' do
-      update_task = index.update_dictionary(["J. R. R.", "W. E. B."])
+      update_task = index.update_dictionary(['J. R. R.', 'W. E. B.'])
       client.wait_for_task(update_task['taskUid'])
 
       reset_task = index.reset_dictionary
