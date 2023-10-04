@@ -615,3 +615,15 @@ update_dictionary_1: |-
   client.index('books').update_dictionary(['J. R. R.', 'W. E. B.'])
 reset_dictionary_1: |-
   client.index('books').reset_dictionary
+get_separator_tokens_1: |-
+  client.index('articles').separator_tokens
+update_separator_tokens_1: |-
+  client.index('articles').update_separator_tokens(['|', '&hellip;'])
+reset_separator_tokens_1: |-
+  client.index('articles').reset_separator_tokens
+get_non_separator_tokens_1: |-
+  client.index('articles').non_separator_tokens
+update_non_separator_tokens_1: |-
+  client.index('articles').update_non_separator_tokens(['@', '#'])
+reset_non_separator_tokens_1: |-
+  client.index('articles').reset_non_separator_tokens
