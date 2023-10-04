@@ -461,5 +461,22 @@ module MeiliSearch
     def reset_faceting
       http_delete("/indexes/#{@uid}/settings/faceting")
     end
+
+    ### SETTINGS - DICTIONARY
+
+    def dictionary
+      http_get("/indexes/#{@uid}/settings/dictionary")
+    end
+    alias get_dictionary dictionary
+
+    def update_dictionary(dictionary_attributes)
+      attributes = Utils.transform_attributes(dictionary_attributes)
+      http_put("/indexes/#{@uid}/settings/dictionary", attributes)
+    end
+    alias dictionary= update_dictionary
+
+    def reset_dictionary
+      http_delete("/indexes/#{@uid}/settings/dictionary")
+    end
   end
 end

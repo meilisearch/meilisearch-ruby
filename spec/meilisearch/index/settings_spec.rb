@@ -800,4 +800,33 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.faceting.transform_keys(&:to_sym).keys).to include(*default_faceting.keys)
     end
   end
+
+  context 'On user-defined dictionary' do
+    let(:index) { client.index(uid) }
+
+    before { client.create_index!(uid) }
+
+    it 'has no default value' do
+      settings = index.dictionary
+
+      expect(settings).to be_empty
+    end
+
+    it 'updates dictionary' do
+      update_task = index.update_dictionary(["J. R. R.", "W. E. B."])
+      client.wait_for_task(update_task['taskUid'])
+
+      expect(index.dictionary).to contain_exactly("J. R. R.", "W. E. B.")
+    end
+
+    it 'resets dictionary' do
+      update_task = index.update_dictionary(["J. R. R.", "W. E. B."])
+      client.wait_for_task(update_task['taskUid'])
+
+      reset_task = index.reset_dictionary
+      client.wait_for_task(reset_task['taskUid'])
+
+      expect(index.dictionary).to be_empty
+    end
+  end
 end
