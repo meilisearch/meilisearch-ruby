@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module MeiliSearch
-  class ApiError < StandardError
+  class Error < StandardError
+  end
+
+  class ApiError < Error
     # :http_code    # e.g. 400, 404...
     # :http_message # e.g. Bad Request, Not Found...
     # :http_body    # The response body received from the MeiliSearch API
@@ -45,7 +48,7 @@ module MeiliSearch
     end
   end
 
-  class CommunicationError < StandardError
+  class CommunicationError < Error
     attr_reader :message
 
     def initialize(message)
@@ -54,7 +57,7 @@ module MeiliSearch
     end
   end
 
-  class TimeoutError < StandardError
+  class TimeoutError < Error
     attr_reader :message
 
     def initialize(message = nil)
