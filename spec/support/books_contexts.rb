@@ -150,6 +150,14 @@ RSpec.shared_context 'search books with nested fields' do
       {
         id: 7,
         title: 'The Hitchhiker\'s Guide to the Galaxy'
+      },
+      {
+        id: 8,
+        title: 'Harry Potter and the Deathly Hallows',
+        info: {
+          comment: 'The best book again',
+          reviewNb: 1000
+        }
       }
     ]
   end
