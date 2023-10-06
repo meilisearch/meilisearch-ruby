@@ -17,7 +17,7 @@ getting_started_faceting: |-
   client.index('movies').update_faceting({
     max_values_per_facet: 2,
     sort_facet_values_by: {
-        genres: 'count'
+      genres: 'count'
     }
   })
 getting_started_pagination: |-
@@ -79,9 +79,9 @@ update_pagination_settings_1: |-
 reset_pagination_settings_1: |-
   index('books').reset_pagination
 get_faceting_settings_1: |-
-  index('books').faceting
+  client.index('books').faceting
 update_faceting_settings_1: |-
-  index('books').update_faceting({
+  client.index('books').update_faceting({
     max_values_per_facet: 2,
     sort_facet_values_by: {
       '*': 'alpha',
@@ -606,6 +606,6 @@ multi_search_1: |-
 facet_search_2: |-
   client.index('books').update_faceting(
     sort_facet_values_by: {
-        genres: 'count'
+      genres: 'count'
     }
   )
