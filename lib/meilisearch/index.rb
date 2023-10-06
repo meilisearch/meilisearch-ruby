@@ -225,7 +225,6 @@ module MeiliSearch
     #   attributes_to_search_on - Customize attributes to search on at search time.
     def search(query, options = {})
       attributes = { q: query.to_s }.merge(options.compact)
-      attributes.delete :matching_strategy
 
       parsed_options = Utils.transform_attributes(attributes)
       response = http_post "/indexes/#{@uid}/search", parsed_options
