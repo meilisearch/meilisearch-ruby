@@ -14,7 +14,12 @@ delete_documents_by_filter_1: |-
 get_documents_1: |-
   client.index('movies').get_documents(limit: 2, filter: 'genres = action')
 getting_started_faceting: |-
-  client.index('movies').update_faceting(max_values_per_facet: 2)
+  client.index('movies').update_faceting({
+    max_values_per_facet: 2,
+    sort_facet_values_by: {
+      genres: 'count'
+    }
+  })
 getting_started_pagination: |-
   client.index('movies').update_pagination(max_total_hits: 500)
 synonyms_guide_1: |-
@@ -74,9 +79,15 @@ update_pagination_settings_1: |-
 reset_pagination_settings_1: |-
   index('books').reset_pagination
 get_faceting_settings_1: |-
-  index('books').faceting
+  client.index('books').faceting
 update_faceting_settings_1: |-
-  index('books').update_faceting({ max_values_per_facet: 2 })
+  client.index('books').update_faceting({
+    max_values_per_facet: 2,
+    sort_facet_values_by: {
+      '*': 'alpha',
+      genres: 'count'
+    }
+  })
 reset_faceting_settings_1: |-
   index('books').reset_faceting
 get_one_index_1: |-
@@ -311,7 +322,7 @@ search_parameter_guide_crop_1: |-
 search_parameter_guide_crop_marker_1: |-
   client.index('movies').search('shifu', {
     attributes_to_crop: ['overview'],
-    crop_marker: "[…]"
+    crop_marker: '[…]'
   })
 search_parameter_guide_highlight_1: |-
   client.index('movies').search('winter feast', {
@@ -350,11 +361,6 @@ add_movies_json_1: |-
   movies_json = File.read('movies.json')
   movies = JSON.parse(movies_json)
   client.index('movies').add_documents(movies)
-documents_guide_add_movie_1: |-
-  client.index('movies').add_documents([{
-    movie_id: '123sq178',
-    title: 'Amelie Poulain'
-  }])
 getting_started_add_documents_md: |-
   ```bash
   $ bundle add meilisearch
@@ -388,26 +394,6 @@ faceted_search_1: |-
   client.index('books').search('classic', {
     facets: ['genres', 'rating', 'language']
   })
-faceted_search_2: |-
-  client.multi_search([
-    {
-      indexUid: 'books',
-      facets: ['language', 'genres', 'author', 'format'],
-      filter: [['language = English', 'language = French'], ['genres = Fiction']]
-    },
-    {
-      indexUid: 'books',
-      facets: ['language'],
-      filter: [['genres = Fiction']]
-    },
-    {
-      indexUid: 'books',
-      facets: ['genres'],
-      filter: [['language = English', 'language = French']]
-    }
-  ])
-faceted_search_facets_1: |-
-  client.index('movies').search('Batman', { facets: ['genres'] })
 faceted_search_walkthrough_filter_1: |-
   client.index('movies').search('thriller', {
     filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
@@ -549,9 +535,6 @@ getting_started_update_displayed_attributes: |-
     'overview',
     'poster'
   ])
-getting_started_communicating_with_a_protected_instance: |-
-  client = MeiliSearch::Client.new('http://localhost:7700', 'apiKey')
-  client.index('movies').search
 getting_started_add_meteorites: |-
   file = File.read('meteorites.json')
   json = JSON.parse(file)
@@ -609,6 +592,10 @@ typo_tolerance_guide_4: |-
       two_typos: 10
     }
   })
+search_parameter_guide_facet_stats_1: |-
+  client.index('movie_ratings').search('Batman', {
+    facets: ['genres', 'rating']
+  })
 multi_search_1: |-
   client.multi_search([
     { index_uid: 'books', q: 'prince' },
@@ -616,3 +603,9 @@ multi_search_1: |-
     { index_uid: 'movies', q: 'nemo', limit: 5 }
     { index_uid: 'movie_ratings', q: 'us' }
   ])
+facet_search_2: |-
+  client.index('books').update_faceting(
+    sort_facet_values_by: {
+      genres: 'count'
+    }
+  )
