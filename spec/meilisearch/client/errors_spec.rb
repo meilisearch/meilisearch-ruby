@@ -2,22 +2,10 @@
 
 RSpec.describe 'MeiliSearch::Client - Errors' do
   describe 'MeiliSearch::Error' do
-    it 'catches MeiliSearch::TimeoutError' do
-      expect do
-        raise MeiliSearch::TimeoutError
-      end.to raise_error(MeiliSearch::Error)
-    end
-
-    it 'catches MeiliSearch::CommunicationError' do
-      expect do
-        raise MeiliSearch::CommunicationError, ''
-      end.to raise_error(MeiliSearch::Error)
-    end
-
-    it 'catches MeiliSearch::ApiError' do
-      expect do
-        raise MeiliSearch::ApiError.new(200, '', '')
-      end.to raise_error(MeiliSearch::Error)
+    it 'catches all other errors' do
+      expect(MeiliSearch::TimeoutError.ancestors).to include(MeiliSearch::Error)
+      expect(MeiliSearch::CommunicationError.ancestors).to include(MeiliSearch::Error)
+      expect(MeiliSearch::ApiError.ancestors).to include(MeiliSearch::Error)
     end
   end
 
