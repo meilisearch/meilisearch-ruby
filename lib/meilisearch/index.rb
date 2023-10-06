@@ -225,6 +225,7 @@ module MeiliSearch
     #   attributes_to_search_on - Customize attributes to search on at search time.
     def search(query, options = {})
       attributes = { q: query.to_s }.merge(options.compact)
+      attributes.delete :matching_strategy
 
       parsed_options = Utils.transform_attributes(attributes)
       response = http_post "/indexes/#{@uid}/search", parsed_options
@@ -232,6 +233,15 @@ module MeiliSearch
       response['nbHits'] ||= response['estimatedTotalHits'] unless response.key?('totalPages')
 
       response
+    end
+
+    ### FACET SEARCH
+
+    def facet_search(name, query = '', **options)
+      options.merge!(facet_name: name, facet_query: query)
+      options = Utils.transform_attributes(options)
+
+      http_post("/indexes/#{@uid}/facet-search", options)
     end
 
     ### TASKS
