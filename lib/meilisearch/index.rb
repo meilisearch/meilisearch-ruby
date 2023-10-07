@@ -472,7 +472,6 @@ module MeiliSearch
       attributes = Utils.transform_attributes(dictionary_attributes)
       http_put("/indexes/#{@uid}/settings/dictionary", attributes)
     end
-    alias dictionary= update_dictionary
 
     def reset_dictionary
       http_delete("/indexes/#{@uid}/settings/dictionary")
