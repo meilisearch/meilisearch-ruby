@@ -486,7 +486,6 @@ module MeiliSearch
       attributes = Utils.transform_attributes(separator_tokens_attributes)
       http_put("/indexes/#{@uid}/settings/separator-tokens", attributes)
     end
-    alias separator_tokens= update_separator_tokens
 
     def reset_separator_tokens
       http_delete("/indexes/#{@uid}/settings/separator-tokens")
@@ -502,7 +501,6 @@ module MeiliSearch
       attributes = Utils.transform_attributes(non_separator_tokens_attributes)
       http_put("/indexes/#{@uid}/settings/non-separator-tokens", attributes)
     end
-    alias non_separator_tokens= update_non_separator_tokens
 
     def reset_non_separator_tokens
       http_delete("/indexes/#{@uid}/settings/non-separator-tokens")
