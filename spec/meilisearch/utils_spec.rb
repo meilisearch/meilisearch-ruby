@@ -1,6 +1,30 @@
 # frozen_string_literal: true
+require 'logger'
 
 RSpec.describe MeiliSearch::Utils do
+  let(:logger) { instance_double(Logger, warn: nil) }
+
+  describe '.soft_deprecate' do
+    before(:each) { described_class.logger = logger }
+    after(:each) { described_class.logger = nil }
+
+    it 'outputs a warning' do
+      described_class.soft_deprecate('footballs', 'snowballs')
+      expect(logger).to have_received(:warn)
+    end
+
+    it 'does not throw an error' do
+      expect do
+        described_class.soft_deprecate('footballs', 'snowballs')
+      end.not_to raise_error
+    end
+
+    it 'includes relevant information' do
+      described_class.soft_deprecate('footballs', 'snowballs')
+      expect(logger).to have_received(:warn).with(a_string_including('footballs', 'snowballs'))
+    end
+  end
+
   describe '.parse_query' do
     it 'transforms arrays into strings' do
       data = described_class.parse_query({ array: [1, 2, 3], other: 'string' }, [:array, :other])
@@ -22,6 +46,9 @@ RSpec.describe MeiliSearch::Utils do
   end
 
   describe '.transform_attributes' do
+    before(:each) { described_class.logger = logger }
+    after(:each) { described_class.logger = nil }
+
     it 'transforms snake_case into camelCased keys' do
       data = described_class.transform_attributes({
                                                     index_name: 'books',
@@ -49,9 +76,10 @@ RSpec.describe MeiliSearch::Utils do
     it 'warns when using camelCase' do
       attrs = { distinctAttribute: 'title' }
 
-      expect do
-        described_class.transform_attributes(attrs)
-      end.to output(include('Attributes will be expected to be snake_case', 'distinctAttribute')).to_stderr
+      described_class.transform_attributes(attrs)
+
+      expect(logger).to have_received(:warn)
+        .with(a_string_including('Attributes will be expected to be snake_case', 'distinctAttribute'))
     end
 
     it 'warns when using camelCase in an array' do
@@ -60,9 +88,10 @@ RSpec.describe MeiliSearch::Utils do
         { 'indexUid' => 'books', 'q' => 'prince' }
       ]
 
-      expect do
-        described_class.transform_attributes(attrs)
-      end.to output(include('Attributes will be expected to be snake_case', 'indexUid')).to_stderr
+      described_class.transform_attributes(attrs)
+
+      expect(logger).to have_received(:warn)
+        .with(a_string_including('Attributes will be expected to be snake_case', 'indexUid'))
     end
   end
 
@@ -115,28 +144,30 @@ RSpec.describe MeiliSearch::Utils do
     end
 
     describe '.warn_on_non_conforming_attribute_names' do
+      before(:each) { described_class.logger = logger }
+      after(:each) { described_class.logger = nil }
+
       it 'warns when using camelCase attributes' do
         attrs = { attributesToHighlight: ['field'] }
+        described_class.warn_on_non_conforming_attribute_names(attrs)
 
-        expect do
-          described_class.warn_on_non_conforming_attribute_names(attrs)
-        end.to output(include('Attributes will be expected to be snake_case', 'attributesToHighlight')).to_stderr
+        expect(logger).to have_received(:warn)
+          .with(a_string_including('Attributes will be expected to be snake_case', 'attributesToHighlight'))
       end
 
       it 'warns when using a mixed case' do
         attrs = { distinct_ATTribute: 'title' }
+        described_class.warn_on_non_conforming_attribute_names(attrs)
 
-        expect do
-          described_class.warn_on_non_conforming_attribute_names(attrs)
-        end.to output(include('Attributes will be expected to be snake_case', 'distinct_ATTribute')).to_stderr
+        expect(logger).to have_received(:warn)
+          .with(a_string_including('Attributes will be expected to be snake_case', 'distinct_ATTribute'))
       end
 
       it 'does not warn when using snake_case' do
         attrs = { q: 'query', attributes_to_highlight: ['field'] }
+        described_class.warn_on_non_conforming_attribute_names(attrs)
 
-        expect do
-          described_class.warn_on_non_conforming_attribute_names(attrs)
-        end.not_to output.to_stderr
+        expect(logger).not_to have_received(:warn)
       end
     end
   end

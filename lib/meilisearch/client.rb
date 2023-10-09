@@ -41,6 +41,11 @@ module MeiliSearch
     # Synchronous version of create_index.
     # Waits for the task to be achieved, be careful when using it.
     def create_index!(index_uid, options = {})
+      Utils.soft_deprecate(
+        'Client#create_index!',
+        "client.create_index('#{index_uid}').await"
+      )
+
       task = create_index(index_uid, options)
       wait_for_task(task['taskUid'])
     end

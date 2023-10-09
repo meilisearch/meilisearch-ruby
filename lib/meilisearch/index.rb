@@ -92,6 +92,11 @@ module MeiliSearch
     alias add_or_replace_documents add_documents
 
     def add_documents!(documents, primary_key = nil)
+      Utils.soft_deprecate(
+        'Index#add_documents!',
+        'index.add_documents(...).await'
+      )
+
       task = add_documents(documents, primary_key)
       wait_for_task(task['taskUid'])
     end
@@ -130,6 +135,11 @@ module MeiliSearch
     alias add_or_update_documents update_documents
 
     def update_documents!(documents, primary_key = nil)
+      Utils.soft_deprecate(
+        'Index#update_documents!',
+        'index.update_documents(...).await'
+      )
+
       task = update_documents(documents, primary_key)
       wait_for_task(task['taskUid'])
     end
@@ -144,6 +154,11 @@ module MeiliSearch
     end
 
     def add_documents_in_batches!(documents, batch_size = 1000, primary_key = nil)
+      Utils.soft_deprecate(
+        'Index#add_documents_in_batches!',
+        'index.add_documents_in_batches(...).await'
+      )
+
       tasks = add_documents_in_batches(documents, batch_size, primary_key)
       responses = []
       tasks.each do |task_obj|
@@ -161,6 +176,11 @@ module MeiliSearch
     end
 
     def update_documents_in_batches!(documents, batch_size = 1000, primary_key = nil)
+      Utils.soft_deprecate(
+        'Index#update_documents_in_batches!',
+        'index.update_documents_in_batches(...).await'
+      )
+
       tasks = update_documents_in_batches(documents, batch_size, primary_key)
       responses = []
       tasks.each do |task_obj|
@@ -192,6 +212,11 @@ module MeiliSearch
     alias delete_multiple_documents delete_documents
 
     def delete_documents!(documents_ids)
+      Utils.soft_deprecate(
+        'Index#delete_documents!',
+        'index.delete_documents(...).await'
+      )
+
       task = delete_documents(documents_ids)
       wait_for_task(task['taskUid'])
     end
@@ -204,6 +229,11 @@ module MeiliSearch
     alias delete_one_document delete_document
 
     def delete_document!(document_id)
+      Utils.soft_deprecate(
+        'Index#delete_document!',
+        'index.delete_document(...).await'
+      )
+
       task = delete_document(document_id)
       wait_for_task(task['taskUid'])
     end
@@ -214,6 +244,11 @@ module MeiliSearch
     end
 
     def delete_all_documents!
+      Utils.soft_deprecate(
+        'Index#delete_all_documents!',
+        'index.delete_all_documents(...).await'
+      )
+
       task = delete_all_documents
       wait_for_task(task['taskUid'])
     end
