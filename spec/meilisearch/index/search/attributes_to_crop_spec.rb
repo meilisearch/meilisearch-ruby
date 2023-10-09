@@ -10,7 +10,7 @@ RSpec.describe 'MeiliSearch::Index - Cropped search' do
     }
   end
 
-  before { index.add_documents!(document) }
+  before { index.add_documents(document).await }
 
   it 'searches with default cropping params' do
     response = index.search('galaxy', attributes_to_crop: ['*'], crop_length: 6)

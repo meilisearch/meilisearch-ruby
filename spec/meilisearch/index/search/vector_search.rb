@@ -10,9 +10,9 @@ RSpec.describe 'MeiliSearch::Index - Vector search' do
       { objectId: 2, _vectors: [0.5, 3, 1], title: 'And Your Bird Can Sing' }
     ]
 
-    client.create_index!('vector_test_search')
+    client.create_index('vector_test_search').await
     new_index = client.index('vector_test_search')
-    new_index.add_documents!(documents)
+    new_index.add_documents(documents).await
 
     expect(new_index.search('q', vector: [0, 1, 2])['hits']).not_to be_empty
   end
