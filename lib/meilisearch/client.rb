@@ -35,7 +35,9 @@ module MeiliSearch
     def create_index(index_uid, options = {})
       body = Utils.transform_attributes(options.merge(uid: index_uid))
 
-      http_post '/indexes', body
+      response = http_post '/indexes', body
+
+      Model::Task.new(response, task_endpoint)
     end
 
     # Synchronous version of create_index.

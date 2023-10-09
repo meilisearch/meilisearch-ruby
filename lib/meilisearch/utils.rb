@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'logger'
+
 module MeiliSearch
   module Utils
     SNAKE_CASE = /[^a-zA-Z0-9]+(.)/
@@ -13,6 +15,18 @@ module MeiliSearch
 
       def soft_deprecate(subject, replacement)
         logger.warn("[meilisearch-ruby] #{subject} is DEPRECATED, please use #{replacement} instead.")
+      end
+
+      def warn_on_unfinished_task(task_uid)
+        message = <<~UNFINISHED_TASK_WARNING
+          [meilisearch-ruby] Task #{task_uid}'s finished state (succeeded?/failed?/cancelled?) is being checked before finishing.
+          [meilisearch-ruby] Tasks in meilisearch are processed in the background asynchronously.
+          [meilisearch-ruby] Please use the #finished? method to check if the task is finished or the #await method to wait for the task to finish.
+        UNFINISHED_TASK_WARNING
+
+        message.lines.each do |line|
+          logger.warn(line)
+        end
       end
 
       def transform_attributes(body)

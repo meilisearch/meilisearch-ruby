@@ -53,7 +53,7 @@ RSpec.describe 'MeiliSearch::Index - Cropped search' do
     expect(response['hits'].first['_formatted']['description']).to eq('…Guide to the Galaxy is a…')
   end
 
-  it 'does a placehodler search with attributes to crop' do
+  it 'does a placeholder search with attributes to crop' do
     response = index.search('', { attributes_to_crop: ['description'], crop_length: 5 })
     expect(response['hits'].first).to have_key('_formatted')
     expect(response['hits'].first['description']).to eq(document[:description])

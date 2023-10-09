@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'logger'
 
 RSpec.describe MeiliSearch::Utils do
   let(:logger) { instance_double(Logger, warn: nil) }

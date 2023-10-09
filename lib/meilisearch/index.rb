@@ -86,7 +86,9 @@ module MeiliSearch
 
     def add_documents(documents, primary_key = nil)
       documents = [documents] if documents.is_a?(Hash)
-      http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
+      response = http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
+
+      Model::Task.new(response, task_endpoint)
     end
     alias replace_documents add_documents
     alias add_or_replace_documents add_documents
@@ -130,7 +132,9 @@ module MeiliSearch
 
     def update_documents(documents, primary_key = nil)
       documents = [documents] if documents.is_a?(Hash)
-      http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
+      response = http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
+
+      Model::Task.new(response, task_endpoint)
     end
     alias add_or_update_documents update_documents
 
@@ -146,11 +150,9 @@ module MeiliSearch
     alias add_or_update_documents! update_documents!
 
     def add_documents_in_batches(documents, batch_size = 1000, primary_key = nil)
-      tasks = []
-      documents.each_slice(batch_size) do |batch|
-        tasks.append(add_documents(batch, primary_key))
+      documents.each_slice(batch_size).map do |batch|
+        add_documents(batch, primary_key)
       end
-      tasks
     end
 
     def add_documents_in_batches!(documents, batch_size = 1000, primary_key = nil)
@@ -168,11 +170,9 @@ module MeiliSearch
     end
 
     def update_documents_in_batches(documents, batch_size = 1000, primary_key = nil)
-      tasks = []
-      documents.each_slice(batch_size) do |batch|
-        tasks.append(update_documents(batch, primary_key))
+      documents.each_slice(batch_size).map do |batch|
+        update_documents(batch, primary_key)
       end
-      tasks
     end
 
     def update_documents_in_batches!(documents, batch_size = 1000, primary_key = nil)
@@ -198,15 +198,17 @@ module MeiliSearch
     # Returns a Task object.
     def delete_documents(options = {})
       Utils.version_error_handler(__method__) do
-        if options.is_a?(Hash) && options.key?(:filter)
-          http_post "/indexes/#{@uid}/documents/delete", options
-        else
-          # backwards compatibility:
-          # expect to be a array or/number/string to send alongside as documents_ids.
-          options = [options] unless options.is_a?(Array)
+        response = if options.is_a?(Hash) && options.key?(:filter)
+                     http_post "/indexes/#{@uid}/documents/delete", options
+                   else
+                     # backwards compatibility:
+                     # expect to be a array or/number/string to send alongside as documents_ids.
+                     options = [options] unless options.is_a?(Array)
 
-          http_post "/indexes/#{@uid}/documents/delete-batch", options
-        end
+                     http_post "/indexes/#{@uid}/documents/delete-batch", options
+                   end
+
+        Model::Task.new(response, task_endpoint)
       end
     end
     alias delete_multiple_documents delete_documents
@@ -224,7 +226,9 @@ module MeiliSearch
 
     def delete_document(document_id)
       encode_document = URI.encode_www_form_component(document_id)
-      http_delete "/indexes/#{@uid}/documents/#{encode_document}"
+      response = http_delete "/indexes/#{@uid}/documents/#{encode_document}"
+
+      Model::Task.new(response, task_endpoint)
     end
     alias delete_one_document delete_document
 
@@ -240,7 +244,8 @@ module MeiliSearch
     alias delete_one_document! delete_document!
 
     def delete_all_documents
-      http_delete "/indexes/#{@uid}/documents"
+      response = http_delete "/indexes/#{@uid}/documents"
+      Model::Task.new(response, task_endpoint)
     end
 
     def delete_all_documents!
