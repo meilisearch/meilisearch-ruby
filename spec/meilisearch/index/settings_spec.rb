@@ -858,7 +858,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       end
     end
 
-    describe 'non_separator_tokens' do
+    describe '#non_separator_tokens' do
       it 'has no default value' do
         expect(index.non_separator_tokens).to be_empty
       end
