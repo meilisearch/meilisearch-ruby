@@ -6,6 +6,9 @@ RSpec.describe 'MeiliSearch::Client - Errors' do
       expect(MeiliSearch::TimeoutError.ancestors).to include(MeiliSearch::Error)
       expect(MeiliSearch::CommunicationError.ancestors).to include(MeiliSearch::Error)
       expect(MeiliSearch::ApiError.ancestors).to include(MeiliSearch::Error)
+      expect(MeiliSearch::TenantToken::InvalidApiKey.ancestors).to include(MeiliSearch::Error)
+      expect(MeiliSearch::TenantToken::InvalidSearchRules.ancestors).to include(MeiliSearch::Error)
+      expect(MeiliSearch::TenantToken::ExpireOrInvalidSignature.ancestors).to include(MeiliSearch::Error)
     end
   end
 
