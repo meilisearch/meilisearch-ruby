@@ -609,3 +609,9 @@ facet_search_2: |-
       genres: 'count'
     }
   )
+get_dictionary_1: |-
+  client.index('books').dictionary
+update_dictionary_1: |-
+  client.index('books').update_dictionary(['J. R. R.', 'W. E. B.'])
+reset_dictionary_1: |-
+  client.index('books').reset_dictionary
