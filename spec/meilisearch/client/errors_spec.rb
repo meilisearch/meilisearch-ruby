@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.describe 'MeiliSearch::Client - Errors' do
+  describe 'MeiliSearch::Error' do
+    it 'catches all other errors' do
+      expect(MeiliSearch::TimeoutError.ancestors).to include(MeiliSearch::Error)
+      expect(MeiliSearch::CommunicationError.ancestors).to include(MeiliSearch::Error)
+      expect(MeiliSearch::ApiError.ancestors).to include(MeiliSearch::Error)
+      expect(MeiliSearch::TenantToken::InvalidApiKey.ancestors).to include(MeiliSearch::Error)
+      expect(MeiliSearch::TenantToken::InvalidSearchRules.ancestors).to include(MeiliSearch::Error)
+      expect(MeiliSearch::TenantToken::ExpireOrInvalidSignature.ancestors).to include(MeiliSearch::Error)
+    end
+  end
+
   context 'when request takes to long to answer' do
     it 'raises MeiliSearch::TimeoutError' do
       timed_client = MeiliSearch::Client.new(URL, MASTER_KEY, { timeout: 0.000001 })

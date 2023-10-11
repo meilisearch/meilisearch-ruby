@@ -461,5 +461,49 @@ module MeiliSearch
     def reset_faceting
       http_delete("/indexes/#{@uid}/settings/faceting")
     end
+
+    ### SETTINGS - DICTIONARY
+
+    def dictionary
+      http_get("/indexes/#{@uid}/settings/dictionary")
+    end
+
+    def update_dictionary(dictionary_attributes)
+      attributes = Utils.transform_attributes(dictionary_attributes)
+      http_put("/indexes/#{@uid}/settings/dictionary", attributes)
+    end
+
+    def reset_dictionary
+      http_delete("/indexes/#{@uid}/settings/dictionary")
+    end
+    ### SETTINGS - SEPARATOR TOKENS
+
+    def separator_tokens
+      http_get("/indexes/#{@uid}/settings/separator-tokens")
+    end
+
+    def update_separator_tokens(separator_tokens_attributes)
+      attributes = Utils.transform_attributes(separator_tokens_attributes)
+      http_put("/indexes/#{@uid}/settings/separator-tokens", attributes)
+    end
+
+    def reset_separator_tokens
+      http_delete("/indexes/#{@uid}/settings/separator-tokens")
+    end
+
+    ### SETTINGS - NON SEPARATOR TOKENS
+
+    def non_separator_tokens
+      http_get("/indexes/#{@uid}/settings/non-separator-tokens")
+    end
+
+    def update_non_separator_tokens(non_separator_tokens_attributes)
+      attributes = Utils.transform_attributes(non_separator_tokens_attributes)
+      http_put("/indexes/#{@uid}/settings/non-separator-tokens", attributes)
+    end
+
+    def reset_non_separator_tokens
+      http_delete("/indexes/#{@uid}/settings/non-separator-tokens")
+    end
   end
 end

@@ -800,4 +800,85 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.faceting.transform_keys(&:to_sym).keys).to include(*default_faceting.keys)
     end
   end
+
+  context 'On user-defined dictionary' do
+    let(:index) { client.index(uid) }
+
+    before { client.create_index!(uid) }
+
+    it 'has no default value' do
+      settings = index.dictionary
+
+      expect(settings).to be_empty
+    end
+
+    it 'updates dictionary' do
+      update_task = index.update_dictionary(['J. R. R.', 'W. E. B.'])
+      client.wait_for_task(update_task['taskUid'])
+
+      expect(index.dictionary).to contain_exactly('J. R. R.', 'W. E. B.')
+    end
+
+    it 'resets dictionary' do
+      update_task = index.update_dictionary(['J. R. R.', 'W. E. B.'])
+      client.wait_for_task(update_task['taskUid'])
+
+      reset_task = index.reset_dictionary
+      client.wait_for_task(reset_task['taskUid'])
+
+      expect(index.dictionary).to be_empty
+    end
+  end
+
+  context 'On separator tokens' do
+    let(:index) { client.index(uid) }
+
+    before { client.create_index!(uid) }
+
+    describe 'separator_tokens' do
+      it 'has no default value' do
+        expect(index.separator_tokens).to be_empty
+      end
+
+      it 'updates separator tokens' do
+        update_task = index.update_separator_tokens ['|', '&hellip;']
+        client.wait_for_task(update_task['taskUid'])
+
+        expect(index.separator_tokens).to contain_exactly('|', '&hellip;')
+      end
+
+      it 'resets separator tokens' do
+        update_task = index.update_separator_tokens ['|', '&hellip;']
+        client.wait_for_task(update_task['taskUid'])
+
+        reset_task = index.reset_separator_tokens
+        client.wait_for_task(reset_task['taskUid'])
+
+        expect(index.separator_tokens).to be_empty
+      end
+    end
+
+    describe '#non_separator_tokens' do
+      it 'has no default value' do
+        expect(index.non_separator_tokens).to be_empty
+      end
+
+      it 'updates non separator tokens' do
+        update_task = index.update_non_separator_tokens ['@', '#']
+        client.wait_for_task(update_task['taskUid'])
+
+        expect(index.non_separator_tokens).to contain_exactly('@', '#')
+      end
+
+      it 'resets non separator tokens' do
+        update_task = index.update_non_separator_tokens ['@', '#']
+        client.wait_for_task(update_task['taskUid'])
+
+        reset_task = index.reset_non_separator_tokens
+        client.wait_for_task(reset_task['taskUid'])
+
+        expect(index.non_separator_tokens).to be_empty
+      end
+    end
+  end
 end
