@@ -99,22 +99,25 @@ module MeiliSearch
         'index.add_documents(...).await'
       )
 
-      task = add_documents(documents, primary_key)
-      wait_for_task(task['taskUid'])
+      add_documents(documents, primary_key).await
     end
     alias replace_documents! add_documents!
     alias add_or_replace_documents! add_documents!
 
     def add_documents_json(documents, primary_key = nil)
       options = { convert_body?: false }
-      http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+      response = http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+
+      Model::Task.new(response, task_endpoint)
     end
     alias replace_documents_json add_documents_json
     alias add_or_replace_documents_json add_documents_json
 
     def add_documents_ndjson(documents, primary_key = nil)
       options = { headers: { 'Content-Type' => 'application/x-ndjson' }, convert_body?: false }
-      http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+      response = http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+
+      Model::Task.new(response, task_endpoint)
     end
     alias replace_documents_ndjson add_documents_ndjson
     alias add_or_replace_documents_ndjson add_documents_ndjson
@@ -122,10 +125,12 @@ module MeiliSearch
     def add_documents_csv(documents, primary_key = nil, delimiter = nil)
       options = { headers: { 'Content-Type' => 'text/csv' }, convert_body?: false }
 
-      http_post "/indexes/#{@uid}/documents", documents, {
+      response = http_post "/indexes/#{@uid}/documents", documents, {
         primaryKey: primary_key,
         csvDelimiter: delimiter
       }.compact, options
+
+      Model::Task.new(response, task_endpoint)
     end
     alias replace_documents_csv add_documents_csv
     alias add_or_replace_documents_csv add_documents_csv
@@ -144,8 +149,7 @@ module MeiliSearch
         'index.update_documents(...).await'
       )
 
-      task = update_documents(documents, primary_key)
-      wait_for_task(task['taskUid'])
+      update_documents(documents, primary_key).await
     end
     alias add_or_update_documents! update_documents!
 
@@ -181,12 +185,7 @@ module MeiliSearch
         'index.update_documents_in_batches(...).await'
       )
 
-      tasks = update_documents_in_batches(documents, batch_size, primary_key)
-      responses = []
-      tasks.each do |task_obj|
-        responses.append(wait_for_task(task_obj['taskUid']))
-      end
-      responses
+      update_documents_in_batches(documents, batch_size, primary_key).each(&:await)
     end
 
     # Public: Delete documents from an index
@@ -219,8 +218,7 @@ module MeiliSearch
         'index.delete_documents(...).await'
       )
 
-      task = delete_documents(documents_ids)
-      wait_for_task(task['taskUid'])
+      delete_documents(documents_ids).await
     end
     alias delete_multiple_documents! delete_documents!
 
@@ -238,8 +236,7 @@ module MeiliSearch
         'index.delete_document(...).await'
       )
 
-      task = delete_document(document_id)
-      wait_for_task(task['taskUid'])
+      delete_document(document_id).await
     end
     alias delete_one_document! delete_document!
 
@@ -254,8 +251,7 @@ module MeiliSearch
         'index.delete_all_documents(...).await'
       )
 
-      task = delete_all_documents
-      wait_for_task(task['taskUid'])
+      delete_all_documents.await
     end
 
     ### SEARCH
@@ -328,12 +324,14 @@ module MeiliSearch
     alias get_settings settings
 
     def update_settings(settings)
-      http_patch "/indexes/#{@uid}/settings", Utils.transform_attributes(settings)
+      response = http_patch "/indexes/#{@uid}/settings", Utils.transform_attributes(settings)
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
     alias settings= update_settings
 
     def reset_settings
-      http_delete "/indexes/#{@uid}/settings"
+      response = http_delete "/indexes/#{@uid}/settings"
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - RANKING RULES
@@ -344,12 +342,14 @@ module MeiliSearch
     alias get_ranking_rules ranking_rules
 
     def update_ranking_rules(ranking_rules)
-      http_put "/indexes/#{@uid}/settings/ranking-rules", ranking_rules
+      response = http_put "/indexes/#{@uid}/settings/ranking-rules", ranking_rules
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
     alias ranking_rules= update_ranking_rules
 
     def reset_ranking_rules
-      http_delete "/indexes/#{@uid}/settings/ranking-rules"
+      response = http_delete "/indexes/#{@uid}/settings/ranking-rules"
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - SYNONYMS
@@ -360,12 +360,14 @@ module MeiliSearch
     alias get_synonyms synonyms
 
     def update_synonyms(synonyms)
-      http_put "/indexes/#{@uid}/settings/synonyms", synonyms
+      response = http_put "/indexes/#{@uid}/settings/synonyms", synonyms
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
     alias synonyms= update_synonyms
 
     def reset_synonyms
-      http_delete "/indexes/#{@uid}/settings/synonyms"
+      response = http_delete "/indexes/#{@uid}/settings/synonyms"
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - STOP-WORDS
@@ -377,12 +379,14 @@ module MeiliSearch
 
     def update_stop_words(stop_words)
       body = stop_words.nil? || stop_words.is_a?(Array) ? stop_words : [stop_words]
-      http_put "/indexes/#{@uid}/settings/stop-words", body
+      response = http_put "/indexes/#{@uid}/settings/stop-words", body
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
     alias stop_words= update_stop_words
 
     def reset_stop_words
-      http_delete "/indexes/#{@uid}/settings/stop-words"
+      response = http_delete "/indexes/#{@uid}/settings/stop-words"
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - DINSTINCT ATTRIBUTE
@@ -393,12 +397,14 @@ module MeiliSearch
     alias get_distinct_attribute distinct_attribute
 
     def update_distinct_attribute(distinct_attribute)
-      http_put "/indexes/#{@uid}/settings/distinct-attribute", distinct_attribute
+      response = http_put "/indexes/#{@uid}/settings/distinct-attribute", distinct_attribute
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
     alias distinct_attribute= update_distinct_attribute
 
     def reset_distinct_attribute
-      http_delete "/indexes/#{@uid}/settings/distinct-attribute"
+      response = http_delete "/indexes/#{@uid}/settings/distinct-attribute"
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - SEARCHABLE ATTRIBUTES
@@ -409,12 +415,14 @@ module MeiliSearch
     alias get_searchable_attributes searchable_attributes
 
     def update_searchable_attributes(searchable_attributes)
-      http_put "/indexes/#{@uid}/settings/searchable-attributes", searchable_attributes
+      response = http_put "/indexes/#{@uid}/settings/searchable-attributes", searchable_attributes
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
     alias searchable_attributes= update_searchable_attributes
 
     def reset_searchable_attributes
-      http_delete "/indexes/#{@uid}/settings/searchable-attributes"
+      response = http_delete "/indexes/#{@uid}/settings/searchable-attributes"
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - DISPLAYED ATTRIBUTES
@@ -425,12 +433,14 @@ module MeiliSearch
     alias get_displayed_attributes displayed_attributes
 
     def update_displayed_attributes(displayed_attributes)
-      http_put "/indexes/#{@uid}/settings/displayed-attributes", displayed_attributes
+      response = http_put "/indexes/#{@uid}/settings/displayed-attributes", displayed_attributes
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
     alias displayed_attributes= update_displayed_attributes
 
     def reset_displayed_attributes
-      http_delete "/indexes/#{@uid}/settings/displayed-attributes"
+      response = http_delete "/indexes/#{@uid}/settings/displayed-attributes"
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - FILTERABLE ATTRIBUTES
@@ -441,12 +451,14 @@ module MeiliSearch
     alias get_filterable_attributes filterable_attributes
 
     def update_filterable_attributes(filterable_attributes)
-      http_put "/indexes/#{@uid}/settings/filterable-attributes", filterable_attributes
+      response = http_put "/indexes/#{@uid}/settings/filterable-attributes", filterable_attributes
+      Model::Task.new(response, task_endpoint)
     end
     alias filterable_attributes= update_filterable_attributes
 
     def reset_filterable_attributes
-      http_delete "/indexes/#{@uid}/settings/filterable-attributes"
+      response = http_delete "/indexes/#{@uid}/settings/filterable-attributes"
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - SORTABLE ATTRIBUTES
@@ -457,12 +469,14 @@ module MeiliSearch
     alias get_sortable_attributes sortable_attributes
 
     def update_sortable_attributes(sortable_attributes)
-      http_put "/indexes/#{@uid}/settings/sortable-attributes", sortable_attributes
+      response = http_put "/indexes/#{@uid}/settings/sortable-attributes", sortable_attributes
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
     alias sortable_attributes= update_sortable_attributes
 
     def reset_sortable_attributes
-      http_delete "/indexes/#{@uid}/settings/sortable-attributes"
+      response = http_delete "/indexes/#{@uid}/settings/sortable-attributes"
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - PAGINATION

@@ -59,12 +59,14 @@ module MeiliSearch
 
         status == 'succeeded'
       end
+      alias has_succeeded? succeeded?
 
       def failed?
         Utils.warn_on_unfinished_task(self) if unfinished?
 
         status == 'failed'
       end
+      alias has_failed? failed?
 
       def cancelled?
         Utils.warn_on_unfinished_task(self) if unfinished?

@@ -18,7 +18,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
       context 'synchronously' do
         context 'using ! method' do
-          before { allow(Utils).to receive(:soft_deprecate).and_return(nil) }
+          before { allow(MeiliSearch::Utils).to receive(:soft_deprecate).and_return(nil) }
 
           it 'creates an index' do
             task = client.create_index!('books')
@@ -35,7 +35,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
           it 'warns about deprecation' do
             client.create_index!('books')
-            expect(Utils).to have_received(:soft_deprecate).with('Client#create_index!', a_string_matching(/books/))
+            expect(MeiliSearch::Utils).to have_received(:soft_deprecate).with('Client#create_index!', a_string_matching(/books/))
           end
         end
 
