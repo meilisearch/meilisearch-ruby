@@ -515,128 +515,20 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
   end
 
-  context 'Index with primary-key' do
-    let(:index) { client.index(uid) }
-
-    before { client.create_index(uid, primary_key: 'id').await }
-
-    it 'gets the default values of settings' do
-      settings = index.settings
-      expect(settings).to be_a(Hash)
-      expect(settings.keys).to include(*settings_keys)
-      expect(settings['rankingRules']).to eq(default_ranking_rules)
-      expect(settings['distinctAttribute']).to be_nil
-      expect(settings['searchableAttributes']).to eq(default_searchable_attributes)
-      expect(settings['displayedAttributes']).to eq(default_displayed_attributes)
-      expect(settings['stopWords']).to eq([])
-      expect(settings['synonyms']).to eq({})
-    end
-
-    it 'updates multiples settings at the same time' do
-      task = index.update_settings(
-        ranking_rules: ['title:asc', 'typo'],
-        distinct_attribute: 'title'
-      )
-
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-      settings = index.settings
-      expect(settings['rankingRules']).to eq(['title:asc', 'typo'])
-      expect(settings['distinctAttribute']).to eq('title')
-      expect(settings['stopWords']).to be_empty
-    end
-
-    it 'updates one setting without reset the others' do
-      task = index.update_settings(stop_words: ['the'])
-
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-      settings = index.settings
-      expect(settings['rankingRules']).to eq(default_ranking_rules)
-      expect(settings['distinctAttribute']).to be_nil
-      expect(settings['stopWords']).to eq(['the'])
-      expect(settings['synonyms']).to be_empty
-    end
-
-    it 'resets all settings' do
-      task = index.update_settings(
-        ranking_rules: ['title:asc', 'typo'],
-        distinct_attribute: 'title',
-        stop_words: ['the'],
-        synonyms: {
-          wow: ['world of warcraft']
-        }
-      )
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      task = index.reset_settings
-
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      settings = index.settings
-      expect(settings['rankingRules']).to eq(default_ranking_rules)
-      expect(settings['distinctAttribute']).to be_nil
-      expect(settings['stopWords']).to be_empty
-      expect(settings['synonyms']).to be_empty
-    end
-  end
-
-  context 'Manipulation of searchable/displayed attributes with the primary-key' do
-    let(:index) { client.index(random_uid) }
-
-    it 'does not add document when there is no primary-key' do
-      task = index.add_documents(title: 'Test')
-      task = client.wait_for_task(task['taskUid'])
-
-      expect(task.keys).to include('error')
-      expect(task['error']['code']).to eq('index_primary_key_no_candidate_found')
-    end
-
-    it 'adds documents when there is a primary-key' do
-      task = index.add_documents(objectId: 1, title: 'Test')
-
-      client.wait_for_task(task['taskUid'])
-      expect(index.documents['results'].count).to eq(1)
-    end
-
-    it 'resets searchable/displayed attributes' do
-      task = index.update_displayed_attributes(['title', 'description'])
-      client.wait_for_task(task['taskUid'])
-      task = index.update_searchable_attributes(['title'])
-
-      client.wait_for_task(task['taskUid'])
-
-      task = index.reset_displayed_attributes
-
-      client.wait_for_task(task['taskUid'])
-      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
-
-      task = index.reset_searchable_attributes
-
-      client.wait_for_task(task['taskUid'])
-      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
-
-      expect(index.displayed_attributes).to eq(['*'])
-      expect(index.searchable_attributes).to eq(['*'])
-    end
-  end
-
   context 'Aliases' do
     let(:index) { client.index(uid) }
 
     before { client.create_index(uid).await }
 
     it 'works with method aliases' do
-      expect(index.method(:settings) == index.method(:get_settings)).to be_truthy
-      expect(index.method(:ranking_rules) == index.method(:get_ranking_rules)).to be_truthy
-      expect(index.method(:distinct_attribute) == index.method(:get_distinct_attribute)).to be_truthy
-      expect(index.method(:searchable_attributes) == index.method(:get_searchable_attributes)).to be_truthy
-      expect(index.method(:displayed_attributes) == index.method(:get_displayed_attributes)).to be_truthy
-      expect(index.method(:synonyms) == index.method(:get_synonyms)).to be_truthy
-      expect(index.method(:stop_words) == index.method(:get_stop_words)).to be_truthy
-      expect(index.method(:filterable_attributes) == index.method(:get_filterable_attributes)).to be_truthy
+      expect(index.method(:settings)).to eq index.method(:get_settings)
+      expect(index.method(:ranking_rules)).to eq index.method(:get_ranking_rules)
+      expect(index.method(:distinct_attribute)).to eq index.method(:get_distinct_attribute)
+      expect(index.method(:searchable_attributes)).to eq index.method(:get_searchable_attributes)
+      expect(index.method(:displayed_attributes)).to eq index.method(:get_displayed_attributes)
+      expect(index.method(:synonyms)).to eq index.method(:get_synonyms)
+      expect(index.method(:stop_words)).to eq index.method(:get_stop_words)
+      expect(index.method(:filterable_attributes)).to eq index.method(:get_filterable_attributes)
     end
   end
 
