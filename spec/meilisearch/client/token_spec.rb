@@ -124,10 +124,7 @@ RSpec.describe MeiliSearch::TenantToken do
     context 'with search_rules definitions' do
       include_context 'search books with genre'
 
-      before do
-        filterable_task = index.update_filterable_attributes(['genre', 'objectId'])
-        index.wait_for_task(filterable_task['taskUid'])
-      end
+      before { index.update_filterable_attributes(['genre', 'objectId']).await }
 
       let(:adm_client) { MeiliSearch::Client.new(URL, adm_key['key']) }
       let(:adm_key) do

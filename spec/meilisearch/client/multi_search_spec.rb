@@ -3,8 +3,7 @@
 RSpec.describe 'MeiliSearch::Client - Multiple Index Search' do
   before do
     client.create_index('books')
-    task = client.create_index('movies')
-    client.wait_for_task(task['taskUid'])
+    client.create_index('movies').await
   end
 
   it 'does a custom search with two different indexes' do

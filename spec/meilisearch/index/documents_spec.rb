@@ -296,9 +296,8 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       it 'replaces document' do
         id = 123
         new_title = 'Pride & Prejudice'
-        task = index.replace_documents(objectId: id, title: 'Pride & Prejudice', note: '8.5/10')
+        index.replace_documents(objectId: id, title: 'Pride & Prejudice', note: '8.5/10').await
 
-        client.wait_for_task(task['taskUid'])
         expect(index.documents['results'].count).to eq(documents.count)
         doc = index.document(id)
         expect(doc['title']).to eq(new_title)
@@ -405,8 +404,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
         id = 111
         expect { index.document(id) }.to raise_document_not_found_meilisearch_api_error
         expect do
-          task = index.delete_document(id)
-          client.wait_for_task(task['taskUid'])
+          index.delete_document(id).await
         end.not_to(change { index.documents['results'].size })
       end
     end

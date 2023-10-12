@@ -38,16 +38,15 @@ RSpec.describe 'MeiliSearch::Index - Basic search' do
   end
 
   it 'does a basic search with an empty query and a custom ranking rule' do
-    response = index.update_ranking_rules([
-                                            'words',
-                                            'typo',
-                                            'sort',
-                                            'proximity',
-                                            'attribute',
-                                            'exactness',
-                                            'objectId:asc'
-                                          ])
-    index.wait_for_task(response['taskUid'])
+    index.update_ranking_rules([
+                                 'words',
+                                 'typo',
+                                 'sort',
+                                 'proximity',
+                                 'attribute',
+                                 'exactness',
+                                 'objectId:asc'
+                               ]).await
     response = index.search('')
     expect(response['estimatedTotalHits']).to eq(documents.count)
     expect(response['hits'].first['objectId']).to eq(1)

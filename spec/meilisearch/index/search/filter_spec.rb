@@ -3,10 +3,7 @@
 RSpec.describe 'MeiliSearch::Index - Filtered search' do
   include_context 'search books with author, genre, year'
 
-  before do
-    response = index.update_filterable_attributes(['genre', 'year', 'author'])
-    index.wait_for_task(response['taskUid'])
-  end
+  before { index.update_filterable_attributes(['genre', 'year', 'author']).await }
 
   it 'does a custom search with one filter' do
     response = index.search('le', { filter: 'genre = romance' })

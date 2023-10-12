@@ -16,7 +16,8 @@ module MeiliSearch
     def swap_indexes(*options)
       mapped_array = options.map { |arr| { indexes: arr } }
 
-      http_post '/swap-indexes', mapped_array
+      response = http_post '/swap-indexes', mapped_array
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     def indexes(options = {})
@@ -48,8 +49,7 @@ module MeiliSearch
         "client.create_index('#{index_uid}').await"
       )
 
-      task = create_index(index_uid, options)
-      wait_for_task(task['taskUid'])
+      create_index(index_uid, options).await
     end
 
     def delete_index(index_uid)
@@ -125,7 +125,8 @@ module MeiliSearch
     ### DUMPS
 
     def create_dump
-      http_post '/dumps'
+      response = http_post '/dumps'
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     ### SNAPSHOTS
