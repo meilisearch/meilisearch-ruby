@@ -164,7 +164,7 @@ module MeiliSearch
     def add_documents_in_batches!(documents, batch_size = 1000, primary_key = nil)
       Utils.soft_deprecate(
         'Index#add_documents_in_batches!',
-        'index.add_documents_in_batches(...).await'
+        'index.add_documents_in_batches(...).each(&:await)'
       )
 
       add_documents_in_batches(documents, batch_size, primary_key).each(&:await)
@@ -179,7 +179,7 @@ module MeiliSearch
     def update_documents_in_batches!(documents, batch_size = 1000, primary_key = nil)
       Utils.soft_deprecate(
         'Index#update_documents_in_batches!',
-        'index.update_documents_in_batches(...).await'
+        'index.update_documents_in_batches(...).each(&:await)'
       )
 
       update_documents_in_batches(documents, batch_size, primary_key).each(&:await)
