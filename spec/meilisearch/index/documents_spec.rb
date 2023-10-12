@@ -195,16 +195,8 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     describe '#add_documents_in_batches!' do
       before { allow(MeiliSearch::Utils).to receive(:soft_deprecate).and_return(nil) }
 
-      it 'adds document batches synchronously (as an array of documents)' do
-        task = index.add_documents_in_batches(documents, 5).each(&:await)
-        expect(task).to be_a(Array)
-        expect(task.count).to eq(2) # 2 batches, since we start with 5 < documents.count <= 10 documents
-        task.each do |task_object|
-          expect(task_object).to have_key('uid')
-          expect(task_object).to have_key('status')
-          expect(task_object['status']).not_to eql('enqueued')
-          expect(task_object['status']).to eql('succeeded')
-        end
+      it 'adds document batches synchronously' do
+        expect(index.add_documents_in_batches!(documents, 5)).to contain_exactly(be_succeeded, be_succeeded)
         expect(index.documents['results'].count).to eq(documents.count)
       end
 

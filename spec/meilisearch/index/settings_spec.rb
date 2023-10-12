@@ -532,43 +532,38 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     end
   end
 
-  context 'On pagination sub-routes' do
+  context 'On pagination' do
     let(:index) { client.index(uid) }
     let(:pagination) { { maxTotalHits: 3141 } }
+    let(:pagination_with_string_keys) { pagination.transform_keys(&:to_s) }
 
     before { client.create_index(uid).await }
 
-    it 'gets default values of pagination' do
-      settings = index.pagination.transform_keys(&:to_sym)
-
-      expect(settings).to eq(default_pagination)
+    it '#pagination gets default values of pagination' do
+      expect(index.pagination).to eq(default_pagination.transform_keys(&:to_s))
     end
 
-    it 'updates pagination' do
-      task = index.update_pagination(pagination)
-      client.wait_for_task(task['taskUid'])
+    describe '#update_pagination' do
+      it 'updates pagination' do
+        index.update_pagination(pagination).await
+        expect(index.pagination).to eq(pagination_with_string_keys)
+      end
 
-      expect(index.pagination.transform_keys(&:to_sym)).to eq(pagination)
+      it 'resets pagination when passed nil' do
+        index.update_pagination(pagination).await
+        expect(index.pagination).to eq(pagination_with_string_keys)
+
+        index.update_pagination(nil).await
+        expect(index.pagination).to eq(default_pagination.transform_keys(&:to_s))
+      end
     end
 
-    it 'updates pagination at null' do
-      task = index.update_pagination(pagination)
-      client.wait_for_task(task['taskUid'])
+    it '#reset_pagination resets pagination' do
+      index.update_pagination(pagination).await
+      expect(index.pagination).to eq(pagination_with_string_keys)
 
-      task = index.update_pagination(nil)
-      client.wait_for_task(task['taskUid'])
-
-      expect(index.pagination.transform_keys(&:to_sym)).to eq(default_pagination)
-    end
-
-    it 'resets pagination' do
-      task = index.update_pagination(pagination)
-      client.wait_for_task(task['taskUid'])
-
-      task = index.reset_pagination
-      client.wait_for_task(task['taskUid'])
-
-      expect(index.pagination.transform_keys(&:to_sym)).to eq(default_pagination)
+      index.reset_pagination.await
+      expect(index.pagination).to eq(default_pagination.transform_keys(&:to_s))
     end
   end
 
@@ -602,26 +597,21 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
     before { client.create_index(uid).await }
 
-    it 'gets default typo tolerance settings' do
-      settings = index.typo_tolerance
-
-      expect(settings).to eq(default_typo_tolerance)
+    it '#typo_tolerance gets default typo tolerance settings' do
+      expect(index.typo_tolerance).to eq(default_typo_tolerance)
     end
 
-    it 'updates typo tolerance settings' do
-      update_task = index.update_typo_tolerance(new_typo_tolerance)
-      client.wait_for_task(update_task['taskUid'])
+    it '#update_type_tolerance updates typo tolerance settings' do
+      index.update_typo_tolerance(new_typo_tolerance).await
 
       expect(index.typo_tolerance).to eq(MeiliSearch::Utils.transform_attributes(new_typo_tolerance))
     end
 
-    it 'resets typo tolerance settings' do
-      update_task = index.update_typo_tolerance(new_typo_tolerance)
-      client.wait_for_task(update_task['taskUid'])
+    it '#reset_typo_tolerance resets typo tolerance settings' do
+      index.update_typo_tolerance(new_typo_tolerance).await
+      expect(index.typo_tolerance).to eq(MeiliSearch::Utils.transform_attributes(new_typo_tolerance))
 
-      reset_task = index.reset_typo_tolerance
-      client.wait_for_task(reset_task['taskUid'])
-
+      index.reset_typo_tolerance.await
       expect(index.typo_tolerance).to eq(default_typo_tolerance)
     end
   end
@@ -629,122 +619,102 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'On faceting' do
     let(:index) { client.index(uid) }
     let(:default_faceting) { { maxValuesPerFacet: 100, sortFacetValuesBy: { '*' => 'alpha' } } }
+    let(:default_faceting_with_string_keys) { default_faceting.transform_keys(&:to_s) }
 
     before { client.create_index(uid).await }
 
-    it 'gets default values of faceting' do
-      settings = index.faceting.transform_keys(&:to_sym)
-
-      expect(settings.keys).to include(*default_faceting.keys)
+    it '#faceting gets default values of faceting' do
+      expect(index.faceting).to eq(default_faceting_with_string_keys)
     end
 
-    it 'updates faceting' do
-      update_task = index.update_faceting({ 'max_values_per_facet' => 333 })
-      client.wait_for_task(update_task['taskUid'])
+    describe '#update_faceting' do
+      it 'updates faceting' do
+        index.update_faceting({ 'max_values_per_facet' => 333 }).await
+        new_faceting = default_faceting_with_string_keys.merge('maxValuesPerFacet' => 333)
 
-      expect(index.faceting['maxValuesPerFacet']).to eq(333)
-      expect(index.faceting.transform_keys(&:to_sym).keys).to include(*default_faceting.keys)
+        expect(index.faceting).to eq(new_faceting)
+      end
+
+      it 'resets faceting when passed nil' do
+        index.update_faceting({ 'max_values_per_facet' => 333 }).await
+        new_faceting = default_faceting_with_string_keys.merge('maxValuesPerFacet' => 333)
+        expect(index.faceting).to eq(new_faceting)
+
+        index.update_faceting(nil).await
+        expect(index.faceting).to eq(default_faceting_with_string_keys)
+      end
     end
 
-    it 'updates faceting at null' do
-      update_task = index.update_faceting({ 'max_values_per_facet' => 444 })
-      client.wait_for_task(update_task['taskUid'])
+    it '#reset_faceting resets faceting' do
+      index.update_faceting({ 'max_values_per_facet' => 333 }).await
+      new_faceting = default_faceting_with_string_keys.merge('maxValuesPerFacet' => 333)
+      expect(index.faceting).to eq(new_faceting)
 
-      update_task = index.update_faceting(nil)
-      client.wait_for_task(update_task['taskUid'])
-
-      expect(index.faceting.transform_keys(&:to_sym).keys).to include(*default_faceting.keys)
-    end
-
-    it 'resets faceting' do
-      update_task = index.update_faceting({ 'max_values_per_facet' => 444 })
-      client.wait_for_task(update_task['taskUid'])
-
-      reset_task = index.reset_faceting
-      client.wait_for_task(reset_task['taskUid'])
-
-      expect(index.faceting.transform_keys(&:to_sym).keys).to include(*default_faceting.keys)
+      index.reset_faceting.await
+      expect(index.faceting).to eq(default_faceting_with_string_keys)
     end
   end
 
   context 'On user-defined dictionary' do
     let(:index) { client.index(uid) }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
     it 'has no default value' do
-      settings = index.dictionary
-
-      expect(settings).to be_empty
+      expect(index.dictionary).to eq([])
     end
 
-    it 'updates dictionary' do
-      update_task = index.update_dictionary(['J. R. R.', 'W. E. B.'])
-      client.wait_for_task(update_task['taskUid'])
-
+    it '#update_dictionary updates dictionary' do
+      index.update_dictionary(['J. R. R.', 'W. E. B.']).await
       expect(index.dictionary).to contain_exactly('J. R. R.', 'W. E. B.')
     end
 
-    it 'resets dictionary' do
-      update_task = index.update_dictionary(['J. R. R.', 'W. E. B.'])
-      client.wait_for_task(update_task['taskUid'])
+    it '#reset_dictionary resets dictionary' do
+      index.update_dictionary(['J. R. R.', 'W. E. B.']).await
+      expect(index.dictionary).to contain_exactly('J. R. R.', 'W. E. B.')
 
-      reset_task = index.reset_dictionary
-      client.wait_for_task(reset_task['taskUid'])
-
-      expect(index.dictionary).to be_empty
+      index.reset_dictionary.await
+      expect(index.dictionary).to eq([])
     end
   end
 
   context 'On separator tokens' do
     let(:index) { client.index(uid) }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
-    describe 'separator_tokens' do
-      it 'has no default value' do
-        expect(index.separator_tokens).to be_empty
-      end
-
-      it 'updates separator tokens' do
-        update_task = index.update_separator_tokens ['|', '&hellip;']
-        client.wait_for_task(update_task['taskUid'])
-
-        expect(index.separator_tokens).to contain_exactly('|', '&hellip;')
-      end
-
-      it 'resets separator tokens' do
-        update_task = index.update_separator_tokens ['|', '&hellip;']
-        client.wait_for_task(update_task['taskUid'])
-
-        reset_task = index.reset_separator_tokens
-        client.wait_for_task(reset_task['taskUid'])
-
-        expect(index.separator_tokens).to be_empty
-      end
+    it '#separator_tokens has no default value' do
+      expect(index.separator_tokens).to eq([])
     end
 
-    describe '#non_separator_tokens' do
-      it 'has no default value' do
-        expect(index.non_separator_tokens).to be_empty
-      end
+    it '#update_separator_tokens updates separator tokens' do
+      index.update_separator_tokens(['|', '&hellip;']).await
+      expect(index.separator_tokens).to contain_exactly('|', '&hellip;')
+    end
 
-      it 'updates non separator tokens' do
-        update_task = index.update_non_separator_tokens ['@', '#']
-        client.wait_for_task(update_task['taskUid'])
+    it '#reset_separator_tokens resets separator tokens' do
+      index.update_separator_tokens(['|', '&hellip;']).await
+      expect(index.separator_tokens).to contain_exactly('|', '&hellip;')
 
-        expect(index.non_separator_tokens).to contain_exactly('@', '#')
-      end
+      index.reset_separator_tokens.await
+      expect(index.separator_tokens).to eq([])
+    end
 
-      it 'resets non separator tokens' do
-        update_task = index.update_non_separator_tokens ['@', '#']
-        client.wait_for_task(update_task['taskUid'])
+    it '#non_separator_tokens has no default value' do
+      expect(index.non_separator_tokens).to eq([])
+    end
 
-        reset_task = index.reset_non_separator_tokens
-        client.wait_for_task(reset_task['taskUid'])
+    it '#update_non_separator_tokens updates non separator tokens' do
+      index.update_non_separator_tokens(['@', '#']).await
+      expect(index.non_separator_tokens).to contain_exactly('@', '#')
+    end
 
-        expect(index.non_separator_tokens).to be_empty
-      end
+    it '#reset_non_separator_tokens resets non separator tokens' do
+      index.update_non_separator_tokens(['@', '#']).await
+      expect(index.non_separator_tokens).to contain_exactly('@', '#')
+
+      index.reset_non_separator_tokens.await
+      expect(index.non_separator_tokens).to eq([])
     end
 
     describe '#proximity_precision' do

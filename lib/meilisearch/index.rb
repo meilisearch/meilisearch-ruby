@@ -30,13 +30,15 @@ module MeiliSearch
     end
 
     def update(body)
-      http_patch indexes_path(id: @uid), Utils.transform_attributes(body)
+      response = http_patch indexes_path(id: @uid), Utils.transform_attributes(body)
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     alias update_index update
 
     def delete
-      http_delete indexes_path(id: @uid)
+      response = http_delete indexes_path(id: @uid)
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
     alias delete_index delete
 
@@ -165,12 +167,7 @@ module MeiliSearch
         'index.add_documents_in_batches(...).await'
       )
 
-      tasks = add_documents_in_batches(documents, batch_size, primary_key)
-      responses = []
-      tasks.each do |task_obj|
-        responses.append(wait_for_task(task_obj['taskUid']))
-      end
-      responses
+      add_documents_in_batches(documents, batch_size, primary_key).each(&:await)
     end
 
     def update_documents_in_batches(documents, batch_size = 1000, primary_key = nil)
@@ -487,12 +484,14 @@ module MeiliSearch
     alias get_pagination pagination
 
     def update_pagination(pagination)
-      http_patch "/indexes/#{@uid}/settings/pagination", pagination
+      response = http_patch "/indexes/#{@uid}/settings/pagination", pagination
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
     alias pagination= update_sortable_attributes
 
     def reset_pagination
-      http_delete "/indexes/#{@uid}/settings/pagination"
+      response = http_delete "/indexes/#{@uid}/settings/pagination"
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     def typo_tolerance
@@ -502,12 +501,14 @@ module MeiliSearch
 
     def update_typo_tolerance(typo_tolerance_attributes)
       attributes = Utils.transform_attributes(typo_tolerance_attributes)
-      http_patch("/indexes/#{@uid}/settings/typo-tolerance", attributes)
+      response = http_patch("/indexes/#{@uid}/settings/typo-tolerance", attributes)
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
     alias typo_tolerance= update_typo_tolerance
 
     def reset_typo_tolerance
-      http_delete("/indexes/#{@uid}/settings/typo-tolerance")
+      response = http_delete("/indexes/#{@uid}/settings/typo-tolerance")
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     def faceting
@@ -517,12 +518,14 @@ module MeiliSearch
 
     def update_faceting(faceting_attributes)
       attributes = Utils.transform_attributes(faceting_attributes)
-      http_patch("/indexes/#{@uid}/settings/faceting", attributes)
+      response = http_patch("/indexes/#{@uid}/settings/faceting", attributes)
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
     alias faceting= update_faceting
 
     def reset_faceting
-      http_delete("/indexes/#{@uid}/settings/faceting")
+      response = http_delete("/indexes/#{@uid}/settings/faceting")
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - DICTIONARY
@@ -533,11 +536,13 @@ module MeiliSearch
 
     def update_dictionary(dictionary_attributes)
       attributes = Utils.transform_attributes(dictionary_attributes)
-      http_put("/indexes/#{@uid}/settings/dictionary", attributes)
+      response = http_put("/indexes/#{@uid}/settings/dictionary", attributes)
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     def reset_dictionary
-      http_delete("/indexes/#{@uid}/settings/dictionary")
+      response = http_delete("/indexes/#{@uid}/settings/dictionary")
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
     ### SETTINGS - SEPARATOR TOKENS
 
@@ -547,11 +552,13 @@ module MeiliSearch
 
     def update_separator_tokens(separator_tokens_attributes)
       attributes = Utils.transform_attributes(separator_tokens_attributes)
-      http_put("/indexes/#{@uid}/settings/separator-tokens", attributes)
+      response = http_put("/indexes/#{@uid}/settings/separator-tokens", attributes)
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     def reset_separator_tokens
-      http_delete("/indexes/#{@uid}/settings/separator-tokens")
+      response = http_delete("/indexes/#{@uid}/settings/separator-tokens")
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - NON SEPARATOR TOKENS
@@ -562,11 +569,13 @@ module MeiliSearch
 
     def update_non_separator_tokens(non_separator_tokens_attributes)
       attributes = Utils.transform_attributes(non_separator_tokens_attributes)
-      http_put("/indexes/#{@uid}/settings/non-separator-tokens", attributes)
+      response = http_put("/indexes/#{@uid}/settings/non-separator-tokens", attributes)
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     def reset_non_separator_tokens
-      http_delete("/indexes/#{@uid}/settings/non-separator-tokens")
+      response = http_delete("/indexes/#{@uid}/settings/non-separator-tokens")
+      MeiliSearch::Model::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - PROXIMITY PRECISION

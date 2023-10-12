@@ -35,7 +35,9 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
           it 'warns about deprecation' do
             client.create_index!('books')
-            expect(MeiliSearch::Utils).to have_received(:soft_deprecate).with('Client#create_index!', a_string_matching(/books/))
+            expect(MeiliSearch::Utils)
+              .to have_received(:soft_deprecate)
+              .with('Client#create_index!', a_string_including('books'))
           end
         end
 
