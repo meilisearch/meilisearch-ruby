@@ -603,12 +603,16 @@ multi_search_1: |-
     { index_uid: 'movies', q: 'nemo', limit: 5 }
     { index_uid: 'movie_ratings', q: 'us' }
   ])
+facet_search_1: |-
+  client.index('books').facet_search('genres', 'fiction', filter: 'rating > 3')
 facet_search_2: |-
   client.index('books').update_faceting(
     sort_facet_values_by: {
       genres: 'count'
     }
   )
+facet_search_3: |-
+  client.index('books').facet_search('genres', 'c')
 get_dictionary_1: |-
   client.index('books').dictionary
 update_dictionary_1: |-
