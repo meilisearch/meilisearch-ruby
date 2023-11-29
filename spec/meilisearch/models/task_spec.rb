@@ -48,7 +48,7 @@ describe MeiliSearch::Models::Task do
   end
 
   describe 'forwarding' do
-    it 'allows for direct reading internal hash' do
+    it 'allows accessing values in the internal task hash' do
       subject
 
       task_hash.each do |key, value|
@@ -58,12 +58,10 @@ describe MeiliSearch::Models::Task do
   end
 
   describe '#enqueued?' do
-    context 'if the task is processing' do
+    context 'when the task is processing' do
       before { task_hash['status'] = 'processing' }
 
-      it 'returns false' do
-        expect(subject).not_to be_enqueued
-      end
+      it { is_expected.not_to be_enqueued }
 
       it 'does not refresh the task' do
         allow(subject).to receive(:refresh)
@@ -72,12 +70,10 @@ describe MeiliSearch::Models::Task do
       end
     end
 
-    context 'if the task has succeeded' do
+    context 'when the task has succeeded' do
       before { task_hash['status'] = 'succeeded' }
 
-      it 'returns false' do
-        expect(subject).not_to be_enqueued
-      end
+      it { is_expected.not_to be_enqueued }
 
       it 'does not refresh the task' do
         allow(subject).to receive(:refresh)
@@ -86,12 +82,10 @@ describe MeiliSearch::Models::Task do
       end
     end
 
-    context 'if the task has failed' do
+    context 'when the task has failed' do
       before { task_hash['status'] = 'failed' }
 
-      it 'returns false' do
-        expect(subject).not_to be_enqueued
-      end
+      it { is_expected.not_to be_enqueued }
 
       it 'does not refresh the task' do
         allow(subject).to receive(:refresh)
@@ -100,27 +94,23 @@ describe MeiliSearch::Models::Task do
       end
     end
 
-    it 'returns true if the task is enqueued' do
+    it 'returns true when the task is enqueued' do
       expect(enqueued_task).to be_enqueued
     end
 
-    context 'if the task has succeeded but not updated' do
+    context 'when the task has succeeded but not refreshed' do
       let(:successful_task_hash) { task_hash.merge('status' => 'succeeded') }
       let(:endpoint) { instance_double(MeiliSearch::Task, task: successful_task_hash) }
 
-      it 'refreshes and returns false' do
-        expect(subject).not_to be_enqueued
-      end
+      it { is_expected.not_to be_enqueued }
     end
   end
 
   describe '#processing?' do
-    context 'if the task has succeeded' do
+    context 'when the task has succeeded' do
       before { task_hash['status'] = 'succeeded' }
 
-      it 'returns false' do
-        expect(subject).not_to be_processing
-      end
+      it { is_expected.not_to be_processing }
 
       it 'does not refresh the task' do
         allow(subject).to receive(:refresh)
@@ -129,12 +119,10 @@ describe MeiliSearch::Models::Task do
       end
     end
 
-    context 'if the task has failed' do
+    context 'when the task has failed' do
       before { task_hash['status'] = 'failed' }
 
-      it 'returns false' do
-        expect(subject).not_to be_processing
-      end
+      it { is_expected.not_to be_processing }
 
       it 'does not refresh the task' do
         allow(subject).to receive(:refresh)
@@ -143,23 +131,21 @@ describe MeiliSearch::Models::Task do
       end
     end
 
-    it 'returns false if the task has not begun to process' do
+    it 'returns false when the task has not begun to process' do
       expect(enqueued_task).not_to be_processing
     end
 
-    it 'returns true if the task is processing' do
+    it 'returns true when the task is processing' do
       expect(processing_task).to be_processing
     end
 
-    context 'if the task has begun processing but has not updated' do
+    context 'when the task has begun processing but has not refreshed' do
       let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash.merge('status' => 'processing')) }
 
-      it 'refreshes and returns true' do
-        expect(subject).to be_processing
-      end
+      it { is_expected.to be_processing }
     end
 
-    context 'if the task has succeeded but not updated' do
+    context 'when the task has succeeded but not refreshed' do
       let(:successful_task_hash) { task_hash.merge('status' => 'succeeded') }
       let(:endpoint) { instance_double(MeiliSearch::Task, task: successful_task_hash) }
 
@@ -175,55 +161,51 @@ describe MeiliSearch::Models::Task do
       expect(subject).not_to be_unfinished
     end
 
-    it 'returns false if the task has failed' do
+    it 'returns false when the task has failed' do
       task_hash['status'] = 'failed'
       expect(subject).not_to be_unfinished
     end
 
-    it 'returns true if the task is enqueued' do
+    it 'returns true when the task is enqueued' do
       expect(enqueued_task).to be_unfinished
     end
 
-    it 'returns true if the task is processing' do
+    it 'returns true when the task is processing' do
       expect(processing_task).to be_unfinished
     end
 
-    context 'if the task has succeeded but not updated' do
+    context 'when the task has succeeded but not refreshed' do
       let(:successful_task_hash) { task_hash.merge('status' => 'succeeded') }
       let(:endpoint) { instance_double(MeiliSearch::Task, task: successful_task_hash) }
 
-      it 'refreshes and returns false' do
-        expect(subject).not_to be_unfinished
-      end
+      it { is_expected.not_to be_unfinished }
     end
   end
 
   describe '#finished?' do
-    it 'returns true if the task has succeeded' do
+    it 'returns true when the task has succeeded' do
       task_hash['status'] = 'succeeded'
       expect(subject).to be_finished
     end
 
-    it 'returns true if the task has failed' do
+    it 'returns true when the task has failed' do
       task_hash['status'] = 'failed'
       expect(subject).to be_finished
     end
 
-    it 'returns false if the task is enqueued' do
+    it 'returns false when the task is enqueued' do
       expect(enqueued_task).not_to be_finished
     end
 
-    it 'returns false if the task is processing' do
+    it 'returns false when the task is processing' do
       expect(processing_task).not_to be_finished
     end
 
-    context 'if the task has succeeded but not updated' do
+    context 'when the task has succeeded but not refreshed' do
       let(:successful_task_hash) { task_hash.merge('status' => 'succeeded') }
       let(:endpoint) { instance_double(MeiliSearch::Task, task: successful_task_hash) }
 
-      it 'refreshes and returns true' do
-        expect(subject).to be_finished
-      end
+      it { is_expected.to be_finished }
     end
   end
 
@@ -240,12 +222,10 @@ describe MeiliSearch::Models::Task do
       expect(subject).to be_failed
     end
 
-    context 'if the task is not finished' do
+    context 'when the task is not finished' do
       let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash) }
 
-      it 'returns false' do
-        expect(subject).not_to be_failed
-      end
+      it { is_expected.not_to be_failed }
 
       it 'warns that the task is not finished' do
         subject.failed?
@@ -254,13 +234,11 @@ describe MeiliSearch::Models::Task do
       end
     end
 
-    context 'if the task has failed but not updated' do
+    context 'when the task has failed but not refreshed' do
       let(:failed_task_hash) { task_hash.merge('status' => 'failed') }
       let(:endpoint) { instance_double(MeiliSearch::Task, task: failed_task_hash) }
 
-      it 'refreshes and returns true' do
-        expect(subject).to be_failed
-      end
+      it { is_expected.to be_failed }
     end
   end
 
@@ -277,12 +255,10 @@ describe MeiliSearch::Models::Task do
       expect(subject).not_to be_succeeded
     end
 
-    context 'if the task is not finished' do
+    context 'when the task is not finished' do
       let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash) }
 
-      it 'returns false' do
-        expect(subject).not_to be_succeeded
-      end
+      it { is_expected.not_to be_succeeded }
 
       it 'warns that the task is not finished' do
         subject.succeeded?
@@ -291,13 +267,11 @@ describe MeiliSearch::Models::Task do
       end
     end
 
-    context 'if the task has succeeded but not updated' do
+    context 'when the task has succeeded but not refreshed' do
       let(:successful_task_hash) { task_hash.merge('status' => 'succeeded') }
       let(:endpoint) { instance_double(MeiliSearch::Task, task: successful_task_hash) }
 
-      it 'refreshes and returns true' do
-        expect(subject).to be_succeeded
-      end
+      it { is_expected.to be_succeeded }
     end
   end
 
@@ -314,12 +288,10 @@ describe MeiliSearch::Models::Task do
       expect(subject).to be_cancelled
     end
 
-    context 'if the task is not finished' do
+    context 'when the task is not finished' do
       let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash) }
 
-      it 'returns false' do
-        expect(subject).not_to be_cancelled
-      end
+      it { is_expected.not_to be_cancelled }
 
       it 'warns that the task is not finished' do
         subject.cancelled?
@@ -328,13 +300,11 @@ describe MeiliSearch::Models::Task do
       end
     end
 
-    context 'if the task has failed but not updated' do
+    context 'when the task has been cancelled but not refreshed' do
       let(:cancelled_task_hash) { task_hash.merge('status' => 'cancelled') }
       let(:endpoint) { instance_double(MeiliSearch::Task, task: cancelled_task_hash) }
 
-      it 'refreshes and returns true' do
-        expect(subject).to be_cancelled
-      end
+      it { is_expected.to be_cancelled }
     end
   end
 
@@ -342,12 +312,12 @@ describe MeiliSearch::Models::Task do
     let(:not_found_error) { MeiliSearch::ApiError.new(404, '', '') }
     let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash) }
 
-    it 'returns false if the task can be found' do
+    it 'returns false when the task can be found' do
       expect(subject.deleted?).to be(false) # don't just return nil
       expect(subject).not_to be_deleted
     end
 
-    context 'when it was deleted earlier' do
+    context 'when it was deleted prior' do
       let(:endpoint) { instance_double(MeiliSearch::Task) }
 
       before do
@@ -360,9 +330,7 @@ describe MeiliSearch::Models::Task do
         expect(endpoint).to have_received(:task).once
       end
 
-      it 'returns true' do
-        expect(subject).to be_deleted
-      end
+      it { is_expected.to be_deleted }
     end
 
     it 'refreshes and returns true when it is no longer in instance' do
@@ -372,7 +340,7 @@ describe MeiliSearch::Models::Task do
   end
 
   describe '#cancel' do
-    context 'if the task is still not finished' do
+    context 'when the task is still not finished' do
       let(:cancellation_task) { instance_double(described_class, await: nil) }
       let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash, cancel_tasks: cancellation_task) }
 
@@ -381,18 +349,18 @@ describe MeiliSearch::Models::Task do
         expect(endpoint).to have_received(:cancel_tasks)
       end
 
-      it 'returns true if the cancellation succeeds' do
+      it 'returns true when the cancellation succeeds' do
         task_hash['status'] = 'cancelled'
         expect(subject.cancel).to be(true)
       end
 
-      it 'returns false if the cancellation fails' do
+      it 'returns false when the cancellation fails' do
         task_hash['status'] = 'succeeded'
         expect(subject.cancel).to be(false)
       end
     end
 
-    context 'if the task is already finished' do
+    context 'when the task is already finished' do
       let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash, cancel_tasks: nil) }
       before { task_hash['status'] = 'succeeded' }
 
@@ -401,12 +369,10 @@ describe MeiliSearch::Models::Task do
         expect(endpoint).not_to have_received(:cancel_tasks)
       end
 
-      it 'returns false' do
-        expect(subject.cancel).to be(false)
-      end
+      it { is_expected.not_to be_cancelled }
     end
 
-    context 'if the task is already cancelled' do
+    context 'when the task is already cancelled' do
       let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash, cancel_tasks: nil) }
       before { task_hash['status'] = 'cancelled' }
 
@@ -415,9 +381,7 @@ describe MeiliSearch::Models::Task do
         expect(endpoint).not_to have_received(:cancel_tasks)
       end
 
-      it 'returns true' do
-        expect(subject.cancel).to be(true)
-      end
+      it { is_expected.to be_cancelled }
     end
   end
 
@@ -425,7 +389,7 @@ describe MeiliSearch::Models::Task do
     let(:deletion_task) { instance_double(described_class, await: nil) }
     let(:endpoint) { instance_double(MeiliSearch::Task, delete_tasks: deletion_task) }
 
-    context 'if the task is unfinished' do
+    context 'when the task is unfinished' do
       it 'makes no request' do
         subject.delete
         expect(endpoint).not_to have_received(:delete_tasks)
@@ -436,7 +400,7 @@ describe MeiliSearch::Models::Task do
       end
     end
 
-    context 'if the task is finished' do
+    context 'when the task is finished' do
       before do
         task_hash['status'] = 'failed'
         not_found_error = MeiliSearch::ApiError.new(404, '', '')
@@ -468,10 +432,10 @@ describe MeiliSearch::Models::Task do
     let(:changed_task) { task_hash.merge('status' => 'succeeded', 'error' => 'Done too well') }
     let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash, wait_for_task: changed_task) }
 
-    context 'if the task is not yet completed' do
+    context 'when the task is not yet completed' do
       let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash, wait_for_task: changed_task) }
 
-      it 'waits if the task is yet not completed' do
+      it 'waits for the task to complete' do
         expect { subject.await }.to change { subject['status'] }.from('enqueued').to('succeeded')
                                 .and(change { subject['error'] }.from(nil).to('Done too well'))
       end
@@ -481,7 +445,7 @@ describe MeiliSearch::Models::Task do
       end
     end
 
-    context 'if the task is already completed' do
+    context 'when the task is already completed' do
       let(:endpoint) { instance_double(MeiliSearch::Task, task: changed_task, wait_for_task: changed_task) }
 
       it 'does not contact the instance' do
