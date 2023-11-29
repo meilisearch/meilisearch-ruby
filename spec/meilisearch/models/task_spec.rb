@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe MeiliSearch::Model::Task do
+describe MeiliSearch::Models::Task do
   let(:new_index_uid) { random_uid }
   let(:task_hash) { client.http_post '/indexes', { 'uid' => new_index_uid } }
   let(:endpoint) { MeiliSearch::Task.new(URL, MASTER_KEY, client.options) }

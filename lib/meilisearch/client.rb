@@ -17,7 +17,7 @@ module MeiliSearch
       mapped_array = options.map { |arr| { indexes: arr } }
 
       response = http_post '/swap-indexes', mapped_array
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     def indexes(options = {})
@@ -38,7 +38,7 @@ module MeiliSearch
 
       response = http_post '/indexes', body
 
-      Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     # Synchronous version of create_index.
@@ -126,7 +126,7 @@ module MeiliSearch
 
     def create_dump
       response = http_post '/dumps'
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SNAPSHOTS

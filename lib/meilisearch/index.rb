@@ -31,14 +31,14 @@ module MeiliSearch
 
     def update(body)
       response = http_patch indexes_path(id: @uid), Utils.transform_attributes(body)
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     alias update_index update
 
     def delete
       response = http_delete indexes_path(id: @uid)
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias delete_index delete
 
@@ -90,7 +90,7 @@ module MeiliSearch
       documents = [documents] if documents.is_a?(Hash)
       response = http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
 
-      Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias replace_documents add_documents
     alias add_or_replace_documents add_documents
@@ -110,7 +110,7 @@ module MeiliSearch
       options = { convert_body?: false }
       response = http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
 
-      Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias replace_documents_json add_documents_json
     alias add_or_replace_documents_json add_documents_json
@@ -119,7 +119,7 @@ module MeiliSearch
       options = { headers: { 'Content-Type' => 'application/x-ndjson' }, convert_body?: false }
       response = http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
 
-      Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias replace_documents_ndjson add_documents_ndjson
     alias add_or_replace_documents_ndjson add_documents_ndjson
@@ -132,7 +132,7 @@ module MeiliSearch
         csvDelimiter: delimiter
       }.compact, options
 
-      Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias replace_documents_csv add_documents_csv
     alias add_or_replace_documents_csv add_documents_csv
@@ -141,7 +141,7 @@ module MeiliSearch
       documents = [documents] if documents.is_a?(Hash)
       response = http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
 
-      Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias add_or_update_documents update_documents
 
@@ -204,7 +204,7 @@ module MeiliSearch
                      http_post "/indexes/#{@uid}/documents/delete-batch", options
                    end
 
-        Model::Task.new(response, task_endpoint)
+        Models::Task.new(response, task_endpoint)
       end
     end
     alias delete_multiple_documents delete_documents
@@ -223,7 +223,7 @@ module MeiliSearch
       encode_document = URI.encode_www_form_component(document_id)
       response = http_delete "/indexes/#{@uid}/documents/#{encode_document}"
 
-      Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias delete_one_document delete_document
 
@@ -239,7 +239,7 @@ module MeiliSearch
 
     def delete_all_documents
       response = http_delete "/indexes/#{@uid}/documents"
-      Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     def delete_all_documents!
@@ -322,13 +322,13 @@ module MeiliSearch
 
     def update_settings(settings)
       response = http_patch "/indexes/#{@uid}/settings", Utils.transform_attributes(settings)
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias settings= update_settings
 
     def reset_settings
       response = http_delete "/indexes/#{@uid}/settings"
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - RANKING RULES
@@ -340,13 +340,13 @@ module MeiliSearch
 
     def update_ranking_rules(ranking_rules)
       response = http_put "/indexes/#{@uid}/settings/ranking-rules", ranking_rules
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias ranking_rules= update_ranking_rules
 
     def reset_ranking_rules
       response = http_delete "/indexes/#{@uid}/settings/ranking-rules"
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - SYNONYMS
@@ -358,13 +358,13 @@ module MeiliSearch
 
     def update_synonyms(synonyms)
       response = http_put "/indexes/#{@uid}/settings/synonyms", synonyms
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias synonyms= update_synonyms
 
     def reset_synonyms
       response = http_delete "/indexes/#{@uid}/settings/synonyms"
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - STOP-WORDS
@@ -377,13 +377,13 @@ module MeiliSearch
     def update_stop_words(stop_words)
       body = stop_words.nil? || stop_words.is_a?(Array) ? stop_words : [stop_words]
       response = http_put "/indexes/#{@uid}/settings/stop-words", body
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias stop_words= update_stop_words
 
     def reset_stop_words
       response = http_delete "/indexes/#{@uid}/settings/stop-words"
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - DINSTINCT ATTRIBUTE
@@ -395,13 +395,13 @@ module MeiliSearch
 
     def update_distinct_attribute(distinct_attribute)
       response = http_put "/indexes/#{@uid}/settings/distinct-attribute", distinct_attribute
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias distinct_attribute= update_distinct_attribute
 
     def reset_distinct_attribute
       response = http_delete "/indexes/#{@uid}/settings/distinct-attribute"
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - SEARCHABLE ATTRIBUTES
@@ -413,13 +413,13 @@ module MeiliSearch
 
     def update_searchable_attributes(searchable_attributes)
       response = http_put "/indexes/#{@uid}/settings/searchable-attributes", searchable_attributes
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias searchable_attributes= update_searchable_attributes
 
     def reset_searchable_attributes
       response = http_delete "/indexes/#{@uid}/settings/searchable-attributes"
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - DISPLAYED ATTRIBUTES
@@ -431,13 +431,13 @@ module MeiliSearch
 
     def update_displayed_attributes(displayed_attributes)
       response = http_put "/indexes/#{@uid}/settings/displayed-attributes", displayed_attributes
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias displayed_attributes= update_displayed_attributes
 
     def reset_displayed_attributes
       response = http_delete "/indexes/#{@uid}/settings/displayed-attributes"
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - FILTERABLE ATTRIBUTES
@@ -449,13 +449,13 @@ module MeiliSearch
 
     def update_filterable_attributes(filterable_attributes)
       response = http_put "/indexes/#{@uid}/settings/filterable-attributes", filterable_attributes
-      Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias filterable_attributes= update_filterable_attributes
 
     def reset_filterable_attributes
       response = http_delete "/indexes/#{@uid}/settings/filterable-attributes"
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - SORTABLE ATTRIBUTES
@@ -467,13 +467,13 @@ module MeiliSearch
 
     def update_sortable_attributes(sortable_attributes)
       response = http_put "/indexes/#{@uid}/settings/sortable-attributes", sortable_attributes
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias sortable_attributes= update_sortable_attributes
 
     def reset_sortable_attributes
       response = http_delete "/indexes/#{@uid}/settings/sortable-attributes"
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - PAGINATION
@@ -485,13 +485,13 @@ module MeiliSearch
 
     def update_pagination(pagination)
       response = http_patch "/indexes/#{@uid}/settings/pagination", pagination
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias pagination= update_sortable_attributes
 
     def reset_pagination
       response = http_delete "/indexes/#{@uid}/settings/pagination"
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     def typo_tolerance
@@ -502,13 +502,13 @@ module MeiliSearch
     def update_typo_tolerance(typo_tolerance_attributes)
       attributes = Utils.transform_attributes(typo_tolerance_attributes)
       response = http_patch("/indexes/#{@uid}/settings/typo-tolerance", attributes)
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias typo_tolerance= update_typo_tolerance
 
     def reset_typo_tolerance
       response = http_delete("/indexes/#{@uid}/settings/typo-tolerance")
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     def faceting
@@ -519,13 +519,13 @@ module MeiliSearch
     def update_faceting(faceting_attributes)
       attributes = Utils.transform_attributes(faceting_attributes)
       response = http_patch("/indexes/#{@uid}/settings/faceting", attributes)
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     alias faceting= update_faceting
 
     def reset_faceting
       response = http_delete("/indexes/#{@uid}/settings/faceting")
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - DICTIONARY
@@ -537,12 +537,12 @@ module MeiliSearch
     def update_dictionary(dictionary_attributes)
       attributes = Utils.transform_attributes(dictionary_attributes)
       response = http_put("/indexes/#{@uid}/settings/dictionary", attributes)
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     def reset_dictionary
       response = http_delete("/indexes/#{@uid}/settings/dictionary")
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
     ### SETTINGS - SEPARATOR TOKENS
 
@@ -553,12 +553,12 @@ module MeiliSearch
     def update_separator_tokens(separator_tokens_attributes)
       attributes = Utils.transform_attributes(separator_tokens_attributes)
       response = http_put("/indexes/#{@uid}/settings/separator-tokens", attributes)
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     def reset_separator_tokens
       response = http_delete("/indexes/#{@uid}/settings/separator-tokens")
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - NON SEPARATOR TOKENS
@@ -570,12 +570,12 @@ module MeiliSearch
     def update_non_separator_tokens(non_separator_tokens_attributes)
       attributes = Utils.transform_attributes(non_separator_tokens_attributes)
       response = http_put("/indexes/#{@uid}/settings/non-separator-tokens", attributes)
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     def reset_non_separator_tokens
       response = http_delete("/indexes/#{@uid}/settings/non-separator-tokens")
-      MeiliSearch::Model::Task.new(response, task_endpoint)
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - PROXIMITY PRECISION

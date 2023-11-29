@@ -121,8 +121,8 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
 
       it 'adds documents in a batch (as a array of documents)' do
         tasks = index.add_documents_in_batches(documents, 5)
-        expect(tasks).to contain_exactly(a_kind_of(MeiliSearch::Model::Task),
-                                         a_kind_of(MeiliSearch::Model::Task))
+        expect(tasks).to contain_exactly(a_kind_of(MeiliSearch::Models::Task),
+                                         a_kind_of(MeiliSearch::Models::Task))
         tasks.each(&:await)
         expect(index.documents['results']).to contain_exactly(*documents_with_string_keys)
       end

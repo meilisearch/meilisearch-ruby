@@ -3,7 +3,7 @@
 require 'forwardable'
 
 module MeiliSearch
-  module Model
+  module Models
     class Task
       extend Forwardable
 
