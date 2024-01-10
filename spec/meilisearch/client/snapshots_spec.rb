@@ -7,5 +7,6 @@ RSpec.describe 'MeiliSearch::Client - Snapshots' do
     expect(response['taskUid']).to_not be_nil
     expect(response['status']).to_not be_nil
     expect(response['status']).to eq('enqueued')
+    expect(response['type']).to eq('snapshotCreation')
   end
 end
