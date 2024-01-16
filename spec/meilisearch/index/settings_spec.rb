@@ -886,5 +886,28 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
         expect(index.non_separator_tokens).to be_empty
       end
     end
+
+    describe '#proximity_precision' do
+      it 'has byWord as default value' do
+        expect(index.proximity_precision).to eq('byWord')
+      end
+
+      it 'updates proximity precision' do
+        update_task = index.update_proximity_precision('byAttribute')
+        client.wait_for_task(update_task['taskUid'])
+
+        expect(index.proximity_precision).to eq('byAttribute')
+      end
+
+      it 'resets proximity precision' do
+        update_task = index.update_proximity_precision('byAttribute')
+        client.wait_for_task(update_task['taskUid'])
+
+        reset_task = index.reset_proximity_precision
+        client.wait_for_task(reset_task['taskUid'])
+
+        expect(index.proximity_precision).to eq('byWord')
+      end
+    end
   end
 end
