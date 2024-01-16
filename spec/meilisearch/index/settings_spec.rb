@@ -14,6 +14,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   let(:default_searchable_attributes) { ['*'] }
   let(:default_displayed_attributes) { ['*'] }
   let(:default_pagination) { { maxTotalHits: 1000 } }
+  let(:default_proximity_precision) { 'byWord' }
   let(:settings_keys) do
     [
       'rankingRules',
@@ -29,7 +30,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       'pagination',
       'dictionary',
       'nonSeparatorTokens',
-      'separatorTokens'
+      'separatorTokens',
+      'proximityPrecision'
     ]
   end
   let(:uid) { random_uid }
@@ -52,6 +54,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(settings['pagination'].transform_keys(&:to_sym)).to eq(default_pagination)
       expect(settings['filterableAttributes']).to eq([])
       expect(settings['sortableAttributes']).to eq([])
+      expect(settings['proximityPrecision']).to eq(default_proximity_precision)
     end
 
     it 'updates multiples settings at the same time' do
@@ -85,7 +88,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
         ranking_rules: ['title:asc', 'typo'],
         distinct_attribute: 'title',
         stop_words: ['the', 'a'],
-        synonyms: { wow: ['world of warcraft'] }
+        synonyms: { wow: ['world of warcraft'] },
+        proximity_precision: 'byAttribute'
       )
       client.wait_for_task(task['taskUid'])
 
@@ -99,6 +103,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(settings['distinctAttribute']).to be_nil
       expect(settings['stopWords']).to be_empty
       expect(settings['synonyms']).to be_empty
+      expect(settings['proximityPrecision']).to eq(default_proximity_precision)
     end
   end
 
@@ -878,6 +883,29 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
         client.wait_for_task(reset_task['taskUid'])
 
         expect(index.non_separator_tokens).to be_empty
+      end
+    end
+
+    describe '#proximity_precision' do
+      it 'has byWord as default value' do
+        expect(index.proximity_precision).to eq('byWord')
+      end
+
+      it 'updates proximity precision' do
+        update_task = index.update_proximity_precision('byAttribute')
+        client.wait_for_task(update_task['taskUid'])
+
+        expect(index.proximity_precision).to eq('byAttribute')
+      end
+
+      it 'resets proximity precision' do
+        update_task = index.update_proximity_precision('byAttribute')
+        client.wait_for_task(update_task['taskUid'])
+
+        reset_task = index.reset_proximity_precision
+        client.wait_for_task(reset_task['taskUid'])
+
+        expect(index.proximity_precision).to eq('byWord')
       end
     end
   end
