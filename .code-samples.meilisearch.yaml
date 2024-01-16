@@ -631,3 +631,9 @@ update_non_separator_tokens_1: |-
   client.index('articles').update_non_separator_tokens(['@', '#'])
 reset_non_separator_tokens_1: |-
   client.index('articles').reset_non_separator_tokens
+get_proximity_precision_settings_1: |-
+  client.index('books').proximity_precision
+update_proximity_precision_settings_1: |-
+  client.index('books').update_proximity_precision('byAttribute')
+reset_proximity_precision_settings_1: |-
+  client.index('books').reset_proximity_precision

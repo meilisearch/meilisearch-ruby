@@ -514,5 +514,19 @@ module MeiliSearch
     def reset_non_separator_tokens
       http_delete("/indexes/#{@uid}/settings/non-separator-tokens")
     end
+
+    ### SETTINGS - PROXIMITY PRECISION
+
+    def proximity_precision
+      http_get("/indexes/#{@uid}/settings/proximity-precision")
+    end
+
+    def update_proximity_precision(proximity_precision_attribute)
+      http_put("/indexes/#{@uid}/settings/proximity-precision", proximity_precision_attribute)
+    end
+
+    def reset_proximity_precision
+      http_delete("/indexes/#{@uid}/settings/proximity-precision")
+    end
   end
 end
