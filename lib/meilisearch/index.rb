@@ -520,7 +520,6 @@ module MeiliSearch
     def proximity_precision
       http_get("/indexes/#{@uid}/settings/proximity-precision")
     end
-    alias get_proximity_precision proximity_precision
 
     def update_proximity_precision(proximity_precision_attribute)
       http_put("/indexes/#{@uid}/settings/proximity-precision", proximity_precision_attribute)
