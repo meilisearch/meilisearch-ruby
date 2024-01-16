@@ -14,6 +14,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   let(:default_searchable_attributes) { ['*'] }
   let(:default_displayed_attributes) { ['*'] }
   let(:default_pagination) { { maxTotalHits: 1000 } }
+  let(:default_proximityPrecision) { 'byWord' }
   let(:settings_keys) do
     [
       'rankingRules',
@@ -29,7 +30,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       'pagination',
       'dictionary',
       'nonSeparatorTokens',
-      'separatorTokens'
+      'separatorTokens',
+      'proximityPrecision'
     ]
   end
   let(:uid) { random_uid }
@@ -52,6 +54,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(settings['pagination'].transform_keys(&:to_sym)).to eq(default_pagination)
       expect(settings['filterableAttributes']).to eq([])
       expect(settings['sortableAttributes']).to eq([])
+      expect(settings['proximityPrecision']).to eq(default_proximityPrecision)
     end
 
     it 'updates multiples settings at the same time' do
@@ -85,7 +88,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
         ranking_rules: ['title:asc', 'typo'],
         distinct_attribute: 'title',
         stop_words: ['the', 'a'],
-        synonyms: { wow: ['world of warcraft'] }
+        synonyms: { wow: ['world of warcraft'] },
+        proximity_precision: 'byAttribute'
       )
       client.wait_for_task(task['taskUid'])
 
@@ -99,6 +103,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(settings['distinctAttribute']).to be_nil
       expect(settings['stopWords']).to be_empty
       expect(settings['synonyms']).to be_empty
+      expect(settings['proximityPrecision']).to eq(default_proximityPrecision)
     end
   end
 
@@ -657,6 +662,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.method(:synonyms) == index.method(:get_synonyms)).to be_truthy
       expect(index.method(:stop_words) == index.method(:get_stop_words)).to be_truthy
       expect(index.method(:filterable_attributes) == index.method(:get_filterable_attributes)).to be_truthy
+      expect(index.method(:proximity_precision) == index.method(:get_proximity_precision)).to be_truthy
     end
   end
 
