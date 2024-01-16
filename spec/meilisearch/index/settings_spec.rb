@@ -103,7 +103,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(settings['distinctAttribute']).to be_nil
       expect(settings['stopWords']).to be_empty
       expect(settings['synonyms']).to be_empty
-      expect(settings['proximityPrecision']).to eq(default_proximityPrecision)
+      expect(settings['proximityPrecision']).to eq(default_proximity_precision)
     end
   end
 
