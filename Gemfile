@@ -9,9 +9,9 @@ gemspec
 
 group :development, :test do
   gem 'byebug'
+  gem 'codecov'
   gem 'rspec', '~> 3.0'
   gem 'simplecov'
-  gem 'codecov'
 
   # Used only for testing, none of the classes are exposed to the public API.
   gem 'jwt'
