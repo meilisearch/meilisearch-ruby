@@ -82,6 +82,14 @@ RSpec.describe MeiliSearch::Utils do
       end.to raise_error(MeiliSearch::ApiError, /I came from Meili server/)
     end
 
+    it 'spawns same error message with html body' do
+      expect do
+        described_class.version_error_handler(:my_method) do
+          raise MeiliSearch::ApiError.new(405, 'I came from Meili server', '<html><h1>405 Error</h1></html>')
+        end
+      end.to raise_error(MeiliSearch::ApiError, /I came from Meili server/)
+    end
+
     it 'spawns same error message with no body' do
       expect do
         described_class.version_error_handler(:my_method) do
