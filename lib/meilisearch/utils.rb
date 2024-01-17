@@ -2,7 +2,7 @@
 
 module MeiliSearch
   module Utils
-    SNAKE_CASE = /[^a-zA-Z0-9]+(.)/.freeze
+    SNAKE_CASE = /[^a-zA-Z0-9]+(.)/
 
     def self.transform_attributes(body)
       case body
