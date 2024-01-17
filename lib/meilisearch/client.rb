@@ -121,6 +121,12 @@ module MeiliSearch
       http_post '/dumps'
     end
 
+    ### SNAPSHOTS
+
+    def create_snapshot
+      http_post '/snapshots'
+    end
+
     ### TASKS
 
     def cancel_tasks(options = {})
