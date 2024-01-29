@@ -67,10 +67,33 @@ RSpec.describe MeiliSearch::Utils do
   end
 
   describe '.version_error_handler' do
+    let(:http_body) do
+      { 'message' => 'Was expecting an operation',
+        'code' => 'invalid_document_filter',
+        'type' => 'invalid_request',
+        'link' => 'https://docs.meilisearch.com/errors#invalid_document_filter' }
+    end
+
     it 'spawns same error message' do
       expect do
         described_class.version_error_handler(:my_method) do
-          raise MeiliSearch::ApiError.new(405, 'I came from Meili server', {})
+          raise MeiliSearch::ApiError.new(405, 'I came from Meili server', http_body)
+        end
+      end.to raise_error(MeiliSearch::ApiError, /I came from Meili server/)
+    end
+
+    it 'spawns same error message with html body' do
+      expect do
+        described_class.version_error_handler(:my_method) do
+          raise MeiliSearch::ApiError.new(405, 'I came from Meili server', '<html><h1>405 Error</h1></html>')
+        end
+      end.to raise_error(MeiliSearch::ApiError, /I came from Meili server/)
+    end
+
+    it 'spawns same error message with no body' do
+      expect do
+        described_class.version_error_handler(:my_method) do
+          raise MeiliSearch::ApiError.new(405, 'I came from Meili server', nil)
         end
       end.to raise_error(MeiliSearch::ApiError, /I came from Meili server/)
     end
@@ -78,7 +101,7 @@ RSpec.describe MeiliSearch::Utils do
     it 'spawns message with version hint' do
       expect do
         described_class.version_error_handler(:my_method) do
-          raise MeiliSearch::ApiError.new(405, 'I came from Meili server', {})
+          raise MeiliSearch::ApiError.new(405, 'I came from Meili server', http_body)
         end
       end.to raise_error(MeiliSearch::ApiError, /that `my_method` call requires/)
     end

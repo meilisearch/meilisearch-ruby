@@ -21,26 +21,30 @@ module MeiliSearch
     alias link ms_link
 
     def initialize(http_code, http_message, http_body)
-      get_meilisearch_error_info(http_body) unless http_body.nil? || http_body.empty?
       @http_code = http_code
       @http_message = http_message
-      @ms_message ||= 'MeiliSearch API has not returned any error message'
-      @ms_link ||= '<no documentation link found>'
+      @http_body = parse_body(http_body)
+      @ms_code = @http_body['code']
+      @ms_type = @http_body['type']
+      @ms_message = @http_body.fetch('message', 'MeiliSearch API has not returned any error message')
+      @ms_link = @http_body.fetch('link', '<no documentation link found>')
       @message = "#{http_code} #{http_message} - #{@ms_message}. See #{ms_link}."
       super(details)
     end
 
-    def get_meilisearch_error_info(http_body)
-      @http_body = JSON.parse(http_body)
-      @ms_code = @http_body['code']
-      @ms_message = @http_body['message']
-      @ms_type = @http_body['type']
-      @ms_link = @http_body['link']
+    def parse_body(http_body)
+      if http_body.respond_to?(:to_hash)
+        http_body.to_hash
+      elsif http_body.respond_to?(:to_str)
+        JSON.parse(http_body.to_str)
+      else
+        {}
+      end
     rescue JSON::ParserError
       # We might receive a JSON::ParserError when, for example, MeiliSearch is running behind
       # some proxy (ELB or Nginx, for example), and the request timeouts, returning us
       # a raw HTML body instead of a JSON as we were expecting
-      @ms_message = "The server has not returned a valid JSON HTTP body: #{http_body}"
+      { 'message' => "The server has not returned a valid JSON HTTP body: #{http_body}" }
     end
 
     def details
