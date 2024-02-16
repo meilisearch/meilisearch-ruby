@@ -4,10 +4,6 @@ require 'net/http'
 require 'json'
 
 module ExperimentalFeatureHelpers
-  def enable_score_details(toggle)
-    configure_feature('scoreDetails', toggle)
-  end
-
   def enable_vector_store(toggle)
     configure_feature('vectorStore', toggle)
   end
