@@ -39,266 +39,266 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'On global settings routes' do
     let(:index) { client.index(uid) }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
-    it 'gets default values of settings' do
-      settings = index.settings
-      expect(settings).to be_a(Hash)
-      expect(settings.keys).to include(*settings_keys)
-      expect(settings['rankingRules']).to eq(default_ranking_rules)
-      expect(settings['distinctAttribute']).to be_nil
-      expect(settings['searchableAttributes']).to eq(default_searchable_attributes)
-      expect(settings['displayedAttributes']).to eq(default_displayed_attributes)
-      expect(settings['stopWords']).to eq([])
-      expect(settings['synonyms']).to eq({})
-      expect(settings['pagination'].transform_keys(&:to_sym)).to eq(default_pagination)
-      expect(settings['filterableAttributes']).to eq([])
-      expect(settings['sortableAttributes']).to eq([])
-      expect(settings['proximityPrecision']).to eq(default_proximity_precision)
-    end
-
-    it 'updates multiples settings at the same time' do
-      task = index.update_settings(
-        ranking_rules: ['title:asc', 'typo'],
-        distinct_attribute: 'title'
+    it '#settings gets default values of settings' do
+      expect(index.settings).to include(
+        'rankingRules' => default_ranking_rules,
+        'distinctAttribute' => nil,
+        'searchableAttributes' => default_searchable_attributes,
+        'displayedAttributes' => default_displayed_attributes,
+        'stopWords' => [],
+        'synonyms' => {},
+        'pagination' => default_pagination.transform_keys(&:to_s),
+        'filterableAttributes' => [],
+        'sortableAttributes' => [],
+        'dictionary' => [],
+        'separatorTokens' => [],
+        'nonSeparatorTokens' => [],
+        'proximityPrecision' => default_proximity_precision
       )
-
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-      settings = index.settings
-      expect(settings['rankingRules']).to eq(['title:asc', 'typo'])
-      expect(settings['distinctAttribute']).to eq('title')
-      expect(settings['stopWords']).to be_empty
     end
 
-    it 'updates one setting without reset the others' do
-      task = index.update_settings(stop_words: ['the'])
+    describe '#update_settings' do
+      it 'updates multiples settings at the same time' do
+        task = index.update_settings(
+          ranking_rules: ['title:asc', 'typo'],
+          distinct_attribute: 'title'
+        )
 
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-      settings = index.settings
-      expect(settings['rankingRules']).to eq(default_ranking_rules)
-      expect(settings['distinctAttribute']).to be_nil
-      expect(settings['stopWords']).to eq(['the'])
-      expect(settings['synonyms']).to be_empty
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.settings).to include(
+          'rankingRules' => ['title:asc', 'typo'],
+          'distinctAttribute' => 'title',
+          'stopWords' => []
+        )
+      end
+
+      it 'updates one setting without touching the others' do
+        task = index.update_settings(stop_words: ['the'])
+
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.settings).to include(
+          'rankingRules' => default_ranking_rules,
+          'distinctAttribute' => nil,
+          'stopWords' => ['the'],
+          'synonyms' => {}
+        )
+      end
     end
 
-    it 'resets all settings' do
-      task = index.update_settings(
+    it '#reset_settings resets all settings' do
+      index.update_settings(
         ranking_rules: ['title:asc', 'typo'],
         distinct_attribute: 'title',
         stop_words: ['the', 'a'],
         synonyms: { wow: ['world of warcraft'] },
         proximity_precision: 'byAttribute'
-      )
-      client.wait_for_task(task['taskUid'])
+      ).await
 
       task = index.reset_settings
+      expect(task.type).to eq('settingsUpdate')
+      task.await
 
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      settings = index.settings
-      expect(settings['rankingRules']).to eq(default_ranking_rules)
-      expect(settings['distinctAttribute']).to be_nil
-      expect(settings['stopWords']).to be_empty
-      expect(settings['synonyms']).to be_empty
-      expect(settings['proximityPrecision']).to eq(default_proximity_precision)
+      expect(index.settings).to include(
+        'rankingRules' => default_ranking_rules,
+        'distinctAttribute' => nil,
+        'stopWords' => [],
+        'synonyms' => {},
+        'proximityPrecision' => default_proximity_precision
+      )
     end
   end
 
-  context 'On ranking-rules sub-routes' do
+  context 'On ranking rules' do
     let(:index) { client.index(uid) }
     let(:ranking_rules) { ['title:asc', 'words', 'typo'] }
     let(:wrong_ranking_rules) { ['title:asc', 'typos'] }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
-    it 'gets default values of ranking rules' do
-      settings = index.ranking_rules
-      expect(settings).to eq(default_ranking_rules)
-    end
-
-    it 'updates ranking rules' do
-      task = index.update_ranking_rules(ranking_rules)
-
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-      expect(index.ranking_rules).to eq(ranking_rules)
-    end
-
-    it 'updates ranking rules at null' do
-      task = index.update_ranking_rules(ranking_rules)
-      client.wait_for_task(task['taskUid'])
-
-      task = index.update_ranking_rules(nil)
-
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
+    it '#ranking_rules gets default values of ranking rules' do
       expect(index.ranking_rules).to eq(default_ranking_rules)
     end
 
-    it 'fails when updating with wrong ranking rules name' do
-      expect do
-        index.update_ranking_rules(wrong_ranking_rules)
-      end.to raise_meilisearch_api_error_with(400, 'invalid_settings_ranking_rules', 'invalid_request')
+    describe '#update_ranking_rules' do
+      it 'updates ranking rules' do
+        task = index.update_ranking_rules(ranking_rules)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.ranking_rules).to eq(ranking_rules)
+      end
+
+      it 'resets ranking rules when passed nil' do
+        index.update_ranking_rules(ranking_rules).await
+        task = index.update_ranking_rules(nil)
+
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.ranking_rules).to eq(default_ranking_rules)
+      end
+
+      it 'fails when updating with wrong ranking rules name' do
+        expect do
+          index.update_ranking_rules(wrong_ranking_rules)
+        end.to raise_meilisearch_api_error_with(400, 'invalid_settings_ranking_rules', 'invalid_request')
+      end
     end
 
-    it 'resets ranking rules' do
-      task = index.update_ranking_rules(ranking_rules)
-      client.wait_for_task(task['taskUid'])
-
+    it '#reset_ranking_rules resets ranking rules' do
+      index.update_ranking_rules(ranking_rules).await
       task = index.reset_ranking_rules
 
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
+      expect(task.type).to eq('settingsUpdate')
+      task.await
 
       expect(index.ranking_rules).to eq(default_ranking_rules)
     end
   end
 
-  context 'On distinct-attribute sub-routes' do
+  context 'On distinct attribute' do
     let(:index) { client.index(uid) }
     let(:distinct_attribute) { 'title' }
 
-    it 'gets default values of distinct attribute' do
-      client.create_index!(uid)
-      settings = index.distinct_attribute
+    before { client.create_index(uid).await }
 
-      expect(settings).to be_nil
-    end
-
-    it 'updates distinct attribute' do
-      task = index.update_distinct_attribute(distinct_attribute)
-
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      expect(index.distinct_attribute).to eq(distinct_attribute)
-    end
-
-    it 'updates distinct attribute at null' do
-      task = index.update_distinct_attribute(distinct_attribute)
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      task = index.update_distinct_attribute(nil)
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
+    it '#distinct_attribute gets default values of distinct attribute' do
       expect(index.distinct_attribute).to be_nil
     end
 
-    it 'resets distinct attribute' do
+    describe '#update_distinct_attribute' do
+      it 'updates distinct attribute' do
+        task = index.update_distinct_attribute(distinct_attribute)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.distinct_attribute).to eq(distinct_attribute)
+      end
+
+      it 'resets district attributes when passed nil' do
+        task = index.update_distinct_attribute(distinct_attribute)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        task = index.update_distinct_attribute(nil)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.distinct_attribute).to be_nil
+      end
+    end
+
+    it '#reset_distinct_attribute resets distinct attribute' do
       task = index.update_distinct_attribute(distinct_attribute)
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
+      expect(task.type).to eq('settingsUpdate')
+      task.await
 
       task = index.reset_distinct_attribute
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
+      expect(task.type).to eq('settingsUpdate')
+      task.await
 
       expect(index.distinct_attribute).to be_nil
     end
   end
 
-  context 'On searchable-attributes sub-routes' do
+  context 'On searchable attributes' do
     let(:index) { client.index(uid) }
     let(:searchable_attributes) { ['title', 'description'] }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
-    it 'gets default values of searchable attributes' do
-      settings = index.searchable_attributes
-      expect(settings).to eq(default_searchable_attributes)
-    end
-
-    it 'updates searchable attributes' do
-      task = index.update_searchable_attributes(searchable_attributes)
-
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-      expect(index.searchable_attributes).to eq(searchable_attributes)
-    end
-
-    it 'updates searchable attributes at null' do
-      task = index.update_searchable_attributes(searchable_attributes)
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      task = index.update_searchable_attributes(nil)
-      expect(task['type']).to eq('settingsUpdate')
-
-      client.wait_for_task(task['taskUid'])
-
+    it '#searchable_attributes gets default values of searchable attributes' do
       expect(index.searchable_attributes).to eq(default_searchable_attributes)
     end
 
-    it 'resets searchable attributes' do
+    describe '#update_searchable_attributes' do
+      it 'updates searchable attributes' do
+        task = index.update_searchable_attributes(searchable_attributes)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.searchable_attributes).to eq(searchable_attributes)
+      end
+
+      it 'resets searchable attributes when passed nil' do
+        task = index.update_searchable_attributes(searchable_attributes)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        task = index.update_searchable_attributes(nil)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.searchable_attributes).to eq(default_searchable_attributes)
+      end
+    end
+
+    it '#reset_searchable_attributes resets searchable attributes' do
       task = index.update_searchable_attributes(searchable_attributes)
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
+      expect(task.type).to eq('settingsUpdate')
+      task.await
 
       task = index.reset_searchable_attributes
+      expect(task.type).to eq('settingsUpdate')
+      expect(task.await).to be_succeeded
 
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
       expect(index.searchable_attributes).to eq(default_searchable_attributes)
     end
   end
 
-  context 'On displayed-attributes sub-routes' do
+  context 'On displayed attributes' do
     let(:index) { client.index(uid) }
     let(:displayed_attributes) { ['title', 'description'] }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
-    it 'gets default values of displayed attributes' do
-      settings = index.displayed_attributes
-      expect(settings).to eq(default_displayed_attributes)
-    end
-
-    it 'updates displayed attributes' do
-      task = index.update_displayed_attributes(displayed_attributes)
-
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      expect(index.displayed_attributes).to contain_exactly(*displayed_attributes)
-    end
-
-    it 'updates displayed attributes at null' do
-      task = index.update_displayed_attributes(displayed_attributes)
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      task = index.update_displayed_attributes(nil)
-
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
+    it '#displayed_attributes gets default values of displayed attributes' do
       expect(index.displayed_attributes).to eq(default_displayed_attributes)
     end
 
-    it 'resets displayed attributes' do
+    describe '#update_displayed_attributes' do
+      it 'updates displayed attributes' do
+        task = index.update_displayed_attributes(displayed_attributes)
+
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.displayed_attributes).to contain_exactly(*displayed_attributes)
+      end
+
+      it 'resets displayed attributes when passed nil' do
+        task = index.update_displayed_attributes(displayed_attributes)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        task = index.update_displayed_attributes(nil)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.displayed_attributes).to eq(default_displayed_attributes)
+      end
+    end
+
+    it '#reset_displayed_attributes resets displayed attributes' do
       task = index.update_displayed_attributes(displayed_attributes)
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
+      expect(task.type).to eq('settingsUpdate')
+      task.await
 
       task = index.reset_displayed_attributes
+      expect(task.type).to eq('settingsUpdate')
+      expect(task.await).to be_succeeded
 
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
       expect(index.displayed_attributes).to eq(default_displayed_attributes)
     end
   end
 
-  context 'On synonyms sub-routes' do
+  context 'On synonyms' do
     let(:index) { client.index(uid) }
     let(:synonyms) do
       {
@@ -308,406 +308,262 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       }
     end
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
-    it 'gets an empty hash of synonyms by default' do
-      settings = index.synonyms
-      expect(settings).to be_a(Hash)
-      expect(settings).to be_empty
+    describe '#synonyms' do
+      it 'gets an empty hash of synonyms by default' do
+        expect(index.synonyms).to eq({})
+      end
+
+      it 'gets all the synonyms' do
+        index.update_synonyms(synonyms).await
+        expect(index.synonyms).to match(
+          'wow' => ['world of warcraft'],
+          'wolverine' => ['xmen', 'logan'],
+          'logan' => ['wolverine', 'xmen']
+        )
+      end
     end
 
-    it 'returns an uid when updating' do
-      task = index.update_synonyms(synonyms)
-      expect(task).to be_a(Hash)
+    describe '#update_synonyms' do
+      it 'overwrites all existing synonyms' do
+        index.update_synonyms(synonyms).await
+        index.update_synonyms(hp: ['harry potter'], 'harry potter': ['hp']).await
 
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
+        expect(index.synonyms).to match(
+          'hp' => ['harry potter'], 'harry potter' => ['hp']
+        )
+      end
+
+      it 'resets synonyms when passed nil' do
+        index.update_synonyms(synonyms).await
+        expect(index.synonyms).not_to be_empty
+
+        index.update_synonyms(nil).await
+        expect(index.synonyms).to eq({})
+      end
     end
 
-    it 'gets all the synonyms' do
-      update_synonyms(index, synonyms)
-      settings = index.synonyms
-      expect(settings).to be_a(Hash)
-      expect(settings.count).to eq(3)
-      expect(settings.keys).to contain_exactly('wow', 'wolverine', 'logan')
-      expect(settings['wow']).to be_a(Array)
-      expect(settings['wow']).to eq(['world of warcraft'])
-    end
+    it '#reset_synonyms deletes all the synonyms' do
+      index.update_synonyms(synonyms).await
+      expect(index.synonyms).not_to be_empty
 
-    it 'overwrites all synonyms when updating' do
-      update_synonyms(index, synonyms)
-      update_synonyms(index, hp: ['harry potter'], 'harry potter': ['hp'])
-      synonyms = index.synonyms
-      expect(synonyms).to be_a(Hash)
-      expect(synonyms.count).to eq(2)
-      expect(synonyms.keys).to contain_exactly('hp', 'harry potter')
-      expect(synonyms['hp']).to be_a(Array)
-      expect(synonyms['hp']).to eq(['harry potter'])
-    end
-
-    it 'updates synonyms at null' do
-      update_synonyms(index, synonyms)
-
-      expect do
-        update_synonyms(index, nil)
-      end.to(change { index.synonyms.length }.from(3).to(0))
-    end
-
-    it 'deletes all the synonyms' do
-      update_synonyms(index, synonyms)
-
-      expect do
-        task = index.reset_synonyms
-
-        expect(task).to be_a(Hash)
-
-        expect(task['type']).to eq('settingsUpdate')
-        client.wait_for_task(task['taskUid'])
-
-        expect(index.synonyms).to be_a(Hash)
-      end.to(change { index.synonyms.length }.from(3).to(0))
+      index.reset_synonyms.await
+      expect(index.synonyms).to eq({})
     end
   end
 
-  context 'On stop-words sub-routes' do
+  context 'On stop words' do
     let(:index) { client.index(uid) }
     let(:stop_words_array) { ['the', 'of'] }
     let(:stop_words_string) { 'a' }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
-    it 'gets an empty array when there is no stop-words' do
-      settings = index.stop_words
-      expect(settings).to be_a(Array)
-      expect(settings).to be_empty
+    describe '#stop_words' do
+      it 'gets an empty array when there is no stop-words' do
+        expect(index.stop_words).to eq([])
+      end
+
+      it 'gets list of stop-words' do
+        task = index.update_stop_words(stop_words_array)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.stop_words).to contain_exactly(*stop_words_array)
+      end
     end
 
-    it 'updates stop-words when the body is valid (as an array)' do
-      task = index.update_stop_words(stop_words_array)
-      expect(task).to be_a(Hash)
+    describe '#update_stop_words' do
+      it 'updates stop words when passed an array' do
+        index.update_stop_words(stop_words_array).await
+        expect(index.stop_words).to contain_exactly(*stop_words_array)
+      end
 
-      expect(task['type']).to eq('settingsUpdate')
+      it 'updates stop-words when passed a string' do
+        index.update_stop_words(stop_words_string).await
+        expect(index.stop_words).to contain_exactly(stop_words_string)
+      end
+
+      it 'resets stop words when passed nil' do
+        task = index.update_stop_words(stop_words_string)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        task = index.update_stop_words(nil)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.stop_words).to be_empty
+      end
+
+      it 'raises an error when the body is invalid' do
+        expect do
+          index.update_stop_words(test: 'test')
+        end.to raise_meilisearch_api_error_with(400, 'invalid_settings_stop_words', 'invalid_request')
+      end
     end
 
-    it 'gets list of stop-words' do
-      task = index.update_stop_words(stop_words_array)
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-      settings = index.stop_words
-      expect(settings).to be_a(Array)
-      expect(settings).to contain_exactly(*stop_words_array)
-    end
-
-    it 'updates stop-words when the body is valid (as single string)' do
+    it '#reset_stop_words resets stop-words' do
       task = index.update_stop_words(stop_words_string)
-      expect(task).to be_a(Hash)
+      expect(task.type).to eq('settingsUpdate')
+      task.await
 
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-      sw = index.stop_words
-      expect(sw).to be_a(Array)
-      expect(sw).to contain_exactly(stop_words_string)
-    end
-
-    it 'updates stop-words at null' do
-      task = index.update_stop_words(stop_words_string)
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      task = index.update_stop_words(nil)
-
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      expect(index.stop_words).to be_empty
-    end
-
-    it 'returns an error when the body is invalid' do
-      expect do
-        index.update_stop_words(test: 'test')
-      end.to raise_meilisearch_api_error_with(400, 'invalid_settings_stop_words', 'invalid_request')
-    end
-
-    it 'resets stop-words' do
-      task = index.update_stop_words(stop_words_string)
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
+      expect(index.stop_words).to contain_exactly(stop_words_string)
 
       task = index.reset_stop_words
-      expect(task).to be_a(Hash)
+      expect(task.type).to eq('settingsUpdate')
+      task.await
 
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      expect(index.stop_words).to be_a(Array)
-      expect(index.stop_words).to be_empty
+      expect(index.stop_words).to eq([])
     end
   end
 
-  context 'On filterable-attributes sub-routes' do
+  context 'On filterable attributes' do
     let(:index) { client.index(uid) }
     let(:filterable_attributes) { ['title', 'description'] }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
-    it 'gets default values of filterable attributes' do
-      settings = index.filterable_attributes
-      expect(settings).to be_a(Array)
-      expect(settings).to be_empty
+    it '#filterable_attributes gets default values of filterable attributes' do
+      expect(index.filterable_attributes).to eq([])
     end
 
-    it 'updates filterable attributes' do
-      task = index.update_filterable_attributes(filterable_attributes)
+    describe '#update_filterable_attributes' do
+      it 'updates filterable attributes' do
+        task = index.update_filterable_attributes(filterable_attributes)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
 
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
+        expect(index.filterable_attributes).to contain_exactly(*filterable_attributes)
+      end
+
+      it 'resets filterable attributes when passed nil' do
+        task = index.update_filterable_attributes(filterable_attributes)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+        expect(index.filterable_attributes).to contain_exactly(*filterable_attributes)
+
+        task = index.update_filterable_attributes(nil)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.filterable_attributes).to be_empty
+      end
+    end
+
+    it '#reset_filterable_attributes resets filterable attributes' do
+      task = index.update_filterable_attributes(filterable_attributes)
+      expect(task.type).to eq('settingsUpdate')
+      task.await
       expect(index.filterable_attributes).to contain_exactly(*filterable_attributes)
-    end
-
-    it 'updates filterable attributes at null' do
-      task = index.update_filterable_attributes(filterable_attributes)
-
-      expect(task['type']).to eq('settingsUpdate')
-
-      task = index.update_filterable_attributes(nil)
-
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      expect(index.filterable_attributes).to be_empty
-    end
-
-    it 'resets filterable attributes' do
-      task = index.update_filterable_attributes(filterable_attributes)
-
-      expect(task['type']).to eq('settingsUpdate')
 
       task = index.reset_filterable_attributes
+      expect(task.type).to eq('settingsUpdate')
+      task.await
 
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
       expect(index.filterable_attributes).to be_empty
     end
   end
 
-  context 'On sortable-attributes sub-routes' do
+  context 'On sortable attributes' do
     let(:index) { client.index(uid) }
     let(:sortable_attributes) { ['title', 'description'] }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
     it 'gets default values of sortable attributes' do
-      settings = index.sortable_attributes
-      expect(settings).to be_a(Array)
-      expect(settings).to be_empty
+      expect(index.sortable_attributes).to eq([])
     end
 
-    it 'updates sortable attributes' do
-      task = index.update_sortable_attributes(sortable_attributes)
+    describe '#update_sortable_attributes' do
+      it 'updates sortable attributes' do
+        task = index.update_sortable_attributes(sortable_attributes)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
 
-      client.wait_for_task(task['taskUid'])
-      expect(task['type']).to eq('settingsUpdate')
-      expect(index.sortable_attributes).to contain_exactly(*sortable_attributes)
-    end
+        expect(index.sortable_attributes).to contain_exactly(*sortable_attributes)
+      end
 
-    it 'updates sortable attributes at null' do
-      task = index.update_sortable_attributes(sortable_attributes)
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
+      it 'resets sortable attributes when passed nil' do
+        task = index.update_sortable_attributes(sortable_attributes)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
 
-      task = index.update_sortable_attributes(nil)
+        expect(index.sortable_attributes).to contain_exactly(*sortable_attributes)
 
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
+        task = index.update_sortable_attributes(nil)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
 
-      expect(index.sortable_attributes).to be_empty
+        expect(index.sortable_attributes).to be_empty
+      end
     end
 
     it 'resets sortable attributes' do
       task = index.update_sortable_attributes(sortable_attributes)
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
+      expect(task.type).to eq('settingsUpdate')
+      task.await
+
+      expect(index.sortable_attributes).to contain_exactly(*sortable_attributes)
 
       task = index.reset_sortable_attributes
+      expect(task.type).to eq('settingsUpdate')
+      task.await
 
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
       expect(index.sortable_attributes).to be_empty
-    end
-  end
-
-  context 'Index with primary-key' do
-    let(:index) { client.index(uid) }
-
-    before { client.create_index!(uid, primary_key: 'id') }
-
-    it 'gets the default values of settings' do
-      settings = index.settings
-      expect(settings).to be_a(Hash)
-      expect(settings.keys).to include(*settings_keys)
-      expect(settings['rankingRules']).to eq(default_ranking_rules)
-      expect(settings['distinctAttribute']).to be_nil
-      expect(settings['searchableAttributes']).to eq(default_searchable_attributes)
-      expect(settings['displayedAttributes']).to eq(default_displayed_attributes)
-      expect(settings['stopWords']).to eq([])
-      expect(settings['synonyms']).to eq({})
-    end
-
-    it 'updates multiples settings at the same time' do
-      task = index.update_settings(
-        ranking_rules: ['title:asc', 'typo'],
-        distinct_attribute: 'title'
-      )
-
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-      settings = index.settings
-      expect(settings['rankingRules']).to eq(['title:asc', 'typo'])
-      expect(settings['distinctAttribute']).to eq('title')
-      expect(settings['stopWords']).to be_empty
-    end
-
-    it 'updates one setting without reset the others' do
-      task = index.update_settings(stop_words: ['the'])
-
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-      settings = index.settings
-      expect(settings['rankingRules']).to eq(default_ranking_rules)
-      expect(settings['distinctAttribute']).to be_nil
-      expect(settings['stopWords']).to eq(['the'])
-      expect(settings['synonyms']).to be_empty
-    end
-
-    it 'resets all settings' do
-      task = index.update_settings(
-        ranking_rules: ['title:asc', 'typo'],
-        distinct_attribute: 'title',
-        stop_words: ['the'],
-        synonyms: {
-          wow: ['world of warcraft']
-        }
-      )
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      task = index.reset_settings
-
-      expect(task['type']).to eq('settingsUpdate')
-      client.wait_for_task(task['taskUid'])
-
-      settings = index.settings
-      expect(settings['rankingRules']).to eq(default_ranking_rules)
-      expect(settings['distinctAttribute']).to be_nil
-      expect(settings['stopWords']).to be_empty
-      expect(settings['synonyms']).to be_empty
-    end
-  end
-
-  context 'Manipulation of searchable/displayed attributes with the primary-key' do
-    let(:index) { client.index(random_uid) }
-
-    it 'does not add document when there is no primary-key' do
-      task = index.add_documents(title: 'Test')
-      task = client.wait_for_task(task['taskUid'])
-
-      expect(task.keys).to include('error')
-      expect(task['error']['code']).to eq('index_primary_key_no_candidate_found')
-    end
-
-    it 'adds documents when there is a primary-key' do
-      task = index.add_documents(objectId: 1, title: 'Test')
-
-      client.wait_for_task(task['taskUid'])
-      expect(index.documents['results'].count).to eq(1)
-    end
-
-    it 'resets searchable/displayed attributes' do
-      task = index.update_displayed_attributes(['title', 'description'])
-      client.wait_for_task(task['taskUid'])
-      task = index.update_searchable_attributes(['title'])
-
-      client.wait_for_task(task['taskUid'])
-
-      task = index.reset_displayed_attributes
-
-      client.wait_for_task(task['taskUid'])
-      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
-
-      task = index.reset_searchable_attributes
-
-      client.wait_for_task(task['taskUid'])
-      expect(index.task(task['taskUid'])['status']).to eq('succeeded')
-
-      expect(index.displayed_attributes).to eq(['*'])
-      expect(index.searchable_attributes).to eq(['*'])
     end
   end
 
   context 'Aliases' do
     let(:index) { client.index(uid) }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
     it 'works with method aliases' do
-      expect(index.method(:settings) == index.method(:get_settings)).to be_truthy
-      expect(index.method(:ranking_rules) == index.method(:get_ranking_rules)).to be_truthy
-      expect(index.method(:distinct_attribute) == index.method(:get_distinct_attribute)).to be_truthy
-      expect(index.method(:searchable_attributes) == index.method(:get_searchable_attributes)).to be_truthy
-      expect(index.method(:displayed_attributes) == index.method(:get_displayed_attributes)).to be_truthy
-      expect(index.method(:synonyms) == index.method(:get_synonyms)).to be_truthy
-      expect(index.method(:stop_words) == index.method(:get_stop_words)).to be_truthy
-      expect(index.method(:filterable_attributes) == index.method(:get_filterable_attributes)).to be_truthy
+      expect(index.method(:settings)).to eq index.method(:get_settings)
+      expect(index.method(:ranking_rules)).to eq index.method(:get_ranking_rules)
+      expect(index.method(:distinct_attribute)).to eq index.method(:get_distinct_attribute)
+      expect(index.method(:searchable_attributes)).to eq index.method(:get_searchable_attributes)
+      expect(index.method(:displayed_attributes)).to eq index.method(:get_displayed_attributes)
+      expect(index.method(:synonyms)).to eq index.method(:get_synonyms)
+      expect(index.method(:stop_words)).to eq index.method(:get_stop_words)
+      expect(index.method(:filterable_attributes)).to eq index.method(:get_filterable_attributes)
     end
   end
 
-  def update_synonyms(index, synonyms)
-    task = index.update_synonyms(synonyms)
-
-    client.wait_for_task(task['taskUid'])
-  end
-
-  context 'On pagination sub-routes' do
+  context 'On pagination' do
     let(:index) { client.index(uid) }
     let(:pagination) { { maxTotalHits: 3141 } }
+    let(:pagination_with_string_keys) { pagination.transform_keys(&:to_s) }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
-    it 'gets default values of pagination' do
-      settings = index.pagination.transform_keys(&:to_sym)
-
-      expect(settings).to eq(default_pagination)
+    it '#pagination gets default values of pagination' do
+      expect(index.pagination).to eq(default_pagination.transform_keys(&:to_s))
     end
 
-    it 'updates pagination' do
-      task = index.update_pagination(pagination)
-      client.wait_for_task(task['taskUid'])
+    describe '#update_pagination' do
+      it 'updates pagination' do
+        index.update_pagination(pagination).await
+        expect(index.pagination).to eq(pagination_with_string_keys)
+      end
 
-      expect(index.pagination.transform_keys(&:to_sym)).to eq(pagination)
+      it 'resets pagination when passed nil' do
+        index.update_pagination(pagination).await
+        expect(index.pagination).to eq(pagination_with_string_keys)
+
+        index.update_pagination(nil).await
+        expect(index.pagination).to eq(default_pagination.transform_keys(&:to_s))
+      end
     end
 
-    it 'updates pagination at null' do
-      task = index.update_pagination(pagination)
-      client.wait_for_task(task['taskUid'])
+    it '#reset_pagination resets pagination' do
+      index.update_pagination(pagination).await
+      expect(index.pagination).to eq(pagination_with_string_keys)
 
-      task = index.update_pagination(nil)
-      client.wait_for_task(task['taskUid'])
-
-      expect(index.pagination.transform_keys(&:to_sym)).to eq(default_pagination)
-    end
-
-    it 'resets pagination' do
-      task = index.update_pagination(pagination)
-      client.wait_for_task(task['taskUid'])
-
-      task = index.reset_pagination
-      client.wait_for_task(task['taskUid'])
-
-      expect(index.pagination.transform_keys(&:to_sym)).to eq(default_pagination)
+      index.reset_pagination.await
+      expect(index.pagination).to eq(default_pagination.transform_keys(&:to_s))
     end
   end
 
@@ -739,28 +595,23 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       }
     end
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
-    it 'gets default typo tolerance settings' do
-      settings = index.typo_tolerance
-
-      expect(settings).to eq(default_typo_tolerance)
+    it '#typo_tolerance gets default typo tolerance settings' do
+      expect(index.typo_tolerance).to eq(default_typo_tolerance)
     end
 
-    it 'updates typo tolerance settings' do
-      update_task = index.update_typo_tolerance(new_typo_tolerance)
-      client.wait_for_task(update_task['taskUid'])
+    it '#update_type_tolerance updates typo tolerance settings' do
+      index.update_typo_tolerance(new_typo_tolerance).await
 
       expect(index.typo_tolerance).to eq(MeiliSearch::Utils.transform_attributes(new_typo_tolerance))
     end
 
-    it 'resets typo tolerance settings' do
-      update_task = index.update_typo_tolerance(new_typo_tolerance)
-      client.wait_for_task(update_task['taskUid'])
+    it '#reset_typo_tolerance resets typo tolerance settings' do
+      index.update_typo_tolerance(new_typo_tolerance).await
+      expect(index.typo_tolerance).to eq(MeiliSearch::Utils.transform_attributes(new_typo_tolerance))
 
-      reset_task = index.reset_typo_tolerance
-      client.wait_for_task(reset_task['taskUid'])
-
+      index.reset_typo_tolerance.await
       expect(index.typo_tolerance).to eq(default_typo_tolerance)
     end
   end
@@ -768,122 +619,102 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   context 'On faceting' do
     let(:index) { client.index(uid) }
     let(:default_faceting) { { maxValuesPerFacet: 100, sortFacetValuesBy: { '*' => 'alpha' } } }
+    let(:default_faceting_with_string_keys) { default_faceting.transform_keys(&:to_s) }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
-    it 'gets default values of faceting' do
-      settings = index.faceting.transform_keys(&:to_sym)
-
-      expect(settings.keys).to include(*default_faceting.keys)
+    it '#faceting gets default values of faceting' do
+      expect(index.faceting).to eq(default_faceting_with_string_keys)
     end
 
-    it 'updates faceting' do
-      update_task = index.update_faceting({ 'max_values_per_facet' => 333 })
-      client.wait_for_task(update_task['taskUid'])
+    describe '#update_faceting' do
+      it 'updates faceting' do
+        index.update_faceting({ 'max_values_per_facet' => 333 }).await
+        new_faceting = default_faceting_with_string_keys.merge('maxValuesPerFacet' => 333)
 
-      expect(index.faceting['maxValuesPerFacet']).to eq(333)
-      expect(index.faceting.transform_keys(&:to_sym).keys).to include(*default_faceting.keys)
+        expect(index.faceting).to eq(new_faceting)
+      end
+
+      it 'resets faceting when passed nil' do
+        index.update_faceting({ 'max_values_per_facet' => 333 }).await
+        new_faceting = default_faceting_with_string_keys.merge('maxValuesPerFacet' => 333)
+        expect(index.faceting).to eq(new_faceting)
+
+        index.update_faceting(nil).await
+        expect(index.faceting).to eq(default_faceting_with_string_keys)
+      end
     end
 
-    it 'updates faceting at null' do
-      update_task = index.update_faceting({ 'max_values_per_facet' => 444 })
-      client.wait_for_task(update_task['taskUid'])
+    it '#reset_faceting resets faceting' do
+      index.update_faceting({ 'max_values_per_facet' => 333 }).await
+      new_faceting = default_faceting_with_string_keys.merge('maxValuesPerFacet' => 333)
+      expect(index.faceting).to eq(new_faceting)
 
-      update_task = index.update_faceting(nil)
-      client.wait_for_task(update_task['taskUid'])
-
-      expect(index.faceting.transform_keys(&:to_sym).keys).to include(*default_faceting.keys)
-    end
-
-    it 'resets faceting' do
-      update_task = index.update_faceting({ 'max_values_per_facet' => 444 })
-      client.wait_for_task(update_task['taskUid'])
-
-      reset_task = index.reset_faceting
-      client.wait_for_task(reset_task['taskUid'])
-
-      expect(index.faceting.transform_keys(&:to_sym).keys).to include(*default_faceting.keys)
+      index.reset_faceting.await
+      expect(index.faceting).to eq(default_faceting_with_string_keys)
     end
   end
 
   context 'On user-defined dictionary' do
     let(:index) { client.index(uid) }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
     it 'has no default value' do
-      settings = index.dictionary
-
-      expect(settings).to be_empty
+      expect(index.dictionary).to eq([])
     end
 
-    it 'updates dictionary' do
-      update_task = index.update_dictionary(['J. R. R.', 'W. E. B.'])
-      client.wait_for_task(update_task['taskUid'])
-
+    it '#update_dictionary updates dictionary' do
+      index.update_dictionary(['J. R. R.', 'W. E. B.']).await
       expect(index.dictionary).to contain_exactly('J. R. R.', 'W. E. B.')
     end
 
-    it 'resets dictionary' do
-      update_task = index.update_dictionary(['J. R. R.', 'W. E. B.'])
-      client.wait_for_task(update_task['taskUid'])
+    it '#reset_dictionary resets dictionary' do
+      index.update_dictionary(['J. R. R.', 'W. E. B.']).await
+      expect(index.dictionary).to contain_exactly('J. R. R.', 'W. E. B.')
 
-      reset_task = index.reset_dictionary
-      client.wait_for_task(reset_task['taskUid'])
-
-      expect(index.dictionary).to be_empty
+      index.reset_dictionary.await
+      expect(index.dictionary).to eq([])
     end
   end
 
   context 'On separator tokens' do
     let(:index) { client.index(uid) }
 
-    before { client.create_index!(uid) }
+    before { client.create_index(uid).await }
 
-    describe 'separator_tokens' do
-      it 'has no default value' do
-        expect(index.separator_tokens).to be_empty
-      end
-
-      it 'updates separator tokens' do
-        update_task = index.update_separator_tokens ['|', '&hellip;']
-        client.wait_for_task(update_task['taskUid'])
-
-        expect(index.separator_tokens).to contain_exactly('|', '&hellip;')
-      end
-
-      it 'resets separator tokens' do
-        update_task = index.update_separator_tokens ['|', '&hellip;']
-        client.wait_for_task(update_task['taskUid'])
-
-        reset_task = index.reset_separator_tokens
-        client.wait_for_task(reset_task['taskUid'])
-
-        expect(index.separator_tokens).to be_empty
-      end
+    it '#separator_tokens has no default value' do
+      expect(index.separator_tokens).to eq([])
     end
 
-    describe '#non_separator_tokens' do
-      it 'has no default value' do
-        expect(index.non_separator_tokens).to be_empty
-      end
+    it '#update_separator_tokens updates separator tokens' do
+      index.update_separator_tokens(['|', '&hellip;']).await
+      expect(index.separator_tokens).to contain_exactly('|', '&hellip;')
+    end
 
-      it 'updates non separator tokens' do
-        update_task = index.update_non_separator_tokens ['@', '#']
-        client.wait_for_task(update_task['taskUid'])
+    it '#reset_separator_tokens resets separator tokens' do
+      index.update_separator_tokens(['|', '&hellip;']).await
+      expect(index.separator_tokens).to contain_exactly('|', '&hellip;')
 
-        expect(index.non_separator_tokens).to contain_exactly('@', '#')
-      end
+      index.reset_separator_tokens.await
+      expect(index.separator_tokens).to eq([])
+    end
 
-      it 'resets non separator tokens' do
-        update_task = index.update_non_separator_tokens ['@', '#']
-        client.wait_for_task(update_task['taskUid'])
+    it '#non_separator_tokens has no default value' do
+      expect(index.non_separator_tokens).to eq([])
+    end
 
-        reset_task = index.reset_non_separator_tokens
-        client.wait_for_task(reset_task['taskUid'])
+    it '#update_non_separator_tokens updates non separator tokens' do
+      index.update_non_separator_tokens(['@', '#']).await
+      expect(index.non_separator_tokens).to contain_exactly('@', '#')
+    end
 
-        expect(index.non_separator_tokens).to be_empty
-      end
+    it '#reset_non_separator_tokens resets non separator tokens' do
+      index.update_non_separator_tokens(['@', '#']).await
+      expect(index.non_separator_tokens).to contain_exactly('@', '#')
+
+      index.reset_non_separator_tokens.await
+      expect(index.non_separator_tokens).to eq([])
     end
 
     describe '#proximity_precision' do

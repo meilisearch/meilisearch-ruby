@@ -2,6 +2,7 @@
 
 require 'meilisearch/version'
 require 'meilisearch/utils'
+require 'meilisearch/models/task'
 require 'meilisearch/http_request'
 require 'meilisearch/multi_search'
 require 'meilisearch/tenant_token'

@@ -4,8 +4,7 @@ RSpec.describe 'MeiliSearch::Index - Search with facets' do
   include_context 'search books with author, genre, year'
 
   before do
-    response = index.update_filterable_attributes(['genre', 'year', 'author'])
-    index.wait_for_task(response['taskUid'])
+    index.update_filterable_attributes(['genre', 'year', 'author']).await
   end
 
   it 'does a custom search with facets' do

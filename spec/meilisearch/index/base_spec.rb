@@ -2,7 +2,7 @@
 
 RSpec.describe MeiliSearch::Index do
   it 'fetch the info of the index' do
-    client.create_index!('books')
+    client.create_index('books').await
 
     index = client.fetch_index('books')
     expect(index).to be_a(MeiliSearch::Index)
@@ -15,7 +15,7 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'fetch the raw Hash info of the index' do
-    client.create_index!('books', primary_key: 'reference_number')
+    client.create_index('books', primary_key: 'reference_number').await
 
     raw_index = client.fetch_raw_index('books')
 
@@ -29,7 +29,7 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'get primary-key of index if null' do
-    client.create_index!('index_without_primary_key')
+    client.create_index('index_without_primary_key').await
 
     index = client.fetch_index('index_without_primary_key')
     expect(index.primary_key).to be_nil
@@ -37,7 +37,7 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'get primary-key of index if it exists' do
-    client.create_index!('index_with_prirmary_key', primary_key: 'primary_key')
+    client.create_index('index_with_prirmary_key', primary_key: 'primary_key').await
 
     index = client.fetch_index('index_with_prirmary_key')
     expect(index.primary_key).to eq('primary_key')
@@ -45,18 +45,18 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'get uid of index' do
-    client.create_index!('uid')
+    client.create_index('uid').await
 
     index = client.fetch_index('uid')
     expect(index.uid).to eq('uid')
   end
 
   it 'updates primary-key of index if not defined before' do
-    client.create_index!('uid')
+    client.create_index('uid').await
 
     task = client.index('uid').update(primary_key: 'new_primary_key')
-    expect(task['type']).to eq('indexUpdate')
-    client.wait_for_task(task['taskUid'])
+    expect(task.type).to eq('indexUpdate')
+    task.await
 
     index = client.fetch_index('uid')
     expect(index).to be_a(MeiliSearch::Index)
@@ -70,11 +70,11 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'updates primary-key of index if has been defined before but there is not docs' do
-    client.create_index!('books', primary_key: 'reference_number')
+    client.create_index('books', primary_key: 'reference_number').await
 
     task = client.index('books').update(primary_key: 'international_standard_book_number')
-    expect(task['type']).to eq('indexUpdate')
-    client.wait_for_task(task['taskUid'])
+    expect(task.type).to eq('indexUpdate')
+    task.await
 
     index = client.fetch_index('books')
     expect(index).to be_a(MeiliSearch::Index)
@@ -89,14 +89,14 @@ RSpec.describe MeiliSearch::Index do
 
   it 'returns a failing task if primary-key is already defined' do
     index = client.index('uid')
-    index.add_documents!({ id: 1, title: 'My Title' })
+    index.add_documents({ id: 1, title: 'My Title' }).await
 
     task = index.update(primary_key: 'new_primary_key')
-    expect(task['type']).to eq('indexUpdate')
-    achieved_task = client.wait_for_task(task['taskUid'])
+    expect(task.type).to eq('indexUpdate')
 
-    expect(achieved_task['status']).to eq('failed')
-    expect(achieved_task['error']['code']).to eq('index_primary_key_already_exists')
+    task.await
+    expect(task).to be_failed
+    expect(task.error['code']).to eq('index_primary_key_already_exists')
   end
 
   it 'supports options' do
@@ -107,7 +107,7 @@ RSpec.describe MeiliSearch::Index do
     }
 
     new_client = MeiliSearch::Client.new(URL, MASTER_KEY, options)
-    new_client.create_index!('books')
+    new_client.create_index('books').await
     index = new_client.fetch_index('books')
     expect(index.options).to eq({ max_retries: 1, timeout: 2, convert_body?: true })
 
@@ -135,7 +135,7 @@ RSpec.describe MeiliSearch::Index do
     }
 
     new_client = MeiliSearch::Client.new(URL, MASTER_KEY, options)
-    new_client.create_index!('books')
+    new_client.create_index('books').await
     index = new_client.fetch_index('books')
     expect(index.options).to eq(options.merge({ convert_body?: true }))
 
@@ -155,21 +155,21 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'deletes index' do
-    client.create_index!('uid')
+    client.create_index('uid').await
 
     task = client.index('uid').delete
-    expect(task['type']).to eq('indexDeletion')
-    achieved_task = client.wait_for_task(task['taskUid'])
-    expect(achieved_task['status']).to eq('succeeded')
+    expect(task.type).to eq('indexDeletion')
+    task.await
+    expect(task).to be_succeeded
     expect { client.fetch_index('uid') }.to raise_index_not_found_meilisearch_api_error
   end
 
   it 'fails to manipulate index object after deletion' do
-    client.create_index!('uid')
+    client.create_index('uid').await
 
     task = client.index('uid').delete
-    expect(task['type']).to eq('indexDeletion')
-    client.wait_for_task(task['taskUid'])
+    expect(task.type).to eq('indexDeletion')
+    task.await
 
     index = client.index('uid')
     expect { index.fetch_primary_key }.to raise_index_not_found_meilisearch_api_error
@@ -177,7 +177,7 @@ RSpec.describe MeiliSearch::Index do
   end
 
   it 'works with method aliases' do
-    client.create_index!('uid', primary_key: 'primary_key')
+    client.create_index('uid', primary_key: 'primary_key').await
 
     index = client.fetch_index('uid')
     expect(index.method(:fetch_primary_key) == index.method(:get_primary_key)).to be_truthy
@@ -187,11 +187,11 @@ RSpec.describe MeiliSearch::Index do
 
   context 'with snake_case options' do
     it 'does the request with camelCase attributes' do
-      client.create_index!('uid')
+      client.create_index('uid').await
 
       task = client.index('uid').update(primary_key: 'new_primary_key')
-      expect(task['type']).to eq('indexUpdate')
-      client.wait_for_task(task['taskUid'])
+      expect(task.type).to eq('indexUpdate')
+      task.await
 
       index = client.fetch_index('uid')
       expect(index).to be_a(MeiliSearch::Index)
