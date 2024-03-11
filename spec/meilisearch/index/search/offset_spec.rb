@@ -16,8 +16,7 @@ RSpec.describe 'MeiliSearch::Index - Search with offset' do
   end
 
   it 'does a placeholder search with an offset set to 3 and custom ranking rules' do
-    response = index.update_ranking_rules(['objectId:asc'])
-    index.wait_for_task(response['taskUid'])
+    index.update_ranking_rules(['objectId:asc']).await
     response = index.search('')
     response_with_offset = index.search('', offset: 3)
     expect(response['hits'].first['objectId']).to eq(1)

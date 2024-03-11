@@ -16,7 +16,8 @@ module MeiliSearch
     def swap_indexes(*options)
       mapped_array = options.map { |arr| { indexes: arr } }
 
-      http_post '/swap-indexes', mapped_array
+      response = http_post '/swap-indexes', mapped_array
+      Models::Task.new(response, task_endpoint)
     end
 
     def indexes(options = {})
@@ -35,14 +36,20 @@ module MeiliSearch
     def create_index(index_uid, options = {})
       body = Utils.transform_attributes(options.merge(uid: index_uid))
 
-      http_post '/indexes', body
+      response = http_post '/indexes', body
+
+      Models::Task.new(response, task_endpoint)
     end
 
     # Synchronous version of create_index.
     # Waits for the task to be achieved, be careful when using it.
     def create_index!(index_uid, options = {})
-      task = create_index(index_uid, options)
-      wait_for_task(task['taskUid'])
+      Utils.soft_deprecate(
+        'Client#create_index!',
+        "client.create_index('#{index_uid}').await"
+      )
+
+      create_index(index_uid, options).await
     end
 
     def delete_index(index_uid)
@@ -118,7 +125,8 @@ module MeiliSearch
     ### DUMPS
 
     def create_dump
-      http_post '/dumps'
+      response = http_post '/dumps'
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SNAPSHOTS
