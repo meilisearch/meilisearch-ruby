@@ -251,8 +251,6 @@ JSON output:
 }
 ```
 
-You can enable it by querying PATCH /experimental-features with { "scoreDetails": true }
-
 This feature is only available with Meilisearch v1.3 and newer (optional).
 
 #### Custom Search With attributes on at search time  <!-- omit in toc -->
