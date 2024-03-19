@@ -347,10 +347,13 @@ search_parameter_guide_matching_strategy_2: |-
     matching_strategy: 'all'
   })
 search_parameter_guide_show_ranking_score_1: |-
-  client.index('movies').search('winter feast', {
+  client.index('movies').search('dragon', {
     show_ranking_score: true
   })
-
+search_parameter_guide_show_ranking_score_details_1: |-
+  client.index('movies').search('dragon', {
+    show_ranking_score_details: true
+  })
 search_parameter_guide_attributes_to_search_on_1: |-
   client.index('movies').search('adventure', {
     attributes_to_search_on: ['overview']
