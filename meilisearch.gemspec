@@ -15,6 +15,6 @@ Gem::Specification.new do |s|
   s.files       = Dir['{lib}/**/*', 'LICENSE', 'README.md']
 
   s.required_ruby_version = '>= 3.0.0'
-  s.add_dependency 'httparty', '>= 0.17.1', '< 0.22.0'
+  s.add_dependency 'httparty', '>= 0.17.1', '< 0.23.0'
   s.metadata['rubygems_mfa_required'] = 'true'
 end
