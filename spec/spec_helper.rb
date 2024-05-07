@@ -22,11 +22,16 @@
 
 unless ENV.fetch('DISABLE_COVERAGE', false)
   require 'simplecov'
-  require 'codecov'
 
   SimpleCov.start do
     add_filter %r{^/spec/}
-    formatter SimpleCov::Formatter::Codecov if ENV['CI']
+    minimum_coverage 99
+
+    if ENV['CI']
+      require 'simplecov-cobertura'
+
+      formatter SimpleCov::Formatter::CoberturaFormatter
+    end
   end
 end
 
