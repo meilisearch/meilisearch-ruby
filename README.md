@@ -53,7 +53,8 @@ Say goodbye to server deployment and manual updates with [Meilisearch Cloud](htt
 
 ## 🔧 Installation
 
-This package requires Ruby version 3.0.0 or later.
+We officially support any version of Ruby that is still being officially maintained, but in any case, you can use any version above Ruby 3.0.  
+However, we cannot guarantee support if your version is no longer being maintained.
 
 With `gem` in command line:
 ```bash
