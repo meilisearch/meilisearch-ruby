@@ -53,7 +53,7 @@ Say goodbye to server deployment and manual updates with [Meilisearch Cloud](htt
 
 ## 🔧 Installation
 
-We officially support any version of Ruby that is still being officially maintained, but in any case, you can use any version above Ruby 3.0.  
+We officially support any version of Ruby that is still receiving at least [security maintenance](https://www.ruby-lang.org/en/downloads/branches/). You may, however, be fine with any Ruby version above 3.0.
 However, we cannot guarantee support if your version is no longer being maintained.
 
 With `gem` in command line:
