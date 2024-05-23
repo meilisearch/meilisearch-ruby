@@ -10,7 +10,7 @@ get_documents_post_1: |-
     fields: ['title', 'genres', 'rating', 'language']
   )
 delete_documents_by_filter_1: |-
-  client.index('movies').get_documents(filter: 'genres = action OR genres adventure')
+  client.index('movies').delete_documents(filter: 'genres = action OR genres = adventure')
 get_documents_1: |-
   client.index('movies').get_documents(limit: 2, filter: 'genres = action')
 getting_started_faceting: |-
