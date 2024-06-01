@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 describe MeiliSearch::Models::Task do
+  subject { described_class.new task_hash, endpoint }
+
   let(:new_index_uid) { random_uid }
   let(:task_hash) { client.http_post '/indexes', { 'uid' => new_index_uid } }
   let(:endpoint) { MeiliSearch::Task.new(URL, MASTER_KEY, client.options) }
-
-  subject { described_class.new task_hash, endpoint }
 
   let(:enqueued_endpoint) { instance_double(MeiliSearch::Task, task: task_hash) }
   let(:enqueued_task) { described_class.new task_hash, enqueued_endpoint }
@@ -14,6 +14,7 @@ describe MeiliSearch::Models::Task do
   let(:processing_task) { described_class.new task_hash, processing_endpoint }
 
   let(:logger) { instance_double(Logger, warn: nil) }
+
   before { MeiliSearch::Utils.logger = logger }
   after { MeiliSearch::Utils.logger = nil }
 
@@ -362,6 +363,7 @@ describe MeiliSearch::Models::Task do
 
     context 'when the task is already finished' do
       let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash, cancel_tasks: nil) }
+
       before { task_hash['status'] = 'succeeded' }
 
       it 'sends no request' do
@@ -374,6 +376,7 @@ describe MeiliSearch::Models::Task do
 
     context 'when the task is already cancelled' do
       let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash, cancel_tasks: nil) }
+
       before { task_hash['status'] = 'cancelled' }
 
       it 'sends no request' do

@@ -3,7 +3,7 @@
 RSpec.describe 'MeiliSearch::Client requests' do
   let(:key) { SecureRandom.uuid }
 
-  before(:each) do
+  before do
     expect(MeiliSearch::Client).to receive(:post)
       .with(kind_of(String), hash_including(body: "{\"primaryKey\":\"#{key}\",\"uid\":\"#{key}\"}"))
       .and_call_original

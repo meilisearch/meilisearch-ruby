@@ -386,7 +386,7 @@ module MeiliSearch
       Models::Task.new(response, task_endpoint)
     end
 
-    ### SETTINGS - DINSTINCT ATTRIBUTE
+    ### SETTINGS - DISTINCT ATTRIBUTE
 
     def distinct_attribute
       http_get "/indexes/#{@uid}/settings/distinct-attribute"

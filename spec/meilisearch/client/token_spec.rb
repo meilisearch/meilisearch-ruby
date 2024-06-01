@@ -53,7 +53,7 @@ RSpec.describe MeiliSearch::TenantToken do
       it 'decodes successfully using @api_key from instance' do
         expect do
           JWT.decode token, client_key, true, VERIFY_OPTIONS
-        end.to_not raise_error
+        end.not_to raise_error
       end
 
       it 'tries to decode without the right signature raises a error' do
@@ -89,7 +89,7 @@ RSpec.describe MeiliSearch::TenantToken do
       it 'allows generate token with a nil expires_at' do
         expect do
           instance.generate_tenant_token('uid', search_rules, expires_at: nil)
-        end.to_not raise_error
+        end.not_to raise_error
       end
 
       it 'decodes successfully the expires_at param' do
@@ -117,7 +117,7 @@ RSpec.describe MeiliSearch::TenantToken do
       it 'allows generate token without expires_at' do
         expect do
           instance.generate_tenant_token('uid', search_rules)
-        end.to_not raise_error
+        end.not_to raise_error
       end
     end
 
