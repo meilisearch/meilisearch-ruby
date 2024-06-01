@@ -591,5 +591,19 @@ module MeiliSearch
     def reset_proximity_precision
       http_delete("/indexes/#{@uid}/settings/proximity-precision")
     end
+
+    ### SETTINGS - SEARCH CUTOFF MS
+
+    def search_cutoff_ms
+      http_get("/indexes/#{@uid}/settings/search-cutoff-ms")
+    end
+
+    def update_search_cutoff_ms(search_cutoff_ms_attribute)
+      http_put("/indexes/#{@uid}/settings/search-cutoff-ms", search_cutoff_ms_attribute)
+    end
+
+    def reset_search_cutoff_ms
+      http_delete("/indexes/#{@uid}/settings/search-cutoff-ms")
+    end
   end
 end
