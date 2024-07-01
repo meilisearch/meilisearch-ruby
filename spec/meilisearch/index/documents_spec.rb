@@ -153,11 +153,11 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
 
         it 'allows the user to store vectors' do
           enable_vector_store(true)
-          new_doc = { objectId: 123, _vectors: [0.1, 0.2, 0.3] }
+          new_doc = { objectId: 123, _vectors: { default: [0.1, 0.2, 0.3] } }
           client.create_index('vector_test').await
           new_index = client.index('vector_test')
           new_index.add_documents(new_doc).await
-          expect(new_index.document(123)['_vectors']).to include(0.1)
+          expect(new_index.search('123', retrieveVectors: true)['hits'][0]['_vectors']).to include('default')
         end
       end
     end
