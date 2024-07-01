@@ -4,8 +4,8 @@ RSpec.describe MeiliSearch::Utils do
   let(:logger) { instance_double(Logger, warn: nil) }
 
   describe '.soft_deprecate' do
-    before(:each) { described_class.logger = logger }
-    after(:each) { described_class.logger = nil }
+    before { described_class.logger = logger }
+    after { described_class.logger = nil }
 
     it 'outputs a warning' do
       described_class.soft_deprecate('footballs', 'snowballs')
@@ -45,8 +45,8 @@ RSpec.describe MeiliSearch::Utils do
   end
 
   describe '.transform_attributes' do
-    before(:each) { described_class.logger = logger }
-    after(:each) { described_class.logger = nil }
+    before { described_class.logger = logger }
+    after { described_class.logger = nil }
 
     it 'transforms snake_case into camelCased keys' do
       data = described_class.transform_attributes({
@@ -143,8 +143,8 @@ RSpec.describe MeiliSearch::Utils do
     end
 
     describe '.warn_on_non_conforming_attribute_names' do
-      before(:each) { described_class.logger = logger }
-      after(:each) { described_class.logger = nil }
+      before { described_class.logger = logger }
+      after { described_class.logger = nil }
 
       it 'warns when using camelCase attributes' do
         attrs = { attributesToHighlight: ['field'] }

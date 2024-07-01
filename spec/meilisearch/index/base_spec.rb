@@ -5,7 +5,7 @@ RSpec.describe MeiliSearch::Index do
     client.create_index('books').await
 
     index = client.fetch_index('books')
-    expect(index).to be_a(MeiliSearch::Index)
+    expect(index).to be_a(described_class)
     expect(index.uid).to eq('books')
     expect(index.created_at).to be_a(Time)
     expect(index.created_at).to be_within(60).of(Time.now)
@@ -59,7 +59,7 @@ RSpec.describe MeiliSearch::Index do
     task.await
 
     index = client.fetch_index('uid')
-    expect(index).to be_a(MeiliSearch::Index)
+    expect(index).to be_a(described_class)
     expect(index.uid).to eq('uid')
     expect(index.primary_key).to eq('new_primary_key')
     expect(index.fetch_primary_key).to eq('new_primary_key')
@@ -77,7 +77,7 @@ RSpec.describe MeiliSearch::Index do
     task.await
 
     index = client.fetch_index('books')
-    expect(index).to be_a(MeiliSearch::Index)
+    expect(index).to be_a(described_class)
     expect(index.uid).to eq('books')
     expect(index.primary_key).to eq('international_standard_book_number')
     expect(index.fetch_primary_key).to eq('international_standard_book_number')
@@ -111,7 +111,7 @@ RSpec.describe MeiliSearch::Index do
     index = new_client.fetch_index('books')
     expect(index.options).to eq({ max_retries: 1, timeout: 2, convert_body?: true })
 
-    expect(MeiliSearch::Index).to receive(:get).with(
+    expect(described_class).to receive(:get).with(
       "#{URL}/indexes/books",
       {
         headers: expected_headers,
@@ -139,7 +139,7 @@ RSpec.describe MeiliSearch::Index do
     index = new_client.fetch_index('books')
     expect(index.options).to eq(options.merge({ convert_body?: true }))
 
-    expect(MeiliSearch::Index).to receive(:get).with(
+    expect(described_class).to receive(:get).with(
       "#{URL}/indexes/books",
       {
         headers: expected_headers,
@@ -194,7 +194,7 @@ RSpec.describe MeiliSearch::Index do
       task.await
 
       index = client.fetch_index('uid')
-      expect(index).to be_a(MeiliSearch::Index)
+      expect(index).to be_a(described_class)
       expect(index.uid).to eq('uid')
       expect(index.primary_key).to eq('new_primary_key')
       expect(index.fetch_primary_key).to eq('new_primary_key')

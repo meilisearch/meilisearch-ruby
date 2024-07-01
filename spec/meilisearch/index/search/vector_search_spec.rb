@@ -14,6 +14,7 @@ RSpec.describe 'MeiliSearch::Index - Vector search' do
     new_index = client.index('vector_test_search')
     new_index.add_documents(documents).await
 
-    expect(new_index.search('q', vector: [0, 1, 2])['hits']).not_to be_empty
+    expect(new_index.search(vector: [9, 9, 9])['hits']).to be_empty
+    expect(new_index.search('All Things Must Pass')['hits']).not_to be_empty
   end
 end
