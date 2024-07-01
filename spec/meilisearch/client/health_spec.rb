@@ -11,4 +11,10 @@ RSpec.describe 'MeiliSearch::Client - Health' do
   it 'is unhealthy when the url is invalid' do
     expect(wrong_client.healthy?).to be false
   end
+
+  it 'returns the health information' do
+    response = client.health
+    expect(response).to be_a(Hash)
+    expect(response).to have_key('status')
+  end
 end

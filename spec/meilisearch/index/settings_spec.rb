@@ -15,6 +15,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
   let(:default_displayed_attributes) { ['*'] }
   let(:default_pagination) { { maxTotalHits: 1000 } }
   let(:default_proximity_precision) { 'byWord' }
+  let(:default_search_cutoff_ms) { nil }
   let(:settings_keys) do
     [
       'rankingRules',
@@ -31,7 +32,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       'dictionary',
       'nonSeparatorTokens',
       'separatorTokens',
-      'proximityPrecision'
+      'proximityPrecision',
+      'searchCutoffMs'
     ]
   end
   let(:uid) { random_uid }
@@ -55,7 +57,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
         'dictionary' => [],
         'separatorTokens' => [],
         'nonSeparatorTokens' => [],
-        'proximityPrecision' => default_proximity_precision
+        'proximityPrecision' => default_proximity_precision,
+        'searchCutoffMs' => default_search_cutoff_ms
       )
     end
 
@@ -97,7 +100,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
         distinct_attribute: 'title',
         stop_words: ['the', 'a'],
         synonyms: { wow: ['world of warcraft'] },
-        proximity_precision: 'byAttribute'
+        proximity_precision: 'byAttribute',
+        search_cutoff_ms: 333
       ).await
 
       task = index.reset_settings
@@ -109,7 +113,8 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
         'distinctAttribute' => nil,
         'stopWords' => [],
         'synonyms' => {},
-        'proximityPrecision' => default_proximity_precision
+        'proximityPrecision' => default_proximity_precision,
+        'searchCutoffMs' => default_search_cutoff_ms
       )
     end
   end
@@ -738,6 +743,36 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
 
         expect(index.proximity_precision).to eq('byWord')
       end
+    end
+  end
+
+  context 'On search cutoff' do
+    let(:index) { client.index(uid) }
+    let(:default_search_cutoff_ms) { nil }
+
+    before { client.create_index(uid).await }
+
+    it '#search_cutoff_ms gets default value' do
+      expect(index.search_cutoff_ms).to eq(default_search_cutoff_ms)
+    end
+
+    it '#update_search_cutoff_ms updates default value' do
+      update_task = index.update_search_cutoff_ms(800)
+      client.wait_for_task(update_task['taskUid'])
+
+      expect(index.search_cutoff_ms).to eq(800)
+    end
+
+    it '#reset_search_cutoff_ms resets search cutoff ms' do
+      update_task = index.update_search_cutoff_ms(300)
+      client.wait_for_task(update_task['taskUid'])
+
+      expect(index.search_cutoff_ms).to eq(300)
+
+      reset_task = index.reset_search_cutoff_ms
+      client.wait_for_task(reset_task['taskUid'])
+
+      expect(index.search_cutoff_ms).to eq(default_search_cutoff_ms)
     end
   end
 end

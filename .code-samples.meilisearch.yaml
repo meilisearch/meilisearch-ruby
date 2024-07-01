@@ -190,7 +190,8 @@ update_settings_1: |-
     },
     faceting: {
       max_values_per_facet: 200
-    }
+    },
+    search_cutoff_ms: 150
   })
 reset_settings_1: |-
   client.index('movies').reset_settings
@@ -642,3 +643,9 @@ update_proximity_precision_settings_1: |-
   client.index('books').update_proximity_precision('byAttribute')
 reset_proximity_precision_settings_1: |-
   client.index('books').reset_proximity_precision
+get_search_cutoff_1: |-
+  client.index('movies').search_cutoff_ms
+update_search_cutoff_1: |-
+  client.index('movies').update_search_cutoff_ms(150)
+reset_search_cutoff_1: |-
+  client.index('movies').reset_search_cutoff_ms

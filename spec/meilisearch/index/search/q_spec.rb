@@ -72,13 +72,9 @@ RSpec.describe 'MeiliSearch::Index - Basic search' do
   context 'with finite pagination params' do
     it 'responds with specialized fields' do
       response = index.search('coco', { page: 2, hits_per_page: 2 })
-
       expect(response.keys).to contain_exactly(*FINITE_PAGINATED_SEARCH_RESPONSE_KEYS)
-    end
 
-    it 'responds with specialized fields' do
       response = index.search('coco', { page: 2, hitsPerPage: 2 })
-
       expect(response.keys).to contain_exactly(*FINITE_PAGINATED_SEARCH_RESPONSE_KEYS)
     end
   end
