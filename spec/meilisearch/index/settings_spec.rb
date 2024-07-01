@@ -756,7 +756,7 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.search_cutoff_ms).to eq(default_search_cutoff_ms)
     end
 
-    it '#update_search_cutoff_ms updates faceting' do
+    it '#update_search_cutoff_ms updates default value' do
       update_task = index.update_search_cutoff_ms(800)
       client.wait_for_task(update_task['taskUid'])
 
