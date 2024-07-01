@@ -157,7 +157,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
           client.create_index('vector_test').await
           new_index = client.index('vector_test')
           new_index.add_documents(new_doc).await
-          expect(new_index.search("123", retrieveVectors: true)['hits'][0]['_vectors']).to include('default')
+          expect(new_index.search('123', retrieveVectors: true)['hits'][0]['_vectors']).to include('default')
         end
       end
     end
