@@ -347,6 +347,10 @@ search_parameter_guide_matching_strategy_2: |-
   client.index('movies').search('big fat liar', {
     matching_strategy: 'all'
   })
+search_parameter_guide_matching_strategy_3: |-
+  client.index('movies').search('white shirt', {
+    matching_strategy: 'frequency'
+  })
 search_parameter_guide_show_ranking_score_1: |-
   client.index('movies').search('dragon', {
     show_ranking_score: true

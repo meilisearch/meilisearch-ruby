@@ -257,7 +257,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
     context 'when the index does not exist' do
       it 'raises an index not found error' do
-        expect { client.fetch_index('books') }.to raise_index_not_found_meilisearch_api_error
+        expect { client.fetch_index('bookss') }.to raise_index_not_found_meilisearch_api_error
       end
     end
   end
