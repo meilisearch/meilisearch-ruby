@@ -3,7 +3,7 @@ volumes:
 
 services:
   package:
-    image: ruby:3.0
+    image: ruby:3.3
     tty: true
     stdin_open: true
     working_dir: /home/package
