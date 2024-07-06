@@ -653,6 +653,10 @@ update_search_cutoff_1: |-
   client.index('movies').update_search_cutoff_ms(150)
 reset_search_cutoff_1: |-
   client.index('movies').reset_search_cutoff_ms
+search_parameter_reference_ranking_score_threshold_1: |-
+  client.index('INDEX_NAME').search('badman', {
+    rankingScoreThreshold: 0.2
+  })
 search_parameter_reference_distinct_1: |-
   client.index('INDEX_NAME').search('QUERY TERMS', {
     distinct: 'ATTRIBUTE_A'
