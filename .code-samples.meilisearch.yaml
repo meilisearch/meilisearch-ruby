@@ -653,3 +653,17 @@ update_search_cutoff_1: |-
   client.index('movies').update_search_cutoff_ms(150)
 reset_search_cutoff_1: |-
   client.index('movies').reset_search_cutoff_ms
+search_parameter_reference_distinct_1: |-
+  client.index('INDEX_NAME').search('QUERY TERMS', {
+    distinct: 'ATTRIBUTE_A'
+  })
+distinct_attribute_guide_filterable_1: |-
+  client.index('products').update_filterable_attributes([
+    'product_id',
+    'sku',
+    'url'
+  ])
+distinct_attribute_guide_distinct_parameter_1: |-
+  client.index('products').search('white shirt', {
+    distinct: 'sku'
+  })
