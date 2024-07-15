@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'meilisearch/http_request'
+# require 'time'
 
 module MeiliSearch
   class Index < HTTPRequest
