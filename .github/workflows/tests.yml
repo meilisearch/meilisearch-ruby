@@ -29,7 +29,7 @@ jobs:
       - name: Install ruby dependencies
         run: bundle install --with test
       - name: Meilisearch (latest) setup with Docker
-        run: docker run -d -p 7700:7700 getmeili/meilisearch:v1.9.0 meilisearch --master-key=masterKey --no-analytics
+        run: docker run -d -p 7700:7700 getmeili/meilisearch:latest meilisearch --master-key=masterKey --no-analytics
       - name: Run test suite
         run: bundle exec rspec
       - name: Upload coverage reports to Codecov
