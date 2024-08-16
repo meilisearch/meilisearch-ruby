@@ -220,6 +220,10 @@ module MeiliSearch
     alias delete_multiple_documents! delete_documents!
 
     def delete_document(document_id)
+      if document_id.nil? || document_id.empty?
+        raise MeiliSearch::Error::InvalidDocumentId, 'document_id cannot be empty or nil'
+      end
+
       encode_document = URI.encode_www_form_component(document_id)
       response = http_delete "/indexes/#{@uid}/documents/#{encode_document}"
 
