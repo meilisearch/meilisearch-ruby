@@ -394,7 +394,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       before { index.add_documents(documents).await }
 
       it 'if the document id is nil, it raises an error' do
-        expect { index.delete_document(nil).await }.to raise_error(MeiliSearch::ApiError)
+        expect { index.delete_document(nil) }.to raise_error(MeiliSearch::Error::InvalidDocumentId)
       end
 
       it 'deletes one document from index' do
