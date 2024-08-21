@@ -220,7 +220,7 @@ module MeiliSearch
     alias delete_multiple_documents! delete_documents!
 
     def delete_document(document_id)
-      if document_id.nil? || document_id.empty?
+      if document_id.nil? || document_id.to_s.empty?
         raise MeiliSearch::Error::InvalidDocumentId, 'document_id cannot be empty or nil'
       end
 
