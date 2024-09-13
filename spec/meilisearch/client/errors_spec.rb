@@ -33,4 +33,12 @@ RSpec.describe 'MeiliSearch::Client - Errors' do
       end.to raise_error(MeiliSearch::CommunicationError)
     end
   end
+
+  context 'when document id is invalid' do
+    it 'raises MeiliSearch::InvalidDocumentId' do
+      expect do
+        client.index('movies').delete_document(nil)
+      end.to raise_error(MeiliSearch::InvalidDocumentId)
+    end
+  end
 end
