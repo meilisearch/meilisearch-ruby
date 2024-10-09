@@ -37,6 +37,7 @@ end
 
 require 'meilisearch'
 require 'byebug'
+require 'time'
 
 # Globals for all tests
 URL = format('http://%<host>s:%<port>s',

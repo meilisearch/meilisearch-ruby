@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 require 'meilisearch/version'
 require 'meilisearch/utils'
 require 'meilisearch/models/task'

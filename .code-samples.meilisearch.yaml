@@ -655,3 +655,21 @@ reset_search_cutoff_1: |-
   client.index('movies').reset_search_cutoff_ms
 get_similar_post_1: |-
   client.index('INDEX_NAME').search_similar_documents('TARGET_DOCUMENT_ID')
+search_parameter_reference_ranking_score_threshold_1: |-
+  client.index('INDEX_NAME').search('badman', {
+    rankingScoreThreshold: 0.2
+  })
+search_parameter_reference_distinct_1: |-
+  client.index('INDEX_NAME').search('QUERY TERMS', {
+    distinct: 'ATTRIBUTE_A'
+  })
+distinct_attribute_guide_filterable_1: |-
+  client.index('products').update_filterable_attributes([
+    'product_id',
+    'sku',
+    'url'
+  ])
+distinct_attribute_guide_distinct_parameter_1: |-
+  client.index('products').search('white shirt', {
+    distinct: 'sku'
+  })

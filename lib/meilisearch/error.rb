@@ -70,6 +70,15 @@ module MeiliSearch
     end
   end
 
+  class InvalidDocumentId < Error
+    attr_reader :message
+
+    def initialize(message = nil)
+      @message = "The document id is invalid. #{message}"
+      super(@message)
+    end
+  end
+
   module TenantToken
     class ExpireOrInvalidSignature < MeiliSearch::Error; end
     class InvalidApiKey < MeiliSearch::Error; end
