@@ -267,6 +267,18 @@ module MeiliSearch
       response
     end
 
+    # document_id: Identifier of the target document
+    def search_similar_documents(document_id, **options)
+      if document_id.nil? || document_id.to_s.empty?
+        raise MeiliSearch::InvalidDocumentId, 'document_id cannot be empty or nil'
+      end
+
+      options.merge!(id: document_id)
+      options = Utils.transform_attributes(options)
+
+      http_post("/indexes/#{@uid}/similar", options)
+    end
+
     ### FACET SEARCH
 
     def facet_search(name, query = '', **options)
