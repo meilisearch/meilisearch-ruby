@@ -8,6 +8,10 @@ module ExperimentalFeatureHelpers
     configure_feature('vectorStore', toggle)
   end
 
+  def enable_edit_documents_by_function(toggle)
+    configure_feature('editDocumentsByFunction', toggle)
+  end
+
   private
 
   # @param [String] attribute_to_toggle
