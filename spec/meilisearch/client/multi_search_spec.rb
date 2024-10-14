@@ -16,4 +16,19 @@ RSpec.describe 'MeiliSearch::Client - Multiple Index Search' do
     expect(response['results'][0]['estimatedTotalHits']).to eq(0)
     expect(response['results'][1]['estimatedTotalHits']).to eq(0)
   end
+
+  it 'does a federated search with two different indexes' do
+    response = client.multi_search([
+                                     { index_uid: 'books', q: 'prince' },
+                                     { index_uid: 'movies', q: 'prince' }
+                                   ],
+                                   {
+                                     limit: 20,
+                                     offset: 0
+                                   })
+
+    expect(response['hits'].count).to eq(0)
+    expect(response['estimatedTotalHits']).to eq(0)
+    expect(response).not_to have_key('results')
+  end
 end
