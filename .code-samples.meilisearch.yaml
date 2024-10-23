@@ -654,7 +654,7 @@ update_search_cutoff_1: |-
 reset_search_cutoff_1: |-
   client.index('movies').reset_search_cutoff_ms
 get_similar_post_1: |-
-  client.index('INDEX_NAME').search_similar_documents('TARGET_DOCUMENT_ID')
+  client.index('INDEX_NAME').search_similar_documents('TARGET_DOCUMENT_ID', embedder: 'default')
 search_parameter_reference_ranking_score_threshold_1: |-
   client.index('INDEX_NAME').search('badman', {
     rankingScoreThreshold: 0.2
