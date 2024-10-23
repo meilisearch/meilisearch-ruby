@@ -185,6 +185,18 @@ module MeiliSearch
       update_documents_in_batches(documents, batch_size, primary_key).each(&:await)
     end
 
+    # Update documents by function
+    #
+    # options - A Hash containing the function string and related options
+    #   context:
+    #   filter:
+    #   function:
+    def update_documents_by_function(options)
+      response = http_post "/indexes/#{@uid}/documents/edit", options
+
+      Models::Task.new(response, task_endpoint)
+    end
+
     # Public: Delete documents from an index
     #
     # options: A Hash or an Array containing documents_ids or a hash with filter:.
