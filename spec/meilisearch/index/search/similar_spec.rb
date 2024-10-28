@@ -46,7 +46,7 @@ RSpec.describe 'MeiliSearch::Index - Search for similar documents' do
 
     new_index.add_documents(documents).await
 
-    response = new_index.search_similar_documents('287947')
+    response = new_index.search_similar_documents('287947', embedder: 'manual')
 
     expect(response['hits']).not_to be_empty
     expect(response['estimatedTotalHits']).not_to be_nil
