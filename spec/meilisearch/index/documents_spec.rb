@@ -390,6 +390,30 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       end
     end
 
+    describe '#update_documents_by_function' do
+      before do
+        index.add_documents(documents).await
+        index.update_filterable_attributes(['objectId']).await
+      end
+
+      it 'updates documents by function' do
+        enable_edit_documents_by_function(true)
+        expect(index.document(1344)).to include('title' => 'The Hobbit')
+        expect(index.document(456)).to include('title' => 'Le Petit Prince')
+
+        index.update_documents_by_function(
+          {
+            filter: 'objectId = 1344',
+            context: { extra: 'extended' },
+            function: 'doc.title = `${doc.title.to_upper()} - ${context.extra}`'
+          }
+        ).await
+
+        expect(index.document(1344)).to include('title' => 'THE HOBBIT - extended')
+        expect(index.document(456)).to include('title' => 'Le Petit Prince')
+      end
+    end
+
     describe '#delete_document' do
       before { index.add_documents(documents).await }
 
