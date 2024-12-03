@@ -33,7 +33,7 @@ jobs:
       - name: Run test suite
         run: bundle exec rspec
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         if: matrix.ruby-version == '3.3'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
