@@ -775,4 +775,34 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.search_cutoff_ms).to eq(default_search_cutoff_ms)
     end
   end
+
+  context 'On localized attributes' do
+    let(:index) { client.index(uid) }
+    let(:default_localized_attributes) { nil }
+
+    before { client.create_index(uid).await }
+
+    it '#search_cutoff_ms gets default value' do
+      expect(index.localized_attributes).to eq(default_localized_attributes)
+    end
+
+    it '#update_localized_attributes updates default value' do
+      update_task = index.update_localized_attributes([{ attribute_patterns: ['title'], locales: ['eng'] }])
+      client.wait_for_task(update_task['taskUid'])
+
+      expect(index.localized_attributes).to eq([{ 'attributePatterns' => ['title'], 'locales' => ['eng'] }])
+    end
+
+    it '#reset_localized_attributes resets localized attributes' do
+      update_task = index.update_localized_attributes([{ attribute_patterns: ['title'], locales: ['eng'] }])
+      client.wait_for_task(update_task['taskUid'])
+
+      expect(index.localized_attributes).to eq([{ 'attributePatterns' => ['title'], 'locales' => ['eng'] }])
+
+      reset_task = index.reset_localized_attributes
+      client.wait_for_task(reset_task['taskUid'])
+
+      expect(index.localized_attributes).to eq(default_localized_attributes)
+    end
+  end
 end
