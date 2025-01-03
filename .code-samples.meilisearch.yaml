@@ -647,6 +647,18 @@ update_proximity_precision_settings_1: |-
   client.index('books').update_proximity_precision('byAttribute')
 reset_proximity_precision_settings_1: |-
   client.index('books').reset_proximity_precision
+get_facet_search_settings_1: |-
+  client.index('INDEX_UID').facet_search_setting
+update_facet_search_settings_1: |-
+  client.index('INDEX_UID').update_facet_search_setting(false)
+reset_facet_search_settings_1: |-
+  client.index('INDEX_UID').reset_facet_search_setting
+get_prefix_search_settings_1: |-
+  client.index('INDEX_UID').prefix_search
+update_prefix_search_settings_1: |-
+  client.index('INDEX_UID').update_prefix_search('disabled')
+reset_prefix_search_settings_1: |-
+  client.index('INDEX_UID').reset_prefix_search
 get_search_cutoff_1: |-
   client.index('movies').search_cutoff_ms
 update_search_cutoff_1: |-
