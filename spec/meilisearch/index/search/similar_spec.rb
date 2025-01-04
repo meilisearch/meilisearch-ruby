@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Search for similar documents' do
+RSpec.describe 'Meilisearch::Index - Search for similar documents' do
   let(:new_index) { client.index('similar_test_search') }
 
   before do

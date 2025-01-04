@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Client - Indexes' do
+RSpec.describe 'Meilisearch::Client - Indexes' do
   describe '#create_index' do
     context 'without a primary key' do
       it 'creates an index' do
@@ -9,14 +9,14 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
         task.await
 
         index = client.fetch_index('books')
-        expect(index).to be_a(MeiliSearch::Index)
+        expect(index).to be_a(Meilisearch::Index)
         expect(index.uid).to eq('books')
         expect(index.primary_key).to be_nil
       end
 
       context 'synchronously' do
         context 'using ! method' do
-          before { allow(MeiliSearch::Utils).to receive(:soft_deprecate).and_return(nil) }
+          before { allow(Meilisearch::Utils).to receive(:soft_deprecate).and_return(nil) }
 
           it 'creates an index' do
             task = client.create_index!('books')
@@ -26,14 +26,14 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
             index = client.fetch_index('books')
 
-            expect(index).to be_a(MeiliSearch::Index)
+            expect(index).to be_a(Meilisearch::Index)
             expect(index.uid).to eq('books')
             expect(index.primary_key).to be_nil
           end
 
           it 'warns about deprecation' do
             client.create_index!('books')
-            expect(MeiliSearch::Utils)
+            expect(Meilisearch::Utils)
               .to have_received(:soft_deprecate)
               .with('Client#create_index!', a_string_including('books'))
           end
@@ -48,7 +48,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
             index = client.fetch_index('books')
 
-            expect(index).to be_a(MeiliSearch::Index)
+            expect(index).to be_a(Meilisearch::Index)
             expect(index.uid).to eq('books')
             expect(index.primary_key).to be_nil
           end
@@ -64,7 +64,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
         task.await
 
         index = client.fetch_index('books')
-        expect(index).to be_a(MeiliSearch::Index)
+        expect(index).to be_a(Meilisearch::Index)
         expect(index.uid).to eq('books')
         expect(index.primary_key).to eq('reference_code')
         expect(index.fetch_primary_key).to eq('reference_code')
@@ -78,7 +78,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
         index = client.fetch_index('books')
 
-        expect(index).to be_a(MeiliSearch::Index)
+        expect(index).to be_a(Meilisearch::Index)
         expect(index.uid).to eq('books')
         expect(index.primary_key).to eq('reference_code')
         expect(index.fetch_primary_key).to eq('reference_code')
@@ -91,7 +91,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
           task.await
 
           index = client.fetch_index('books')
-          expect(index).to be_a(MeiliSearch::Index)
+          expect(index).to be_a(Meilisearch::Index)
           expect(index.uid).to eq('books')
           expect(index.primary_key).to eq('reference_code')
           expect(index.fetch_primary_key).to eq('reference_code')
@@ -110,7 +110,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
           task.await
 
           index = client.fetch_index('books')
-          expect(index).to be_a(MeiliSearch::Index)
+          expect(index).to be_a(Meilisearch::Index)
           expect(index.uid).to eq('books')
           expect(index.primary_key).to eq('reference_code')
           expect(index.fetch_primary_key).to eq('reference_code')
@@ -141,12 +141,12 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
   end
 
   describe '#indexes' do
-    it 'returns MeiliSearch::Index objects' do
+    it 'returns Meilisearch::Index objects' do
       client.create_index('books').await
 
       index = client.indexes['results'].first
 
-      expect(index).to be_a(MeiliSearch::Index)
+      expect(index).to be_a(Meilisearch::Index)
     end
 
     it 'gets a list of indexes' do
@@ -201,7 +201,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
 
       fetched_index = client.fetch_index('books')
 
-      expect(fetched_index).to be_a(MeiliSearch::Index)
+      expect(fetched_index).to be_a(Meilisearch::Index)
       expect(fetched_index.uid).to eq('books')
       expect(fetched_index.primary_key).to eq('reference_code')
       expect(fetched_index.fetch_primary_key).to eq('reference_code')
@@ -230,7 +230,7 @@ RSpec.describe 'MeiliSearch::Client - Indexes' do
       # this index is in memory, without metadata from server
       index = client.index('books')
 
-      expect(index).to be_a(MeiliSearch::Index)
+      expect(index).to be_a(Meilisearch::Index)
       expect(index.uid).to eq('books')
       expect(index.primary_key).to be_nil
 

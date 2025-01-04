@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Client - Keys' do
+RSpec.describe 'Meilisearch::Client - Keys' do
   context 'When managing keys' do
     let(:uuid_v4) { 'c483e150-cff1-4a45-ac26-bb8eb8e01d36' }
     let(:delete_docs_key_options) do
@@ -113,7 +113,7 @@ RSpec.describe 'MeiliSearch::Client - Keys' do
 
       expect do
         client.key(new_key['key'])
-      end.to raise_error(MeiliSearch::ApiError)
+      end.to raise_error(Meilisearch::ApiError)
     end
   end
 end

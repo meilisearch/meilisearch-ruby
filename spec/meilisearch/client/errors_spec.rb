@@ -1,44 +1,44 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Client - Errors' do
-  describe 'MeiliSearch::Error' do
+RSpec.describe 'Meilisearch::Client - Errors' do
+  describe 'Meilisearch::Error' do
     it 'catches all other errors' do
-      expect(MeiliSearch::TimeoutError.ancestors).to include(MeiliSearch::Error)
-      expect(MeiliSearch::CommunicationError.ancestors).to include(MeiliSearch::Error)
-      expect(MeiliSearch::ApiError.ancestors).to include(MeiliSearch::Error)
-      expect(MeiliSearch::TenantToken::InvalidApiKey.ancestors).to include(MeiliSearch::Error)
-      expect(MeiliSearch::TenantToken::InvalidSearchRules.ancestors).to include(MeiliSearch::Error)
-      expect(MeiliSearch::TenantToken::ExpireOrInvalidSignature.ancestors).to include(MeiliSearch::Error)
+      expect(Meilisearch::TimeoutError.ancestors).to include(Meilisearch::Error)
+      expect(Meilisearch::CommunicationError.ancestors).to include(Meilisearch::Error)
+      expect(Meilisearch::ApiError.ancestors).to include(Meilisearch::Error)
+      expect(Meilisearch::TenantToken::InvalidApiKey.ancestors).to include(Meilisearch::Error)
+      expect(Meilisearch::TenantToken::InvalidSearchRules.ancestors).to include(Meilisearch::Error)
+      expect(Meilisearch::TenantToken::ExpireOrInvalidSignature.ancestors).to include(Meilisearch::Error)
     end
   end
 
   context 'when request takes to long to answer' do
-    it 'raises MeiliSearch::TimeoutError' do
-      timed_client = MeiliSearch::Client.new(URL, MASTER_KEY, { timeout: 0.000001 })
+    it 'raises Meilisearch::TimeoutError' do
+      timed_client = Meilisearch::Client.new(URL, MASTER_KEY, { timeout: 0.000001 })
 
       expect do
         timed_client.version
-      end.to raise_error(MeiliSearch::TimeoutError)
+      end.to raise_error(Meilisearch::TimeoutError)
     end
   end
 
   context 'when body is too large' do
     let(:index) { client.index('movies') }
 
-    it 'raises MeiliSearch::CommunicationError' do
+    it 'raises Meilisearch::CommunicationError' do
       allow(index.class).to receive(:post).and_raise(Errno::EPIPE)
 
       expect do
         index.add_documents([{ id: 1, text: 'my_text' }])
-      end.to raise_error(MeiliSearch::CommunicationError)
+      end.to raise_error(Meilisearch::CommunicationError)
     end
   end
 
   context 'when document id is invalid' do
-    it 'raises MeiliSearch::InvalidDocumentId' do
+    it 'raises Meilisearch::InvalidDocumentId' do
       expect do
         client.index('movies').delete_document(nil)
-      end.to raise_error(MeiliSearch::InvalidDocumentId)
+      end.to raise_error(Meilisearch::InvalidDocumentId)
     end
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Search with matching_strategy' do
+RSpec.describe 'Meilisearch::Index - Search with matching_strategy' do
   include_context 'search books with nested fields'
 
   it 'does a custom search with a matching strategy ALL' do

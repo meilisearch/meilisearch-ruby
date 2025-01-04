@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Stats' do
+RSpec.describe 'Meilisearch::Index - Stats' do
   include_context 'search books with genre'
 
   it 'returns stats of the index' do

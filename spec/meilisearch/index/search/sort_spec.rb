@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Sorted search' do
+RSpec.describe 'Meilisearch::Index - Sorted search' do
   include_context 'search books with author, genre, year'
   before do
     sortable_update = index.update_sortable_attributes(['year', 'author'])

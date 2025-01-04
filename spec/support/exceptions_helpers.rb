@@ -2,7 +2,7 @@
 
 module ExceptionsHelpers
   def raise_meilisearch_api_error_with(http_code, ms_code, ms_type)
-    raise_exception(an_instance_of(MeiliSearch::ApiError)
+    raise_exception(an_instance_of(Meilisearch::ApiError)
       .and(having_attributes(
              http_code: http_code,
              ms_code: ms_code,

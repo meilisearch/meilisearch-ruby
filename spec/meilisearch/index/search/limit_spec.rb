@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Search with limit' do
+RSpec.describe 'Meilisearch::Index - Search with limit' do
   include_context 'search books with genre'
 
   it 'does a custom search with limit' do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Vector search' do
+RSpec.describe 'Meilisearch::Index - Vector search' do
   it 'does a basic search' do
     enable_vector_store(true)
 

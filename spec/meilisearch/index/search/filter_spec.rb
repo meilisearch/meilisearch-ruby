@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Filtered search' do
+RSpec.describe 'Meilisearch::Index - Filtered search' do
   include_context 'search books with author, genre, year'
 
   before { index.update_filterable_attributes(['genre', 'year', 'author']).await }

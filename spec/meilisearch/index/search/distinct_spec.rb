@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Distinct search' do
+RSpec.describe 'Meilisearch::Index - Distinct search' do
   include_context 'search books with genre'
 
   before do

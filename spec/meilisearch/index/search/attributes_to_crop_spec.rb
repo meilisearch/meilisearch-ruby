@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Cropped search' do
+RSpec.describe 'Meilisearch::Index - Cropped search' do
   let(:index) { client.index('books') }
   let(:document) do
     {

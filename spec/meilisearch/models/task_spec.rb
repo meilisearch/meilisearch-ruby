@@ -1,22 +1,22 @@
 # frozen_string_literal: true
 
-describe MeiliSearch::Models::Task do
+describe Meilisearch::Models::Task do
   subject { described_class.new task_hash, endpoint }
 
   let(:new_index_uid) { random_uid }
   let(:task_hash) { client.http_post '/indexes', { 'uid' => new_index_uid } }
-  let(:endpoint) { MeiliSearch::Task.new(URL, MASTER_KEY, client.options) }
+  let(:endpoint) { Meilisearch::Task.new(URL, MASTER_KEY, client.options) }
 
-  let(:enqueued_endpoint) { instance_double(MeiliSearch::Task, task: task_hash) }
+  let(:enqueued_endpoint) { instance_double(Meilisearch::Task, task: task_hash) }
   let(:enqueued_task) { described_class.new task_hash, enqueued_endpoint }
 
-  let(:processing_endpoint) { instance_double(MeiliSearch::Task, task: task_hash.update('status' => 'processing')) }
+  let(:processing_endpoint) { instance_double(Meilisearch::Task, task: task_hash.update('status' => 'processing')) }
   let(:processing_task) { described_class.new task_hash, processing_endpoint }
 
   let(:logger) { instance_double(Logger, warn: nil) }
 
-  before { MeiliSearch::Utils.logger = logger }
-  after { MeiliSearch::Utils.logger = nil }
+  before { Meilisearch::Utils.logger = logger }
+  after { Meilisearch::Utils.logger = nil }
 
   describe '.initialize' do
     it 'requires a uid in the task hash' do
@@ -101,7 +101,7 @@ describe MeiliSearch::Models::Task do
 
     context 'when the task has succeeded but not refreshed' do
       let(:successful_task_hash) { task_hash.merge('status' => 'succeeded') }
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: successful_task_hash) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: successful_task_hash) }
 
       it { is_expected.not_to be_enqueued }
     end
@@ -141,14 +141,14 @@ describe MeiliSearch::Models::Task do
     end
 
     context 'when the task has begun processing but has not refreshed' do
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash.merge('status' => 'processing')) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: task_hash.merge('status' => 'processing')) }
 
       it { is_expected.to be_processing }
     end
 
     context 'when the task has succeeded but not refreshed' do
       let(:successful_task_hash) { task_hash.merge('status' => 'succeeded') }
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: successful_task_hash) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: successful_task_hash) }
 
       it 'refreshes and returns false' do
         expect(subject).not_to be_enqueued
@@ -177,7 +177,7 @@ describe MeiliSearch::Models::Task do
 
     context 'when the task has succeeded but not refreshed' do
       let(:successful_task_hash) { task_hash.merge('status' => 'succeeded') }
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: successful_task_hash) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: successful_task_hash) }
 
       it { is_expected.not_to be_unfinished }
     end
@@ -204,7 +204,7 @@ describe MeiliSearch::Models::Task do
 
     context 'when the task has succeeded but not refreshed' do
       let(:successful_task_hash) { task_hash.merge('status' => 'succeeded') }
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: successful_task_hash) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: successful_task_hash) }
 
       it { is_expected.to be_finished }
     end
@@ -224,7 +224,7 @@ describe MeiliSearch::Models::Task do
     end
 
     context 'when the task is not finished' do
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: task_hash) }
 
       it { is_expected.not_to be_failed }
 
@@ -237,7 +237,7 @@ describe MeiliSearch::Models::Task do
 
     context 'when the task has failed but not refreshed' do
       let(:failed_task_hash) { task_hash.merge('status' => 'failed') }
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: failed_task_hash) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: failed_task_hash) }
 
       it { is_expected.to be_failed }
     end
@@ -257,7 +257,7 @@ describe MeiliSearch::Models::Task do
     end
 
     context 'when the task is not finished' do
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: task_hash) }
 
       it { is_expected.not_to be_succeeded }
 
@@ -270,7 +270,7 @@ describe MeiliSearch::Models::Task do
 
     context 'when the task has succeeded but not refreshed' do
       let(:successful_task_hash) { task_hash.merge('status' => 'succeeded') }
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: successful_task_hash) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: successful_task_hash) }
 
       it { is_expected.to be_succeeded }
     end
@@ -290,7 +290,7 @@ describe MeiliSearch::Models::Task do
     end
 
     context 'when the task is not finished' do
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: task_hash) }
 
       it { is_expected.not_to be_cancelled }
 
@@ -303,15 +303,15 @@ describe MeiliSearch::Models::Task do
 
     context 'when the task has been cancelled but not refreshed' do
       let(:cancelled_task_hash) { task_hash.merge('status' => 'cancelled') }
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: cancelled_task_hash) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: cancelled_task_hash) }
 
       it { is_expected.to be_cancelled }
     end
   end
 
   describe '#deleted?' do
-    let(:not_found_error) { MeiliSearch::ApiError.new(404, '', '') }
-    let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash) }
+    let(:not_found_error) { Meilisearch::ApiError.new(404, '', '') }
+    let(:endpoint) { instance_double(Meilisearch::Task, task: task_hash) }
 
     it 'returns false when the task can be found' do
       expect(subject.deleted?).to be(false) # don't just return nil
@@ -319,7 +319,7 @@ describe MeiliSearch::Models::Task do
     end
 
     context 'when it was deleted prior' do
-      let(:endpoint) { instance_double(MeiliSearch::Task) }
+      let(:endpoint) { instance_double(Meilisearch::Task) }
 
       before do
         allow(endpoint).to receive(:task) { raise not_found_error }
@@ -343,7 +343,7 @@ describe MeiliSearch::Models::Task do
   describe '#cancel' do
     context 'when the task is still not finished' do
       let(:cancellation_task) { instance_double(described_class, await: nil) }
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash, cancel_tasks: cancellation_task) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: task_hash, cancel_tasks: cancellation_task) }
 
       it 'sends a request to cancel itself' do
         subject.cancel
@@ -362,7 +362,7 @@ describe MeiliSearch::Models::Task do
     end
 
     context 'when the task is already finished' do
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash, cancel_tasks: nil) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: task_hash, cancel_tasks: nil) }
 
       before { task_hash['status'] = 'succeeded' }
 
@@ -375,7 +375,7 @@ describe MeiliSearch::Models::Task do
     end
 
     context 'when the task is already cancelled' do
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash, cancel_tasks: nil) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: task_hash, cancel_tasks: nil) }
 
       before { task_hash['status'] = 'cancelled' }
 
@@ -390,7 +390,7 @@ describe MeiliSearch::Models::Task do
 
   describe '#delete' do
     let(:deletion_task) { instance_double(described_class, await: nil) }
-    let(:endpoint) { instance_double(MeiliSearch::Task, delete_tasks: deletion_task) }
+    let(:endpoint) { instance_double(Meilisearch::Task, delete_tasks: deletion_task) }
 
     context 'when the task is unfinished' do
       it 'makes no request' do
@@ -406,7 +406,7 @@ describe MeiliSearch::Models::Task do
     context 'when the task is finished' do
       before do
         task_hash['status'] = 'failed'
-        not_found_error = MeiliSearch::ApiError.new(404, '', '')
+        not_found_error = Meilisearch::ApiError.new(404, '', '')
         allow(endpoint).to receive(:task) { raise not_found_error }
       end
 
@@ -423,7 +423,7 @@ describe MeiliSearch::Models::Task do
 
   describe '#refresh' do
     let(:changed_task) { task_hash.merge('status' => 'succeeded', 'error' => 'Done too well') }
-    let(:endpoint) { instance_double(MeiliSearch::Task, task: changed_task) }
+    let(:endpoint) { instance_double(Meilisearch::Task, task: changed_task) }
 
     it 'calls endpoint to update task' do
       expect { subject.refresh }.to change { subject['status'] }.from('enqueued').to('succeeded')
@@ -433,10 +433,10 @@ describe MeiliSearch::Models::Task do
 
   describe '#await' do
     let(:changed_task) { task_hash.merge('status' => 'succeeded', 'error' => 'Done too well') }
-    let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash, wait_for_task: changed_task) }
+    let(:endpoint) { instance_double(Meilisearch::Task, task: task_hash, wait_for_task: changed_task) }
 
     context 'when the task is not yet completed' do
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: task_hash, wait_for_task: changed_task) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: task_hash, wait_for_task: changed_task) }
 
       it 'waits for the task to complete' do
         expect { subject.await }.to change { subject['status'] }.from('enqueued').to('succeeded')
@@ -449,7 +449,7 @@ describe MeiliSearch::Models::Task do
     end
 
     context 'when the task is already completed' do
-      let(:endpoint) { instance_double(MeiliSearch::Task, task: changed_task, wait_for_task: changed_task) }
+      let(:endpoint) { instance_double(Meilisearch::Task, task: changed_task, wait_for_task: changed_task) }
 
       it 'does not contact the instance' do
         subject.refresh

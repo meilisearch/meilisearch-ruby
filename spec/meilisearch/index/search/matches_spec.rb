@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Search with showMatchesPosition' do
+RSpec.describe 'Meilisearch::Index - Search with showMatchesPosition' do
   include_context 'search books with genre'
 
   it 'does a custom search with showMatchesPosition' do

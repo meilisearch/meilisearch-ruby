@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Search with attributes to retrieve' do
+RSpec.describe 'Meilisearch::Index - Search with attributes to retrieve' do
   include_context 'search books with genre'
 
   it 'does a custom search with one attributes_to_retrieve' do

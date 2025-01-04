@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - nested fields search' do
+RSpec.describe 'Meilisearch::Index - nested fields search' do
   include_context 'search books with nested fields'
 
   it 'searches without params' do

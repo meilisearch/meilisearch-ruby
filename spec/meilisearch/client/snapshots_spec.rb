@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Client - Snapshots' do
+RSpec.describe 'Meilisearch::Client - Snapshots' do
   it 'creates a new snapshot' do
     response = client.create_snapshot
     expect(response).to be_a(Hash)

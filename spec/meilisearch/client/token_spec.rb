@@ -7,11 +7,11 @@ VERIFY_OPTIONS = {
   algorithm: 'HS256'
 }.freeze
 
-RSpec.describe MeiliSearch::TenantToken do
+RSpec.describe Meilisearch::TenantToken do
   let(:instance) { dummy_class.new(client_key) }
   let(:dummy_class) do
     Class.new do
-      include MeiliSearch::TenantToken
+      include Meilisearch::TenantToken
 
       def initialize(api_key)
         @api_key = api_key
@@ -126,7 +126,7 @@ RSpec.describe MeiliSearch::TenantToken do
 
       before { index.update_filterable_attributes(['genre', 'objectId']).await }
 
-      let(:adm_client) { MeiliSearch::Client.new(URL, adm_key['key']) }
+      let(:adm_client) { Meilisearch::Client.new(URL, adm_key['key']) }
       let(:adm_key) do
         client.create_key(
           description: 'tenants test',
@@ -151,7 +151,7 @@ RSpec.describe MeiliSearch::TenantToken do
       it 'accepts the token in the search request' do
         rules.each do |data|
           token = adm_client.generate_tenant_token(adm_key['uid'], data)
-          custom = MeiliSearch::Client.new(URL, token)
+          custom = Meilisearch::Client.new(URL, token)
 
           expect(custom.index('books').search('')).to have_key('hits')
         end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Search with ranking score' do
+RSpec.describe 'Meilisearch::Index - Search with ranking score' do
   include_context 'search books with genre'
 
   it 'shows the ranking score when showRankingScore is true' do

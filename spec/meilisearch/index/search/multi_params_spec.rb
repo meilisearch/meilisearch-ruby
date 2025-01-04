@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Multi-paramaters search' do
+RSpec.describe 'Meilisearch::Index - Multi-paramaters search' do
   include_context 'search books with genre'
 
   before { index.update_filterable_attributes(['genre']).await }
