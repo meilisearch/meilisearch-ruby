@@ -20,12 +20,10 @@ module MeiliSearch
     # Softly deprecate the old spelling of the top level module
     # from MeiliSearch to Meilisearch
     def const_missing(const_name)
-      return super if @warned
+      return super if @warned && @constants_defined
 
       _warn_about_deprecation
       _define_constants
-
-      @warned = true
 
       # Now that all the proper constants have been set,
       # we can tell ruby to search for the const in MeiliSearch again.
@@ -34,15 +32,11 @@ module MeiliSearch
       const_get(const_name)
     end
 
-    def method_missing(method_name)
-      unless @warned
-        _warn_about_deprecation
-        _define_constants
-      end
+    def method_missing(method_name, *args, **kwargs)
+      _warn_about_deprecation
+      _define_constants
 
-      @warned = true
-
-      Meilisearch.send(method_name)
+      Meilisearch.send(method_name, *args, **kwargs)
     end
 
     def respond_to_missing?(method_name, *)
@@ -52,16 +46,24 @@ module MeiliSearch
     private
 
     def _warn_about_deprecation
+      return if @warned
+
       Meilisearch::Utils.logger.warn <<~RENAMED_MODULE_WARNING
         [meilisearch-ruby] The top-level module of Meilisearch has been renamed.
         [meilisearch-ruby] Please update "MeiliSearch" to "Meilisearch".
       RENAMED_MODULE_WARNING
+
+      @warned = true
     end
 
     def _define_constants
+      return if @constants_defined
+
       Meilisearch.constants.each do |constant|
         const_set(constant, Meilisearch.const_get(constant))
       end
+
+      @constants_defined = true
     end
   end
 end

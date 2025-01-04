@@ -38,13 +38,30 @@ RSpec.describe Meilisearch do
 end
 
 RSpec.describe MeiliSearch do
-  it 'relays constants & messages, warns about deprecation only once' do
+  it 'using a constant warns about deprecation, returns correct constant' do
     logger = instance_double(Logger, warn: nil)
     Meilisearch::Utils.logger = logger
+    MeiliSearch.instance_variable_set('@warned', false)
 
     expect(MeiliSearch::Index).to equal(Meilisearch::Index)
     expect(MeiliSearch::Task).to equal(Meilisearch::Task)
     expect(MeiliSearch.qualified_version).to eq(Meilisearch.qualified_version)
+
+    expect(logger).to have_received(:warn)
+      .with(a_string_including('The top-level module of Meilisearch has been renamed.'))
+      .once
+
+    Meilisearch::Utils.logger = nil
+  end
+
+  it 'calling a method warns about deprecation, calls the right method' do
+    logger = instance_double(Logger, warn: nil)
+    Meilisearch::Utils.logger = logger
+    MeiliSearch.instance_variable_set('@warned', false)
+
+    expect(MeiliSearch.qualified_version).to eq(Meilisearch.qualified_version)
+    expect(MeiliSearch::Index).to equal(Meilisearch::Index)
+    expect(MeiliSearch::Task).to equal(Meilisearch::Task)
 
     expect(logger).to have_received(:warn)
       .with(a_string_including('The top-level module of Meilisearch has been renamed.'))
