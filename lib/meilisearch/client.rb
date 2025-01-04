@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module MeiliSearch
+module Meilisearch
   class Client < HTTPRequest
-    include MeiliSearch::TenantToken
-    include MeiliSearch::MultiSearch
+    include Meilisearch::TenantToken
+    include Meilisearch::MultiSearch
 
     ### INDEXES
 

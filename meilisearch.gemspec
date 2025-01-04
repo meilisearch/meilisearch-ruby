@@ -4,7 +4,7 @@ require File.join(File.dirname(__FILE__), 'lib', 'meilisearch', 'version')
 
 Gem::Specification.new do |s|
   s.name        = 'meilisearch'
-  s.version     = MeiliSearch::VERSION
+  s.version     = Meilisearch::VERSION
   s.authors     = ['Meili']
   s.email       = 'bonjour@meilisearch.com'
   s.summary     = 'An easy-to-use ruby client for Meilisearch API'

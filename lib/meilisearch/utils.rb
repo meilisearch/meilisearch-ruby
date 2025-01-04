@@ -2,7 +2,7 @@
 
 require 'logger'
 
-module MeiliSearch
+module Meilisearch
   module Utils
     SNAKE_CASE = /[^a-zA-Z0-9]+(.)/
 
@@ -57,10 +57,10 @@ module MeiliSearch
 
       def version_error_handler(method_name)
         yield if block_given?
-      rescue MeiliSearch::ApiError => e
+      rescue Meilisearch::ApiError => e
         message = message_builder(e.http_message, method_name)
 
-        raise MeiliSearch::ApiError.new(e.http_code, message, e.http_body)
+        raise Meilisearch::ApiError.new(e.http_code, message, e.http_body)
       rescue StandardError => e
         raise e.class, message_builder(e.message, method_name)
       end

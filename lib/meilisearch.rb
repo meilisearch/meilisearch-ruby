@@ -12,5 +12,5 @@ require 'meilisearch/task'
 require 'meilisearch/client'
 require 'meilisearch/index'
 
-module MeiliSearch
+module Meilisearch
 end

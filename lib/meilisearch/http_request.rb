@@ -3,7 +3,7 @@
 require 'httparty'
 require 'meilisearch/error'
 
-module MeiliSearch
+module Meilisearch
   class HTTPRequest
     include HTTParty
 
@@ -93,7 +93,7 @@ module MeiliSearch
         'Authorization' => ("Bearer #{@api_key}" unless @api_key.nil?),
         'User-Agent' => [
           @options.fetch(:client_agents, []),
-          MeiliSearch.qualified_version
+          Meilisearch.qualified_version
         ].flatten.join(';')
       }.compact
     end
