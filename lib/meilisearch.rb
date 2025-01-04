@@ -15,26 +15,18 @@ require 'meilisearch/index'
 module Meilisearch
 end
 
+# Softly deprecate the old spelling of the top level module
+# from MeiliSearch to Meilisearch
 module MeiliSearch
   class << self
-    # Softly deprecate the old spelling of the top level module
-    # from MeiliSearch to Meilisearch
     def const_missing(const_name)
-      return super if @warned && @constants_defined
-
       _warn_about_deprecation
-      _define_constants
 
-      # Now that all the proper constants have been set,
-      # we can tell ruby to search for the const in MeiliSearch again.
-      # If it's still not found, then it does not exist in
-      # Meilisearch and the call to `super` will throw a normal error
-      const_get(const_name)
+      Meilisearch.const_get(const_name)
     end
 
     def method_missing(method_name, *args, **kwargs)
       _warn_about_deprecation
-      _define_constants
 
       Meilisearch.send(method_name, *args, **kwargs)
     end
@@ -54,16 +46,6 @@ module MeiliSearch
       RENAMED_MODULE_WARNING
 
       @warned = true
-    end
-
-    def _define_constants
-      return if @constants_defined
-
-      Meilisearch.constants.each do |constant|
-        const_set(constant, Meilisearch.const_get(constant))
-      end
-
-      @constants_defined = true
     end
   end
 end
