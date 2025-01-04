@@ -44,6 +44,7 @@ RSpec.describe MeiliSearch do
 
     expect(MeiliSearch::Index).to equal(Meilisearch::Index)
     expect(MeiliSearch::Task).to equal(Meilisearch::Task)
+    expect(MeiliSearch).to respond_to(:qualified_version)
     expect(MeiliSearch.qualified_version).to eq(Meilisearch.qualified_version)
 
     expect(logger).to have_received(:warn)
