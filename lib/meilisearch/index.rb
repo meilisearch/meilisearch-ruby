@@ -629,5 +629,21 @@ module MeiliSearch
     def reset_search_cutoff_ms
       http_delete("/indexes/#{@uid}/settings/search-cutoff-ms")
     end
+
+    ### SETTINGS - LOCALIZED ATTRIBUTES
+
+    def localized_attributes
+      http_get("/indexes/#{@uid}/settings/localized-attributes")
+    end
+
+    def update_localized_attributes(new_localized_attributes)
+      new_localized_attributes = Utils.transform_attributes(new_localized_attributes)
+
+      http_put("/indexes/#{@uid}/settings/localized-attributes", new_localized_attributes)
+    end
+
+    def reset_localized_attributes
+      http_delete("/indexes/#{@uid}/settings/localized-attributes")
+    end
   end
 end
