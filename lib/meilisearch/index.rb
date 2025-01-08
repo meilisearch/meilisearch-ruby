@@ -638,6 +638,7 @@ module MeiliSearch
 
     def update_localized_attributes(new_localized_attributes)
       new_localized_attributes = Utils.transform_attributes(new_localized_attributes)
+
       http_put("/indexes/#{@uid}/settings/localized-attributes", new_localized_attributes)
     end
 
