@@ -157,6 +157,16 @@ module MeiliSearch
       task_endpoint.wait_for_task(task_uid, timeout_in_ms, interval_in_ms)
     end
 
+    ### BATCHES
+
+    def batches(options = {})
+      http_get '/batches', options
+    end
+
+    def batch(batch_uid)
+      http_get "/batches/#{batch_uid}"
+    end
+
     private
 
     def index_object(uid, primary_key = nil)

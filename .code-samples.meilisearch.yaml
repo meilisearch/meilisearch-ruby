@@ -673,6 +673,10 @@ search_parameter_reference_distinct_1: |-
   client.index('INDEX_NAME').search('QUERY TERMS', {
     distinct: 'ATTRIBUTE_A'
   })
+get_all_batches_1: |-
+  client.batches
+get_batch_1: |-
+  client.batch(BATCH_UID)
 distinct_attribute_guide_filterable_1: |-
   client.index('products').update_filterable_attributes([
     'product_id',
