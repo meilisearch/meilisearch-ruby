@@ -645,5 +645,33 @@ module MeiliSearch
     def reset_localized_attributes
       http_delete("/indexes/#{@uid}/settings/localized-attributes")
     end
+
+    ### SETTINGS - FACET SEARCH
+
+    def facet_search_setting
+      http_get("/indexes/#{@uid}/settings/facet-search")
+    end
+
+    def update_facet_search_setting(new_facet_search_setting)
+      http_put("/indexes/#{@uid}/settings/facet-search", new_facet_search_setting)
+    end
+
+    def reset_facet_search_setting
+      http_delete("/indexes/#{@uid}/settings/facet-search")
+    end
+
+    ### SETTINGS - PREFIX SEARCH
+
+    def prefix_search
+      http_get("/indexes/#{@uid}/settings/prefix-search")
+    end
+
+    def update_prefix_search(new_prefix_search_setting)
+      http_put("/indexes/#{@uid}/settings/prefix-search", new_prefix_search_setting)
+    end
+
+    def reset_prefix_search
+      http_delete("/indexes/#{@uid}/settings/prefix-search")
+    end
   end
 end

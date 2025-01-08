@@ -805,4 +805,64 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.localized_attributes).to eq(default_localized_attributes)
     end
   end
+
+  context 'On facet search' do
+    let(:index) { client.index(uid) }
+    let(:default_facet_search_setting) { true }
+
+    before { client.create_index(uid).await }
+
+    it '#facet_search_setting gets default value' do
+      expect(index.facet_search_setting).to eq(default_facet_search_setting)
+    end
+
+    it '#update_facet_search_setting updates default value' do
+      update_task = index.update_facet_search_setting(false)
+      client.wait_for_task(update_task['taskUid'])
+
+      expect(index.facet_search_setting).to eq(false)
+    end
+
+    it '#reset_facet_search_setting resets facet search' do
+      update_task = index.update_facet_search_setting(false)
+      client.wait_for_task(update_task['taskUid'])
+
+      expect(index.facet_search_setting).to eq(false)
+
+      reset_task = index.reset_facet_search_setting
+      client.wait_for_task(reset_task['taskUid'])
+
+      expect(index.facet_search_setting).to eq(default_facet_search_setting)
+    end
+  end
+
+  context 'On prefix search' do
+    let(:index) { client.index(uid) }
+    let(:default_prefix_search) { 'indexingTime' }
+
+    before { client.create_index(uid).await }
+
+    it '#prefix_search gets default value' do
+      expect(index.prefix_search).to eq(default_prefix_search)
+    end
+
+    it '#update_prefix_search updates default value' do
+      update_task = index.update_prefix_search('disabled')
+      client.wait_for_task(update_task['taskUid'])
+
+      expect(index.prefix_search).to eq('disabled')
+    end
+
+    it '#reset_prefix_search resets prefix search' do
+      update_task = index.update_prefix_search('disabled')
+      client.wait_for_task(update_task['taskUid'])
+
+      expect(index.prefix_search).to eq('disabled')
+
+      reset_task = index.reset_prefix_search
+      client.wait_for_task(reset_task['taskUid'])
+
+      expect(index.prefix_search).to eq(default_prefix_search)
+    end
+  end
 end
