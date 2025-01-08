@@ -25,6 +25,13 @@ RSpec.describe 'MeiliSearch::Tasks' do
     expect(last_task.keys).to include(*succeeded_task_keys)
   end
 
+  it 'allows for returning tasks in reverse' do
+    tasks = client.tasks
+    rev_tasks = client.tasks(reverse: true)
+
+    expect(tasks['results']).not_to eq(rev_tasks['results'])
+  end
+
   it 'gets a task of the Meilisearch instance' do
     task = client.task(0)
 
