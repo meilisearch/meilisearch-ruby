@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Meilisearch
-  VERSION = '0.29.0'
+  VERSION = '0.30.0'
 
   def self.qualified_version
     "Meilisearch Ruby (v#{VERSION})"
