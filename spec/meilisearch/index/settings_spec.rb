@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Settings' do
+RSpec.describe 'Meilisearch::Index - Settings' do
   let(:default_ranking_rules) do
     [
       'words',
@@ -609,12 +609,12 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
     it '#update_type_tolerance updates typo tolerance settings' do
       index.update_typo_tolerance(new_typo_tolerance).await
 
-      expect(index.typo_tolerance).to eq(MeiliSearch::Utils.transform_attributes(new_typo_tolerance))
+      expect(index.typo_tolerance).to eq(Meilisearch::Utils.transform_attributes(new_typo_tolerance))
     end
 
     it '#reset_typo_tolerance resets typo tolerance settings' do
       index.update_typo_tolerance(new_typo_tolerance).await
-      expect(index.typo_tolerance).to eq(MeiliSearch::Utils.transform_attributes(new_typo_tolerance))
+      expect(index.typo_tolerance).to eq(Meilisearch::Utils.transform_attributes(new_typo_tolerance))
 
       index.reset_typo_tolerance.await
       expect(index.typo_tolerance).to eq(default_typo_tolerance)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Basic search' do
+RSpec.describe 'Meilisearch::Index - Basic search' do
   include_context 'search books with genre'
 
   it 'does a basic search in index' do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe MeiliSearch::Utils do
+RSpec.describe Meilisearch::Utils do
   let(:logger) { instance_double(Logger, warn: nil) }
 
   describe '.soft_deprecate' do
@@ -105,41 +105,41 @@ RSpec.describe MeiliSearch::Utils do
     it 'spawns same error message' do
       expect do
         described_class.version_error_handler(:my_method) do
-          raise MeiliSearch::ApiError.new(405, 'I came from Meili server', http_body)
+          raise Meilisearch::ApiError.new(405, 'I came from Meili server', http_body)
         end
-      end.to raise_error(MeiliSearch::ApiError, /I came from Meili server/)
+      end.to raise_error(Meilisearch::ApiError, /I came from Meili server/)
     end
 
     it 'spawns same error message with html body' do
       expect do
         described_class.version_error_handler(:my_method) do
-          raise MeiliSearch::ApiError.new(405, 'I came from Meili server', '<html><h1>405 Error</h1></html>')
+          raise Meilisearch::ApiError.new(405, 'I came from Meili server', '<html><h1>405 Error</h1></html>')
         end
-      end.to raise_error(MeiliSearch::ApiError, /I came from Meili server/)
+      end.to raise_error(Meilisearch::ApiError, /I came from Meili server/)
     end
 
     it 'spawns same error message with no body' do
       expect do
         described_class.version_error_handler(:my_method) do
-          raise MeiliSearch::ApiError.new(405, 'I came from Meili server', nil)
+          raise Meilisearch::ApiError.new(405, 'I came from Meili server', nil)
         end
-      end.to raise_error(MeiliSearch::ApiError, /I came from Meili server/)
+      end.to raise_error(Meilisearch::ApiError, /I came from Meili server/)
     end
 
     it 'spawns message with version hint' do
       expect do
         described_class.version_error_handler(:my_method) do
-          raise MeiliSearch::ApiError.new(405, 'I came from Meili server', http_body)
+          raise Meilisearch::ApiError.new(405, 'I came from Meili server', http_body)
         end
-      end.to raise_error(MeiliSearch::ApiError, /that `my_method` call requires/)
+      end.to raise_error(Meilisearch::ApiError, /that `my_method` call requires/)
     end
 
     it 'adds hints to all error types' do
       expect do
         described_class.version_error_handler(:my_method) do
-          raise MeiliSearch::CommunicationError, 'I am an error'
+          raise Meilisearch::CommunicationError, 'I am an error'
         end
-      end.to raise_error(MeiliSearch::CommunicationError, /that `my_method` call requires/)
+      end.to raise_error(Meilisearch::CommunicationError, /that `my_method` call requires/)
     end
 
     describe '.warn_on_non_conforming_attribute_names' do

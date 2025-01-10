@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Search with offset' do
+RSpec.describe 'Meilisearch::Index - Search with offset' do
   include_context 'search books with genre'
 
   it 'does a custom search with an offset set to 1' do

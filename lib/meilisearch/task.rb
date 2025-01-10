@@ -3,7 +3,7 @@
 require 'meilisearch/http_request'
 require 'timeout'
 
-module MeiliSearch
+module Meilisearch
   class Task < HTTPRequest
     ALLOWED_PARAMS = [
       :limit, :from, :index_uids, :types, :statuses, :uids, :canceled_by,
@@ -46,7 +46,7 @@ module MeiliSearch
         end
       end
     rescue Timeout::Error
-      raise MeiliSearch::TimeoutError
+      raise Meilisearch::TimeoutError
     end
 
     private

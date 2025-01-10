@@ -2,7 +2,7 @@
 
 require 'forwardable'
 
-module MeiliSearch
+module Meilisearch
   module Models
     class Task
       extend Forwardable
@@ -88,7 +88,7 @@ module MeiliSearch
         self.metadata = with || @task_endpoint.task(uid)
 
         self
-      rescue MeiliSearch::ApiError => e
+      rescue Meilisearch::ApiError => e
         raise e unless e.http_code == 404
 
         @deleted = true

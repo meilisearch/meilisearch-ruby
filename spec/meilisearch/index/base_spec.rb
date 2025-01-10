@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe MeiliSearch::Index do
+RSpec.describe Meilisearch::Index do
   it 'fetch the info of the index' do
     client.create_index('books').await
 
@@ -103,10 +103,10 @@ RSpec.describe MeiliSearch::Index do
     options = { timeout: 2, max_retries: 1 }
     expected_headers = {
       'Authorization' => "Bearer #{MASTER_KEY}",
-      'User-Agent' => MeiliSearch.qualified_version
+      'User-Agent' => Meilisearch.qualified_version
     }
 
-    new_client = MeiliSearch::Client.new(URL, MASTER_KEY, options)
+    new_client = Meilisearch::Client.new(URL, MASTER_KEY, options)
     new_client.create_index('books').await
     index = new_client.fetch_index('books')
     expect(index.options).to eq({ max_retries: 1, timeout: 2, convert_body?: true })
@@ -131,10 +131,10 @@ RSpec.describe MeiliSearch::Index do
     options = { timeout: 2, max_retries: 1, client_agents: [custom_agent] }
     expected_headers = {
       'Authorization' => "Bearer #{MASTER_KEY}",
-      'User-Agent' => "#{custom_agent};#{MeiliSearch.qualified_version}"
+      'User-Agent' => "#{custom_agent};#{Meilisearch.qualified_version}"
     }
 
-    new_client = MeiliSearch::Client.new(URL, MASTER_KEY, options)
+    new_client = Meilisearch::Client.new(URL, MASTER_KEY, options)
     new_client.create_index('books').await
     index = new_client.fetch_index('books')
     expect(index.options).to eq(options.merge({ convert_body?: true }))

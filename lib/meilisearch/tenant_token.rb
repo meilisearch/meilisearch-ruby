@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module MeiliSearch
+module Meilisearch
   module TenantToken
     HEADER = {
       typ: 'JWT',

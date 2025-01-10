@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module MeiliSearch
+module Meilisearch
   VERSION = '0.29.0'
 
   def self.qualified_version

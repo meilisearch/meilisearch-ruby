@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Client - Health' do
-  let(:client)       { MeiliSearch::Client.new(URL, MASTER_KEY) }
-  let(:wrong_client) { MeiliSearch::Client.new('bad_url') }
+RSpec.describe 'Meilisearch::Client - Health' do
+  let(:client)       { Meilisearch::Client.new(URL, MASTER_KEY) }
+  let(:wrong_client) { Meilisearch::Client.new('bad_url') }
 
   it 'is healthy when the url is valid' do
     expect(client.healthy?).to be true

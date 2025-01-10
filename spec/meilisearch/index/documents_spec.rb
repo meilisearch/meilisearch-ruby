@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Documents' do
+RSpec.describe 'Meilisearch::Index - Documents' do
   let(:index) { client.index(random_uid) }
 
   context 'All basic tests with primary-key inference' do
@@ -121,8 +121,8 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
 
       it 'adds documents in a batch (as a array of documents)' do
         tasks = index.add_documents_in_batches(documents, 5)
-        expect(tasks).to contain_exactly(a_kind_of(MeiliSearch::Models::Task),
-                                         a_kind_of(MeiliSearch::Models::Task))
+        expect(tasks).to contain_exactly(a_kind_of(Meilisearch::Models::Task),
+                                         a_kind_of(Meilisearch::Models::Task))
         tasks.each(&:await)
         expect(index.documents['results']).to contain_exactly(*documents_with_string_keys)
       end
@@ -163,7 +163,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     end
 
     describe '#add_documents!' do
-      before { allow(MeiliSearch::Utils).to receive(:soft_deprecate).and_return(nil) }
+      before { allow(Meilisearch::Utils).to receive(:soft_deprecate).and_return(nil) }
 
       it 'adds documents synchronously (as an array of documents)' do
         task = index.add_documents!(documents)
@@ -187,13 +187,13 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
 
       it 'warns about deprecation' do
         index.add_documents!(documents)
-        expect(MeiliSearch::Utils).to have_received(:soft_deprecate)
+        expect(Meilisearch::Utils).to have_received(:soft_deprecate)
                                   .with('Index#add_documents!', a_string_including('await'))
       end
     end
 
     describe '#add_documents_in_batches!' do
-      before { allow(MeiliSearch::Utils).to receive(:soft_deprecate).and_return(nil) }
+      before { allow(Meilisearch::Utils).to receive(:soft_deprecate).and_return(nil) }
 
       it 'adds document batches synchronously' do
         expect(index.add_documents_in_batches!(documents, 5)).to contain_exactly(be_succeeded, be_succeeded)
@@ -202,7 +202,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
 
       it 'warns about deprecation' do
         index.add_documents_in_batches!(documents, 5)
-        expect(MeiliSearch::Utils).to have_received(:soft_deprecate)
+        expect(Meilisearch::Utils).to have_received(:soft_deprecate)
                                   .with('Index#add_documents_in_batches!', a_string_including('await'))
       end
     end
@@ -309,7 +309,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     describe '#update_documents!' do
       before do
         index.add_documents(documents).await
-        allow(MeiliSearch::Utils).to receive(:soft_deprecate).and_return(nil)
+        allow(Meilisearch::Utils).to receive(:soft_deprecate).and_return(nil)
       end
 
       it 'updates multiple documents synchronously' do
@@ -338,7 +338,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
         ]
 
         index.update_documents!(updated_documents)
-        expect(MeiliSearch::Utils).to have_received(:soft_deprecate)
+        expect(Meilisearch::Utils).to have_received(:soft_deprecate)
                                   .with('Index#update_documents!', a_string_including('await'))
       end
     end
@@ -362,7 +362,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     describe '#update_documents_in_batches!' do
       before do
         index.add_documents(documents).await
-        allow(MeiliSearch::Utils).to receive(:soft_deprecate).and_return(nil)
+        allow(Meilisearch::Utils).to receive(:soft_deprecate).and_return(nil)
       end
 
       it 'updates documents synchronously in index in batches (as an array of documents)' do
@@ -385,7 +385,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
         ]
 
         index.update_documents_in_batches!(updated_documents, 1)
-        expect(MeiliSearch::Utils).to have_received(:soft_deprecate)
+        expect(Meilisearch::Utils).to have_received(:soft_deprecate)
                                   .with('Index#update_documents_in_batches!', a_string_including('await'))
       end
     end
@@ -418,7 +418,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
       before { index.add_documents(documents).await }
 
       it 'if the document id is nil, it raises an error' do
-        expect { index.delete_document(nil) }.to raise_error(MeiliSearch::InvalidDocumentId)
+        expect { index.delete_document(nil) }.to raise_error(Meilisearch::InvalidDocumentId)
       end
 
       it 'deletes one document from index' do
@@ -440,7 +440,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     describe '#delete_document!' do
       before do
         index.add_documents(documents).await
-        allow(MeiliSearch::Utils).to receive(:soft_deprecate).and_return(nil)
+        allow(Meilisearch::Utils).to receive(:soft_deprecate).and_return(nil)
       end
 
       it 'deletes one document synchronously from index' do
@@ -456,7 +456,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
 
       it 'warns about deprecation' do
         index.delete_document!(2)
-        expect(MeiliSearch::Utils).to have_received(:soft_deprecate)
+        expect(Meilisearch::Utils).to have_received(:soft_deprecate)
                                   .with('Index#delete_document!', a_string_including('await'))
       end
     end
@@ -495,7 +495,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     describe '#delete_documents!' do
       before do
         index.add_documents(documents).await
-        allow(MeiliSearch::Utils).to receive(:soft_deprecate).and_return(nil)
+        allow(Meilisearch::Utils).to receive(:soft_deprecate).and_return(nil)
       end
 
       it 'deletes a single document' do
@@ -517,7 +517,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
 
       it 'warns about deprecation' do
         index.delete_documents!([2])
-        expect(MeiliSearch::Utils).to have_received(:soft_deprecate)
+        expect(Meilisearch::Utils).to have_received(:soft_deprecate)
                                   .with('Index#delete_documents!', a_string_including('await'))
       end
     end
@@ -535,7 +535,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
     describe '#delete_all_documents!' do
       before do
         index.add_documents(documents).await
-        allow(MeiliSearch::Utils).to receive(:soft_deprecate).and_return(nil)
+        allow(Meilisearch::Utils).to receive(:soft_deprecate).and_return(nil)
       end
 
       it 'clears all documents synchronously from index' do
@@ -546,7 +546,7 @@ RSpec.describe 'MeiliSearch::Index - Documents' do
 
       it 'warns about deprecation' do
         index.delete_all_documents!
-        expect(MeiliSearch::Utils).to have_received(:soft_deprecate)
+        expect(Meilisearch::Utils).to have_received(:soft_deprecate)
                                   .with('Index#delete_all_documents!', a_string_including('await'))
       end
     end

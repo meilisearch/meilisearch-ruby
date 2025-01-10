@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Client - Stats' do
+RSpec.describe 'Meilisearch::Client - Stats' do
   it 'gets version' do
     response = client.version
     expect(response).to be_a(Hash)

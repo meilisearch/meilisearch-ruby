@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Facet search' do
+RSpec.describe 'Meilisearch::Index - Facet search' do
   include_context 'search books with author, genre, year'
 
   before do

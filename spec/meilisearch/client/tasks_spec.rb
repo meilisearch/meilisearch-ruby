@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Tasks' do
+RSpec.describe 'Meilisearch::Tasks' do
   include_context 'search books with genre'
 
   let(:enqueued_task_keys) { ['uid', 'indexUid', 'status', 'type', 'enqueuedAt'] }
@@ -73,7 +73,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
   end
 
   it 'ensures supports to all available filters' do
-    allow(MeiliSearch::Utils).to receive(:transform_attributes).and_call_original
+    allow(Meilisearch::Utils).to receive(:transform_attributes).and_call_original
 
     client.tasks(
       canceled_by: [1, 2], uids: [2], foo: 'bar',
@@ -82,7 +82,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
       before_finished_at: '2022-01-20', after_finished_at: '2022-01-20'
     )
 
-    expect(MeiliSearch::Utils).to have_received(:transform_attributes)
+    expect(Meilisearch::Utils).to have_received(:transform_attributes)
       .with(
         canceled_by: [1, 2], uids: [2],
         before_enqueued_at: '2022-01-20', after_enqueued_at: '2022-01-20',
@@ -109,12 +109,12 @@ RSpec.describe 'MeiliSearch::Tasks' do
       expect(status['status']).not_to eq('enqueued')
     end
 
-    it 'waits for task with custom timeout_in_ms and raises MeiliSearchTimeoutError' do
+    it 'waits for task with custom timeout_in_ms and raises MeilisearchTimeoutError' do
       index.add_documents(documents)
       task = index.add_documents(documents)
       expect do
         index.wait_for_task(task['taskUid'], 1)
-      end.to raise_error(MeiliSearch::TimeoutError)
+      end.to raise_error(Meilisearch::TimeoutError)
     end
 
     it 'waits for task with custom interval_in_ms and raises Timeout::Error' do
@@ -146,12 +146,12 @@ RSpec.describe 'MeiliSearch::Tasks' do
       expect(status['status']).not_to eq('enqueued')
     end
 
-    it 'waits for task with custom timeout_in_ms and raises MeiliSearchTimeoutError' do
+    it 'waits for task with custom timeout_in_ms and raises MeilisearchTimeoutError' do
       index.add_documents(documents)
       task = index.add_documents(documents)
       expect do
         client.wait_for_task(task['taskUid'], 1)
-      end.to raise_error(MeiliSearch::TimeoutError)
+      end.to raise_error(Meilisearch::TimeoutError)
     end
 
     it 'waits for task with custom interval_in_ms and raises Timeout::Error' do
@@ -167,7 +167,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
 
   describe '#client.cancel_tasks' do
     it 'ensures supports to all available filters' do
-      allow(MeiliSearch::Utils).to receive(:transform_attributes).and_call_original
+      allow(Meilisearch::Utils).to receive(:transform_attributes).and_call_original
 
       client.cancel_tasks(
         canceled_by: [1, 2], uids: [2], foo: 'bar',
@@ -176,7 +176,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
         before_finished_at: '2022-01-20', after_finished_at: '2022-01-20'
       )
 
-      expect(MeiliSearch::Utils).to have_received(:transform_attributes)
+      expect(Meilisearch::Utils).to have_received(:transform_attributes)
         .with(
           canceled_by: [1, 2], uids: [2],
           before_enqueued_at: '2022-01-20', after_enqueued_at: '2022-01-20',
@@ -199,7 +199,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
     it 'ensures supports to all available filters' do
       date = DateTime.new(2022, 1, 20)
 
-      allow(MeiliSearch::Utils).to receive(:transform_attributes).and_call_original
+      allow(Meilisearch::Utils).to receive(:transform_attributes).and_call_original
 
       client.delete_tasks(
         canceled_by: [1, 2], uids: [2], foo: 'bar',
@@ -208,7 +208,7 @@ RSpec.describe 'MeiliSearch::Tasks' do
         before_finished_at: date, after_finished_at: date
       )
 
-      expect(MeiliSearch::Utils).to have_received(:transform_attributes)
+      expect(Meilisearch::Utils).to have_received(:transform_attributes)
         .with(
           canceled_by: [1, 2], uids: [2],
           before_enqueued_at: date, after_enqueued_at: date,

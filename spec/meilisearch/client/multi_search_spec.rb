@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Client - Multiple Index Search' do
+RSpec.describe 'Meilisearch::Client - Multiple Index Search' do
   before do
     client.create_index('books')
     client.create_index('movies').await

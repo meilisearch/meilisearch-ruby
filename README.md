@@ -76,7 +76,7 @@ gem 'meilisearch'
 ```ruby
 require 'meilisearch'
 
-client = MeiliSearch::Client.new('http://127.0.0.1:7700', 'masterKey')
+client = Meilisearch::Client.new('http://127.0.0.1:7700', 'masterKey')
 
 # An index is where the documents are stored.
 index = client.index('movies')

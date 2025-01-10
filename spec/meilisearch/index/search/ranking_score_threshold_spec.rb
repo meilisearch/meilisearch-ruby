@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'MeiliSearch::Index - Search with rankingScoreThreshold' do
+RSpec.describe 'Meilisearch::Index - Search with rankingScoreThreshold' do
   include_context 'search books with genre'
 
   it 'does a custom search with rankingScoreThreshold' do
