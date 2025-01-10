@@ -865,4 +865,45 @@ RSpec.describe 'MeiliSearch::Index - Settings' do
       expect(index.prefix_search).to eq(default_prefix_search)
     end
   end
+
+  context 'on embedders' do
+    let(:index) { client.index(uid) }
+    let(:default_embedders) { nil }
+
+    before { client.create_index(uid).await }
+    before { enable_vector_store(true) }
+
+    it '#embedders gets default value' do
+      expect(index.embedders).to eq(default_embedders)
+    end
+
+    it '#update_embedders updates default value' do
+      update_task = index.update_embedders(
+        custom: {
+          source: 'userProvided',
+          dimensions: 3
+        }
+      )
+      client.wait_for_task(update_task['taskUid'])
+
+      expect(index.embedders).to have_key('custom')
+    end
+
+    it '#reset_embedders resets embedders to nil' do
+      update_task = index.update_embedders(
+        custom: {
+          source: 'userProvided',
+          dimensions: 3
+        }
+      )
+      client.wait_for_task(update_task['taskUid'])
+
+      expect(index.embedders).to have_key('custom')
+
+      reset_task = index.reset_embedders
+      client.wait_for_task(reset_task['taskUid'])
+
+      expect(index.embedders).to eq(default_embedders)
+    end
+  end
 end

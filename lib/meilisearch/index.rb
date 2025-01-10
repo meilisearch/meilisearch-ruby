@@ -673,5 +673,21 @@ module MeiliSearch
     def reset_prefix_search
       http_delete("/indexes/#{@uid}/settings/prefix-search")
     end
+
+    ### SETTINGS - EMBEDDERS
+
+    def embedders
+      http_get("/indexes/#{@uid}/settings/embedders")
+    end
+
+    def update_embedders(new_embedders)
+      new_embedders = Utils.transform_attributes(new_embedders)
+
+      http_patch("/indexes/#{@uid}/settings/embedders", new_embedders)
+    end
+
+    def reset_embedders
+      http_delete("/indexes/#{@uid}/settings/embedders")
+    end
   end
 end
