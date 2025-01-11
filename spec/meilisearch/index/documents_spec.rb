@@ -95,7 +95,7 @@ RSpec.describe 'Meilisearch::Index - Documents' do
         end
 
         it 'allows the user to store vectors' do
-          enable_vector_store(true)
+          client.update_experimental_features(vector_store: true)
           new_doc = { objectId: 123, _vectors: { default: [0.1, 0.2, 0.3] } }
           client.create_index('vector_test').await
           new_index = client.index('vector_test')
@@ -560,7 +560,7 @@ RSpec.describe 'Meilisearch::Index - Documents' do
       end
 
       it 'updates documents by function' do
-        enable_edit_documents_by_function(true)
+        client.update_experimental_features(edit_documents_by_function: true)
         expect(index.document(1344)).to include('title' => 'The Hobbit')
         expect(index.document(456)).to include('title' => 'Le Petit Prince')
 
