@@ -728,19 +728,15 @@ RSpec.describe 'Meilisearch::Index - Settings' do
       end
 
       it 'updates proximity precision' do
-        update_task = index.update_proximity_precision('byAttribute')
-        client.wait_for_task(update_task['taskUid'])
-
+        index.update_proximity_precision('byAttribute').await
         expect(index.proximity_precision).to eq('byAttribute')
       end
 
       it 'resets proximity precision' do
-        update_task = index.update_proximity_precision('byAttribute')
-        client.wait_for_task(update_task['taskUid'])
+        index.update_proximity_precision('byAttribute').await
+        expect(index.proximity_precision).to eq('byAttribute')
 
-        reset_task = index.reset_proximity_precision
-        client.wait_for_task(reset_task['taskUid'])
-
+        index.reset_proximity_precision.await
         expect(index.proximity_precision).to eq('byWord')
       end
     end
@@ -757,21 +753,15 @@ RSpec.describe 'Meilisearch::Index - Settings' do
     end
 
     it '#update_search_cutoff_ms updates default value' do
-      update_task = index.update_search_cutoff_ms(800)
-      client.wait_for_task(update_task['taskUid'])
-
+      index.update_search_cutoff_ms(800).await
       expect(index.search_cutoff_ms).to eq(800)
     end
 
     it '#reset_search_cutoff_ms resets search cutoff ms' do
-      update_task = index.update_search_cutoff_ms(300)
-      client.wait_for_task(update_task['taskUid'])
-
+      index.update_search_cutoff_ms(300).await
       expect(index.search_cutoff_ms).to eq(300)
 
-      reset_task = index.reset_search_cutoff_ms
-      client.wait_for_task(reset_task['taskUid'])
-
+      index.reset_search_cutoff_ms.await
       expect(index.search_cutoff_ms).to eq(default_search_cutoff_ms)
     end
   end
@@ -787,21 +777,25 @@ RSpec.describe 'Meilisearch::Index - Settings' do
     end
 
     it '#update_localized_attributes updates default value' do
-      update_task = index.update_localized_attributes([{ attribute_patterns: ['title'], locales: ['eng'] }])
-      client.wait_for_task(update_task['taskUid'])
+      index.update_localized_attributes(
+        [{ attribute_patterns: ['title'], locales: ['eng'] }]
+      ).await
 
-      expect(index.localized_attributes).to eq([{ 'attributePatterns' => ['title'], 'locales' => ['eng'] }])
+      expect(index.localized_attributes).to eq(
+        [{ 'attributePatterns' => ['title'], 'locales' => ['eng'] }]
+      )
     end
 
     it '#reset_localized_attributes resets localized attributes' do
-      update_task = index.update_localized_attributes([{ attribute_patterns: ['title'], locales: ['eng'] }])
-      client.wait_for_task(update_task['taskUid'])
+      index.update_localized_attributes(
+        [{ attribute_patterns: ['title'], locales: ['eng'] }]
+      ).await
 
-      expect(index.localized_attributes).to eq([{ 'attributePatterns' => ['title'], 'locales' => ['eng'] }])
+      expect(index.localized_attributes).to eq(
+        [{ 'attributePatterns' => ['title'], 'locales' => ['eng'] }]
+      )
 
-      reset_task = index.reset_localized_attributes
-      client.wait_for_task(reset_task['taskUid'])
-
+      index.reset_localized_attributes.await
       expect(index.localized_attributes).to eq(default_localized_attributes)
     end
   end
@@ -817,21 +811,15 @@ RSpec.describe 'Meilisearch::Index - Settings' do
     end
 
     it '#update_facet_search_setting updates default value' do
-      update_task = index.update_facet_search_setting(false)
-      client.wait_for_task(update_task['taskUid'])
-
+      index.update_facet_search_setting(false).await
       expect(index.facet_search_setting).to eq(false)
     end
 
     it '#reset_facet_search_setting resets facet search' do
-      update_task = index.update_facet_search_setting(false)
-      client.wait_for_task(update_task['taskUid'])
-
+      index.update_facet_search_setting(false).await
       expect(index.facet_search_setting).to eq(false)
 
-      reset_task = index.reset_facet_search_setting
-      client.wait_for_task(reset_task['taskUid'])
-
+      index.reset_facet_search_setting.await
       expect(index.facet_search_setting).to eq(default_facet_search_setting)
     end
   end
@@ -847,21 +835,15 @@ RSpec.describe 'Meilisearch::Index - Settings' do
     end
 
     it '#update_prefix_search updates default value' do
-      update_task = index.update_prefix_search('disabled')
-      client.wait_for_task(update_task['taskUid'])
-
+      index.update_prefix_search('disabled').await
       expect(index.prefix_search).to eq('disabled')
     end
 
     it '#reset_prefix_search resets prefix search' do
-      update_task = index.update_prefix_search('disabled')
-      client.wait_for_task(update_task['taskUid'])
-
+      index.update_prefix_search('disabled').await
       expect(index.prefix_search).to eq('disabled')
 
-      reset_task = index.reset_prefix_search
-      client.wait_for_task(reset_task['taskUid'])
-
+      index.reset_prefix_search.await
       expect(index.prefix_search).to eq(default_prefix_search)
     end
   end
@@ -878,31 +860,27 @@ RSpec.describe 'Meilisearch::Index - Settings' do
     end
 
     it '#update_embedders updates default value' do
-      update_task = index.update_embedders(
+      index.update_embedders(
         custom: {
           source: 'userProvided',
           dimensions: 3
         }
-      )
-      client.wait_for_task(update_task['taskUid'])
+      ).await
 
       expect(index.embedders).to have_key('custom')
     end
 
     it '#reset_embedders resets embedders to nil' do
-      update_task = index.update_embedders(
+      index.update_embedders(
         custom: {
           source: 'userProvided',
           dimensions: 3
         }
-      )
-      client.wait_for_task(update_task['taskUid'])
+      ).await
 
       expect(index.embedders).to have_key('custom')
 
-      reset_task = index.reset_embedders
-      client.wait_for_task(reset_task['taskUid'])
-
+      index.reset_embedders.await
       expect(index.embedders).to eq(default_embedders)
     end
   end
