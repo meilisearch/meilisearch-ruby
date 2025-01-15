@@ -609,11 +609,15 @@ module Meilisearch
     end
 
     def update_proximity_precision(proximity_precision_attribute)
-      http_put("/indexes/#{@uid}/settings/proximity-precision", proximity_precision_attribute)
+      response = http_put("/indexes/#{@uid}/settings/proximity-precision", proximity_precision_attribute)
+
+      Models::Task.new(response, task_endpoint)
     end
 
     def reset_proximity_precision
-      http_delete("/indexes/#{@uid}/settings/proximity-precision")
+      response = http_delete("/indexes/#{@uid}/settings/proximity-precision")
+
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - SEARCH CUTOFF MS
@@ -623,11 +627,15 @@ module Meilisearch
     end
 
     def update_search_cutoff_ms(search_cutoff_ms_attribute)
-      http_put("/indexes/#{@uid}/settings/search-cutoff-ms", search_cutoff_ms_attribute)
+      response = http_put("/indexes/#{@uid}/settings/search-cutoff-ms", search_cutoff_ms_attribute)
+
+      Models::Task.new(response, task_endpoint)
     end
 
     def reset_search_cutoff_ms
-      http_delete("/indexes/#{@uid}/settings/search-cutoff-ms")
+      response = http_delete("/indexes/#{@uid}/settings/search-cutoff-ms")
+
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - LOCALIZED ATTRIBUTES
@@ -639,11 +647,15 @@ module Meilisearch
     def update_localized_attributes(new_localized_attributes)
       new_localized_attributes = Utils.transform_attributes(new_localized_attributes)
 
-      http_put("/indexes/#{@uid}/settings/localized-attributes", new_localized_attributes)
+      response = http_put("/indexes/#{@uid}/settings/localized-attributes", new_localized_attributes)
+
+      Models::Task.new(response, task_endpoint)
     end
 
     def reset_localized_attributes
-      http_delete("/indexes/#{@uid}/settings/localized-attributes")
+      response = http_delete("/indexes/#{@uid}/settings/localized-attributes")
+
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - FACET SEARCH
@@ -653,11 +665,15 @@ module Meilisearch
     end
 
     def update_facet_search_setting(new_facet_search_setting)
-      http_put("/indexes/#{@uid}/settings/facet-search", new_facet_search_setting)
+      response = http_put("/indexes/#{@uid}/settings/facet-search", new_facet_search_setting)
+
+      Models::Task.new(response, task_endpoint)
     end
 
     def reset_facet_search_setting
-      http_delete("/indexes/#{@uid}/settings/facet-search")
+      response = http_delete("/indexes/#{@uid}/settings/facet-search")
+
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - PREFIX SEARCH
@@ -667,11 +683,15 @@ module Meilisearch
     end
 
     def update_prefix_search(new_prefix_search_setting)
-      http_put("/indexes/#{@uid}/settings/prefix-search", new_prefix_search_setting)
+      response = http_put("/indexes/#{@uid}/settings/prefix-search", new_prefix_search_setting)
+
+      Models::Task.new(response, task_endpoint)
     end
 
     def reset_prefix_search
-      http_delete("/indexes/#{@uid}/settings/prefix-search")
+      response = http_delete("/indexes/#{@uid}/settings/prefix-search")
+
+      Models::Task.new(response, task_endpoint)
     end
 
     ### SETTINGS - EMBEDDERS
@@ -683,11 +703,15 @@ module Meilisearch
     def update_embedders(new_embedders)
       new_embedders = Utils.transform_attributes(new_embedders)
 
-      http_patch("/indexes/#{@uid}/settings/embedders", new_embedders)
+      response = http_patch("/indexes/#{@uid}/settings/embedders", new_embedders)
+
+      Models::Task.new(response, task_endpoint)
     end
 
     def reset_embedders
-      http_delete("/indexes/#{@uid}/settings/embedders")
+      response = http_delete("/indexes/#{@uid}/settings/embedders")
+
+      Models::Task.new(response, task_endpoint)
     end
   end
 end
