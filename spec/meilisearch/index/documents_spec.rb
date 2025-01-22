@@ -34,21 +34,6 @@ RSpec.describe 'Meilisearch::Index - Documents' do
           expect(index.documents['results'].first.keys).to eq(doc.keys.map(&:to_s))
         end
 
-        it 'adds JSON documents' do
-          documents = <<~JSON
-            [
-              { "objectRef": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" },
-              { "objectRef": 456,  "title": "Le Petit Prince",                        "comment": "A french book" },
-              { "objectRef": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" },
-              { "objectRef": 1344, "title": "The Hobbit",                             "comment": "An awesome book" },
-              { "objectRef": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
-            ]
-          JSON
-          index.add_documents_json(documents, 'objectRef').await
-
-          expect(index.documents['results'].count).to eq(5)
-        end
-
         it 'infers order of fields' do
           index.add_documents(documents).await
           task = index.document(1)
@@ -132,6 +117,8 @@ RSpec.describe 'Meilisearch::Index - Documents' do
         NDJSON
       end
 
+      let(:json_docs) { "[#{ndjson_docs.rstrip.gsub("\n", ',')}]" }
+
       let(:csv_docs) do
         <<~CSV
           "objectRef:number","title:string","comment:string"
@@ -168,6 +155,11 @@ RSpec.describe 'Meilisearch::Index - Documents' do
           'title' => 'Project Hail Mary',
           'comment' => 'A lonely book'
         }
+      end
+
+      it '#add_documents_json' do
+        index.add_documents_json(json_docs, 'objectRef').await
+        expect(index.documents['results'].count).to eq(5)
       end
 
       it '#add_documents_ndjson' do
