@@ -70,7 +70,6 @@ RSpec.describe 'Meilisearch::Index - Documents' do
         expect(index.documents['results']).to contain_exactly(*documents_with_string_keys)
       end
 
-
       context 'given a single document' do
         it 'adds only one document to index (as an hash of one document)' do
           new_doc = { objectId: 30, title: 'Hamlet' }
