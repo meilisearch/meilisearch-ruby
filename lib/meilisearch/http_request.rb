@@ -22,14 +22,14 @@ module Meilisearch
       @headers = build_default_options_headers
     end
 
-    def http_get(relative_path = '', query_params = {})
+    def http_get(relative_path = '', query_params = {}, options = {})
       send_request(
         proc { |path, config| self.class.get(path, config) },
         relative_path,
         config: {
           query_params: query_params,
-          headers: remove_headers(@headers.dup, 'Content-Type'),
-          options: @options
+          headers: remove_headers(@headers.dup.merge(options[:headers] || {}), 'Content-Type'),
+          options: @options.merge(options)
         }
       )
     end
@@ -47,40 +47,40 @@ module Meilisearch
       )
     end
 
-    def http_put(relative_path = '', body = nil, query_params = nil)
+    def http_put(relative_path = '', body = nil, query_params = nil, options = {})
       send_request(
         proc { |path, config| self.class.put(path, config) },
         relative_path,
         config: {
           query_params: query_params,
           body: body,
-          headers: @headers,
-          options: @options
+          headers: @headers.dup.merge(options[:headers] || {}),
+          options: @options.merge(options)
         }
       )
     end
 
-    def http_patch(relative_path = '', body = nil, query_params = nil)
+    def http_patch(relative_path = '', body = nil, query_params = nil, options = {})
       send_request(
         proc { |path, config| self.class.patch(path, config) },
         relative_path,
         config: {
           query_params: query_params,
           body: body,
-          headers: @headers,
-          options: @options
+          headers: @headers.dup.merge(options[:headers] || {}),
+          options: @options.merge(options)
         }
       )
     end
 
-    def http_delete(relative_path = '', query_params = nil)
+    def http_delete(relative_path = '', query_params = nil, options = {})
       send_request(
         proc { |path, config| self.class.delete(path, config) },
         relative_path,
         config: {
           query_params: query_params,
-          headers: remove_headers(@headers.dup, 'Content-Type'),
-          options: @options
+          headers: remove_headers(@headers.dup.merge(options[:headers] || {}), 'Content-Type'),
+          options: @options.merge(options)
         }
       )
     end
