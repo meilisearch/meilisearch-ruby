@@ -259,6 +259,71 @@ RSpec.describe 'Meilisearch::Index - Documents' do
           }
         )
       end
+
+      it '#update_documents_ndjson_in_batches' do
+        index.add_documents_ndjson(ndjson_docs, 'objectRef').await
+
+        edits = <<~EDITS
+          { "objectRef": 123, "comment": "AN OLD BOOK" }
+          { "objectRef": 456, "title": "The Little Prince" }
+          { "objectRef": 55, "comment": "A SCI FI BOOK" }
+        EDITS
+
+        tasks = index.update_documents_ndjson_in_batches(edits, 2)
+        expect(tasks).to contain_exactly(a_kind_of(Meilisearch::Models::Task),
+                                         a_kind_of(Meilisearch::Models::Task))
+        tasks.each(&:await)
+        expect(index.documents['results']).to include(
+          {
+            'objectRef' => 123,
+            'title' => 'Pride and Prejudice',
+            'comment' => 'AN OLD BOOK'
+          },
+          {
+            'objectRef' => 456,
+            'title' => 'The Little Prince',
+            'comment' => 'A french book'
+          },
+          {
+            'objectRef' => 55,
+            'title' => 'The Three Body Problem',
+            'comment' => 'A SCI FI BOOK'
+          }
+        )
+      end
+
+      it '#update_documents_csv_in_batches' do
+        index.add_documents_csv(csv_docs, 'objectRef').await
+        edits = <<~CSV
+          "objectRef:number"|"comment:string"
+          "123"|"AN OLD BOOK"
+          "456"|"AN EXQUISITE FRENCH BOOK"
+          "55"|"A SCI FI BOOK"
+        CSV
+
+        tasks = index.update_documents_csv_in_batches(edits, 2, 'objectRef', '|')
+        expect(tasks).to contain_exactly(a_kind_of(Meilisearch::Models::Task),
+                                         a_kind_of(Meilisearch::Models::Task))
+        tasks.each(&:await)
+
+        expect(index.documents['results']).to include(
+          {
+            'objectRef' => 123,
+            'title' => 'Pride and Prejudice',
+            'comment' => 'AN OLD BOOK'
+          },
+          {
+            'objectRef' => 456,
+            'title' => 'Le Petit Prince',
+            'comment' => 'AN EXQUISITE FRENCH BOOK'
+          },
+          {
+            'objectRef' => 55,
+            'title' => 'The Three Body Problem',
+            'comment' => 'A SCI FI BOOK'
+          }
+        )
+      end
     end
 
     describe '#add_documents!' do

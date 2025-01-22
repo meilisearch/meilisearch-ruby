@@ -173,6 +173,20 @@ module Meilisearch
     end
     alias add_or_update_documents_csv add_documents_csv
 
+    def update_documents_ndjson_in_batches(documents, batch_size = 1000, primary_key = nil)
+      documents.lines.each_slice(batch_size).map do |batch|
+        update_documents_ndjson(batch.join, primary_key)
+      end
+    end
+
+    def update_documents_csv_in_batches(documents, batch_size = 1000, primary_key = nil, delimiter = nil)
+      lines = documents.lines
+      heading = lines.first
+      lines.drop(1).each_slice(batch_size).map do |batch|
+        update_documents_csv(heading + batch.join, primary_key, delimiter)
+      end
+    end
+
     def update_documents!(documents, primary_key = nil)
       Utils.soft_deprecate(
         'Index#update_documents!',
