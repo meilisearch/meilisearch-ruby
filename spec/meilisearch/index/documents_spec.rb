@@ -122,7 +122,7 @@ RSpec.describe 'Meilisearch::Index - Documents' do
       let(:csv_docs) do
         <<~CSV
           "objectRef:number","title:string","comment:string"
-          "1239","Pride and Prejudice","A great book"
+          "123","Pride and Prejudice","A great book"
           "456","Le Petit Prince","A french book"
           "49","Harry Potter and the Half-Blood Prince","The best book"
           "55","The Three Body Problem","An interesting book"
@@ -133,7 +133,7 @@ RSpec.describe 'Meilisearch::Index - Documents' do
       let(:csv_docs_custom_delim) do
         <<~CSV
           "objectRef:number"|"title:string"|"comment:string"
-          "1239"|"Pride and Prejudice"|"A great book"
+          "123"|"Pride and Prejudice"|"A great book"
           "456"|"Le Petit Prince"|"A french book"
           "49"|"Harry Potter and the Half-Blood Prince"|"The best book"
           "55"|"The Three Body Problem"|"An interesting book"
@@ -198,6 +198,66 @@ RSpec.describe 'Meilisearch::Index - Documents' do
         tasks.each(&:await)
 
         expect(index.documents['results']).to include(batch1_doc, batch2_doc)
+      end
+
+      it '#update_documents_json' do
+        index.add_documents_json(json_docs, 'objectRef').await
+        edit = '[{ "objectRef": 123, "comment": "AN OLD BOOK" }]'
+        index.update_documents_json(edit).await
+        expect(index.documents['results']).to include(
+          {
+            'objectRef' => 123,
+            'title' => 'Pride and Prejudice',
+            'comment' => 'AN OLD BOOK'
+          }
+        )
+      end
+
+      it '#update_documents_ndjson' do
+        index.add_documents_ndjson(ndjson_docs, 'objectRef').await
+        edit = '{ "objectRef": 123, "comment": "AN OLD BOOK" }'
+        index.update_documents_ndjson(edit).await
+        expect(index.documents['results']).to include(
+          {
+            'objectRef' => 123,
+            'title' => 'Pride and Prejudice',
+            'comment' => 'AN OLD BOOK'
+          }
+        )
+      end
+
+      it '#update_documents_csv' do
+        index.add_documents_csv(csv_docs, 'objectRef').await
+        edit = <<~CSV
+          "objectRef:number","comment:string"
+          "123","AN OLD BOOK"
+        CSV
+
+        index.update_documents_csv(edit).await
+        expect(index.documents['results']).to include(
+          {
+            'objectRef' => 123,
+            'title' => 'Pride and Prejudice',
+            'comment' => 'AN OLD BOOK'
+          }
+        )
+      end
+
+      it '#update_documents_csv with custom delimiter' do
+        index.add_documents_csv(csv_docs, 'objectRef').await
+        edit = <<~CSV
+          "objectRef:number"|"comment:string"
+          "123"|"AN OLD BOOK"
+        CSV
+
+        index.update_documents_csv(edit, 'objectRef', '|').await
+        expect(index.documents['results']).to include(
+          {
+            'objectRef' => 123,
+            'title' => 'Pride and Prejudice',
+            'comment' => 'AN OLD BOOK'
+          }
+        )
       end
     end
 
