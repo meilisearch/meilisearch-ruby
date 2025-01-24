@@ -712,3 +712,25 @@ distinct_attribute_guide_distinct_parameter_1: |-
   client.index('products').search('white shirt', {
     distinct: 'sku'
   })
+get_current_remote_uid_1: |-
+  client.self
+set_current_remote_uid_1: |-
+  client.update_self(UID)
+get_remotes_1: |-
+  client.remotes
+add_remote_1: |-
+  client.add_remote(uid: REMOTE_UID, url: MEILISEARCH_URL, search_api_key: API_KEY)
+get_remote_1: |-
+  client.remote(REMOTE_UID)
+delete_remote_1: |-
+  client.delete_remote(REMOTE_UID)
+remote_federated_search: |-
+  client.multi_search(
+    federation: { offset: 0, limit: 0 },
+    queries: [
+      {
+        # ...
+        federation_options: { remote: REMOTE_UID }
+      }
+    ]
+  )
