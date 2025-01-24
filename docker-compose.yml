@@ -10,19 +10,29 @@ services:
     environment:
       - MEILISEARCH_URL=meilisearch
       - MEILISEARCH_PORT=7700
+      - MEILISEARCH_REMOTE_URL=meilisearch_remote
+      - MEILISEARCH_REMOTE_PORT=7701
       - BUNDLE_PATH=/vendor/bundle
     depends_on:
       - meilisearch
-    links:
-      - meilisearch
+      - meilisearch_remote
     volumes:
       - ./:/home/package
       - bundle:/vendor/bundle
 
   meilisearch:
-    image: getmeili/meilisearch:latest
+    image: getmeili/meilisearch:nightly
     ports:
       - "7700"
     environment:
       - MEILI_MASTER_KEY=masterKey
       - MEILI_NO_ANALYTICS=true
+
+  meilisearch_remote:
+    image: getmeili/meilisearch:nightly
+    ports:
+      - "7701"
+    environment:
+      - MEILI_MASTER_KEY=masterKey
+      - MEILI_NO_ANALYTICS=true
+    command: ["meilisearch", "--http-addr", "0.0.0.0:7701"]

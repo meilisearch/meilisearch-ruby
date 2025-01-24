@@ -75,4 +75,61 @@ RSpec.describe 'Meilisearch::Client - Multiple Index Search' do
     expect(hits.size).to be 3
     expect(hits.first).to have_key('_federation')
   end
+
+  describe 'searching multiple remotes' do
+    it 'federated search searches multiple remotes' do
+      client.update_experimental_features(network: true)
+      proxy_client.update_experimental_features(network: true)
+
+      client.update_network(
+        self: 'ms0',
+        remotes: {
+          ms2: {
+            url: PROXY_URL,
+            search_api_key: MASTER_KEY
+          }
+        }
+      )
+
+      three_body_problem = { id: 1, title: 'The Three Body Problem' }
+      the_dark_forest = { id: 2, title: 'The Dark Forest' }
+      proxy_client.index('books').add_documents([three_body_problem, the_dark_forest]).await
+
+      sherwood_forest = { id: 50, name: 'Sherwood Forest' }
+      forbidden_forest = { id: 200, name: 'Forbidden Forest' }
+      client.index('parks').add_documents([sherwood_forest, forbidden_forest]).await
+
+      response = client.multi_search(
+        federation: {},
+        queries: [
+          {
+            q: 'Forest',
+            index_uid: 'parks',
+            federation_options: {
+              remote: 'ms0'
+            }
+          },
+          {
+            q: 'Body',
+            index_uid: 'books',
+            federation_options: {
+              remote: 'ms2'
+            }
+          }
+        ]
+      )
+
+      resp = response['hits'].map { |hit| hit.slice('id', 'name', 'title').transform_keys(&:to_sym) }
+
+      expect(resp).to include(three_body_problem, sherwood_forest, forbidden_forest)
+      expect(resp).not_to include(the_dark_forest)
+    rescue Meilisearch::CommunicationError
+      pending('Please launch a second instance of Meilisearch to test network search, see spec_helper for addr config.')
+      raise
+    ensure
+      client.update_network(self: nil, remotes: nil)
+      client.delete_index('parks')
+      proxy_client.delete_index('books')
+    end
+  end
 end
