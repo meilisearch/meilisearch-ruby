@@ -36,6 +36,14 @@ module Meilisearch
       http_delete '/tasks', Utils.parse_query(options, ALLOWED_CANCELATION_PARAMS)
     end
 
+    # Wait for a task with a busy loop.
+    #
+    # Not recommended, try to avoid interacting with Meilisearch synchronously.
+    # @param task_uid [String] uid of the task to wait on
+    # @param timeout_in_ms [Integer] the maximum amount of time to wait for a task
+    #   in milliseconds
+    # @param interval_in_ms [Integer] how long to stay parked in the busy loop
+    #   in milliseconds
     def wait_for_task(
       task_uid,
       timeout_in_ms = Models::Task.default_timeout_ms,
