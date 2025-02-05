@@ -145,6 +145,48 @@ module Meilisearch
     end
     alias add_or_update_documents update_documents
 
+    def update_documents_json(documents, primary_key = nil)
+      options = { convert_body?: false }
+      response = http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+
+      Models::Task.new(response, task_endpoint)
+    end
+    alias add_or_update_documents_json update_documents_json
+
+    def update_documents_ndjson(documents, primary_key = nil)
+      options = { headers: { 'Content-Type' => 'application/x-ndjson' }, convert_body?: false }
+      response = http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+
+      Models::Task.new(response, task_endpoint)
+    end
+    alias add_or_update_documents_ndjson update_documents_ndjson
+
+    def update_documents_csv(documents, primary_key = nil, delimiter = nil)
+      options = { headers: { 'Content-Type' => 'text/csv' }, convert_body?: false }
+
+      response = http_put "/indexes/#{@uid}/documents", documents, {
+        primaryKey: primary_key,
+        csvDelimiter: delimiter
+      }.compact, options
+
+      Models::Task.new(response, task_endpoint)
+    end
+    alias add_or_update_documents_csv add_documents_csv
+
+    def update_documents_ndjson_in_batches(documents, batch_size = 1000, primary_key = nil)
+      documents.lines.each_slice(batch_size).map do |batch|
+        update_documents_ndjson(batch.join, primary_key)
+      end
+    end
+
+    def update_documents_csv_in_batches(documents, batch_size = 1000, primary_key = nil, delimiter = nil)
+      lines = documents.lines
+      heading = lines.first
+      lines.drop(1).each_slice(batch_size).map do |batch|
+        update_documents_csv(heading + batch.join, primary_key, delimiter)
+      end
+    end
+
     def update_documents!(documents, primary_key = nil)
       Utils.soft_deprecate(
         'Index#update_documents!',
@@ -158,6 +200,20 @@ module Meilisearch
     def add_documents_in_batches(documents, batch_size = 1000, primary_key = nil)
       documents.each_slice(batch_size).map do |batch|
         add_documents(batch, primary_key)
+      end
+    end
+
+    def add_documents_ndjson_in_batches(documents, batch_size = 1000, primary_key = nil)
+      documents.lines.each_slice(batch_size).map do |batch|
+        add_documents_ndjson(batch.join, primary_key)
+      end
+    end
+
+    def add_documents_csv_in_batches(documents, batch_size = 1000, primary_key = nil, delimiter = nil)
+      lines = documents.lines
+      heading = lines.first
+      lines.drop(1).each_slice(batch_size).map do |batch|
+        add_documents_csv(heading + batch.join, primary_key, delimiter)
       end
     end
 
