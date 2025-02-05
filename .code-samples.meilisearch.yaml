@@ -712,3 +712,8 @@ distinct_attribute_guide_distinct_parameter_1: |-
   client.index('products').search('white shirt', {
     distinct: 'sku'
   })
+multi_search_federated_1: |-
+  client.multi_search(
+    queries: [{ index_uid: 'movies', q: 'batman' }, { index_uid: 'comics', q: 'batman' }],
+    federation: {}
+  )

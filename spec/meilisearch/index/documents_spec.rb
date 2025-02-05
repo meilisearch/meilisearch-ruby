@@ -34,63 +34,6 @@ RSpec.describe 'Meilisearch::Index - Documents' do
           expect(index.documents['results'].first.keys).to eq(doc.keys.map(&:to_s))
         end
 
-        it 'adds JSON documents' do
-          documents = <<~JSON
-            [
-              { "objectRef": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" },
-              { "objectRef": 456,  "title": "Le Petit Prince",                        "comment": "A french book" },
-              { "objectRef": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" },
-              { "objectRef": 1344, "title": "The Hobbit",                             "comment": "An awesome book" },
-              { "objectRef": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
-            ]
-          JSON
-          index.add_documents_json(documents, 'objectRef').await
-
-          expect(index.documents['results'].count).to eq(5)
-        end
-
-        it 'adds NDJSON documents' do
-          documents = <<~NDJSON
-            { "objectRef": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" }
-            { "objectRef": 456,  "title": "Le Petit Prince",                        "comment": "A french book" }
-            { "objectRef": 1,    "title": "Alice In Wonderland",                    "comment": "A weird book" }
-            { "objectRef": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
-          NDJSON
-          index.add_documents_ndjson(documents, 'objectRef').await
-
-          expect(index.documents['results'].count).to eq(4)
-        end
-
-        it 'adds CSV documents' do
-          documents = <<~CSV
-            "objectRef:number","title:string","comment:string"
-            "1239","Pride and Prejudice","A great book"
-            "4569","Le Petit Prince","A french book"
-            "49","Harry Potter and the Half-Blood Prince","The best book"
-          CSV
-          index.add_documents_csv(documents, 'objectRef').await
-
-          expect(index.documents['results'].count).to eq(3)
-        end
-
-        it 'adds CSV documents with different separator' do
-          documents = <<~CSV
-            "objectRef:number"|"title:string"|"comment:string"
-            "1239"|"Pride and Prejudice"|"A great book"
-            "4569"|"Le Petit Prince"|"A french book"
-            "49"|"Harry Potter and the Half-Blood Prince"|"The best book"
-          CSV
-
-          index.add_documents_csv(documents, 'objectRef', '|').await
-
-          expect(index.documents['results'].count).to eq(3)
-          expect(index.documents['results'][1]).to match(
-            'objectRef' => 4569,
-            'title' => 'Le Petit Prince',
-            'comment' => 'A french book'
-          )
-        end
-
         it 'infers order of fields' do
           index.add_documents(documents).await
           task = index.document(1)
@@ -159,6 +102,226 @@ RSpec.describe 'Meilisearch::Index - Documents' do
           new_index.add_documents(new_doc).await
           expect(new_index.search('123', retrieveVectors: true)['hits'][0]['_vectors']).to include('default')
         end
+      end
+    end
+
+    describe 'ndjson and csv methods' do
+      let(:ndjson_docs) do
+        <<~NDJSON
+          { "objectRef": 123,  "title": "Pride and Prejudice",                    "comment": "A great book" }
+          { "objectRef": 456,  "title": "Le Petit Prince",                        "comment": "A french book" }
+          { "objectRef": 4,    "title": "Harry Potter and the Half-Blood Prince", "comment": "The best book" }
+          { "objectRef": 55,    "title": "The Three Body Problem", "comment": "An interesting book" }
+          { "objectRef": 200,    "title": "Project Hail Mary", "comment": "A lonely book" }
+        NDJSON
+      end
+
+      let(:json_docs) { "[#{ndjson_docs.rstrip.gsub("\n", ',')}]" }
+
+      let(:csv_docs) do
+        <<~CSV
+          "objectRef:number","title:string","comment:string"
+          "123","Pride and Prejudice","A great book"
+          "456","Le Petit Prince","A french book"
+          "49","Harry Potter and the Half-Blood Prince","The best book"
+          "55","The Three Body Problem","An interesting book"
+          "200","Project Hail Mary","A lonely book"
+        CSV
+      end
+
+      let(:csv_docs_custom_delim) do
+        <<~CSV
+          "objectRef:number"|"title:string"|"comment:string"
+          "123"|"Pride and Prejudice"|"A great book"
+          "456"|"Le Petit Prince"|"A french book"
+          "49"|"Harry Potter and the Half-Blood Prince"|"The best book"
+          "55"|"The Three Body Problem"|"An interesting book"
+          "200"|"Project Hail Mary"|"A lonely book"
+        CSV
+      end
+
+      let(:batch1_doc) do
+        {
+          'objectRef' => 456,
+          'title' => 'Le Petit Prince',
+          'comment' => 'A french book'
+        }
+      end
+
+      let(:batch2_doc) do
+        {
+          'objectRef' => 200,
+          'title' => 'Project Hail Mary',
+          'comment' => 'A lonely book'
+        }
+      end
+
+      it '#add_documents_json' do
+        index.add_documents_json(json_docs, 'objectRef').await
+        expect(index.documents['results'].count).to eq(5)
+      end
+
+      it '#add_documents_ndjson' do
+        index.add_documents_ndjson(ndjson_docs, 'objectRef').await
+
+        expect(index.documents['results'].count).to eq(5)
+        expect(index.documents['results']).to include(batch1_doc, batch2_doc)
+      end
+
+      it '#add_documents_csv' do
+        index.add_documents_csv(csv_docs, 'objectRef').await
+        expect(index.documents['results'].count).to eq(5)
+      end
+
+      it '#add_documents_csv with a custom delimiter' do
+        index.add_documents_csv(csv_docs_custom_delim, 'objectRef', '|').await
+
+        expect(index.documents['results'].count).to eq(5)
+        expect(index.documents['results']).to include(batch1_doc, batch2_doc)
+      end
+
+      it '#add_documents_ndjson_in_batches' do
+        tasks = index.add_documents_ndjson_in_batches(ndjson_docs, 4, 'objectRef')
+        expect(tasks).to contain_exactly(a_kind_of(Meilisearch::Models::Task),
+                                         a_kind_of(Meilisearch::Models::Task))
+        tasks.each(&:await)
+        expect(index.documents['results']).to include(batch1_doc, batch2_doc)
+      end
+
+      it '#add_documents_csv_in_batches' do
+        tasks = index.add_documents_csv_in_batches(
+          csv_docs_custom_delim, 4, 'objectRef', '|'
+        )
+        expect(tasks).to contain_exactly(a_kind_of(Meilisearch::Models::Task),
+                                         a_kind_of(Meilisearch::Models::Task))
+        tasks.each(&:await)
+
+        expect(index.documents['results']).to include(batch1_doc, batch2_doc)
+      end
+
+      it '#update_documents_json' do
+        index.add_documents_json(json_docs, 'objectRef').await
+        edit = '[{ "objectRef": 123, "comment": "AN OLD BOOK" }]'
+        index.update_documents_json(edit).await
+        expect(index.documents['results']).to include(
+          {
+            'objectRef' => 123,
+            'title' => 'Pride and Prejudice',
+            'comment' => 'AN OLD BOOK'
+          }
+        )
+      end
+
+      it '#update_documents_ndjson' do
+        index.add_documents_ndjson(ndjson_docs, 'objectRef').await
+        edit = '{ "objectRef": 123, "comment": "AN OLD BOOK" }'
+        index.update_documents_ndjson(edit).await
+        expect(index.documents['results']).to include(
+          {
+            'objectRef' => 123,
+            'title' => 'Pride and Prejudice',
+            'comment' => 'AN OLD BOOK'
+          }
+        )
+      end
+
+      it '#update_documents_csv' do
+        index.add_documents_csv(csv_docs, 'objectRef').await
+        edit = <<~CSV
+          "objectRef:number","comment:string"
+          "123","AN OLD BOOK"
+        CSV
+
+        index.update_documents_csv(edit).await
+        expect(index.documents['results']).to include(
+          {
+            'objectRef' => 123,
+            'title' => 'Pride and Prejudice',
+            'comment' => 'AN OLD BOOK'
+          }
+        )
+      end
+
+      it '#update_documents_csv with custom delimiter' do
+        index.add_documents_csv(csv_docs, 'objectRef').await
+        edit = <<~CSV
+          "objectRef:number"|"comment:string"
+          "123"|"AN OLD BOOK"
+        CSV
+
+        index.update_documents_csv(edit, 'objectRef', '|').await
+        expect(index.documents['results']).to include(
+          {
+            'objectRef' => 123,
+            'title' => 'Pride and Prejudice',
+            'comment' => 'AN OLD BOOK'
+          }
+        )
+      end
+
+      it '#update_documents_ndjson_in_batches' do
+        index.add_documents_ndjson(ndjson_docs, 'objectRef').await
+
+        edits = <<~EDITS
+          { "objectRef": 123, "comment": "AN OLD BOOK" }
+          { "objectRef": 456, "title": "The Little Prince" }
+          { "objectRef": 55, "comment": "A SCI FI BOOK" }
+        EDITS
+
+        tasks = index.update_documents_ndjson_in_batches(edits, 2)
+        expect(tasks).to contain_exactly(a_kind_of(Meilisearch::Models::Task),
+                                         a_kind_of(Meilisearch::Models::Task))
+        tasks.each(&:await)
+        expect(index.documents['results']).to include(
+          {
+            'objectRef' => 123,
+            'title' => 'Pride and Prejudice',
+            'comment' => 'AN OLD BOOK'
+          },
+          {
+            'objectRef' => 456,
+            'title' => 'The Little Prince',
+            'comment' => 'A french book'
+          },
+          {
+            'objectRef' => 55,
+            'title' => 'The Three Body Problem',
+            'comment' => 'A SCI FI BOOK'
+          }
+        )
+      end
+
+      it '#update_documents_csv_in_batches' do
+        index.add_documents_csv(csv_docs, 'objectRef').await
+        edits = <<~CSV
+          "objectRef:number"|"comment:string"
+          "123"|"AN OLD BOOK"
+          "456"|"AN EXQUISITE FRENCH BOOK"
+          "55"|"A SCI FI BOOK"
+        CSV
+
+        tasks = index.update_documents_csv_in_batches(edits, 2, 'objectRef', '|')
+        expect(tasks).to contain_exactly(a_kind_of(Meilisearch::Models::Task),
+                                         a_kind_of(Meilisearch::Models::Task))
+        tasks.each(&:await)
+
+        expect(index.documents['results']).to include(
+          {
+            'objectRef' => 123,
+            'title' => 'Pride and Prejudice',
+            'comment' => 'AN OLD BOOK'
+          },
+          {
+            'objectRef' => 456,
+            'title' => 'Le Petit Prince',
+            'comment' => 'AN EXQUISITE FRENCH BOOK'
+          },
+          {
+            'objectRef' => 55,
+            'title' => 'The Three Body Problem',
+            'comment' => 'A SCI FI BOOK'
+          }
+        )
       end
     end
 
