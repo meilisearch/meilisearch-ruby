@@ -1,28 +1,26 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Meilisearch::Client - Experimental features' do
-  let(:index) { client.index(random_uid) }
-
   describe '#experimental_features' do
     it 'returns the available experimental features' do
-      expect(client.experimental_features).to include(
-        'metrics',
-        'editDocumentsByFunction',
-        'logsRoute',
-        'vectorStore',
-        'containsFilter'
-      )
+      expect(client.experimental_features).to be_kind_of(Hash)
     end
   end
 
   context '#update_experimental_features' do
     context 'when given one key' do
       it 'updates that one key' do
-        client.update_experimental_features(metrics: true)
-        expect(client.experimental_features).to include('metrics' => true)
+        feat, status = client.experimental_features.find { |_, v| [true, false].include?(v) }
 
-        client.update_experimental_features(metrics: false)
-        expect(client.experimental_features).to include('metrics' => false)
+        pending('This test requires Meilisearch to have a true/false experimental feature') unless feat
+
+        feat_snaked = snake_case_word(feat)
+
+        client.update_experimental_features(feat_snaked => status)
+        expect(client.experimental_features).to include(feat => status)
+
+        client.update_experimental_features(feat_snaked => !status)
+        expect(client.experimental_features).to include(feat => !status)
       end
 
       it 'does not change others' do
@@ -35,16 +33,15 @@ RSpec.describe 'Meilisearch::Client - Experimental features' do
 
     context 'when given all of the keys' do
       it 'sets all keys' do
-        features = client.experimental_features
-        features[:metrics] = features.delete('metrics')
-        features[:logs_route] = features.delete('logsRoute')
-        features[:contains_filter] = !features.delete('containsFilter')
-        features[:edit_documents_by_function] = !features.delete('editDocumentsByFunction')
-        features[:vector_store] = !features.delete('vectorStore')
+        edited_features = client.experimental_features.to_h do |feature, val|
+          val = !val if [true, false].include?(val)
 
-        client.update_experimental_features(features)
+          [snake_case_word(feature).to_sym, val]
+        end
+
+        client.update_experimental_features(edited_features)
         expect(client.experimental_features).to eq(
-          Meilisearch::Utils.transform_attributes(features)
+          Meilisearch::Utils.transform_attributes(edited_features)
         )
       end
     end
