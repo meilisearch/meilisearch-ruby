@@ -11,4 +11,12 @@ RSpec.shared_context 'test defaults' do
   def random_uid
     SecureRandom.hex(4)
   end
+
+  def snake_case_word(camel_cased_word)
+    return camel_cased_word unless /[A-Z]/.match?(camel_cased_word)
+
+    camel_cased_word.gsub(/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[a-z\d])(?=[A-Z])/, '_')
+                    .tr('-', '_')
+                    .downcase
+  end
 end
