@@ -154,5 +154,4 @@ RSpec.configure do |config|
   config.include IndexesHelpers
   config.include ExceptionsHelpers
   config.include KeysHelpers
-  config.include ExperimentalFeatureHelpers
 end
