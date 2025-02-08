@@ -2,8 +2,6 @@
 
 RSpec.describe 'Meilisearch::Index - Vector search' do
   it 'does a basic search' do
-    enable_vector_store(true)
-
     documents = [
       { objectId: 0, _vectors: { custom: [0, 0.8, -0.2] }, title: 'Across The Universe' },
       { objectId: 1, _vectors: { custom: [1, -0.2, 0] }, title: 'All Things Must Pass' },
