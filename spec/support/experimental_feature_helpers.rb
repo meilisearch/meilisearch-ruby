@@ -4,10 +4,6 @@ require 'net/http'
 require 'json'
 
 module ExperimentalFeatureHelpers
-  def enable_vector_store(toggle)
-    configure_feature('vectorStore', toggle)
-  end
-
   def enable_edit_documents_by_function(toggle)
     configure_feature('editDocumentsByFunction', toggle)
   end
