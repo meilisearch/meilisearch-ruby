@@ -12,8 +12,6 @@ RSpec.describe 'Meilisearch::Index - Search for similar documents' do
   end
 
   it 'does a search for similar documents' do
-    enable_vector_store(true)
-
     documents = [
       {
         title: 'Shazam!',
