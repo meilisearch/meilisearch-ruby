@@ -67,7 +67,7 @@ search_parameter_guide_hitsperpage_1: |-
 search_parameter_guide_page_1: |-
   client.index('movies').search('', page: 2)
 getting_started_typo_tolerance: |-
-   client.index('movies').update_typo_tolerance({ min_word_size_for_typos: { one_typo: 4 } })
+  client.index('movies').update_typo_tolerance({ min_word_size_for_typos: { one_typo: 4 } })
 get_all_tasks_paginating_1: |-
   client.tasks(limit: 2, from: 10)
 get_all_tasks_paginating_2: |-
@@ -672,15 +672,15 @@ search_parameter_reference_ranking_score_threshold_1: |-
     rankingScoreThreshold: 0.2
   })
 search_parameter_reference_locales_1: |-
-    client.index('INDEX_NAME').search('進撃の巨人', { locales: ['jpn'] })
+  client.index('INDEX_NAME').search('進撃の巨人', { locales: ['jpn'] })
 get_localized_attribute_settings_1: |-
-    client.index('INDEX_NAME').localized_attributes
+  client.index('INDEX_NAME').localized_attributes
 update_localized_attribute_settings_1: |-
-    client.index('INDEX_NAME').update_localized_attributes([
-      { attribute_patterns: ['*_ja'], locales: ['jpn'] },
-    ])
+  client.index('INDEX_NAME').update_localized_attributes([
+    { attribute_patterns: ['*_ja'], locales: ['jpn'] },
+  ])
 reset_localized_attribute_settings_1: |-
-    client.index('INDEX_NAME').reset_localized_attributes
+  client.index('INDEX_NAME').reset_localized_attributes
 search_parameter_reference_distinct_1: |-
   client.index('INDEX_NAME').search('QUERY TERMS', {
     distinct: 'ATTRIBUTE_A'
@@ -695,7 +695,7 @@ update_embedders_1: |-
   client.index('INDEX_NAME').update_embedders(
     default: {
       source:  'openAi',
-      api_key: 'anOpenAiApiKey',
+      api_key: 'OPEN_AI_API_KEY',
       model: 'text-embedding-3-small',
       document_template: "A document titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}"
     }

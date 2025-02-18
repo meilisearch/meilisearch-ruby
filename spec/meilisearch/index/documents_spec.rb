@@ -95,7 +95,6 @@ RSpec.describe 'Meilisearch::Index - Documents' do
         end
 
         it 'allows the user to store vectors' do
-          enable_vector_store(true)
           new_doc = { objectId: 123, _vectors: { default: [0.1, 0.2, 0.3] } }
           client.create_index('vector_test').await
           new_index = client.index('vector_test')
