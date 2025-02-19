@@ -613,6 +613,10 @@ multi_search_1: |-
     { index_uid: 'movies', q: 'nemo', limit: 5 }
     { index_uid: 'movie_ratings', q: 'us' }
   ])
+get_experimental_features_1: |-
+  client.experimental_features
+update_experimental_features_1: |-
+  client.update_experimental_features(metrics: true)
 facet_search_1: |-
   client.index('books').facet_search('genres', 'fiction', filter: 'rating > 3')
 facet_search_2: |-
