@@ -167,6 +167,17 @@ module Meilisearch
       http_get "/batches/#{batch_uid}"
     end
 
+    ### EXPERIMENTAL FEATURES
+
+    def experimental_features
+      http_get '/experimental-features'
+    end
+
+    def update_experimental_features(expe_feat_changes)
+      expe_feat_changes = Utils.transform_attributes(expe_feat_changes)
+      http_patch '/experimental-features', expe_feat_changes
+    end
+
     private
 
     def index_object(uid, primary_key = nil)
