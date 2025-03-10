@@ -559,7 +559,7 @@ RSpec.describe 'Meilisearch::Index - Documents' do
       end
 
       it 'updates documents by function' do
-        enable_edit_documents_by_function(true)
+        client.update_experimental_features(edit_documents_by_function: true)
         expect(index.document(1344)).to include('title' => 'The Hobbit')
         expect(index.document(456)).to include('title' => 'Le Petit Prince')
 
