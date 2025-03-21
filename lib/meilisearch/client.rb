@@ -153,7 +153,11 @@ module Meilisearch
       task_endpoint.task(task_uid)
     end
 
-    def wait_for_task(task_uid, timeout_in_ms = 5000, interval_in_ms = 50)
+    def wait_for_task(
+      task_uid,
+      timeout_in_ms = Models::Task.default_timeout_ms,
+      interval_in_ms = Models::Task.default_interval_ms
+    )
       task_endpoint.wait_for_task(task_uid, timeout_in_ms, interval_in_ms)
     end
 

@@ -65,6 +65,10 @@ FINITE_PAGINATED_SEARCH_RESPONSE_KEYS = [
 
 Dir["#{Dir.pwd}/spec/support/**/*.rb"].each { |file| require file }
 
+# Reduce interval during testing to improve the test speeds
+# There are no long-running meilisearch operations during testing so this should be fine
+Meilisearch::Models::Task.default_interval_ms = 5
+
 RSpec.configure do |config|
   config.filter_run_when_matching :focus
   config.example_status_persistence_file_path = 'spec/examples.txt'
