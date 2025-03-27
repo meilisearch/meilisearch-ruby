@@ -5,6 +5,21 @@ require 'forwardable'
 module Meilisearch
   module Models
     class Task
+      DEFAULT_TIMEOUT_MS = 5000
+      DEFAULT_INTERVAL_MS = 50
+
+      class << self
+        attr_writer :default_timeout_ms, :default_interval_ms
+
+        def default_timeout_ms
+          @default_timeout_ms || DEFAULT_TIMEOUT_MS
+        end
+
+        def default_interval_ms
+          @default_interval_ms || DEFAULT_INTERVAL_MS
+        end
+      end
+
       extend Forwardable
 
       # Maintain backwards compatibility with task hash return type
@@ -96,7 +111,10 @@ module Meilisearch
         self
       end
 
-      def await(timeout_in_ms = 5000, interval_in_ms = 50)
+      def await(
+        timeout_in_ms = self.class.default_timeout_ms,
+        interval_in_ms = self.class.default_interval_ms
+      )
         refresh with: @task_endpoint.wait_for_task(uid, timeout_in_ms, interval_in_ms) unless finished?
 
         self
