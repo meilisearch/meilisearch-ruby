@@ -10,7 +10,7 @@ module Meilisearch
     attr_reader :options, :headers
 
     DEFAULT_OPTIONS = {
-      timeout: 1,
+      timeout: 10,
       max_retries: 0,
       convert_body?: true
     }.freeze
@@ -29,7 +29,8 @@ module Meilisearch
         config: {
           query_params: query_params,
           headers: remove_headers(@headers.dup.merge(options[:headers] || {}), 'Content-Type'),
-          options: @options.merge(options)
+          options: @options.merge(options),
+          method_type: :get
         }
       )
     end
@@ -42,7 +43,8 @@ module Meilisearch
           query_params: query_params,
           body: body,
           headers: @headers.dup.merge(options[:headers] || {}),
-          options: @options.merge(options)
+          options: @options.merge(options),
+          method_type: :post
         }
       )
     end
@@ -55,7 +57,8 @@ module Meilisearch
           query_params: query_params,
           body: body,
           headers: @headers.dup.merge(options[:headers] || {}),
-          options: @options.merge(options)
+          options: @options.merge(options),
+          method_type: :put
         }
       )
     end
@@ -68,7 +71,8 @@ module Meilisearch
           query_params: query_params,
           body: body,
           headers: @headers.dup.merge(options[:headers] || {}),
-          options: @options.merge(options)
+          options: @options.merge(options),
+          method_type: :patch
         }
       )
     end
@@ -80,7 +84,8 @@ module Meilisearch
         config: {
           query_params: query_params,
           headers: remove_headers(@headers.dup.merge(options[:headers] || {}), 'Content-Type'),
-          options: @options.merge(options)
+          options: @options.merge(options),
+          method_type: :delete
         }
       )
     end
@@ -102,15 +107,22 @@ module Meilisearch
       data.delete_if { |k| keys.include?(k) }
     end
 
-    def send_request(http_method, relative_path, config: {})
-      config = http_config(config[:query_params], config[:body], config[:options], config[:headers])
+    def send_request(http_method, relative_path, config:)
+      attempts = 0
+      max_retries = config[:options][:max_retries].to_i
+      request_config = http_config(config[:query_params], config[:body], config[:options], config[:headers])
 
       begin
-        response = http_method.call(@base_url + relative_path, config)
+        response = http_method.call(@base_url + relative_path, request_config)
       rescue Errno::ECONNREFUSED, Errno::EPIPE => e
         raise CommunicationError, e.message
-      rescue Net::ReadTimeout, Net::OpenTimeout => e
-        raise TimeoutError, e.message
+      rescue Net::OpenTimeout, Net::ReadTimeout => e
+        attempts += 1
+        raise TimeoutError, e.message unless attempts <= max_retries && safe_to_retry?(config[:method_type], e)
+
+        sleep(1.2**attempts)
+
+        retry
       end
 
       validate(response)
@@ -131,6 +143,11 @@ module Meilisearch
       raise ApiError.new(response.code, response.message, response.body) unless response.success?
 
       response.parsed_response
+    end
+
+    # Ensures the only retryable error is a timeout didn't reached the server
+    def safe_to_retry?(method_type, error)
+      method_type == :get || ([:post, :put, :patch].include?(method_type) && error.is_a?(Net::OpenTimeout))
     end
   end
 end
