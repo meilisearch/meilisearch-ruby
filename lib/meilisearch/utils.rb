@@ -87,6 +87,7 @@ module Meilisearch
           .transform_keys do |key|
             key.include?('_') ? key.downcase.gsub(SNAKE_CASE, &:upcase).gsub('_', '') : key
           end
+            .transform_values { |val| transform_attributes(val) }
       end
 
       def message_builder(current_message, method_name)
