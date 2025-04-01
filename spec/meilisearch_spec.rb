@@ -35,6 +35,32 @@ RSpec.describe Meilisearch do
     expect(new_client.headers).to have_key('User-Agent')
     expect(new_client.headers['User-Agent']).to eq(described_class.qualified_version)
   end
+
+  it 'retries the request when the request is retryable' do
+    allow(Meilisearch::HTTPRequest).to receive(:get).and_raise(Net::ReadTimeout)
+
+    begin
+      new_client = Meilisearch::Client.new(URL, MASTER_KEY, max_retries: 3, retry_multiplier: 0.1)
+      new_client.indexes
+    rescue Meilisearch::TimeoutError
+      nil
+    end
+
+    expect(Meilisearch::HTTPRequest).to have_received(:get).exactly(4).times
+  end
+
+  it 'does not retry the request when the request is not retryable' do
+    allow(Meilisearch::HTTPRequest).to receive(:get).and_raise(Errno::ECONNREFUSED)
+
+    begin
+      new_client = Meilisearch::Client.new(URL, MASTER_KEY, max_retries: 10)
+      new_client.indexes
+    rescue Meilisearch::CommunicationError
+      nil
+    end
+
+    expect(Meilisearch::HTTPRequest).to have_received(:get).once
+  end
 end
 
 RSpec.describe MeiliSearch do
