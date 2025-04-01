@@ -721,6 +721,26 @@ multi_search_federated_1: |-
     queries: [{ index_uid: 'movies', q: 'batman' }, { index_uid: 'comics', q: 'batman' }],
     federation: {}
   )
+multi_search_remote_federated_1: |-
+  client.multi_search(
+    federation: {},
+    queries: [
+      {
+        index_uid: 'movies',
+        q: 'batman',
+        federation_options: {
+          remote: 'ms-00'
+        }
+      },
+      {
+        index_uid: 'movies',
+        q: 'batman',
+        federation_options: {
+          remote: 'ms-01'
+        }
+      }
+    ]
+  )
 get_network_1: |-
   client.network
 update_network_1: |-
