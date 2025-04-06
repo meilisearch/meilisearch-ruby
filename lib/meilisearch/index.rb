@@ -56,9 +56,9 @@ module Meilisearch
 
     ### DOCUMENTS
 
-    def document(document_id, fields: nil)
+    def document(document_id, fields: nil, retrieve_vectors: false)
       encode_document = URI.encode_www_form_component(document_id)
-      body = { fields: fields&.join(',') }.compact
+      body = { fields: fields&.join(','), retrieveVectors: retrieve_vectors }.compact
 
       http_get("/indexes/#{@uid}/documents/#{encode_document}", body)
     end
@@ -73,10 +73,11 @@ module Meilisearch
     #           :fields - Array of document attributes to show (optional).
     #           :filter - Filter queries by an attribute's value.
     #                     Available ONLY with Meilisearch v1.2 and newer (optional).
+    #           :retrieve_vectors - Return document vector data with search result (optional).
     #
     # Returns the documents results object.
     def documents(options = {})
-      http_post "/indexes/#{@uid}/documents/fetch", Utils.filter(options, [:limit, :offset, :fields, :filter])
+      http_post "/indexes/#{@uid}/documents/fetch", Utils.filter(options, [:limit, :offset, :fields, :filter, :retrieve_vectors])
     end
     alias get_documents documents
 
