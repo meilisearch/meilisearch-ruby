@@ -41,4 +41,13 @@ RSpec.describe 'Meilisearch::Client - Errors' do
       end.to raise_error(Meilisearch::InvalidDocumentId)
     end
   end
+
+  context 'when url is missing protocol' do
+    it 'throws a CommunicationError with a useful message' do
+      expect do
+        c = Meilisearch::Client.new('localhost:7700')
+        c.health
+      end.to raise_error(Meilisearch::CommunicationError).with_message(/protocol/)
+    end
+  end
 end
