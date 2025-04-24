@@ -422,6 +422,25 @@ RSpec.describe 'Meilisearch::Index - Documents' do
           { 'title' => a_kind_of(String) }
         )
       end
+
+      it 'retrieves documents by ids' do
+        index.add_documents(documents).await
+
+        docs = index.documents(ids: [123, 456, 1])['results']
+
+        expect(docs).to include(
+          { 'objectId' => 123, 'title' => 'Pride and Prejudice', 'comment' => 'A great book' },
+          { 'objectId' => 456, 'title' => 'Le Petit Prince', 'comment' => 'A french book' },
+          { 'objectId' => 1,   'title' => 'Alice In Wonderland', 'comment' => 'A weird book' }
+        )
+
+        expect(docs).not_to include(
+          { 'objectId' => 1344, 'title' => 'The Hobbit', 'comment' => 'An awesome book' },
+          { 'objectId' => 4,    'title' => 'Harry Potter and the Half-Blood Prince', 'comment' => 'The best book' },
+          { 'objectId' => 42,   'title' => 'The Hitchhiker\'s Guide to the Galaxy' },
+          { 'objectId' => 2,    'title' => 'Le Rouge et le Noir' }
+        )
+      end
     end
 
     describe '#update_documents' do
