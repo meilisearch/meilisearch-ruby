@@ -77,7 +77,9 @@ module Meilisearch
     # Returns the documents results object.
     def documents(options = {})
       Utils.version_error_handler(__method__) do
-        if options.key?(:filter)
+        if options.key?(:ids)
+          http_post "/indexes/#{@uid}/documents/fetch", { ids: options[:ids] }
+        elsif options.key?(:filter)
           http_post "/indexes/#{@uid}/documents/fetch", Utils.filter(options, [:limit, :offset, :fields, :filter])
         else
           http_get "/indexes/#{@uid}/documents", Utils.parse_query(options, [:limit, :offset, :fields])
