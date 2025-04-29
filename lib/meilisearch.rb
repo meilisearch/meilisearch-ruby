@@ -11,6 +11,7 @@ require 'meilisearch/tenant_token'
 require 'meilisearch/task'
 require 'meilisearch/client'
 require 'meilisearch/index'
+require 'meilisearch/filter_builder'
 
 module Meilisearch
 end
