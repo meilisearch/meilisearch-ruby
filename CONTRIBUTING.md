@@ -34,10 +34,14 @@ First of all, thank you for contributing to Meilisearch! The goal of this docume
 
 You can set up your local environment natively or using `docker`, check out the [`docker-compose.yml`](/docker-compose.yml).
 
+#### With Docker <!-- omit in toc -->
 Example of running all the checks with docker:
 ```bash
 docker-compose run --rm package bash -c "bundle install && bundle exec rspec && bundle exec rubocop"
 ```
+<!-- need to run multiple instances of meilisearch for proxy tests -->
+
+#### Locally <!-- omit in toc -->
 
 To install dependencies:
 ```bash
@@ -51,7 +55,12 @@ Each PR should pass the tests to be accepted.
 ```bash
 # Tests
 curl -L https://install.meilisearch.com | sh # download Meilisearch
-./meilisearch --master-key=masterKey --no-analytics # run Meilisearch
+
+# run Meilisearch
+./meilisearch --master-key=masterKey --no-analytics
+# run a second instance of Meilisearch to act as proxy
+./meilisearch --master-key=masterKey --no-analytics --http-addr localhost:7701
+
 bundle exec rspec
 ```
 

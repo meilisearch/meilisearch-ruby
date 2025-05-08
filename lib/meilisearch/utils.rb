@@ -83,6 +83,7 @@ module Meilisearch
 
       def parse(body)
         body
+          .transform_values { |val| transform_attributes(val) }
           .transform_keys(&:to_s)
           .transform_keys do |key|
             key.include?('_') ? key.downcase.gsub(SNAKE_CASE, &:upcase).gsub('_', '') : key
