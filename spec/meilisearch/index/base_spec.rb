@@ -100,7 +100,7 @@ RSpec.describe Meilisearch::Index do
   end
 
   it 'supports options' do
-    options = { timeout: 2, max_retries: 1 }
+    options = { timeout: 2, retry_multiplier: 1.2, max_retries: 1 }
     expected_headers = {
       'Authorization' => "Bearer #{MASTER_KEY}",
       'User-Agent' => Meilisearch.qualified_version
@@ -109,7 +109,7 @@ RSpec.describe Meilisearch::Index do
     new_client = Meilisearch::Client.new(URL, MASTER_KEY, options)
     new_client.create_index('books').await
     index = new_client.fetch_index('books')
-    expect(index.options).to eq({ max_retries: 1, timeout: 2, convert_body?: true })
+    expect(index.options).to eq({ max_retries: 1, retry_multiplier: 1.2, timeout: 2, convert_body?: true })
 
     expect(described_class).to receive(:get).with(
       "#{URL}/indexes/books",
@@ -128,7 +128,7 @@ RSpec.describe Meilisearch::Index do
 
   it 'supports client_agents' do
     custom_agent = 'Meilisearch Rails (v0.0.1)'
-    options = { timeout: 2, max_retries: 1, client_agents: [custom_agent] }
+    options = { timeout: 2, retry_multiplier: 1.2, max_retries: 1, client_agents: [custom_agent] }
     expected_headers = {
       'Authorization' => "Bearer #{MASTER_KEY}",
       'User-Agent' => "#{custom_agent};#{Meilisearch.qualified_version}"
