@@ -422,6 +422,26 @@ RSpec.describe 'Meilisearch::Index - Documents' do
           { 'title' => a_kind_of(String) }
         )
       end
+
+      it 'retrieves documents by ids' do
+        expected_ids = [1, 2, 4]
+        response = index.documents(ids: expected_ids)
+        retrieved_ids = response['results'].map { |doc| doc['objectId'] }.sort
+        expect(retrieved_ids).to eq(expected_ids)
+        expect(response['total']).to be(3)
+      end
+
+      it 'retrieves documents by ids and respects the limit' do
+        response = index.documents(ids: [1, 2, 4, 42], limit: 2)
+        expect(response['limit']).to be(2)
+        expect(response['total']).to be(4)
+        expect(response['results'].size).to eq(2)
+      end
+
+      it 'retrieves documents by ids and respects the filter' do
+        response = index.documents(ids: [1, 2, 4, 42], filter: 'objectId < 20')
+        expect(response['results'].size).to eq(3)
+      end
     end
 
     describe '#update_documents' do
