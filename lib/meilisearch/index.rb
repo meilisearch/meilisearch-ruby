@@ -73,14 +73,15 @@ module Meilisearch
     #           :fields - Array of document attributes to show (optional).
     #           :filter - Filter queries by an attribute's value.
     #                     Available ONLY with Meilisearch v1.2 and newer (optional).
+    #           :ids    - Array of ids to be retrieved (optional)
     #
     # Returns the documents results object.
     def documents(options = {})
       Utils.version_error_handler(__method__) do
         if options.key?(:filter)
-          http_post "/indexes/#{@uid}/documents/fetch", Utils.filter(options, [:limit, :offset, :fields, :filter])
+          http_post "/indexes/#{@uid}/documents/fetch", Utils.filter(options, [:limit, :offset, :fields, :filter, :ids])
         else
-          http_get "/indexes/#{@uid}/documents", Utils.parse_query(options, [:limit, :offset, :fields])
+          http_get "/indexes/#{@uid}/documents", Utils.parse_query(options, [:limit, :offset, :fields, :ids])
         end
       end
     end
