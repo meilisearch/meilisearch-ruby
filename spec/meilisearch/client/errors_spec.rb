@@ -50,4 +50,13 @@ RSpec.describe 'Meilisearch::Client - Errors' do
       end.to raise_error(Meilisearch::CommunicationError).with_message(/protocol/)
     end
   end
+
+  context 'when url is malformed' do
+    it 'throws a CommunicationError' do
+      expect do
+        c = Meilisearch::Client.new('http://localh ost:7700')
+        c.health
+      end.to raise_error(Meilisearch::CommunicationError)
+    end
+  end
 end
