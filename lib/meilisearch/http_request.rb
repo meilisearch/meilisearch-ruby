@@ -121,7 +121,7 @@ module Meilisearch
       rescue URI::InvalidURIError => e
         raise CommunicationError, "Client URL missing scheme/protocol. Did you mean https://#{@base_url}" unless @base_url =~ %r{^\w+://}
 
-        raise e
+        raise CommunicationError, e
       rescue Net::OpenTimeout, Net::ReadTimeout => e
         attempts += 1
         raise TimeoutError, e.message unless attempts <= max_retries && safe_to_retry?(config[:method_type], e)
