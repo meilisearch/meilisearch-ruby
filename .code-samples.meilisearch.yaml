@@ -369,12 +369,11 @@ add_movies_json_1: |-
   movies_json = File.read('movies.json')
   movies = JSON.parse(movies_json)
   client.index('movies').add_documents(movies)
-getting_started_add_documents_md: |-
-  ```bash
-  $ bundle add meilisearch
-  ```
+getting_started_add_documents: |-
+  # In the command line:
+  # bundle add meilisearch
 
-  ```ruby
+  # In your .rb file:
   require 'json'
   require 'meilisearch'
 
@@ -384,15 +383,8 @@ getting_started_add_documents_md: |-
   movies = JSON.parse(movies_json)
 
   client.index('movies').add_documents(movies)
-  ```
-
-  [About this SDK](https://www.github.com/meilisearch/meilisearch-ruby)
-getting_started_search_md: |-
-  ```ruby
+getting_started_search: |-
   client.index('movies').search('botman')
-  ```
-
-  [About this SDK](https://www.github.com/meilisearch/meilisearch-ruby)
 filtering_update_settings_1: |-
   client.index('movies').update_filterable_attributes([
     'director',
