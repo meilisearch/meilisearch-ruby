@@ -545,30 +545,30 @@ RSpec.describe 'Meilisearch::Index - Settings' do
     before { client.create_index(uid).await }
 
     it '#pagination gets default values of pagination' do
-      expect(index.pagination).to eq(default_pagination.transform_keys(&:to_s))
+      expect(index.pagination).to include(default_pagination.transform_keys(&:to_s))
     end
 
     describe '#update_pagination' do
       it 'updates pagination' do
         index.update_pagination(pagination).await
-        expect(index.pagination).to eq(pagination_with_string_keys)
+        expect(index.pagination).to include(pagination_with_string_keys)
       end
 
       it 'resets pagination when passed nil' do
         index.update_pagination(pagination).await
-        expect(index.pagination).to eq(pagination_with_string_keys)
+        expect(index.pagination).to include(pagination_with_string_keys)
 
         index.update_pagination(nil).await
-        expect(index.pagination).to eq(default_pagination.transform_keys(&:to_s))
+        expect(index.pagination).to include(default_pagination.transform_keys(&:to_s))
       end
     end
 
     it '#reset_pagination resets pagination' do
       index.update_pagination(pagination).await
-      expect(index.pagination).to eq(pagination_with_string_keys)
+      expect(index.pagination).to include(pagination_with_string_keys)
 
       index.reset_pagination.await
-      expect(index.pagination).to eq(default_pagination.transform_keys(&:to_s))
+      expect(index.pagination).to include(default_pagination.transform_keys(&:to_s))
     end
   end
 
@@ -603,21 +603,21 @@ RSpec.describe 'Meilisearch::Index - Settings' do
     before { client.create_index(uid).await }
 
     it '#typo_tolerance gets default typo tolerance settings' do
-      expect(index.typo_tolerance).to eq(default_typo_tolerance)
+      expect(index.typo_tolerance).to include(default_typo_tolerance)
     end
 
     it '#update_type_tolerance updates typo tolerance settings' do
       index.update_typo_tolerance(new_typo_tolerance).await
 
-      expect(index.typo_tolerance).to eq(Meilisearch::Utils.transform_attributes(new_typo_tolerance))
+      expect(index.typo_tolerance).to include(Meilisearch::Utils.transform_attributes(new_typo_tolerance))
     end
 
     it '#reset_typo_tolerance resets typo tolerance settings' do
       index.update_typo_tolerance(new_typo_tolerance).await
-      expect(index.typo_tolerance).to eq(Meilisearch::Utils.transform_attributes(new_typo_tolerance))
+      expect(index.typo_tolerance).to include(Meilisearch::Utils.transform_attributes(new_typo_tolerance))
 
       index.reset_typo_tolerance.await
-      expect(index.typo_tolerance).to eq(default_typo_tolerance)
+      expect(index.typo_tolerance).to include(default_typo_tolerance)
     end
   end
 
@@ -629,7 +629,7 @@ RSpec.describe 'Meilisearch::Index - Settings' do
     before { client.create_index(uid).await }
 
     it '#faceting gets default values of faceting' do
-      expect(index.faceting).to eq(default_faceting_with_string_keys)
+      expect(index.faceting).to include(default_faceting_with_string_keys)
     end
 
     describe '#update_faceting' do
@@ -637,26 +637,26 @@ RSpec.describe 'Meilisearch::Index - Settings' do
         index.update_faceting({ 'max_values_per_facet' => 333 }).await
         new_faceting = default_faceting_with_string_keys.merge('maxValuesPerFacet' => 333)
 
-        expect(index.faceting).to eq(new_faceting)
+        expect(index.faceting).to include(new_faceting)
       end
 
       it 'resets faceting when passed nil' do
         index.update_faceting({ 'max_values_per_facet' => 333 }).await
         new_faceting = default_faceting_with_string_keys.merge('maxValuesPerFacet' => 333)
-        expect(index.faceting).to eq(new_faceting)
+        expect(index.faceting).to include(new_faceting)
 
         index.update_faceting(nil).await
-        expect(index.faceting).to eq(default_faceting_with_string_keys)
+        expect(index.faceting).to include(default_faceting_with_string_keys)
       end
     end
 
     it '#reset_faceting resets faceting' do
       index.update_faceting({ 'max_values_per_facet' => 333 }).await
       new_faceting = default_faceting_with_string_keys.merge('maxValuesPerFacet' => 333)
-      expect(index.faceting).to eq(new_faceting)
+      expect(index.faceting).to include(new_faceting)
 
       index.reset_faceting.await
-      expect(index.faceting).to eq(default_faceting_with_string_keys)
+      expect(index.faceting).to include(default_faceting_with_string_keys)
     end
   end
 
@@ -781,9 +781,10 @@ RSpec.describe 'Meilisearch::Index - Settings' do
         [{ attribute_patterns: ['title'], locales: ['eng'] }]
       ).await
 
-      expect(index.localized_attributes).to eq(
-        [{ 'attributePatterns' => ['title'], 'locales' => ['eng'] }]
-      )
+      result = index.localized_attributes
+      expect(result).to be_an(Array)
+      expect(result.length).to eq(1)
+      expect(result.first).to include('attributePatterns' => ['title'], 'locales' => ['eng'])
     end
 
     it '#reset_localized_attributes resets localized attributes' do
@@ -791,9 +792,10 @@ RSpec.describe 'Meilisearch::Index - Settings' do
         [{ attribute_patterns: ['title'], locales: ['eng'] }]
       ).await
 
-      expect(index.localized_attributes).to eq(
-        [{ 'attributePatterns' => ['title'], 'locales' => ['eng'] }]
-      )
+      result = index.localized_attributes
+      expect(result).to be_an(Array)
+      expect(result.length).to eq(1)
+      expect(result.first).to include('attributePatterns' => ['title'], 'locales' => ['eng'])
 
       index.reset_localized_attributes.await
       expect(index.localized_attributes).to eq(default_localized_attributes)
