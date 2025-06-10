@@ -14,10 +14,19 @@ RSpec.describe 'Meilisearch::Client - Batches' do
       expect(client.batches).to match(
         'results' => array_including(
           a_hash_including(
+            'uid' => anything,
             'details' => a_hash_including('receivedDocuments' => 1),
+            'progress' => anything,
             'stats' => a_hash_including(
-              'types' => { 'documentAdditionOrUpdate' => 1 }
-            )
+              'totalNbTasks' => 1,
+              'types' => { 'documentAdditionOrUpdate' => 1 },
+              'progressTrace' => anything,
+              'writeChannelCongestion' => anything,
+              'internalDatabaseSizes' => anything
+            ),
+            'duration' => anything,
+            'startedAt' => anything,
+            'finishedAt' => anything
           )
         ),
         'total' => anything,
