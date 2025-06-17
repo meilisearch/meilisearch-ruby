@@ -594,6 +594,8 @@ typo_tolerance_guide_4: |-
       two_typos: 10
     }
   })
+typo_tolerance_guide_5: |-
+  index('books').update_typo_tolerance({ disable_on_numbers: true })
 search_parameter_guide_facet_stats_1: |-
   client.index('movie_ratings').search('Batman', {
     facets: ['genres', 'rating']

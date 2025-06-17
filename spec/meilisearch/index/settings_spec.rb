@@ -584,7 +584,8 @@ RSpec.describe 'Meilisearch::Index - Settings' do
            'twoTypos' => 9
          },
         'disableOnWords' => [],
-        'disableOnAttributes' => []
+        'disableOnAttributes' => [],
+        'disableOnNumbers' => false
       }
     end
 
@@ -595,8 +596,9 @@ RSpec.describe 'Meilisearch::Index - Settings' do
           'oneTypo' => 6,
           'twoTypos' => 10
         },
-        'disable_on_words' => [],
-        'disable_on_attributes' => ['title']
+        'disableOnWords' => ['shrek'],
+        'disableOnAttributes' => ['title'],
+        'disableOnNumbers' => true
       }
     end
 
