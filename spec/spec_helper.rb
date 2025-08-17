@@ -78,6 +78,7 @@ RSpec.configure do |config|
 
   config.include IndexesHelpers
   config.include ExceptionsHelpers
+  config.include ExperimentalFeatureHelpers
   config.include KeysHelpers
 
   # New RSpec 4 defaults, remove when updated to RSpec 4
