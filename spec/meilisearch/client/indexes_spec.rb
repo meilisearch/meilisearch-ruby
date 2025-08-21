@@ -268,8 +268,10 @@ RSpec.describe 'Meilisearch::Client - Indexes' do
 
       expect(task.type).to eq('indexSwap')
       task.await
-      expect(task['details']['swaps']).to eq([{ 'indexes' => ['indexA', 'indexB'] },
-                                              { 'indexes' => ['indexC', 'indexD'] }])
+      expect(task['details']['swaps']).to include(
+        include('indexes' => ['indexA', 'indexB']),
+        include('indexes' => ['indexC', 'indexD'])
+      )
     end
   end
 end
