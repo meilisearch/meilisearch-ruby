@@ -574,6 +574,8 @@ module Meilisearch
       Models::Task.new(response, task_endpoint)
     end
 
+    ### SETTINGS - TYPO TOLERANCE
+
     def typo_tolerance
       http_get("/indexes/#{@uid}/settings/typo-tolerance")
     end
@@ -590,6 +592,8 @@ module Meilisearch
       response = http_delete("/indexes/#{@uid}/settings/typo-tolerance")
       Models::Task.new(response, task_endpoint)
     end
+
+    ### SETTINGS - FACETING
 
     def faceting
       http_get("/indexes/#{@uid}/settings/faceting")
