@@ -10,6 +10,7 @@ RSpec.describe 'Meilisearch::Index - Documents' do
         { objectId: 456,  title: 'Le Petit Prince',                        comment: 'A french book' },
         { objectId: 1,    title: 'Alice In Wonderland',                    comment: 'A weird book' },
         { objectId: 1344, title: 'The Hobbit',                             comment: 'An awesome book' },
+        { objectId: 13,   title: 'Zen in the Art of Archery' },
         { objectId: 4,    title: 'Harry Potter and the Half-Blood Prince', comment: 'The best book' },
         { objectId: 42,   title: 'The Hitchhiker\'s Guide to the Galaxy' },
         { objectId: 2,    title: 'Le Rouge et le Noir' }
@@ -383,7 +384,7 @@ RSpec.describe 'Meilisearch::Index - Documents' do
     describe '#documents' do
       before do
         index.add_documents(documents).await
-        index.update_filterable_attributes(['title', 'objectId']).await
+        index.update_filterable_attributes(['title', 'objectId', 'comment']).await
       end
 
       it 'browses documents' do
@@ -421,6 +422,28 @@ RSpec.describe 'Meilisearch::Index - Documents' do
           { 'title' => a_kind_of(String) },
           { 'title' => a_kind_of(String) }
         )
+      end
+
+      describe 'sorts documents' do
+        before do
+          index.update_sortable_attributes(['title']).await
+        end
+
+        it 'get' do
+          docs = index.documents(sort: ['title:asc'])
+          expect(docs['results'].first).to include('objectId' => 1, 'title' => 'Alice In Wonderland')
+          expect(docs['results'].last).to include('objectId' => 13, 'title' => 'Zen in the Art of Archery')
+
+          docs = index.documents(sort: ['title:desc'])
+          expect(docs['results'].first).to include('objectId' => 13, 'title' => 'Zen in the Art of Archery')
+          expect(docs['results'].last).to include('objectId' => 1, 'title' => 'Alice In Wonderland')
+        end
+
+        it 'post' do
+          docs = index.documents(filter: 'comment NOT EXISTS', sort: ['title:asc'])
+          expect(docs['results'].first).to include('objectId' => 2, 'title' => 'Le Rouge et le Noir')
+          expect(docs['results'].last).to include('objectId' => 13, 'title' => 'Zen in the Art of Archery')
+        end
       end
 
       it 'retrieves documents by ids' do
