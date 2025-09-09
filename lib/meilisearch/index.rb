@@ -1043,6 +1043,8 @@ module Meilisearch
       Models::Task.new(response, task_endpoint)
     end
 
+    ### SETTINGS - TYPO TOLERANCE
+
     # Get the index's typo tolerance setting.
     #
     # This setting allows you to configure the minimum word size for typos and disable typo tolerance for specific words or attributes.
@@ -1078,6 +1080,8 @@ module Meilisearch
       response = http_delete("/indexes/#{@uid}/settings/typo-tolerance")
       Models::Task.new(response, task_endpoint)
     end
+
+    ### SETTINGS - FACETING
 
     # Get the index's faceting settings.
     #
