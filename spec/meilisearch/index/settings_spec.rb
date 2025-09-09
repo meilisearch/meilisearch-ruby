@@ -873,6 +873,33 @@ RSpec.describe 'Meilisearch::Index - Settings' do
       expect(index.embedders).to have_key('custom')
     end
 
+    it '#update_embedders with pooling and composite' do
+      enable_composite_embedders(true)
+
+      index.update_embedders(
+        custom_embedder: {
+          source: 'composite',
+          searchEmbedder: {
+            source: 'huggingFace',
+            model: 'sentence-transformers/all-MiniLM-L6-v2',
+            pooling: 'useModel'
+          },
+          indexingEmbedder: {
+            source: 'huggingFace',
+            model: 'sentence-transformers/all-MiniLM-L6-v2',
+            documentTemplate: '{{doc.title}}',
+            pooling: 'useModel',
+            documentTemplateMaxBytes: 500
+          }
+        }
+      ).await
+
+      expect(index.embedders['customEmbedder']['source']).to eq('composite')
+      expect(index.embedders['customEmbedder']['searchEmbedder']).to have_key('pooling')
+
+      enable_composite_embedders(false)
+    end
+
     it '#reset_embedders resets embedders to nil' do
       index.update_embedders(
         custom: {

@@ -8,6 +8,10 @@ module ExperimentalFeatureHelpers
     configure_feature('editDocumentsByFunction', toggle)
   end
 
+  def enable_composite_embedders(toggle)
+    configure_feature('compositeEmbedders', toggle)
+  end
+
   private
 
   # @param [String] attribute_to_toggle
