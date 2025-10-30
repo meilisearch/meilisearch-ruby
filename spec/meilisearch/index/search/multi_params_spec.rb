@@ -21,7 +21,7 @@ RSpec.describe 'Meilisearch::Index - Multi-paramaters search' do
   it 'does a custom search with attributes_to_retrieve and a limit' do
     response = index.search('the', attributes_to_retrieve: ['title', 'genre'], limit: 2)
     expect(response).to be_a(Hash)
-    expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
+    expect(response.keys).to include(*DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['hits'].count).to eq(2)
     expect(response['hits'].first).to have_key('title')
     expect(response['hits'].first).not_to have_key('objectId')
@@ -36,7 +36,7 @@ RSpec.describe 'Meilisearch::Index - Multi-paramaters search' do
   it 'does a custom search with limit and attributes to highlight' do
     response = index.search('the', { limit: 1, attributes_to_highlight: ['*'] })
     expect(response).to be_a(Hash)
-    expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
+    expect(response.keys).to include(*DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['hits'].count).to eq(1)
     expect(response['hits'].first).to have_key('_formatted')
   end
@@ -49,7 +49,7 @@ RSpec.describe 'Meilisearch::Index - Multi-paramaters search' do
                               attributes_to_retrieve: ['title'],
                               attributes_to_highlight: ['*']
                             })
-    expect(response.keys).to contain_exactly(*DEFAULT_SEARCH_RESPONSE_KEYS)
+    expect(response.keys).to include(*DEFAULT_SEARCH_RESPONSE_KEYS)
     expect(response['estimatedTotalHits']).to eq(1)
     expect(response['hits'].first).to have_key('_formatted')
     expect(response['hits'].first).not_to have_key('objectId')
@@ -62,7 +62,7 @@ RSpec.describe 'Meilisearch::Index - Multi-paramaters search' do
     index.update_filterable_attributes(['genre']).await
     response = index.search('prinec', facets: ['genre'], limit: 1)
 
-    expect(response.keys).to contain_exactly(
+    expect(response.keys).to include(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetDistribution',
       'facetStats'

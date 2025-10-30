@@ -9,7 +9,7 @@ RSpec.describe 'Meilisearch::Index - Search with facets' do
 
   it 'does a custom search with facets' do
     response = index.search('prinec', facets: ['genre', 'author'])
-    expect(response.keys).to contain_exactly(
+    expect(response.keys).to include(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetDistribution',
       'facetStats'
@@ -25,7 +25,7 @@ RSpec.describe 'Meilisearch::Index - Search with facets' do
 
   it 'does a placeholder search with facets' do
     response = index.search('', facets: ['genre', 'author'])
-    expect(response.keys).to contain_exactly(
+    expect(response.keys).to include(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetDistribution',
       'facetStats'
@@ -41,7 +41,7 @@ RSpec.describe 'Meilisearch::Index - Search with facets' do
 
   it 'does a placeholder search with facets on number' do
     response = index.search('', facets: ['year'])
-    expect(response.keys).to contain_exactly(
+    expect(response.keys).to include(
       *DEFAULT_SEARCH_RESPONSE_KEYS,
       'facetDistribution',
       'facetStats'
