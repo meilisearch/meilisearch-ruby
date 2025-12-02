@@ -21,7 +21,6 @@
     <img src="https://codecov.io/gh/meilisearch/meilisearch-ruby/branch/main/graph/badge.svg?token=9J7LRP11IR"/>
   </a>
   <a href="https://github.com/meilisearch/meilisearch-ruby/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-informational" alt="License"></a>
-  <a href="https://ms-bors.herokuapp.com/repositories/6"><img src="https://bors.tech/images/badge_small.svg" alt="Bors enabled"></a>
 </p>
 
 <p align="center">⚡ The Meilisearch API client written for Ruby 💎</p>
