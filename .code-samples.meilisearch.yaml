@@ -673,6 +673,13 @@ search_parameter_reference_ranking_score_threshold_1: |-
   })
 search_parameter_reference_locales_1: |-
   client.index('INDEX_NAME').search('進撃の巨人', { locales: ['jpn'] })
+search_parameter_reference_retrieve_vectors_1: |-
+  client.index('INDEX_NAME').search('kitchen utensils', {
+    retrieve_vectors: true,
+    hybrid: {
+      embedder: 'EMBEDDER_NAME'
+    }
+  })
 get_localized_attribute_settings_1: |-
   client.index('INDEX_NAME').localized_attributes
 update_localized_attribute_settings_1: |-
