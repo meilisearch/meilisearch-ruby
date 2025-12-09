@@ -46,15 +46,27 @@ module Meilisearch
       index_hash
     end
 
-    # Update index primary key.
+    # Update index uid (rename) and/or primary key.
     #
+    # Rename an index by providing a new uid:
+    #   client.index('movies').update(uid: 'films')
+    #
+    # Update the primary key:
     #   client.index('movies').update(primary_key: 'movie_id')
     #
-    # It is not possible to rename indexes, see {Client#swap_indexes} instead.
+    # Or do both at once:
+    #   client.index('movies').update(uid: 'films', primary_key: 'movie_id')
+    #
+    # When renaming an index, all documents, settings, and stats are preserved.
+    # Renaming fails if the target uid already exists, the index is missing, or the uid format is invalid.
+    #
+    # To swap the names of two indexes atomically, see {Client#swap_indexes} instead.
     #
     # @see https://www.meilisearch.com/docs/reference/api/indexes#update-an-index Meilisearch API Reference
-    # @param  body [Hash{String => String}] The options hash to update the index, including a +:primary_key+ key
-    # @return [Models::Task] The task that updates the primary key.
+    # @param  body [Hash{String => String}] The options hash to update the index
+    # @option body [String] :uid The new uid for the index (to rename it)
+    # @option body [String] :primary_key The new primary key for the index
+    # @return [Models::Task] Task tracking the update
     def update(body)
       response = http_patch indexes_path(id: @uid), Utils.transform_attributes(body)
       Models::Task.new(response, task_endpoint)
