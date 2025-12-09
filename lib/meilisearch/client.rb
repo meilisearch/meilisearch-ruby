@@ -41,13 +41,18 @@ module Meilisearch
     # Multiple swaps may be done with one request:
     #   client.swap_indexes(['a', 'a_swap'], ['b', 'b_swap'])
     #
+    # You can also pass hashes explicitly (renaming supported):
+    #   client.swap_indexes({ indexes: ['a', 'a_swap'] }, { indexes: ['uid', 'uid_renamed'], rename: true })
+    #
+    # Renaming requires the target uid to be absent.
+    #
     # @see https://www.meilisearch.com/docs/reference/api/indexes#swap-indexes Meilisearch API reference
     #
-    # @param options [Array<Array(String, String)>] the indexes to swap
+    # @param options [Array<Array(String, String)>, Array<Hash>] the index pairs to swap
     # @return [Models::Task] the async task that swaps the indexes
     # @raise [ApiError]
     def swap_indexes(*options)
-      mapped_array = options.map { |arr| { indexes: arr } }
+      mapped_array = options.map { |entry| entry.is_a?(Hash) ? entry : { indexes: entry } }
 
       response = http_post '/swap-indexes', mapped_array
       Models::Task.new(response, task_endpoint)

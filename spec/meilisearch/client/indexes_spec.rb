@@ -273,5 +273,54 @@ RSpec.describe 'Meilisearch::Client - Indexes' do
         include('indexes' => ['indexC', 'indexD'])
       )
     end
+
+    it 'swaps two indexes using a hash' do
+      task = client.swap_indexes(indexes: ['indexA', 'indexB'])
+
+      expect(task.type).to eq('indexSwap')
+      task.await
+      expect(task['details']['swaps']).to include(
+        include('indexes' => ['indexA', 'indexB'])
+      )
+    end
+
+    it 'swaps an index with a new uid to rename it' do
+      client.create_index('indexA').await
+      index = client.fetch_index('indexA')
+
+      task = client.swap_indexes(indexes: ['indexA', 'indexB'], rename: true)
+      expect(task.type).to eq('indexSwap')
+      task.await
+
+      renamed_index = client.fetch_index('indexB')
+      expect(renamed_index).to be_a(Meilisearch::Index)
+      expect(renamed_index.uid).to eq('indexB')
+      expect(renamed_index.created_at).to be_a(Time).and eq(index.created_at)
+      expect(renamed_index.updated_at).to be_a(Time).and be_within(60).of(Time.now)
+      expect { client.fetch_index('indexA') }.to raise_index_not_found_meilisearch_api_error
+    end
+
+    it 'swaps and renames indexes in a single call' do
+      task = client.swap_indexes(
+        { indexes: ['indexA', 'indexB'] },
+        { indexes: ['indexC', 'indexD'], rename: true }
+      )
+
+      expect(task.type).to eq('indexSwap')
+      task.await
+      expect(task['details']['swaps']).to include(
+        include('indexes' => ['indexA', 'indexB'], 'rename' => false),
+        include('indexes' => ['indexC', 'indexD'], 'rename' => true)
+      )
+    end
+
+    it 'returns a failed task when renaming a non-existent index' do
+      task = client.swap_indexes(indexes: ['indexA', 'indexB'], rename: true)
+      expect(task.type).to eq('indexSwap')
+
+      task.await
+      expect(task).to be_failed
+      expect(task.error['code']).to eq('index_not_found')
+    end
   end
 end
