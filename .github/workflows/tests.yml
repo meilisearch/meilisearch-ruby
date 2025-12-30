@@ -38,7 +38,7 @@ jobs:
 
   linter_check:
     name: linter-check
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - name: Set up Ruby

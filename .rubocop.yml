@@ -27,3 +27,9 @@ Style/Documentation:
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*.rb'
+
+# These methods perform actions (cancel/delete a task), not just return boolean info
+Naming/PredicateMethod:
+  AllowedMethods:
+    - cancel
+    - delete
