@@ -24,6 +24,10 @@ module Meilisearch
     # Sentinel value to distinguish "no body passed" from "body is nil"
     NO_BODY = Object.new.freeze
 
+    # Creates a new HTTP request handler.
+    # @param url [String] the base URL of the Meilisearch server
+    # @param api_key [String, nil] the API key for authentication
+    # @param options [Hash] configuration options (timeout, max_retries, persistent, etc.)
     def initialize(url, api_key = nil, options = {})
       @base_url = url
       @api_key = api_key
@@ -32,22 +36,50 @@ module Meilisearch
       @http_client = build_http_client
     end
 
+    # Performs a GET request.
+    # @param relative_path [String] the path relative to base URL
+    # @param query_params [Hash] query string parameters
+    # @param options [Hash] request-specific options
+    # @return [Hash, String, nil] parsed JSON response or raw body
     def http_get(relative_path = '', query_params = {}, options = {})
       send_request(:get, relative_path, query_params: query_params, options: options)
     end
 
+    # Performs a POST request.
+    # @param relative_path [String] the path relative to base URL
+    # @param body [Object] request body (will be JSON-encoded if convert_body? is true)
+    # @param query_params [Hash, nil] query string parameters
+    # @param options [Hash] request-specific options
+    # @return [Hash, String, nil] parsed JSON response or raw body
     def http_post(relative_path = '', body = NO_BODY, query_params = nil, options = {})
       send_request(:post, relative_path, body: body, query_params: query_params, options: options)
     end
 
+    # Performs a PUT request.
+    # @param relative_path [String] the path relative to base URL
+    # @param body [Object] request body (will be JSON-encoded if convert_body? is true)
+    # @param query_params [Hash, nil] query string parameters
+    # @param options [Hash] request-specific options
+    # @return [Hash, String, nil] parsed JSON response or raw body
     def http_put(relative_path = '', body = NO_BODY, query_params = nil, options = {})
       send_request(:put, relative_path, body: body, query_params: query_params, options: options)
     end
 
+    # Performs a PATCH request.
+    # @param relative_path [String] the path relative to base URL
+    # @param body [Object] request body (will be JSON-encoded if convert_body? is true)
+    # @param query_params [Hash, nil] query string parameters
+    # @param options [Hash] request-specific options
+    # @return [Hash, String, nil] parsed JSON response or raw body
     def http_patch(relative_path = '', body = NO_BODY, query_params = nil, options = {})
       send_request(:patch, relative_path, body: body, query_params: query_params, options: options)
     end
 
+    # Performs a DELETE request.
+    # @param relative_path [String] the path relative to base URL
+    # @param query_params [Hash, nil] query string parameters
+    # @param options [Hash] request-specific options
+    # @return [Hash, String, nil] parsed JSON response or raw body
     def http_delete(relative_path = '', query_params = nil, options = {})
       send_request(:delete, relative_path, query_params: query_params, options: options)
     end
