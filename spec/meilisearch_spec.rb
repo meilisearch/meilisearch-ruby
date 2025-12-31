@@ -37,29 +37,37 @@ RSpec.describe Meilisearch do
   end
 
   it 'retries the request when the request is retryable' do
-    allow(Meilisearch::HTTPRequest).to receive(:get).and_raise(Net::ReadTimeout)
+    new_client = Meilisearch::Client.new(URL, MASTER_KEY, max_retries: 3, retry_multiplier: 0.1)
+    http_client = new_client.instance_variable_get(:@http_client)
 
-    begin
-      new_client = Meilisearch::Client.new(URL, MASTER_KEY, max_retries: 3, retry_multiplier: 0.1)
-      new_client.indexes
-    rescue Meilisearch::TimeoutError
-      nil
+    call_count = 0
+    allow(http_client).to receive(:get) do
+      call_count += 1
+      raise HTTP::TimeoutError, 'timeout'
     end
 
-    expect(Meilisearch::HTTPRequest).to have_received(:get).exactly(4).times
+    expect do
+      new_client.indexes
+    end.to raise_error(Meilisearch::TimeoutError)
+
+    expect(call_count).to eq(4) # 1 initial + 3 retries
   end
 
   it 'does not retry the request when the request is not retryable' do
-    allow(Meilisearch::HTTPRequest).to receive(:get).and_raise(Errno::ECONNREFUSED)
+    new_client = Meilisearch::Client.new(URL, MASTER_KEY, max_retries: 10)
+    http_client = new_client.instance_variable_get(:@http_client)
 
-    begin
-      new_client = Meilisearch::Client.new(URL, MASTER_KEY, max_retries: 10)
-      new_client.indexes
-    rescue Meilisearch::CommunicationError
-      nil
+    call_count = 0
+    allow(http_client).to receive(:get) do
+      call_count += 1
+      raise Errno::ECONNREFUSED
     end
 
-    expect(Meilisearch::HTTPRequest).to have_received(:get).once
+    expect do
+      new_client.indexes
+    end.to raise_error(Meilisearch::CommunicationError)
+
+    expect(call_count).to eq(1) # no retries for connection refused
   end
 end
 
