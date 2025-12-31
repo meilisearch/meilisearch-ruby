@@ -4,6 +4,12 @@ require 'http'
 require 'meilisearch/error'
 
 module Meilisearch
+  # Handles HTTP communication with Meilisearch server.
+  #
+  # Thread Safety Note:
+  # When using persistent connections (persistent: true), each Client instance
+  # maintains its own HTTP connection. In multi-threaded environments (Puma, Sidekiq),
+  # create a separate Client instance per thread rather than sharing one across threads.
   class HTTPRequest
     attr_reader :options, :headers
 
