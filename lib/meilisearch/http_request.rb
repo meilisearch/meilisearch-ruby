@@ -1,99 +1,54 @@
 # frozen_string_literal: true
 
-require 'httparty'
+require 'http'
 require 'meilisearch/error'
 
 module Meilisearch
   class HTTPRequest
-    include HTTParty
-
     attr_reader :options, :headers
 
     DEFAULT_OPTIONS = {
       timeout: 10,
       max_retries: 2,
       retry_multiplier: 1.2,
-      convert_body?: true
+      convert_body?: true,
+      persistent: false
     }.freeze
+
+    # Sentinel value to distinguish "no body passed" from "body is nil"
+    NO_BODY = Object.new.freeze
 
     def initialize(url, api_key = nil, options = {})
       @base_url = url
       @api_key = api_key
       @options = DEFAULT_OPTIONS.merge(options)
-      @headers = build_default_options_headers
+      @headers = build_default_headers
+      @http_client = build_http_client
     end
 
     def http_get(relative_path = '', query_params = {}, options = {})
-      send_request(
-        proc { |path, config| self.class.get(path, config) },
-        relative_path,
-        config: {
-          query_params: query_params,
-          headers: remove_headers(@headers.dup.merge(options[:headers] || {}), 'Content-Type'),
-          options: @options.merge(options),
-          method_type: :get
-        }
-      )
+      send_request(:get, relative_path, query_params: query_params, options: options)
     end
 
-    def http_post(relative_path = '', body = nil, query_params = nil, options = {})
-      send_request(
-        proc { |path, config| self.class.post(path, config) },
-        relative_path,
-        config: {
-          query_params: query_params,
-          body: body,
-          headers: @headers.dup.merge(options[:headers] || {}),
-          options: @options.merge(options),
-          method_type: :post
-        }
-      )
+    def http_post(relative_path = '', body = NO_BODY, query_params = nil, options = {})
+      send_request(:post, relative_path, body: body, query_params: query_params, options: options)
     end
 
-    def http_put(relative_path = '', body = nil, query_params = nil, options = {})
-      send_request(
-        proc { |path, config| self.class.put(path, config) },
-        relative_path,
-        config: {
-          query_params: query_params,
-          body: body,
-          headers: @headers.dup.merge(options[:headers] || {}),
-          options: @options.merge(options),
-          method_type: :put
-        }
-      )
+    def http_put(relative_path = '', body = NO_BODY, query_params = nil, options = {})
+      send_request(:put, relative_path, body: body, query_params: query_params, options: options)
     end
 
-    def http_patch(relative_path = '', body = nil, query_params = nil, options = {})
-      send_request(
-        proc { |path, config| self.class.patch(path, config) },
-        relative_path,
-        config: {
-          query_params: query_params,
-          body: body,
-          headers: @headers.dup.merge(options[:headers] || {}),
-          options: @options.merge(options),
-          method_type: :patch
-        }
-      )
+    def http_patch(relative_path = '', body = NO_BODY, query_params = nil, options = {})
+      send_request(:patch, relative_path, body: body, query_params: query_params, options: options)
     end
 
     def http_delete(relative_path = '', query_params = nil, options = {})
-      send_request(
-        proc { |path, config| self.class.delete(path, config) },
-        relative_path,
-        config: {
-          query_params: query_params,
-          headers: remove_headers(@headers.dup.merge(options[:headers] || {}), 'Content-Type'),
-          options: @options.merge(options),
-          method_type: :delete
-        }
-      )
+      send_request(:delete, relative_path, query_params: query_params, options: options)
     end
 
     private
 
-    def build_default_options_headers
+    def build_default_headers
       {
         'Content-Type' => 'application/json',
         'Authorization' => ("Bearer #{@api_key}" unless @api_key.nil?),
@@ -104,56 +59,81 @@ module Meilisearch
       }.compact
     end
 
-    def remove_headers(data, *keys)
-      data.delete_if { |k| keys.include?(k) }
+    def build_http_client
+      client = HTTP.headers(@headers).timeout(@options[:timeout])
+      @options[:persistent] ? client.persistent(@base_url) : client
     end
 
-    def send_request(http_method, relative_path, config:)
+    def send_request(method, relative_path, body: NO_BODY, query_params: nil, options: {})
+      merged_options = @options.merge(options)
+      url = @options[:persistent] ? relative_path : @base_url + relative_path
+      request_options = build_request_options(body, query_params, merged_options, options)
+
+      execute_request(method, url, request_options, merged_options)
+    end
+
+    def execute_request(method, url, request_options, merged_options)
       attempts = 0
-      retry_multiplier = config.dig(:options, :retry_multiplier)
-      max_retries = config.dig(:options, :max_retries)
-      request_config = http_config(config[:query_params], config[:body], config[:options], config[:headers])
 
       begin
-        response = http_method.call(@base_url + relative_path, request_config)
-      rescue Errno::ECONNREFUSED, Errno::EPIPE => e
+        response = @http_client.public_send(method, url, request_options)
+        validate_response(response)
+      rescue Errno::ECONNREFUSED, Errno::EPIPE, IOError, HTTP::ConnectionError => e
         raise CommunicationError, e.message
-      rescue URI::InvalidURIError => e
-        raise CommunicationError, "Client URL missing scheme/protocol. Did you mean https://#{@base_url}" unless @base_url =~ %r{^\w+://}
-
-        raise CommunicationError, e
-      rescue Net::OpenTimeout, Net::ReadTimeout => e
+      rescue HTTP::TimeoutError => e
         attempts += 1
-        raise TimeoutError, e.message unless attempts <= max_retries && safe_to_retry?(config[:method_type], e)
+        raise TimeoutError, e.message unless can_retry?(attempts, merged_options, method, e)
 
-        sleep(retry_multiplier**attempts)
-
+        sleep(merged_options[:retry_multiplier]**attempts)
         retry
+      rescue HTTP::Request::UnsupportedSchemeError, Addressable::URI::InvalidURIError, URI::InvalidURIError => e
+        raise_invalid_uri_error(e)
+      end
+    end
+
+    def can_retry?(attempts, options, method, error)
+      attempts <= options[:max_retries] && safe_to_retry?(method, error)
+    end
+
+    def build_request_options(body, query_params, merged_options, override_options)
+      request_opts = {}
+      request_opts[:params] = query_params if query_params&.any?
+
+      unless body.equal?(NO_BODY)
+        # http.rb's json option doesn't handle nil properly (sends empty body)
+        # so we manually serialize to JSON string when convert_body? is true
+        request_opts[:body] = merged_options[:convert_body?] ? body.to_json : body
       end
 
-      validate(response)
+      request_opts[:headers] = override_options[:headers] if override_options[:headers]
+
+      request_opts
     end
 
-    def http_config(query_params, body, options, headers)
-      body = body.to_json if options[:convert_body?] == true
-      {
-        headers: headers,
-        query: query_params,
-        body: body,
-        timeout: options[:timeout],
-        max_retries: options[:max_retries]
-      }.compact
+    def validate_response(response)
+      raise ApiError.new(response.status.code, response.status.reason, response.body.to_s) unless response.status.success?
+
+      parse_response_body(response)
     end
 
-    def validate(response)
-      raise ApiError.new(response.code, response.message, response.body) unless response.success?
+    def parse_response_body(response)
+      body = response.body.to_s
+      return nil if body.nil? || body.empty?
 
-      response.parsed_response
+      JSON.parse(body)
+    rescue JSON::ParserError
+      body
     end
 
-    # Ensures the only retryable error is a timeout didn't reached the server
-    def safe_to_retry?(method_type, error)
-      method_type == :get || ([:post, :put, :patch, :delete].include?(method_type) && error.is_a?(Net::OpenTimeout))
+    def raise_invalid_uri_error(error)
+      raise CommunicationError, "Client URL missing scheme/protocol. Did you mean https://#{@base_url}" unless @base_url =~ %r{^\w+://}
+
+      raise CommunicationError, error.message
+    end
+
+    # Ensures the only retryable error is a timeout that didn't reach the server (connect timeout)
+    def safe_to_retry?(method, error)
+      method == :get || ([:post, :put, :patch, :delete].include?(method) && error.is_a?(HTTP::ConnectTimeoutError))
     end
   end
 end
