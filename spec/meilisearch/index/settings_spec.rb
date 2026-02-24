@@ -6,8 +6,9 @@ RSpec.describe 'Meilisearch::Index - Settings' do
       'words',
       'typo',
       'proximity',
-      'attribute',
+      'attributeRank',
       'sort',
+      'wordPosition',
       'exactness'
     ]
   end
