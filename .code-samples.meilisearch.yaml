@@ -360,7 +360,7 @@ getting_started_add_documents: |-
   require 'json'
   require 'meilisearch'
 
-  client = MeiliSearch::Client.new('http://localhost:7700', 'aSampleMasterKey')
+  client = MeiliSearch::Client.new('MEILISEARCH_URL', 'aSampleMasterKey')
 
   movies_json = File.read('movies.json')
   movies = JSON.parse(movies_json)
@@ -432,7 +432,7 @@ geosearch_guide_sort_usage_1: |-
 geosearch_guide_sort_usage_2: |-
   client.index('restaurants').search('', { sort: ['_geoPoint(48.8561446, 2.2978204):asc', 'rating:desc'] })
 authorization_header_1: |-
-  client = MeiliSearch::Client.new('http://localhost:7700', 'masterKey')
+  client = MeiliSearch::Client.new('MEILISEARCH_URL', 'masterKey')
   client.keys
 get_one_key_1: |-
   client.key('6062abda-a5aa-4414-ac91-ecd7944c0f8d')
@@ -467,7 +467,7 @@ tenant_token_guide_generate_sdk_1: |-
 
   token = client.generate_tenant_token(uid, search_rules, api_key: api_key, expires_at: expires_at)
 tenant_token_guide_search_sdk_1: |-
-  front_end_client = MeiliSearch::Client.new('http://localhost:7700', token)
+  front_end_client = MeiliSearch::Client.new('MEILISEARCH_URL', token)
 
   front_end_client.index('patient_medical_records').search('blood test')
 getting_started_check_task_status: |-
