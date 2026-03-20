@@ -19,7 +19,7 @@ module Meilisearch
 
     # Fetch the latest info about the index from the Meilisearch instance and return self.
     #
-    # @see https://www.meilisearch.com/docs/reference/api/indexes#get-one-index Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/indexes/list-all-indexes#get-one-index Meilisearch API Reference
     # @return [self]
     def fetch_info
       index_hash = http_get indexes_path(id: @uid)
@@ -29,7 +29,7 @@ module Meilisearch
 
     # Fetch the latest info about the index from the Meilisearch instance and return the primary key.
     #
-    # @see https://www.meilisearch.com/docs/reference/api/indexes#get-one-index Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/indexes/list-all-indexes#get-one-index Meilisearch API Reference
     # @return [String]
     def fetch_primary_key
       fetch_info.primary_key
@@ -38,7 +38,7 @@ module Meilisearch
 
     # Fetch the latest info about the index from the Meilisearch instance and return the raw hash.
     #
-    # @see https://www.meilisearch.com/docs/reference/api/indexes#get-one-index Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/indexes/list-all-indexes#get-one-index Meilisearch API Reference
     # @return [Hash{String => String}]
     def fetch_raw_info
       index_hash = http_get indexes_path(id: @uid)
@@ -62,7 +62,7 @@ module Meilisearch
     #
     # To swap the names of two indexes atomically, see {Client#swap_indexes} instead.
     #
-    # @see https://www.meilisearch.com/docs/reference/api/indexes#update-an-index Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/indexes/list-all-indexes#update-an-index Meilisearch API Reference
     # @param  body [Hash{String => String}] The options hash to update the index
     # @option body [String] :uid The new uid for the index (to rename it)
     # @option body [String] :primary_key The new primary key for the index
@@ -76,7 +76,7 @@ module Meilisearch
 
     # Delete index
     #
-    # @see https://www.meilisearch.com/docs/reference/api/indexes#delete-an-index Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/indexes/list-all-indexes#delete-an-index Meilisearch API Reference
     def delete
       response = http_delete indexes_path(id: @uid)
       Models::Task.new(response, task_endpoint)
@@ -102,7 +102,7 @@ module Meilisearch
     # @param document_id [String, Integer] The ID of the document to fetch
     # @param fields [nil, Array<Symbol>] Fields to fetch from the document, defaults to all
     # @return [nil, Hash{String => Object}] The requested document.
-    # @see https://www.meilisearch.com/docs/reference/api/documents#get-one-document Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/documents/list-documents-with-get#get-one-document Meilisearch API Reference
     def document(document_id, fields: nil)
       encode_document = URI.encode_www_form_component(document_id)
       body = { fields: fields&.join(',') }.compact
@@ -124,7 +124,7 @@ module Meilisearch
     #           :ids    - Array of ids to be retrieved (optional)
     #
     # @return [Hash{String => Object}] The documents results object.
-    # @see https://www.meilisearch.com/docs/reference/api/documents#get-documents-with-post Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/documents/list-documents-with-get#get-documents-with-post Meilisearch API Reference
     def documents(options = {})
       Utils.version_error_handler(__method__) do
         if options.key?(:filter)
@@ -154,7 +154,7 @@ module Meilisearch
     # @param primary_key [String] The name of the primary key field, auto inferred if missing.
     #
     # @return [Models::Task] The async task that adds the documents.
-    # @see https://www.meilisearch.com/docs/reference/api/documents#add-or-replace-documents Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/documents/list-documents-with-get#add-or-replace-documents Meilisearch API Reference
     def add_documents(documents, primary_key = nil)
       documents = [documents] if documents.is_a?(Hash)
       response = http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
@@ -251,7 +251,7 @@ module Meilisearch
     # @param primary_key [String] The name of the primary key field, auto inferred if missing.
     #
     # @return [Models::Task] The async task that adds the documents.
-    # @see https://www.meilisearch.com/docs/reference/api/documents#add-or-replace-documents Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/documents/list-documents-with-get#add-or-replace-documents Meilisearch API Reference
     def update_documents(documents, primary_key = nil)
       documents = [documents] if documents.is_a?(Hash)
       response = http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
@@ -459,7 +459,7 @@ module Meilisearch
     #
     # @param options [Hash{String => Object}]
     #
-    # @see https://www.meilisearch.com/docs/reference/api/documents#update-documents-with-function Meilisearch API Documentation
+    # @see https://www.meilisearch.com/docs/reference/api/documents/list-documents-with-get#update-documents-with-function Meilisearch API Documentation
     def update_documents_by_function(options)
       response = http_post "/indexes/#{@uid}/documents/edit", options
 
@@ -585,7 +585,7 @@ module Meilisearch
     # @param options [Hash{Symbol => Object}] Search options.
     #
     # @return [Hash{String => Object}] Search results
-    # @see https://www.meilisearch.com/docs/reference/api/search#search-in-an-index-with-post Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/search/search-with-post#search-in-an-index-with-post Meilisearch API Reference
     def search(query, options = {})
       attributes = { q: query.to_s }.merge(options.compact)
 
@@ -606,7 +606,7 @@ module Meilisearch
     # @param options [Hash{Symbol => Object}] Search options. Including a mandatory :embedder option.
     #
     # @return [Hash{String => Object}] Search results
-    # @see https://www.meilisearch.com/docs/reference/api/similar#get-similar-documents-with-post Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/similar-documents/get-similar-documents-with-post#get-similar-documents-with-post Meilisearch API Reference
     def search_similar_documents(document_id, **options)
       options.merge!(id: document_id)
       options = Utils.transform_attributes(options)
@@ -635,7 +635,7 @@ module Meilisearch
     # @param options [Hash{Symbol => Object}] Additional options, see API Reference.
     # @return [Hash{String => Object}] Facet search result.
     #
-    # @see https://www.meilisearch.com/docs/reference/api/facet_search Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/facet-search/search-in-facets Meilisearch API Reference
     def facet_search(name, query = '', **options)
       options.merge!(facet_name: name, facet_query: query)
       options = Utils.transform_attributes(options)
@@ -676,7 +676,7 @@ module Meilisearch
     # Get stats of this index.
     #
     # @return [Hash{String => Object}]
-    # @see https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-an-index  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/stats/get-stats-of-all-indexes#get-stats-of-an-index  Meilisearch API Reference
     def stats
       http_get "/indexes/#{@uid}/stats"
     end
@@ -704,7 +704,7 @@ module Meilisearch
     #
     # @note Meilisearch must temporarily duplicate the database during compaction. You need at least twice the current size of your database in free disk space.
     #
-    # @see https://www.meilisearch.com/docs/reference/api/compact Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/indexes/compact-index Meilisearch API Reference
     # @return [Models::Task] The index compaction async task.
     def compact
       response = http_post "/indexes/#{@uid}/compact"
@@ -722,8 +722,8 @@ module Meilisearch
 
     # Get all index settings.
     #
-    # @return [Hash{String => Object}] See the {settings object}[https://www.meilisearch.com/docs/reference/api/settings#settings-object].
-    # @see https://www.meilisearch.com/docs/reference/api/settings#all-settings Meilisearch API Reference
+    # @return [Hash{String => Object}] See the {settings object}[https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#settings-object].
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#all-settings Meilisearch API Reference
     def settings
       http_get "/indexes/#{@uid}/settings"
     end
@@ -733,10 +733,10 @@ module Meilisearch
     #
     # @param settings [Hash{Symbol => Object}] The new settings.
     #   Settings missing from this parameter are not affected.
-    #   See {all settings}[https://www.meilisearch.com/docs/reference/api/settings#body].
+    #   See {all settings}[https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#body].
     #
     # @return [Models::Task] The setting update async task.
-    # @see https://www.meilisearch.com/docs/reference/api/settings#update-settings Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#update-settings Meilisearch API Reference
     def update_settings(settings)
       response = http_patch "/indexes/#{@uid}/settings", Utils.transform_attributes(settings)
       Models::Task.new(response, task_endpoint)
@@ -746,7 +746,7 @@ module Meilisearch
     # Reset all index settings to defaults.
     #
     # @return [Models::Task] The setting update async task.
-    # @see https://www.meilisearch.com/docs/reference/api/settings#reset-settings Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#reset-settings Meilisearch API Reference
     def reset_settings
       response = http_delete "/indexes/#{@uid}/settings"
       Models::Task.new(response, task_endpoint)
@@ -760,7 +760,7 @@ module Meilisearch
     # They are applied in the same order in which they appear in the rankingRules array.
     #
     # @return [Array<String>]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#ranking-rules  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#ranking-rules  Meilisearch API Reference
     def ranking_rules
       http_get "/indexes/#{@uid}/settings/ranking-rules"
     end
@@ -806,7 +806,7 @@ module Meilisearch
     # A synonym in Meilisearch is considered equal to its associated word for the purposes of calculating search results.
     #
     # @return [Hash{String => Array<String>}]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#synonyms  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#synonyms  Meilisearch API Reference
     def synonyms
       http_get "/indexes/#{@uid}/settings/synonyms"
     end
@@ -839,7 +839,7 @@ module Meilisearch
     # Words added to the stopWords list are ignored in future search queries.
     #
     # @return [Array<String>]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#stop-words  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#stop-words  Meilisearch API Reference
     def stop_words
       http_get "/indexes/#{@uid}/settings/stop-words"
     end
@@ -873,7 +873,7 @@ module Meilisearch
     # The distinct attribute is a field whose value will always be unique in the returned documents.
     #
     # @return [String]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#distinct-attribute  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#distinct-attribute  Meilisearch API Reference
     def distinct_attribute
       http_get "/indexes/#{@uid}/settings/distinct-attribute"
     end
@@ -908,7 +908,7 @@ module Meilisearch
     # Defaults to +["*"]+.
     #
     # @return [Array<String>]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#searchable-attributes  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#searchable-attributes  Meilisearch API Reference
     def searchable_attributes
       http_get "/indexes/#{@uid}/settings/searchable-attributes"
     end
@@ -942,7 +942,7 @@ module Meilisearch
     # Only affects the search endpoints.
     #
     # @return [Array<String>]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#displayed-attributes  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#displayed-attributes  Meilisearch API Reference
     def displayed_attributes
       http_get "/indexes/#{@uid}/settings/displayed-attributes"
     end
@@ -975,7 +975,7 @@ module Meilisearch
     # Attributes in the filterable_attributes list can be used as filters or facets.
     #
     # @return [Array<String>]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#filterable-attributes  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#filterable-attributes  Meilisearch API Reference
     def filterable_attributes
       http_get "/indexes/#{@uid}/settings/filterable-attributes"
     end
@@ -1008,8 +1008,8 @@ module Meilisearch
     # Attributes that can be used when sorting search results using the sort search parameter.
     #
     # @return [Array<String>]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#stop-words  Meilisearch API Reference
-    # @see https://www.meilisearch.com/docs/reference/api/search#sort +sort+ search parameter
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#stop-words  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/search/search-with-post#sort +sort+ search parameter
     def sortable_attributes
       http_get "/indexes/#{@uid}/settings/sortable-attributes"
     end
@@ -1043,7 +1043,7 @@ module Meilisearch
     # This setting allows you to configure the maximum number of results returned per search.
     #
     # @return [Hash{String => Integer}]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#pagination  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#pagination  Meilisearch API Reference
     def pagination
       http_get("/indexes/#{@uid}/settings/pagination")
     end
@@ -1076,7 +1076,7 @@ module Meilisearch
     # This setting allows you to configure the minimum word size for typos and disable typo tolerance for specific words or attributes.
     #
     # @return [Hash{String => Object}]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#typo-tolerance Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#typo-tolerance Meilisearch API Reference
     def typo_tolerance
       http_get("/indexes/#{@uid}/settings/typo-tolerance")
     end
@@ -1117,7 +1117,7 @@ module Meilisearch
     #
     #
     # @return [Hash{String => Object}]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#faceting  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#faceting  Meilisearch API Reference
     def faceting
       http_get("/indexes/#{@uid}/settings/faceting")
     end
@@ -1151,7 +1151,7 @@ module Meilisearch
     # Allows users to instruct Meilisearch to consider groups of strings as a single term by adding a supplementary dictionary of user-defined terms.
     #
     # @return [Array<String>]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#dictionary  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#dictionary  Meilisearch API Reference
     def dictionary
       http_get("/indexes/#{@uid}/settings/dictionary")
     end
@@ -1184,7 +1184,7 @@ module Meilisearch
     # @return [Array<String>]
     # @see #non_separator_tokens
     # @see https://www.meilisearch.com/docs/learn/engine/datatypes#string List of built-in separator tokens
-    # @see https://www.meilisearch.com/docs/reference/api/settings#separator-tokens  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#separator-tokens  Meilisearch API Reference
     def separator_tokens
       http_get("/indexes/#{@uid}/settings/separator-tokens")
     end
@@ -1217,7 +1217,7 @@ module Meilisearch
     #
     # @return [Array<String>]
     # @see https://www.meilisearch.com/docs/learn/engine/datatypes#string List of built-in separator tokens
-    # @see https://www.meilisearch.com/docs/reference/api/settings#non-separator-tokens  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#non-separator-tokens  Meilisearch API Reference
     def non_separator_tokens
       http_get("/indexes/#{@uid}/settings/non-separator-tokens")
     end
@@ -1249,7 +1249,7 @@ module Meilisearch
     # Choose the precision of the distance calculation.
     #
     # @return ["byWord", "byAttribute"]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#proximity-precision  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#proximity-precision  Meilisearch API Reference
     def proximity_precision
       http_get("/indexes/#{@uid}/settings/proximity-precision")
     end
@@ -1282,7 +1282,7 @@ module Meilisearch
     # Defaults to 1500ms.
     #
     # @return [Integer]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#search-cuttoff Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#search-cuttoff Meilisearch API Reference
     def search_cutoff_ms
       http_get("/indexes/#{@uid}/settings/search-cutoff-ms")
     end
@@ -1316,7 +1316,7 @@ module Meilisearch
     # This setting allows you to explicitly define which languages are present in a dataset, and in which fields.
     #
     # @return [Hash{String => Array<String>}]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#localized-attributes Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#localized-attributes Meilisearch API Reference
     def localized_attributes
       http_get("/indexes/#{@uid}/settings/localized-attributes")
     end
@@ -1352,7 +1352,7 @@ module Meilisearch
     # This feature is enabled by default, but disabling it may speed up indexing.
     #
     # @return [Boolean]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#facet-search Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#facet-search Meilisearch API Reference
     def facet_search_setting
       http_get("/indexes/#{@uid}/settings/facet-search")
     end
@@ -1386,7 +1386,7 @@ module Meilisearch
     # This is a resource-intensive operation that happens during indexing by default.
     #
     # @return ["indexingTime", "disabled"]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#prefix-search  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#prefix-search  Meilisearch API Reference
     def prefix_search
       http_get("/indexes/#{@uid}/settings/prefix-search")
     end
@@ -1420,7 +1420,7 @@ module Meilisearch
     # You must configure at least one embedder to use AI-powered search.
     #
     # @return [Hash{String => Hash{String => String}}]
-    # @see https://www.meilisearch.com/docs/reference/api/settings#embedders  Meilisearch API Reference
+    # @see https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#embedders  Meilisearch API Reference
     def embedders
       http_get("/indexes/#{@uid}/settings/embedders")
     end

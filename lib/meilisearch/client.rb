@@ -22,10 +22,10 @@ module Meilisearch
     # Unless you have a good reason to, {#indexes} should be used instead.
     #
     # @see #indexes
-    # @see https://www.meilisearch.com/docs/reference/api/indexes#list-all-indexes Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/indexes/list-all-indexes#list-all-indexes Meilisearch API reference
     # @param options [Hash{Symbol => Object}] limit and offset options
     # @return [Hash{String => Object}]
-    #   {index response object}[https://www.meilisearch.com/docs/reference/api/indexes#response]
+    #   {index response object}[https://www.meilisearch.com/docs/reference/api/indexes/list-all-indexes#response]
     def raw_indexes(options = {})
       body = Utils.transform_attributes(options.transform_keys(&:to_sym).slice(:limit, :offset))
 
@@ -46,7 +46,7 @@ module Meilisearch
     #
     # Renaming requires the target uid to be absent.
     #
-    # @see https://www.meilisearch.com/docs/reference/api/indexes#swap-indexes Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/indexes/list-all-indexes#swap-indexes Meilisearch API reference
     #
     # @param options [Array<Array(String, String)>, Array<Hash>] the index pairs to swap
     # @return [Models::Task] the async task that swaps the indexes
@@ -60,10 +60,10 @@ module Meilisearch
 
     # Fetch indexes in instance.
     #
-    # @see https://www.meilisearch.com/docs/reference/api/indexes#list-all-indexes Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/indexes/list-all-indexes#list-all-indexes Meilisearch API reference
     # @param options [Hash{Symbol => Object}] limit and offset options
     # @return [Hash{String => Object}]
-    #   {index response object}[https://www.meilisearch.com/docs/reference/api/indexes#response]
+    #   {index response object}[https://www.meilisearch.com/docs/reference/api/indexes/list-all-indexes#response]
     #   with results mapped to instances of {Index}
     def indexes(options = {})
       response = raw_indexes(options)
@@ -85,10 +85,10 @@ module Meilisearch
     #   client.index('new_index').add_documents({})
     #
     # @see #index
-    # @see https://www.meilisearch.com/docs/reference/api/indexes#create-an-index Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/indexes/list-all-indexes#create-an-index Meilisearch API reference
     #
     # @param index_uid [String] the uid of the new index
-    # @param options [Hash{Symbol => Object}, nil] snake_cased options of {the endpoint}[https://www.meilisearch.com/docs/reference/api/indexes#create-an-index]
+    # @param options [Hash{Symbol => Object}, nil] snake_cased options of {the endpoint}[https://www.meilisearch.com/docs/reference/api/indexes/list-all-indexes#create-an-index]
     #
     # @raise [ApiError]
     # @return [Models::Task] the async task that creates the index
@@ -166,12 +166,12 @@ module Meilisearch
     #
     # @see #create_key #create_key to create keys and set their scope
     # @see #key #key to fetch one key
-    # @see https://www.meilisearch.com/docs/reference/api/keys#get-all-keys Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/keys/list-api-keys#get-all-keys Meilisearch API reference
     # @param limit [String, Integer, nil] limit the number of returned keys
     # @param offset [String, Integer, nil] skip the first +offset+ keys,
     #   useful for paging.
     #
-    # @return [Hash{String => Object}] a {keys response}[https://www.meilisearch.com/docs/reference/api/keys#response]
+    # @return [Hash{String => Object}] a {keys response}[https://www.meilisearch.com/docs/reference/api/keys/list-api-keys#response]
     def keys(limit: nil, offset: nil)
       body = { limit: limit, offset: offset }.compact
 
@@ -191,13 +191,13 @@ module Meilisearch
     #
     # @see #keys #keys to get all keys in the instance
     # @see #create_key #create_key to create keys and set their scope
-    # @see https://www.meilisearch.com/docs/reference/api/keys#get-one-key Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/keys/list-api-keys#get-one-key Meilisearch API reference
     # @param uid_or_key [String] either the uuidv4 that is the key's
-    #   {uid}[https://www.meilisearch.com/docs/reference/api/keys#uid] or
+    #   {uid}[https://www.meilisearch.com/docs/reference/api/keys/list-api-keys#uid] or
     #   a hash of the uid and the master key that is the key's
-    #   {key}[https://www.meilisearch.com/docs/reference/api/keys#key] field
+    #   {key}[https://www.meilisearch.com/docs/reference/api/keys/list-api-keys#key] field
     #
-    # @return [Hash{String => Object}] a {key object}[https://www.meilisearch.com/docs/reference/api/keys#key-object]
+    # @return [Hash{String => Object}] a {key object}[https://www.meilisearch.com/docs/reference/api/keys/list-api-keys#key-object]
     def key(uid_or_key)
       http_get "/keys/#{uid_or_key}"
     end
@@ -215,14 +215,14 @@ module Meilisearch
     # @see #update_key #update_key to edit an existing key
     # @see #keys #keys to get all keys in the instance
     # @see #key #key to fetch one key
-    # @see https://www.meilisearch.com/docs/reference/api/keys#create-a-key Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/keys/list-api-keys#create-a-key Meilisearch API reference
     # @param key_options [Hash{Symbol => Object}] the key options of which the required are
     #   - +:actions+ +Array+ of API actions allowed for key, +["*"]+ for all
     #   - +:indexes+ +Array+ of indexes key can act on, +["*"]+ for all
     #   - +:expires_at+ expiration datetime in
     #     {RFC 3339}[https://www.ietf.org/rfc/rfc3339.txt] format, nil if the key never expires
     #
-    # @return [Hash{String => Object}] a {key object}[https://www.meilisearch.com/docs/reference/api/keys#key-object]
+    # @return [Hash{String => Object}] a {key object}[https://www.meilisearch.com/docs/reference/api/keys/list-api-keys#key-object]
     def create_key(key_options)
       body = Utils.transform_attributes(key_options)
 
@@ -238,10 +238,10 @@ module Meilisearch
     # @see #create_key #create_key to create a new key
     # @see #keys #keys to get all keys in the instance
     # @see #key #key to fetch one key
-    # @see https://www.meilisearch.com/docs/reference/api/keys#update-a-key Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/keys/list-api-keys#update-a-key Meilisearch API reference
     # @param key_options [Hash{Symbol => Object}] see {#create_key}
     #
-    # @return [Hash{String => Object}] a {key object}[https://www.meilisearch.com/docs/reference/api/keys#key-object]
+    # @return [Hash{String => Object}] a {key object}[https://www.meilisearch.com/docs/reference/api/keys/list-api-keys#key-object]
     def update_key(uid_or_key, key_options)
       body = Utils.transform_attributes(key_options)
       body = body.slice('description', 'name')
@@ -262,11 +262,11 @@ module Meilisearch
     #
     # @see #keys #keys to get all keys in the instance
     # @see #create_key #create_key to create keys and set their scope
-    # @see https://www.meilisearch.com/docs/reference/api/keys#delete-a-key Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/keys/list-api-keys#delete-a-key Meilisearch API reference
     # @param uid_or_key [String] either the uuidv4 that is the key's
-    #   {uid}[https://www.meilisearch.com/docs/reference/api/keys#uid] or
+    #   {uid}[https://www.meilisearch.com/docs/reference/api/keys/list-api-keys#uid] or
     #   a hash of the uid and the master key that is the key's
-    #   {key}[https://www.meilisearch.com/docs/reference/api/keys#key] field
+    #   {key}[https://www.meilisearch.com/docs/reference/api/keys/list-api-keys#key] field
     def delete_key(uid_or_key)
       http_delete "/keys/#{uid_or_key}"
     end
@@ -286,7 +286,7 @@ module Meilisearch
 
     # Check health of Meilisearch instance.
     #
-    # @see https://www.meilisearch.com/docs/reference/api/health#get-health Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/health/get-health#get-health Meilisearch API reference
     # @return [Hash{String => Object}] the health report from the Meilisearch instance
     def health
       http_get '/health'
@@ -296,9 +296,9 @@ module Meilisearch
 
     # Check version of Meilisearch server
     #
-    # @see https://www.meilisearch.com/docs/reference/api/version#get-version-of-meilisearch Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/version/get-version#get-version-of-meilisearch Meilisearch API reference
     # @return [Hash{String => String}] package version and last commit of Meilisearch server, see
-    #   {version object}[https://www.meilisearch.com/docs/reference/api/version#version-object]
+    #   {version object}[https://www.meilisearch.com/docs/reference/api/version/get-version#version-object]
     def version
       http_get '/version'
     end
@@ -306,8 +306,8 @@ module Meilisearch
     # Get stats of all indexes in instance.
     #
     # @see Index#stats
-    # @see https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-all-indexes Meilisearch API reference
-    # @return [Hash{String => Object}] see {stats object}[https://www.meilisearch.com/docs/reference/api/stats#stats-object]
+    # @see https://www.meilisearch.com/docs/reference/api/stats/get-stats-of-all-indexes#get-stats-of-all-indexes Meilisearch API reference
+    # @return [Hash{String => Object}] see {stats object}[https://www.meilisearch.com/docs/reference/api/stats/get-stats-of-all-indexes#stats-object]
     def stats
       http_get '/stats'
     end
@@ -322,11 +322,11 @@ module Meilisearch
     # Dumps are created by the Meilisearch server in the directory where the server is started
     # under +dumps/+ by default.
     #
-    # @see https://www.meilisearch.com/docs/learn/advanced/snapshots_vs_dumps
+    # @see https://www.meilisearch.com/docs/learn/data_backup/snapshots_vs_dumps
     #   The difference between snapshots and dumps
-    # @see https://www.meilisearch.com/docs/learn/advanced/dumps
+    # @see https://www.meilisearch.com/docs/learn/data_backup/dumps
     #   Meilisearch documentation on how to use dumps
-    # @see https://www.meilisearch.com/docs/reference/api/dump#create-a-dump
+    # @see https://www.meilisearch.com/docs/reference/api/backups/create-dump#create-a-dump
     #   Meilisearch API reference
     # @return [Models::Task] the async task that is creating the dump
     def create_dump
@@ -347,11 +347,11 @@ module Meilisearch
     # Snapshots are created by the Meilisearch server in the directory where the server is started
     # under +snapshots/+ by default.
     #
-    # @see https://www.meilisearch.com/docs/learn/advanced/snapshots_vs_dumps
+    # @see https://www.meilisearch.com/docs/learn/data_backup/snapshots_vs_dumps
     #   The difference between snapshots and dumps
-    # @see https://www.meilisearch.com/docs/learn/advanced/snapshots
+    # @see https://www.meilisearch.com/docs/learn/data_backup/snapshots
     #   Meilisearch documentation on how to use snapshots
-    # @see https://www.meilisearch.com/docs/reference/api/snapshots#create-a-snapshot
+    # @see https://www.meilisearch.com/docs/reference/api/backups/create-snapshot#create-a-snapshot
     #   Meilisearch API reference
     # @return [Models::Task] the async task that is creating the snapshot
     def create_snapshot
@@ -370,8 +370,8 @@ module Meilisearch
     # Warning: This does not return instances of {Models::Task}. This is a raw
     # call to the Meilisearch API and the return is not modified.
     #
-    # @see https://www.meilisearch.com/docs/reference/api/tasks#task-object The Task Object
-    # @see https://www.meilisearch.com/docs/reference/api/tasks#cancel-tasks Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#task-object The Task Object
+    # @see https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#cancel-tasks Meilisearch API reference
     # @param options [Hash{Symbol => Object}] task search options as snake cased symbols, see the API reference
     # @return [Hash{String => Object}] a Meilisearch task that is canceling other tasks
     def cancel_tasks(options = {})
@@ -390,8 +390,8 @@ module Meilisearch
     #
     # Tasks are run in batches, see {#batches}.
     #
-    # @see https://www.meilisearch.com/docs/reference/api/tasks#task-object The Task Object
-    # @see https://www.meilisearch.com/docs/reference/api/tasks#cancel-tasks Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#task-object The Task Object
+    # @see https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#cancel-tasks Meilisearch API reference
     # @param options [Hash{Symbol => Object}] task search options as snake cased symbols, see the API reference
     # @return [Hash{String => Object}] a Meilisearch task that is canceling other tasks
     def delete_tasks(options = {})
@@ -406,8 +406,8 @@ module Meilisearch
     # Warning: This does not return instances of {Models::Task}. This is a raw
     # call to the Meilisearch API and the return is not modified.
     #
-    # @see https://www.meilisearch.com/docs/reference/api/tasks#task-object The Task Object
-    # @see https://www.meilisearch.com/docs/reference/api/tasks#get-tasks Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#task-object The Task Object
+    # @see https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#get-tasks Meilisearch API reference
     # @param options [Hash{Symbol => Object}] task search options as snake cased symbols, see the API reference
     # @return [Hash{String => Object}] results of the task search, see API reference
     def tasks(options = {})
@@ -422,8 +422,8 @@ module Meilisearch
     # Warning: This does not return instances of {Models::Task}. This is a raw
     # call to the Meilisearch API and the return is not modified.
     #
-    # @see https://www.meilisearch.com/docs/reference/api/tasks#task-object The Task Object
-    # @see https://www.meilisearch.com/docs/reference/api/tasks#get-one-task Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#task-object The Task Object
+    # @see https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#get-one-task Meilisearch API reference
     # @param task_uid [String] uid of the requested task
     # @return [Hash{String => Object}] a Meilisearch task object (see above)
     def task(task_uid)
@@ -449,8 +449,8 @@ module Meilisearch
     # Operations in Meilisearch are done asynchronously using "tasks".
     # Tasks are run in batches.
     #
-    # @see https://www.meilisearch.com/docs/reference/api/batches#batch-object The Batch Object
-    # @see https://www.meilisearch.com/docs/reference/api/batches#get-batches Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/async-task-management/list-batches#batch-object The Batch Object
+    # @see https://www.meilisearch.com/docs/reference/api/async-task-management/list-batches#get-batches Meilisearch API reference
     # @param options [Hash{Symbol => Object}] task search options as snake cased symbols, see the API reference
     # @return [Hash{String => Object}] results of the batches search, see API reference
     def batches(options = {})
@@ -462,8 +462,8 @@ module Meilisearch
     # Operations in Meilisearch are done asynchronously using "tasks".
     # Tasks are run in batches.
     #
-    # @see https://www.meilisearch.com/docs/reference/api/batches#batch-object The Batch Object
-    # @see https://www.meilisearch.com/docs/reference/api/batches#get-one-batch Meilisearch API reference
+    # @see https://www.meilisearch.com/docs/reference/api/async-task-management/list-batches#batch-object The Batch Object
+    # @see https://www.meilisearch.com/docs/reference/api/async-task-management/list-batches#get-one-batch Meilisearch API reference
     # @param batch_uid [String] the uid of the request batch
     # @return [Hash{String => Object}] a batch object, see above
     def batch(batch_uid)
