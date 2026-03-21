@@ -14,7 +14,7 @@ RSpec.describe 'Meilisearch::Client - Errors' do
 
   context 'when request takes to long to answer' do
     it 'raises Meilisearch::TimeoutError' do
-      timed_client = Meilisearch::Client.new(URL, MEILISEARCH_KEY, { timeout: 0.000001 })
+      timed_client = Meilisearch::Client.new(URL, MASTER_KEY, { timeout: 0.000001 })
 
       expect do
         timed_client.version

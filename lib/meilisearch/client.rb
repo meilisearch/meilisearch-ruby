@@ -2,7 +2,7 @@
 
 module Meilisearch
   # Manages a connection to a Meilisearch server.
-  #   client = Meilisearch::Client.new(MEILISEARCH_URL, MEILISEARCH_KEY, options)
+  #   client = Meilisearch::Client.new(MEILISEARCH_URL, MASTER_KEY, options)
   #
   # @see #indexes Managing search indexes
   # @see #keys Managing API keys
