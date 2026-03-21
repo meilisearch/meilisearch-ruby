@@ -24,7 +24,7 @@ module ExperimentalFeatureHelpers
     req = Net::HTTP::Patch.new(uri)
     req.body = { attribute_to_toggle => toggle }.to_json
     req.content_type = 'application/json'
-    req['Authorization'] = "Bearer #{MASTER_KEY}"
+    req['Authorization'] = "Bearer #{MEILISEARCH_KEY}"
 
     Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(req) }
   end

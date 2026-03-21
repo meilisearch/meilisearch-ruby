@@ -42,7 +42,7 @@ require 'time'
 # Globals for all tests
 URL = format('http://%<host>s:%<port>s',
              host: ENV.fetch('MEILISEARCH_URL', 'localhost'), port: ENV.fetch('MEILISEARCH_PORT', '7700'))
-MASTER_KEY = 'masterKey'
+MEILISEARCH_KEY = 'masterKey'
 DEFAULT_SEARCH_RESPONSE_KEYS = [
   'hits',
   'offset',

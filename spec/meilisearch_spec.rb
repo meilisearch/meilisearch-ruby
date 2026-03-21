@@ -17,12 +17,12 @@ RSpec.describe Meilisearch do
   end
 
   it 'allows to set a custom timeout and max_retries' do
-    new_client = Meilisearch::Client.new(URL, MASTER_KEY, timeout: 20, max_retries: 2)
+    new_client = Meilisearch::Client.new(URL, MEILISEARCH_KEY, timeout: 20, max_retries: 2)
     expect(new_client.healthy?).to be true
   end
 
   it 'raises a timeout error when setting the timeout option' do
-    new_client = Meilisearch::Client.new(URL, MASTER_KEY, timeout: 0.00001)
+    new_client = Meilisearch::Client.new(URL, MEILISEARCH_KEY, timeout: 0.00001)
 
     expect do
       new_client.indexes
@@ -30,7 +30,7 @@ RSpec.describe Meilisearch do
   end
 
   it 'has a pre-defined header with current version' do
-    new_client = Meilisearch::Client.new(URL, MASTER_KEY)
+    new_client = Meilisearch::Client.new(URL, MEILISEARCH_KEY)
 
     expect(new_client.headers).to have_key('User-Agent')
     expect(new_client.headers['User-Agent']).to eq(described_class.qualified_version)
@@ -40,7 +40,7 @@ RSpec.describe Meilisearch do
     allow(Meilisearch::HTTPRequest).to receive(:get).and_raise(Net::ReadTimeout)
 
     begin
-      new_client = Meilisearch::Client.new(URL, MASTER_KEY, max_retries: 3, retry_multiplier: 0.1)
+      new_client = Meilisearch::Client.new(URL, MEILISEARCH_KEY, max_retries: 3, retry_multiplier: 0.1)
       new_client.indexes
     rescue Meilisearch::TimeoutError
       nil
@@ -53,7 +53,7 @@ RSpec.describe Meilisearch do
     allow(Meilisearch::HTTPRequest).to receive(:get).and_raise(Errno::ECONNREFUSED)
 
     begin
-      new_client = Meilisearch::Client.new(URL, MASTER_KEY, max_retries: 10)
+      new_client = Meilisearch::Client.new(URL, MEILISEARCH_KEY, max_retries: 10)
       new_client.indexes
     rescue Meilisearch::CommunicationError
       nil

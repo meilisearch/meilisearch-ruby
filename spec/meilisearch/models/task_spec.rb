@@ -5,7 +5,7 @@ describe Meilisearch::Models::Task do
 
   let(:new_index_uid) { random_uid }
   let(:task_hash) { client.http_post '/indexes', { 'uid' => new_index_uid } }
-  let(:endpoint) { Meilisearch::Task.new(URL, MASTER_KEY, client.options) }
+  let(:endpoint) { Meilisearch::Task.new(URL, MEILISEARCH_KEY, client.options) }
 
   let(:enqueued_endpoint) { instance_double(Meilisearch::Task, task: task_hash) }
   let(:enqueued_task) { described_class.new task_hash, enqueued_endpoint }
