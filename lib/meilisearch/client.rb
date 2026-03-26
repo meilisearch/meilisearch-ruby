@@ -430,6 +430,15 @@ module Meilisearch
       task_endpoint.task(task_uid)
     end
 
+    # Get the documents associated with a task.
+    #
+    # @param task_uid [Integer] uid of the task
+    # @param options [Hash{Symbol => Object}] optional parameters (:limit, :offset, :fields)
+    # @return [Hash{String => Object}] the documents processed by the task
+    def task_documents(task_uid, options = {})
+      task_endpoint.task_documents(task_uid, options)
+    end
+
     # Wait for a task in a busy loop.
     #
     # Try to avoid using it. Wrapper around {Task#wait_for_task}.

@@ -20,6 +20,10 @@ module Meilisearch
       http_get "/tasks/#{task_uid}"
     end
 
+    def task_documents(task_uid, options = {})
+      http_get "/tasks/#{task_uid}/documents", Utils.parse_query(options, [:limit, :offset, :fields])
+    end
+
     def index_tasks(index_uid)
       http_get '/tasks', { indexUids: [index_uid].flatten.join(',') }
     end

@@ -121,6 +121,8 @@ search_post_1: |-
   client.index('movies').search('american ninja')
 get_task_1: |-
   client.task(1)
+get_task_documents_1: |-
+  client.task_documents(1)
 get_all_tasks_1: |-
   client.tasks
 get_settings_1: |-
