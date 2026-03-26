@@ -155,9 +155,12 @@ module Meilisearch
     #
     # @return [Models::Task] The async task that adds the documents.
     # @see https://www.meilisearch.com/docs/reference/api/documents#add-or-replace-documents Meilisearch API Reference
-    def add_documents(documents, primary_key = nil)
+    def add_documents(documents, primary_key = nil, skip_creation: nil)
       documents = [documents] if documents.is_a?(Hash)
-      response = http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
+      response = http_post "/indexes/#{@uid}/documents", documents, {
+        primaryKey: primary_key,
+        skipCreation: skip_creation
+      }.compact
 
       Models::Task.new(response, task_endpoint)
     end
@@ -191,9 +194,12 @@ module Meilisearch
     # @param primary_key [String] The name of the primary key field, auto inferred if missing.
     #
     # @return [Models::Task] The async task that adds the documents.
-    def add_documents_json(documents, primary_key = nil)
+    def add_documents_json(documents, primary_key = nil, skip_creation: nil)
       options = { convert_body?: false }
-      response = http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+      response = http_post "/indexes/#{@uid}/documents", documents, {
+        primaryKey: primary_key,
+        skipCreation: skip_creation
+      }.compact, options
 
       Models::Task.new(response, task_endpoint)
     end
@@ -211,9 +217,12 @@ module Meilisearch
     # @return [Models::Task] The async task that adds the documents.
     #
     # @see https://github.com/ndjson/ndjson-spec NDJSON spec
-    def add_documents_ndjson(documents, primary_key = nil)
+    def add_documents_ndjson(documents, primary_key = nil, skip_creation: nil)
       options = { headers: { 'Content-Type' => 'application/x-ndjson' }, convert_body?: false }
-      response = http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+      response = http_post "/indexes/#{@uid}/documents", documents, {
+        primaryKey: primary_key,
+        skipCreation: skip_creation
+      }.compact, options
 
       Models::Task.new(response, task_endpoint)
     end
@@ -230,12 +239,13 @@ module Meilisearch
     # @param delimiter [String] The delimiter character in your CSV text.
     #
     # @return [Models::Task] The async task that adds the documents.
-    def add_documents_csv(documents, primary_key = nil, delimiter = nil)
+    def add_documents_csv(documents, primary_key = nil, delimiter = nil, skip_creation: nil)
       options = { headers: { 'Content-Type' => 'text/csv' }, convert_body?: false }
 
       response = http_post "/indexes/#{@uid}/documents", documents, {
         primaryKey: primary_key,
-        csvDelimiter: delimiter
+        csvDelimiter: delimiter,
+        skipCreation: skip_creation
       }.compact, options
 
       Models::Task.new(response, task_endpoint)
@@ -252,9 +262,12 @@ module Meilisearch
     #
     # @return [Models::Task] The async task that adds the documents.
     # @see https://www.meilisearch.com/docs/reference/api/documents#add-or-replace-documents Meilisearch API Reference
-    def update_documents(documents, primary_key = nil)
+    def update_documents(documents, primary_key = nil, skip_creation: nil)
       documents = [documents] if documents.is_a?(Hash)
-      response = http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
+      response = http_put "/indexes/#{@uid}/documents", documents, {
+        primaryKey: primary_key,
+        skipCreation: skip_creation
+      }.compact
 
       Models::Task.new(response, task_endpoint)
     end
@@ -268,9 +281,12 @@ module Meilisearch
     # @param primary_key [String] The name of the primary key field, auto inferred if missing.
     #
     # @return [Models::Task] The async task that adds the documents.
-    def update_documents_json(documents, primary_key = nil)
+    def update_documents_json(documents, primary_key = nil, skip_creation: nil)
       options = { convert_body?: false }
-      response = http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+      response = http_put "/indexes/#{@uid}/documents", documents, {
+        primaryKey: primary_key,
+        skipCreation: skip_creation
+      }.compact, options
 
       Models::Task.new(response, task_endpoint)
     end
@@ -287,9 +303,12 @@ module Meilisearch
     # @return [Models::Task] The async task that adds the documents.
     #
     # @see https://github.com/ndjson/ndjson-spec NDJSON spec
-    def update_documents_ndjson(documents, primary_key = nil)
+    def update_documents_ndjson(documents, primary_key = nil, skip_creation: nil)
       options = { headers: { 'Content-Type' => 'application/x-ndjson' }, convert_body?: false }
-      response = http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+      response = http_put "/indexes/#{@uid}/documents", documents, {
+        primaryKey: primary_key,
+        skipCreation: skip_creation
+      }.compact, options
 
       Models::Task.new(response, task_endpoint)
     end
@@ -305,12 +324,13 @@ module Meilisearch
     # @param delimiter [String] The delimiter character in your CSV text.
     #
     # @return [Models::Task] The async task that adds the documents.
-    def update_documents_csv(documents, primary_key = nil, delimiter = nil)
+    def update_documents_csv(documents, primary_key = nil, delimiter = nil, skip_creation: nil)
       options = { headers: { 'Content-Type' => 'text/csv' }, convert_body?: false }
 
       response = http_put "/indexes/#{@uid}/documents", documents, {
         primaryKey: primary_key,
-        csvDelimiter: delimiter
+        csvDelimiter: delimiter,
+        skipCreation: skip_creation
       }.compact, options
 
       Models::Task.new(response, task_endpoint)
