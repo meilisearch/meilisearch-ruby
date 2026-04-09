@@ -77,8 +77,6 @@ primary_field_guide_update_document_primary_key: |-
   client.index('books').update(primary_key: 'title')
 update_an_index_1: |-
   client.index('movies').update(primary_key: 'movie_id')
-rename_an_index_1: |-
-  client.index('indexA').update(uid: 'indexB')
 delete_an_index_1: |-
   client.delete_index('movies')
 get_one_document_1: |-
@@ -251,12 +249,6 @@ get_version_1: |-
   client.version
 distinct_attribute_guide_1: |-
   client.index('jackets').update_distinct_attribute('product_id')
-field_properties_guide_searchable_1: |-
-  client.index('movies').update_searchable_attributes([
-    'title',
-    'overview',
-    'genres'
-  ])
 field_properties_guide_displayed_1: |-
   client.index('movies').update_settings({
     displayed_attributes: [
@@ -279,10 +271,6 @@ filtering_guide_3: |-
 filtering_guide_nested_1: |-
   client.index('movies_ratings').search('thriller', {
     filter: 'rating.users >= 90'
-  })
-search_parameter_guide_show_ranking_score_details_1: |-
-  client.index('movies').search('dragon', {
-    show_ranking_score_details: true
   })
 add_movies_json_1: |-
   require 'json'
@@ -527,5 +515,3 @@ distinct_attribute_guide_distinct_parameter_1: |-
   client.index('products').search('white shirt', {
     distinct: 'sku'
   })
-index_settings_tutorial_api_get_setting_1: |-
-  client.index('INDEX_NAME').searchable_attributes
