@@ -11,7 +11,7 @@
   <a href="https://discord.meilisearch.com">Discord</a> |
   <a href="https://roadmap.meilisearch.com/tabs/1-under-consideration">Roadmap</a> |
   <a href="https://www.meilisearch.com">Website</a> |
-  <a href="https://www.meilisearch.com/docs/faq">FAQ</a>
+  <a href="https://www.meilisearch.com/docs/learn/resources/faq">FAQ</a>
 </h4>
 
 <p align="center">
@@ -92,7 +92,7 @@ documents = [
 index.add_documents(documents) # => { "uid": 0 }
 ```
 
-With the `uid`, you can check the status (`enqueued`, `canceled`, `processing`, `succeeded` or `failed`) of your documents addition using the [task](https://www.meilisearch.com/docs/reference/api/tasks#get-tasks).
+With the `uid`, you can check the status (`enqueued`, `canceled`, `processing`, `succeeded` or `failed`) of your documents addition using the [task](https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#get-tasks).
 
 💡 To customize the `Client`, for example, increasing the default timeout, please check out [this section](https://github.com/meilisearch/meilisearch-ruby/wiki/Client-Options) of the Wiki.
 
@@ -119,7 +119,7 @@ Output:
 
 #### Custom search <!-- omit in toc -->
 
-All the supported options are described in the [search parameters](https://www.meilisearch.com/docs/reference/api/search#search-parameters) section of the documentation.
+All the supported options are described in the [search parameters](https://www.meilisearch.com/docs/reference/api/search/search-with-post#search-parameters) section of the documentation.
 
 ```ruby
 index.search(
@@ -162,7 +162,7 @@ index.update_filterable_attributes([
 
 You only need to perform this operation once.
 
-Note that Meilisearch will rebuild your index whenever you update `filterableAttributes`. Depending on the size of your dataset, this might take time. You can track the process using the [tasks](https://www.meilisearch.com/docs/reference/api/tasks#get-tasks)).
+Note that Meilisearch will rebuild your index whenever you update `filterableAttributes`. Depending on the size of your dataset, this might take time. You can track the process using the [tasks](https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#get-tasks)).
 
 Then, you can perform the search:
 
@@ -240,7 +240,7 @@ This feature is only available with Meilisearch v1.3 and newer (optional).
 
 #### Custom Search With attributes on at search time  <!-- omit in toc -->
 
-[Customize attributes to search on at search time](https://www.meilisearch.com/docs/reference/api/search#customize-attributes-to-search-on-at-search-time).
+[Customize attributes to search on at search time](https://www.meilisearch.com/docs/reference/api/search/search-with-post#customize-attributes-to-search-on-at-search-time).
 
 you can perform the search :
 
@@ -274,10 +274,10 @@ This package guarantees compatibility with [version v1.x of Meilisearch](https:/
 
 The following sections in our main documentation website may interest you:
 
-- **Manipulate documents**: see the [API references](https://www.meilisearch.com/docs/reference/api/documents) or read more about [documents](https://www.meilisearch.com/docs/learn/core_concepts/documents).
-- **Search**: see the [API references](https://www.meilisearch.com/docs/reference/api/search) or follow our guide on [search parameters](https://www.meilisearch.com/docs/reference/api/search#search-parameters).
-- **Manage the indexes**: see the [API references](https://www.meilisearch.com/docs/reference/api/indexes) or read more about [indexes](https://www.meilisearch.com/docs/learn/core_concepts/indexes).
-- **Configure the index settings**: see the [API references](https://www.meilisearch.com/docs/reference/api/settings) or follow our guide on [settings parameters](https://www.meilisearch.com/docs/reference/api/settings).
+- **Manipulate documents**: see the [API references](https://www.meilisearch.com/docs/reference/api/documents/list-documents-with-get) or read more about [documents](https://www.meilisearch.com/docs/learn/getting_started/documents).
+- **Search**: see the [API references](https://www.meilisearch.com/docs/reference/api/search/search-with-post) or follow our guide on [search parameters](https://www.meilisearch.com/docs/reference/api/search/search-with-post#search-parameters).
+- **Manage the indexes**: see the [API references](https://www.meilisearch.com/docs/reference/api/indexes/list-all-indexes) or read more about [indexes](https://www.meilisearch.com/docs/learn/getting_started/indexes).
+- **Configure the index settings**: see the [API references](https://www.meilisearch.com/docs/reference/api/settings/list-all-settings) or follow our guide on [settings parameters](https://www.meilisearch.com/docs/reference/api/settings/list-all-settings).
 
 📖 Also, check out the [Wiki](https://github.com/meilisearch/meilisearch-ruby/wiki) of this repository to know what this SDK provides!
 

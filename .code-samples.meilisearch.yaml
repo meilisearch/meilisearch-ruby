@@ -350,7 +350,7 @@ geosearch_guide_sort_usage_1: |-
 geosearch_guide_sort_usage_2: |-
   client.index('restaurants').search('', { sort: ['_geoPoint(48.8561446, 2.2978204):asc', 'rating:desc'] })
 authorization_header_1: |-
-  client = MeiliSearch::Client.new('MEILISEARCH_URL', 'masterKey')
+  client = MeiliSearch::Client.new('MEILISEARCH_URL', 'MEILISEARCH_KEY')
   client.keys
 get_one_key_1: |-
   client.key('6062abda-a5aa-4414-ac91-ecd7944c0f8d')
