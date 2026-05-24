@@ -515,3 +515,12 @@ distinct_attribute_guide_distinct_parameter_1: |-
   client.index('products').search('white shirt', {
     distinct: 'sku'
   })
+export_post_1: |-
+  client.export({
+      url: "TARGET_INSTANCE_URL",
+      indexes: {
+        "*": {
+          "overrideSettings": true
+        }
+      }
+    })
