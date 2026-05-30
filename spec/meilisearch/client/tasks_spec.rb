@@ -91,6 +91,20 @@ RSpec.describe 'Meilisearch::Tasks' do
       )
   end
 
+  it 'gets all the documents from a task' do
+    client.update_experimental_features(getTaskDocumentsRoute: true)
+
+    document_to_insert = { objectId: 123, title: 'Pride and Prejudice', comment: 'A great book' }
+
+    task = index.add_documents(document_to_insert)
+    documents = client.task_documents(task.metadata['uid'])
+
+    expect(documents).to be_a(String)
+    expect(documents).to eq('{"objectId":123,"title":"Pride and Prejudice","comment":"A great book"}')
+
+    client.update_experimental_features(getTaskDocumentsRoute: false)
+  end
+
   describe '#index.wait_for_task' do
     it 'waits for task with default values' do
       task = index.add_documents(documents)

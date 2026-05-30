@@ -19,13 +19,14 @@ module Meilisearch
     def task(task_uid)
       http_get "/tasks/#{task_uid}"
     end
+    alias index_task task
+
+    def task_documents(task_uid)
+      http_get "/tasks/#{task_uid}/documents"
+    end
 
     def index_tasks(index_uid)
       http_get '/tasks', { indexUids: [index_uid].flatten.join(',') }
-    end
-
-    def index_task(task_uid)
-      http_get "/tasks/#{task_uid}"
     end
 
     def cancel_tasks(options)

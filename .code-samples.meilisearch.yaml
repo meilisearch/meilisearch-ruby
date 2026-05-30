@@ -515,3 +515,5 @@ distinct_attribute_guide_distinct_parameter_1: |-
   client.index('products').search('white shirt', {
     distinct: 'sku'
   })
+get_task_documents_1: |-
+  client.task_documents(1)
