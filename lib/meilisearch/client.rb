@@ -307,9 +307,11 @@ module Meilisearch
     #
     # @see Index#stats
     # @see https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-all-indexes Meilisearch API reference
+    # @param options [Hash{Symbol => Object}] formatting options
+    # @option options [String, Symbol] :size_format +raw+ or +human+
     # @return [Hash{String => Object}] see {stats object}[https://www.meilisearch.com/docs/reference/api/stats#stats-object]
-    def stats
-      http_get '/stats'
+    def stats(options = {})
+      http_get '/stats', Utils.parse_query(options, [:size_format])
     end
 
     ### DUMPS

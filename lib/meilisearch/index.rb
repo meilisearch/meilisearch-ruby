@@ -675,10 +675,12 @@ module Meilisearch
 
     # Get stats of this index.
     #
+    # @param options [Hash{Symbol => Object}] formatting options
+    # @option options [String, Symbol] :size_format +raw+ or +human+
     # @return [Hash{String => Object}]
     # @see https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-an-index  Meilisearch API Reference
-    def stats
-      http_get "/indexes/#{@uid}/stats"
+    def stats(options = {})
+      http_get "/indexes/#{@uid}/stats", Utils.parse_query(options, [:size_format])
     end
 
     # Get the number of documents in the index.
