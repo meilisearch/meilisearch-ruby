@@ -7,6 +7,18 @@ RSpec.describe 'Meilisearch::Index - Stats' do
     response = index.stats
     expect(response).to be_a(Hash)
     expect(response).not_to be_empty
+    expect(response).to include(
+      'indexSize' => be_a(Integer),
+      'usedIndexSize' => be_a(Integer)
+    )
+  end
+
+  it 'formats index sizes' do
+    response = index.stats(size_format: :human)
+    expect(response).to include(
+      'indexSize' => be_a(String),
+      'usedIndexSize' => be_a(String)
+    )
   end
 
   it 'gets the number of documents' do
