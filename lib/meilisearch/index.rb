@@ -675,7 +675,8 @@ module Meilisearch
 
     # Get stats of this index.
     #
-    # @return [Hash{String => Object}]
+    # @return [Hash{String => Object}] Includes `indexSize` and `usedIndexSize`,
+    #   expressed in bytes unless a supported size format is requested.
     # @see https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-an-index  Meilisearch API Reference
     def stats
       http_get "/indexes/#{@uid}/stats"

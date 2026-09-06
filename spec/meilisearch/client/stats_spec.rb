@@ -10,7 +10,14 @@ RSpec.describe 'Meilisearch::Client - Stats' do
   end
 
   it 'gets stats' do
+    stats_index = client.index('stats_index')
+    stats_index.add_documents([{ id: 1 }]).await
+
     response = client.stats
     expect(response).to have_key('databaseSize')
+    expect(response.dig('indexes', stats_index.uid)).to include(
+      'indexSize' => be_a(Integer),
+      'usedIndexSize' => be_a(Integer)
+    )
   end
 end
