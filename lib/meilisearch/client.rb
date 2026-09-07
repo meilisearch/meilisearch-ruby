@@ -309,8 +309,8 @@ module Meilisearch
     # @see https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-all-indexes Meilisearch API reference
     # @return [Hash{String => Object}] Per-index entries include `indexSize` and
     #   `usedIndexSize`; see {stats object}[https://www.meilisearch.com/docs/reference/api/stats#stats-object]
-    def stats
-      http_get '/stats'
+    def stats(size_format: nil)
+      http_get '/stats', { sizeFormat: size_format }.compact
     end
 
     ### DUMPS

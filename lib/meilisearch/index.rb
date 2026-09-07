@@ -678,8 +678,8 @@ module Meilisearch
     # @return [Hash{String => Object}] Includes `indexSize` and `usedIndexSize`,
     #   expressed in bytes unless a supported size format is requested.
     # @see https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-an-index  Meilisearch API Reference
-    def stats
-      http_get "/indexes/#{@uid}/stats"
+    def stats(size_format: nil)
+      http_get "/indexes/#{@uid}/stats", { sizeFormat: size_format }.compact
     end
 
     # Get the number of documents in the index.

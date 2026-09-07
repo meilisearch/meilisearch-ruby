@@ -13,6 +13,12 @@ RSpec.describe 'Meilisearch::Index - Stats' do
     )
   end
 
+  it 'forwards the requested size format' do
+    response = index.stats(size_format: 'human')
+    expect(response['indexSize']).to be_a(String)
+    expect(response['usedIndexSize']).to be_a(String)
+  end
+
   it 'gets the number of documents' do
     response = index.number_of_documents
     expect(response).to eq(documents.count)
