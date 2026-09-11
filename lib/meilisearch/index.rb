@@ -675,6 +675,8 @@ module Meilisearch
 
     # Get stats of this index.
     #
+    # @param size_format [String, nil] Set to `human` to format `indexSize` and `usedIndexSize` as strings;
+    #   omit it to return the raw byte counts as integers.
     # @return [Hash{String => Object}] Includes `indexSize` and `usedIndexSize`,
     #   expressed in bytes unless a supported size format is requested.
     # @see https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-an-index  Meilisearch API Reference
