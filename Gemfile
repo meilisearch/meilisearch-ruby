@@ -9,6 +9,7 @@ gemspec
 
 group :development, :test do
   gem 'byebug'
+  gem 'rake'
   gem 'rspec', '~> 3.0'
   gem 'simplecov'
   gem 'simplecov-cobertura'
