@@ -675,10 +675,17 @@ module Meilisearch
 
     # Get stats of this index.
     #
+    # @param show_internal_database_sizes [Boolean] When +true+, the response includes an
+    #   +internalDatabaseSizes+ map of internal database names to their sizes.
+    #   The keys in this map are subject to change.
+    # @param size_format [String, nil] Controls how size fields are returned.
+    #   Use <tt>'human'</tt> for human-readable strings (e.g. <tt>"2.3 MiB"</tt>),
+    #   or <tt>'raw'</tt> (default) for numeric byte counts.
     # @return [Hash{String => Object}]
     # @see https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-an-index  Meilisearch API Reference
-    def stats
-      http_get "/indexes/#{@uid}/stats"
+    def stats(show_internal_database_sizes: nil, size_format: nil)
+      params = { showInternalDatabaseSizes: show_internal_database_sizes, sizeFormat: size_format }
+      http_get "/indexes/#{@uid}/stats", params.compact
     end
 
     # Get the number of documents in the index.

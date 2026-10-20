@@ -305,11 +305,20 @@ module Meilisearch
 
     # Get stats of all indexes in instance.
     #
+    # @param show_internal_database_sizes [Boolean] When +true+, each index stat object includes an
+    #   +internalDatabaseSizes+ map. The keys in this map are subject to change.
+    # @param size_format [String, nil] Controls how size fields are returned.
+    #   Use <tt>'human'</tt> for human-readable strings (e.g. <tt>"2.3 MiB"</tt>),
+    #   or <tt>'raw'</tt> (default) for numeric byte counts.
     # @see Index#stats
     # @see https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-all-indexes Meilisearch API reference
     # @return [Hash{String => Object}] see {stats object}[https://www.meilisearch.com/docs/reference/api/stats#stats-object]
-    def stats
-      http_get '/stats'
+    def stats(show_internal_database_sizes: nil, size_format: nil)
+      params = {
+        showInternalDatabaseSizes: show_internal_database_sizes,
+        sizeFormat: size_format
+      }.compact
+      http_get '/stats', params
     end
 
     ### DUMPS

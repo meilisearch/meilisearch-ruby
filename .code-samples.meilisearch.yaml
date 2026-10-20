@@ -240,9 +240,9 @@ reset_displayed_attributes_1: |-
 compact_index_1: |-
   client.index('INDEX_UID').compact
 get_index_stats_1: |-
-  client.index('movies').stats
+  client.index('movies').stats(show_internal_database_sizes: true, size_format: 'human')
 get_indexes_stats_1: |-
-  client.stats
+  client.stats(show_internal_database_sizes: true, size_format: 'human')
 get_health_1: |-
   client.health
 get_version_1: |-
