@@ -61,6 +61,12 @@ RSpec.describe 'Meilisearch::Index - Documents' do
           expect(client.index('books').fetch_primary_key).to eq('objectId')
           expect(client.index('books').documents['results'].count).to eq(documents.count)
         end
+
+        it 'attaches custom metadata to the task when metadata is provided' do
+          task = index.add_documents(documents, nil, metadata: 'test-suite').await
+          fetched = task.refresh
+          expect(fetched['customMetadata']).to eq('test-suite')
+        end
       end
 
       it 'adds documents in a batch (as a array of documents)' do
@@ -85,13 +91,13 @@ RSpec.describe 'Meilisearch::Index - Documents' do
 
         it 'fails to add document with bad primary-key format' do
           index.add_documents(documents).await
-          task = index.add_documents(objectId: 'toto et titi', title: 'Unknown').await
+          task = index.add_documents({ objectId: 'toto et titi', title: 'Unknown' }).await
           expect(task).to have_failed
         end
 
         it 'fails to add document with no primary-key' do
           index.add_documents(documents).await
-          task = index.add_documents(id: 0, title: 'Unknown').await
+          task = index.add_documents({ id: 0, title: 'Unknown' }).await
           expect(task).to have_failed
         end
 
@@ -601,6 +607,16 @@ RSpec.describe 'Meilisearch::Index - Documents' do
         index.update_filterable_attributes(['objectId']).await
       end
 
+      it 'attaches custom metadata to the task when metadata is provided' do
+        client.update_experimental_features(edit_documents_by_function: true)
+        task = index.update_documents_by_function(
+          { filter: 'objectId = 1344', function: 'doc.title = `updated`' },
+          metadata: { source: 'test-suite' }
+        ).await
+        fetched = task.refresh
+        expect(fetched['metadata']).to eq('source' => 'test-suite')
+      end
+
       it 'updates documents by function' do
         client.update_experimental_features(edit_documents_by_function: true)
         expect(index.document(1344)).to include('title' => 'The Hobbit')
@@ -621,6 +637,12 @@ RSpec.describe 'Meilisearch::Index - Documents' do
 
     describe '#delete_document' do
       before { index.add_documents(documents).await }
+
+      it 'attaches custom metadata to the task when metadata is provided' do
+        task = index.delete_document(1, metadata: { source: 'test-suite' }).await
+        fetched = task.refresh
+        expect(fetched['metadata']).to eq('source' => 'test-suite')
+      end
 
       it 'if the document id is nil, it raises an error' do
         expect { index.delete_document(nil) }.to raise_error(Meilisearch::InvalidDocumentId)
@@ -669,6 +691,12 @@ RSpec.describe 'Meilisearch::Index - Documents' do
     describe '#delete_documents' do
       before { index.add_documents(documents).await }
 
+      it 'attaches custom metadata to the task when metadata is provided' do
+        task = index.delete_documents([1], metadata: { source: 'test-suite' }).await
+        fetched = task.refresh
+        expect(fetched['metadata']).to eq('source' => 'test-suite')
+      end
+
       it 'deletes a single document' do
         id = 2
         expect do
@@ -679,13 +707,13 @@ RSpec.describe 'Meilisearch::Index - Documents' do
 
       it 'deletes documents based on filter from index' do
         index.update_filterable_attributes(['objectId'])
-        index.delete_documents(filter: ['objectId > 0']).await
+        index.delete_documents({ filter: ['objectId > 0'] }).await
         expect(index.documents['results']).to be_empty
       end
 
       it 'ignores filters when documents_ids is empty' do
         expect do
-          index.delete_documents(filter: ['objectId > 0']).await
+          index.delete_documents({ filter: ['objectId > 0'] }).await
         end.not_to(change { index.documents['results'] })
       end
 
@@ -729,6 +757,12 @@ RSpec.describe 'Meilisearch::Index - Documents' do
 
     describe '#delete_all_documents' do
       before { index.add_documents(documents).await }
+
+      it 'attaches custom metadata to the task when metadata is provided' do
+        task = index.delete_all_documents(metadata: { source: 'test-suite' }).await
+        fetched = task.refresh
+        expect(fetched['metadata']).to eq('source' => 'test-suite')
+      end
 
       it 'clears all documents from index' do
         expect(index.documents['results']).not_to be_empty

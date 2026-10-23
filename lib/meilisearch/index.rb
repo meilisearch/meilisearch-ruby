@@ -152,12 +152,15 @@ module Meilisearch
     #
     # @param documents [Array<Hash{Object => Object>}] The documents to be added.
     # @param primary_key [String] The name of the primary key field, auto inferred if missing.
+    # @param metadata [Hash] Custom key-value metadata attached to the generated task. Stored on the
+    #   task object and returned when fetching the task.
     #
     # @return [Models::Task] The async task that adds the documents.
     # @see https://www.meilisearch.com/docs/reference/api/documents#add-or-replace-documents Meilisearch API Reference
-    def add_documents(documents, primary_key = nil)
+    def add_documents(documents, primary_key = nil, metadata: nil)
       documents = [documents] if documents.is_a?(Hash)
-      response = http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
+      response = http_post "/indexes/#{@uid}/documents", documents,
+                           { primaryKey: primary_key, customMetadata: metadata }.compact
 
       Models::Task.new(response, task_endpoint)
     end
@@ -191,9 +194,10 @@ module Meilisearch
     # @param primary_key [String] The name of the primary key field, auto inferred if missing.
     #
     # @return [Models::Task] The async task that adds the documents.
-    def add_documents_json(documents, primary_key = nil)
+    def add_documents_json(documents, primary_key = nil, metadata: nil)
       options = { convert_body?: false }
-      response = http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+      response = http_post "/indexes/#{@uid}/documents", documents,
+                           { primaryKey: primary_key, customMetadata: metadata }.compact, options
 
       Models::Task.new(response, task_endpoint)
     end
@@ -211,9 +215,10 @@ module Meilisearch
     # @return [Models::Task] The async task that adds the documents.
     #
     # @see https://github.com/ndjson/ndjson-spec NDJSON spec
-    def add_documents_ndjson(documents, primary_key = nil)
+    def add_documents_ndjson(documents, primary_key = nil, metadata: nil)
       options = { headers: { 'Content-Type' => 'application/x-ndjson' }, convert_body?: false }
-      response = http_post "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+      response = http_post "/indexes/#{@uid}/documents", documents,
+                           { primaryKey: primary_key, customMetadata: metadata }.compact, options
 
       Models::Task.new(response, task_endpoint)
     end
@@ -230,12 +235,13 @@ module Meilisearch
     # @param delimiter [String] The delimiter character in your CSV text.
     #
     # @return [Models::Task] The async task that adds the documents.
-    def add_documents_csv(documents, primary_key = nil, delimiter = nil)
+    def add_documents_csv(documents, primary_key = nil, delimiter = nil, metadata: nil)
       options = { headers: { 'Content-Type' => 'text/csv' }, convert_body?: false }
 
       response = http_post "/indexes/#{@uid}/documents", documents, {
         primaryKey: primary_key,
-        csvDelimiter: delimiter
+        csvDelimiter: delimiter,
+        customMetadata: metadata
       }.compact, options
 
       Models::Task.new(response, task_endpoint)
@@ -252,9 +258,10 @@ module Meilisearch
     #
     # @return [Models::Task] The async task that adds the documents.
     # @see https://www.meilisearch.com/docs/reference/api/documents#add-or-replace-documents Meilisearch API Reference
-    def update_documents(documents, primary_key = nil)
+    def update_documents(documents, primary_key = nil, metadata: nil)
       documents = [documents] if documents.is_a?(Hash)
-      response = http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact
+      response = http_put "/indexes/#{@uid}/documents", documents,
+                          { primaryKey: primary_key, customMetadata: metadata }.compact
 
       Models::Task.new(response, task_endpoint)
     end
@@ -268,9 +275,10 @@ module Meilisearch
     # @param primary_key [String] The name of the primary key field, auto inferred if missing.
     #
     # @return [Models::Task] The async task that adds the documents.
-    def update_documents_json(documents, primary_key = nil)
+    def update_documents_json(documents, primary_key = nil, metadata: nil)
       options = { convert_body?: false }
-      response = http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+      response = http_put "/indexes/#{@uid}/documents", documents,
+                          { primaryKey: primary_key, customMetadata: metadata }.compact, options
 
       Models::Task.new(response, task_endpoint)
     end
@@ -287,9 +295,10 @@ module Meilisearch
     # @return [Models::Task] The async task that adds the documents.
     #
     # @see https://github.com/ndjson/ndjson-spec NDJSON spec
-    def update_documents_ndjson(documents, primary_key = nil)
+    def update_documents_ndjson(documents, primary_key = nil, metadata: nil)
       options = { headers: { 'Content-Type' => 'application/x-ndjson' }, convert_body?: false }
-      response = http_put "/indexes/#{@uid}/documents", documents, { primaryKey: primary_key }.compact, options
+      response = http_put "/indexes/#{@uid}/documents", documents,
+                          { primaryKey: primary_key, customMetadata: metadata }.compact, options
 
       Models::Task.new(response, task_endpoint)
     end
@@ -305,12 +314,13 @@ module Meilisearch
     # @param delimiter [String] The delimiter character in your CSV text.
     #
     # @return [Models::Task] The async task that adds the documents.
-    def update_documents_csv(documents, primary_key = nil, delimiter = nil)
+    def update_documents_csv(documents, primary_key = nil, delimiter = nil, metadata: nil)
       options = { headers: { 'Content-Type' => 'text/csv' }, convert_body?: false }
 
       response = http_put "/indexes/#{@uid}/documents", documents, {
         primaryKey: primary_key,
-        csvDelimiter: delimiter
+        csvDelimiter: delimiter,
+        customMetadata: metadata
       }.compact, options
 
       Models::Task.new(response, task_endpoint)
@@ -326,9 +336,9 @@ module Meilisearch
     # @return [Array<Models::Task>] An array of tasks for each batch.
     #
     # @see https://github.com/ndjson/ndjson-spec NDJSON spec
-    def update_documents_ndjson_in_batches(documents, batch_size = 1000, primary_key = nil)
+    def update_documents_ndjson_in_batches(documents, batch_size = 1000, primary_key = nil, metadata: nil)
       documents.lines.each_slice(batch_size).map do |batch|
-        update_documents_ndjson(batch.join, primary_key)
+        update_documents_ndjson(batch.join, primary_key, metadata: metadata)
       end
     end
 
@@ -340,11 +350,12 @@ module Meilisearch
     # @param delimiter [String] The delimiter character in your CSV text.
     #
     # @return [Array<Models::Task>] An array of tasks for each batch.
-    def update_documents_csv_in_batches(documents, batch_size = 1000, primary_key = nil, delimiter = nil)
+    def update_documents_csv_in_batches(documents, batch_size = 1000, primary_key = nil, delimiter = nil,
+                                         metadata: nil)
       lines = documents.lines
       heading = lines.first
       lines.drop(1).each_slice(batch_size).map do |batch|
-        update_documents_csv(heading + batch.join, primary_key, delimiter)
+        update_documents_csv(heading + batch.join, primary_key, delimiter, metadata: metadata)
       end
     end
 
@@ -373,9 +384,9 @@ module Meilisearch
     # @param primary_key [String] The name of the primary key field, auto inferred if missing.
     #
     # @return [Array<Models::Task>] An array of tasks for each batch.
-    def add_documents_in_batches(documents, batch_size = 1000, primary_key = nil)
+    def add_documents_in_batches(documents, batch_size = 1000, primary_key = nil, metadata: nil)
       documents.each_slice(batch_size).map do |batch|
-        add_documents(batch, primary_key)
+        add_documents(batch, primary_key, metadata: metadata)
       end
     end
 
@@ -386,9 +397,9 @@ module Meilisearch
     # @param primary_key [String] The name of the primary key field, auto inferred if missing.
     #
     # @return [Array<Models::Task>] An array of tasks for each batch.
-    def add_documents_ndjson_in_batches(documents, batch_size = 1000, primary_key = nil)
+    def add_documents_ndjson_in_batches(documents, batch_size = 1000, primary_key = nil, metadata: nil)
       documents.lines.each_slice(batch_size).map do |batch|
-        add_documents_ndjson(batch.join, primary_key)
+        add_documents_ndjson(batch.join, primary_key, metadata: metadata)
       end
     end
 
@@ -400,11 +411,12 @@ module Meilisearch
     # @param delimiter [String] The delimiter character in your CSV text.
     #
     # @return [Array<Models::Task>] An array of tasks for each batch.
-    def add_documents_csv_in_batches(documents, batch_size = 1000, primary_key = nil, delimiter = nil)
+    def add_documents_csv_in_batches(documents, batch_size = 1000, primary_key = nil, delimiter = nil,
+                                      metadata: nil)
       lines = documents.lines
       heading = lines.first
       lines.drop(1).each_slice(batch_size).map do |batch|
-        add_documents_csv(heading + batch.join, primary_key, delimiter)
+        add_documents_csv(heading + batch.join, primary_key, delimiter, metadata: metadata)
       end
     end
 
@@ -432,9 +444,9 @@ module Meilisearch
     # @param primary_key [String] The name of the primary key field, auto inferred if missing.
     #
     # @return [Array<Models::Task>] An array of tasks for each batch.
-    def update_documents_in_batches(documents, batch_size = 1000, primary_key = nil)
+    def update_documents_in_batches(documents, batch_size = 1000, primary_key = nil, metadata: nil)
       documents.each_slice(batch_size).map do |batch|
-        update_documents(batch, primary_key)
+        update_documents(batch, primary_key, metadata: metadata)
       end
     end
 
@@ -460,8 +472,8 @@ module Meilisearch
     # @param options [Hash{String => Object}]
     #
     # @see https://www.meilisearch.com/docs/reference/api/documents#update-documents-with-function Meilisearch API Documentation
-    def update_documents_by_function(options)
-      response = http_post "/indexes/#{@uid}/documents/edit", options
+    def update_documents_by_function(options, metadata: nil)
+      response = http_post "/indexes/#{@uid}/documents/edit", options, { customMetadata: metadata }.compact
 
       Models::Task.new(response, task_endpoint)
     end
@@ -476,16 +488,16 @@ module Meilisearch
     #             Available ONLY with Meilisearch v1.2 and newer (optional)
     #
     # @return [Models::Task] An object representing the async deletion task.
-    def delete_documents(options = {})
+    def delete_documents(options = {}, metadata: nil)
       Utils.version_error_handler(__method__) do
         response = if options.is_a?(Hash) && options.key?(:filter)
-                     http_post "/indexes/#{@uid}/documents/delete", options
+                     http_post "/indexes/#{@uid}/documents/delete", options, { customMetadata: metadata }.compact
                    else
                      # backwards compatibility:
                      # expect to be a array or/number/string to send alongside as documents_ids.
                      options = [options] unless options.is_a?(Array)
 
-                     http_post "/indexes/#{@uid}/documents/delete-batch", options
+                     http_post "/indexes/#{@uid}/documents/delete-batch", options, { customMetadata: metadata }.compact
                    end
 
         Models::Task.new(response, task_endpoint)
@@ -518,13 +530,13 @@ module Meilisearch
     # @param document_id [String, Integer] The ID of the document to delete.
     #
     # @return [Models::Task] An object representing the async deletion task.
-    def delete_document(document_id)
+    def delete_document(document_id, metadata: nil)
       if document_id.nil? || document_id.to_s.empty?
         raise Meilisearch::InvalidDocumentId, 'document_id cannot be empty or nil'
       end
 
       encode_document = URI.encode_www_form_component(document_id)
-      response = http_delete "/indexes/#{@uid}/documents/#{encode_document}"
+      response = http_delete "/indexes/#{@uid}/documents/#{encode_document}", { customMetadata: metadata }.compact
 
       Models::Task.new(response, task_endpoint)
     end
@@ -553,8 +565,8 @@ module Meilisearch
     #   index.delete_all_documents
     #
     # @return [Models::Task] An object representing the async deletion task.
-    def delete_all_documents
-      response = http_delete "/indexes/#{@uid}/documents"
+    def delete_all_documents(metadata: nil)
+      response = http_delete "/indexes/#{@uid}/documents", { customMetadata: metadata }.compact
       Models::Task.new(response, task_endpoint)
     end
 
