@@ -61,6 +61,19 @@ RSpec.describe 'Meilisearch::Index - Documents' do
           expect(client.index('books').fetch_primary_key).to eq('objectId')
           expect(client.index('books').documents['results'].count).to eq(documents.count)
         end
+
+        it 'adds documents without creating the index when skip_creation is false (default)' do
+          task = index.add_documents(documents, nil, skip_creation: false)
+          expect(task.type).to eq('documentAdditionOrUpdate')
+          task.await
+          expect(index.documents['results']).to contain_exactly(*documents_with_string_keys)
+        end
+
+        it 'fails with skip_creation: true when the index does not already exist' do
+          non_existing_index = client.index("non-existing-#{random_uid}")
+          task = non_existing_index.add_documents(documents, nil, skip_creation: true).await
+          expect(task).to have_failed
+        end
       end
 
       it 'adds documents in a batch (as a array of documents)' do
