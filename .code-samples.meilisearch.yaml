@@ -100,7 +100,7 @@ add_or_replace_documents_1: |-
       overview: 'A boy is given the ability to become an adult superhero in times of need with a single magic word.',
       release_date: '2019-03-23'
     }
-  ])
+  ], skip_creation: true)
 add_or_update_documents_1: |-
   client.index('movies').update_documents([
     {
@@ -108,7 +108,7 @@ add_or_update_documents_1: |-
       title: 'Shazam ⚡️',
       genres: 'comedy'
     }
-  ])
+  ], skip_creation: true)
 delete_all_documents_1: |-
   client.index('movies').delete_all_documents
 delete_one_document_1: |-
