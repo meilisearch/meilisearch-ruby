@@ -101,7 +101,7 @@ module Meilisearch
           @options.fetch(:client_agents, []),
           Meilisearch.qualified_version
         ].flatten.join(';')
-      }.compact
+      }.compact.merge((@options[:custom_headers] || {}).to_h { |k, v| [k.to_s, v.to_s] })
     end
 
     def remove_headers(data, *keys)

@@ -12,6 +12,10 @@ module ExperimentalFeatureHelpers
     configure_feature('compositeEmbedders', toggle)
   end
 
+  def enable_dynamic_search_rules(toggle)
+    configure_feature('dynamicSearchRules', toggle)
+  end
+
   private
 
   # @param [String] attribute_to_toggle

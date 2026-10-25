@@ -36,6 +36,14 @@ RSpec.describe Meilisearch do
     expect(new_client.headers['User-Agent']).to eq(described_class.qualified_version)
   end
 
+  it 'adds custom headers to every request as strings' do
+    new_client = Meilisearch::Client.new(URL, MASTER_KEY, custom_headers: { 'Meili-Include-Metadata': true })
+
+    expect(new_client.headers).to include('Meili-Include-Metadata' => 'true', 'Authorization' => "Bearer #{MASTER_KEY}")
+    expect(new_client.index('books').headers).to include('Meili-Include-Metadata' => 'true')
+    expect(Meilisearch::Client.new(URL, MASTER_KEY, custom_headers: nil).healthy?).to be true
+  end
+
   it 'retries the request when the request is retryable' do
     allow(Meilisearch::HTTPRequest).to receive(:get).and_raise(Net::ReadTimeout)
 
