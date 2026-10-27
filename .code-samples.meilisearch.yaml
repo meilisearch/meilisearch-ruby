@@ -60,7 +60,7 @@ update_faceting_settings_1: |-
     max_values_per_facet: 2,
     sort_facet_values_by: {
       '*': 'alpha',
-      genres: 'count'
+      genres: 'sampledCount'
     }
   })
 reset_faceting_settings_1: |-

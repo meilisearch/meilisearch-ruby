@@ -651,12 +651,32 @@ RSpec.describe 'Meilisearch::Index - Settings' do
         index.update_faceting(nil).await
         expect(index.faceting).to include(default_faceting_with_string_keys)
       end
+
+      it 'sorts every facet by sampledCount' do
+        index.update_faceting({ sort_facet_values_by: { '*' => 'sampledCount' } }).await
+
+        expect(index.faceting).to include('sortFacetValuesBy' => { '*' => 'sampledCount' })
+      end
+
+      it 'sorts one facet by sampledCount' do
+        index.update_faceting({ sort_facet_values_by: { '*' => 'alpha', 'genres' => 'sampledCount' } }).await
+
+        expect(index.faceting).to include('sortFacetValuesBy' => { '*' => 'alpha', 'genres' => 'sampledCount' })
+      end
     end
 
     it '#reset_faceting resets faceting' do
       index.update_faceting({ 'max_values_per_facet' => 333 }).await
       new_faceting = default_faceting_with_string_keys.merge('maxValuesPerFacet' => 333)
       expect(index.faceting).to include(new_faceting)
+
+      index.reset_faceting.await
+      expect(index.faceting).to include(default_faceting_with_string_keys)
+    end
+
+    it '#reset_faceting resets a sampledCount sort' do
+      index.update_faceting({ sort_facet_values_by: { 'genres' => 'sampledCount' } }).await
+      expect(index.faceting['sortFacetValuesBy']).to include('genres' => 'sampledCount')
 
       index.reset_faceting.await
       expect(index.faceting).to include(default_faceting_with_string_keys)
