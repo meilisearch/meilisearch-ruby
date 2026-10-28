@@ -134,8 +134,8 @@ module Meilisearch
     # @see Index
     # @param index_uid [String] the uid of the index to get
     # @return [Index]
-    def index(index_uid)
-      index_object(index_uid)
+    def index(index_uid, primary_key = nil)
+      index_object(index_uid, primary_key)
     end
 
     # Shorthand for
