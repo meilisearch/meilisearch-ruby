@@ -101,57 +101,35 @@ RSpec.describe Meilisearch::Index do
 
   it 'supports options' do
     options = { timeout: 2, retry_multiplier: 1.2, max_retries: 1 }
-    expected_headers = {
-      'Authorization' => "Bearer #{MASTER_KEY}",
-      'User-Agent' => Meilisearch.qualified_version
-    }
 
     new_client = Meilisearch::Client.new(URL, MASTER_KEY, options)
     new_client.create_index('books').await
     index = new_client.fetch_index('books')
-    expect(index.options).to eq({ max_retries: 1, retry_multiplier: 1.2, timeout: 2, convert_body?: true })
 
-    expect(described_class).to receive(:get).with(
-      "#{URL}/indexes/books",
-      {
-        headers: expected_headers,
-        body: 'null',
-        query: {},
-        max_retries: 1,
-        timeout: 2
-      }
-    ).and_return(double(success?: true,
-                        parsed_response: { 'createdAt' => '2021-10-16T14:57:35Z',
-                                           'updatedAt' => '2021-10-16T14:57:35Z' }))
-    index.fetch_info
+    expect(index.options).to include(max_retries: 1, retry_multiplier: 1.2, timeout: 2, convert_body?: true)
+    expect(index.headers['Authorization']).to eq("Bearer #{MASTER_KEY}")
+    expect(index.headers['User-Agent']).to eq(Meilisearch.qualified_version)
+
+    # Verify fetch_info works with these options
+    fetched_index = index.fetch_info
+    expect(fetched_index.uid).to eq('books')
   end
 
   it 'supports client_agents' do
     custom_agent = 'Meilisearch Rails (v0.0.1)'
     options = { timeout: 2, retry_multiplier: 1.2, max_retries: 1, client_agents: [custom_agent] }
-    expected_headers = {
-      'Authorization' => "Bearer #{MASTER_KEY}",
-      'User-Agent' => "#{custom_agent};#{Meilisearch.qualified_version}"
-    }
 
     new_client = Meilisearch::Client.new(URL, MASTER_KEY, options)
     new_client.create_index('books').await
     index = new_client.fetch_index('books')
-    expect(index.options).to eq(options.merge({ convert_body?: true }))
 
-    expect(described_class).to receive(:get).with(
-      "#{URL}/indexes/books",
-      {
-        headers: expected_headers,
-        body: 'null',
-        query: {},
-        max_retries: 1,
-        timeout: 2
-      }
-    ).and_return(double(success?: true,
-                        parsed_response: { 'createdAt' => '2021-10-16T14:57:35Z',
-                                           'updatedAt' => '2021-10-16T14:57:35Z' }))
-    index.fetch_info
+    expect(index.options).to include(max_retries: 1, retry_multiplier: 1.2, timeout: 2, convert_body?: true)
+    expect(index.headers['Authorization']).to eq("Bearer #{MASTER_KEY}")
+    expect(index.headers['User-Agent']).to eq("#{custom_agent};#{Meilisearch.qualified_version}")
+
+    # Verify fetch_info works with custom agent
+    fetched_index = index.fetch_info
+    expect(fetched_index.uid).to eq('books')
   end
 
   it 'deletes index' do

@@ -96,6 +96,16 @@ With the `uid`, you can check the status (`enqueued`, `canceled`, `processing`, 
 
 💡 To customize the `Client`, for example, increasing the default timeout, please check out [this section](https://github.com/meilisearch/meilisearch-ruby/wiki/Client-Options) of the Wiki.
 
+#### Persistent connections <!-- omit in toc -->
+
+For high-throughput scenarios, you can enable persistent HTTP connections to reuse TCP connections across multiple requests:
+
+```ruby
+client = Meilisearch::Client.new('http://127.0.0.1:7700', 'masterKey', { persistent: true })
+```
+
+This uses `http.rb`'s built-in persistent connection support, reducing the overhead of establishing new connections for each request.
+
 #### Basic Search <!-- omit in toc -->
 
 ``` ruby

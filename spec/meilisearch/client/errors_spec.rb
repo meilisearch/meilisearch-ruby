@@ -12,7 +12,7 @@ RSpec.describe 'Meilisearch::Client - Errors' do
     end
   end
 
-  context 'when request takes to long to answer' do
+  context 'when request takes too long to answer' do
     it 'raises Meilisearch::TimeoutError' do
       timed_client = Meilisearch::Client.new(URL, MASTER_KEY, { timeout: 0.000001 })
 
@@ -22,11 +22,12 @@ RSpec.describe 'Meilisearch::Client - Errors' do
     end
   end
 
-  context 'when body is too large' do
+  context 'when connection is broken' do
     let(:index) { client.index('movies') }
 
-    it 'raises Meilisearch::CommunicationError' do
-      allow(index.class).to receive(:post).and_raise(Errno::EPIPE)
+    it 'raises Meilisearch::CommunicationError on EPIPE' do
+      http_client = index.instance_variable_get(:@http_client)
+      allow(http_client).to receive(:post).and_raise(Errno::EPIPE)
 
       expect do
         index.add_documents([{ id: 1, text: 'my_text' }])
