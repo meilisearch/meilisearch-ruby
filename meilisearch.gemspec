@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 3.0.0'
   s.add_dependency 'httparty', '~> 0.24'
+  s.add_dependency 'logger'
 
   s.metadata['rubygems_mfa_required'] = 'true'
   s.metadata['source_code_uri'] = 'https://github.com/meilisearch/meilisearch-ruby'
