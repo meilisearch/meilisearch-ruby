@@ -430,6 +430,16 @@ module Meilisearch
       task_endpoint.task(task_uid)
     end
 
+    # Get task's document payload
+    #
+    # Retrieve the document payload that was sent with this task. Only available for document-related tasks that are enqueued or processing.
+    #
+    # @param task_uid [String] uid of the requested task
+    # @return [String] The content of the task update
+    def task_documents(task_uid)
+      task_endpoint.task_documents(task_uid)
+    end
+
     # Wait for a task in a busy loop.
     #
     # Try to avoid using it. Wrapper around {Task#wait_for_task}.
