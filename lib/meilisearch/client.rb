@@ -470,6 +470,24 @@ module Meilisearch
       http_get "/batches/#{batch_uid}"
     end
 
+    ### EXPORT
+
+    # Migrate between instances with the /export route
+    #
+    # @see https://www.meilisearch.com/docs/reference/api/export Meilisearch API reference
+    # @param export_options [Hash{Symbol => Object}] the export options of which the required are
+    #   - +:url+ +String+ the target instance’s URL address
+    #   - +:api_key+ +String+ an API key with full admin access to the target instance
+    #   - +:payload_size+ +String+ a string specifying the payload size in a human-readable format
+    #   - +:indexes+ +Hash+ A set of patterns matching the indexes you want to export. Defaults to all indexes in the origin instance
+    # @return [Models::Task] the async task that is creating the export
+    def export(export_options)
+      body = Utils.transform_attributes(export_options)
+
+      response = http_post '/export', body
+      Models::Task.new(response, task_endpoint)
+    end
+
     ### EXPERIMENTAL FEATURES
 
     def experimental_features
