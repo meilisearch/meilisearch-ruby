@@ -470,6 +470,43 @@ module Meilisearch
       http_get "/batches/#{batch_uid}"
     end
 
+    ### DYNAMIC SEARCH RULES
+
+    # Get dynamic search rules, optionally filtered and paginated.
+    #
+    # @param options [Hash{Symbol => Object}] pagination and filter options
+    # @return [Hash{String => Object}] matching rules and pagination information
+    def get_dynamic_search_rules(options = {})
+      http_post '/dynamic-search-rules', Utils.transform_attributes(options)
+    end
+
+    # Get a dynamic search rule by UID.
+    #
+    # @param uid [String] UID of the dynamic search rule
+    # @return [Hash{String => Object}] the requested dynamic search rule
+    def get_dynamic_search_rule(uid)
+      http_get "/dynamic-search-rules/#{uid}"
+    end
+
+    # Update a dynamic search rule, or create it if it does not exist.
+    #
+    # @param uid [String] UID of the dynamic search rule
+    # @param options [Hash{Symbol => Object}] fields to set on the rule
+    # @return [Models::Task] the async task that updates the rule
+    def update_dynamic_search_rule(uid, options)
+      response = http_patch "/dynamic-search-rules/#{uid}", dynamic_search_rule_body(options)
+      Models::Task.new(response, task_endpoint)
+    end
+
+    # Delete a dynamic search rule.
+    #
+    # @param uid [String] UID of the dynamic search rule
+    # @return [Models::Task] the async task that deletes the rule
+    def delete_dynamic_search_rule(uid)
+      response = http_delete "/dynamic-search-rules/#{uid}"
+      Models::Task.new(response, task_endpoint)
+    end
+
     ### EXPERIMENTAL FEATURES
 
     def experimental_features
@@ -482,6 +519,29 @@ module Meilisearch
     end
 
     private
+
+    def dynamic_search_rule_body(options)
+      body = Utils.transform_attributes(options)
+      body['conditions'] = dynamic_search_rule_conditions(body['conditions']) if body['conditions']
+      body['actions'] = body['actions'].map { |entry| dynamic_search_rule_action(entry) } if body['actions']
+
+      body
+    end
+
+    def dynamic_search_rule_conditions(conditions)
+      conditions = Utils.transform_attributes(conditions)
+      ['query', 'time', 'filter'].each do |condition|
+        conditions[condition] = Utils.transform_attributes(conditions[condition]) if conditions[condition]
+      end
+      conditions
+    end
+
+    def dynamic_search_rule_action(entry)
+      entry = Utils.transform_attributes(entry)
+      entry['selector'] = Utils.transform_attributes(entry['selector']) if entry['selector']
+      entry['action'] = Utils.transform_attributes(entry['action']) if entry['action']
+      entry
+    end
 
     def index_object(uid, primary_key = nil)
       Index.new(uid, @base_url, @api_key, primary_key, @options)
