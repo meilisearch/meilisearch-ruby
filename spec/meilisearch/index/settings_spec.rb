@@ -17,6 +17,7 @@ RSpec.describe 'Meilisearch::Index - Settings' do
   let(:default_pagination) { { maxTotalHits: 1000 } }
   let(:default_proximity_precision) { 'byWord' }
   let(:default_search_cutoff_ms) { nil }
+  let(:default_word_position) { { 'enabled' => true } }
   let(:settings_keys) do
     [
       'rankingRules',
@@ -34,7 +35,8 @@ RSpec.describe 'Meilisearch::Index - Settings' do
       'nonSeparatorTokens',
       'separatorTokens',
       'proximityPrecision',
-      'searchCutoffMs'
+      'searchCutoffMs',
+      'wordPosition'
     ]
   end
   let(:uid) { random_uid }
@@ -59,7 +61,8 @@ RSpec.describe 'Meilisearch::Index - Settings' do
         'separatorTokens' => [],
         'nonSeparatorTokens' => [],
         'proximityPrecision' => default_proximity_precision,
-        'searchCutoffMs' => default_search_cutoff_ms
+        'searchCutoffMs' => default_search_cutoff_ms,
+        'wordPosition' => default_word_position
       )
     end
 
@@ -93,6 +96,17 @@ RSpec.describe 'Meilisearch::Index - Settings' do
           'synonyms' => {}
         )
       end
+
+      it 'updates word position setting' do
+        task = index.update_settings(word_position: { enabled: false })
+
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.settings).to include(
+          'wordPosition' => { 'enabled' => false }
+        )
+      end
     end
 
     it '#reset_settings resets all settings' do
@@ -102,7 +116,8 @@ RSpec.describe 'Meilisearch::Index - Settings' do
         stop_words: ['the', 'a'],
         synonyms: { wow: ['world of warcraft'] },
         proximity_precision: 'byAttribute',
-        search_cutoff_ms: 333
+        search_cutoff_ms: 333,
+        word_position: { enabled: false }
       ).await
 
       task = index.reset_settings
@@ -115,7 +130,8 @@ RSpec.describe 'Meilisearch::Index - Settings' do
         'stopWords' => [],
         'synonyms' => {},
         'proximityPrecision' => default_proximity_precision,
-        'searchCutoffMs' => default_search_cutoff_ms
+        'searchCutoffMs' => default_search_cutoff_ms,
+        'wordPosition' => default_word_position
       )
     end
   end
@@ -913,6 +929,59 @@ RSpec.describe 'Meilisearch::Index - Settings' do
 
       index.reset_embedders.await
       expect(index.embedders).to eq(default_embedders)
+    end
+  end
+
+  context 'On word position' do
+    let(:index) { client.index(uid) }
+
+    before { client.create_index(uid).await }
+
+    it '#word_position gets default value' do
+      expect(index.word_position).to eq(default_word_position)
+    end
+
+    describe '#update_word_position' do
+      it 'updates word position' do
+        task = index.update_word_position(enabled: false)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.word_position).to eq('enabled' => false)
+      end
+
+      it 'resets word position when enabled is nil' do
+        index.update_word_position(enabled: false).await
+        expect(index.word_position).to eq('enabled' => false)
+
+        task = index.update_word_position(enabled: nil)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.word_position).to eq(default_word_position)
+      end
+
+      it 'resets word position when passed nil' do
+        index.update_word_position(enabled: false).await
+        expect(index.word_position).to eq('enabled' => false)
+
+        task = index.update_word_position(nil)
+        expect(task.type).to eq('settingsUpdate')
+        task.await
+
+        expect(index.word_position).to eq(default_word_position)
+      end
+    end
+
+    it '#reset_word_position resets word position' do
+      index.update_word_position(enabled: false).await
+      expect(index.word_position).to eq('enabled' => false)
+
+      task = index.reset_word_position
+      expect(task.type).to eq('settingsUpdate')
+      task.await
+
+      expect(index.word_position).to eq(default_word_position)
     end
   end
 end
