@@ -515,3 +515,9 @@ distinct_attribute_guide_distinct_parameter_1: |-
   client.index('products').search('white shirt', {
     distinct: 'sku'
   })
+get_word_position_settings_1: |-
+  client.index('INDEX_UID').word_position
+update_word_position_settings_1: |-
+  client.index('INDEX_UID').update_word_position({ enabled: false })
+reset_word_position_settings_1: |-
+  client.index('INDEX_UID').reset_word_position

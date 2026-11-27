@@ -1447,5 +1447,25 @@ module Meilisearch
 
       Models::Task.new(response, task_endpoint)
     end
+
+    ### SETTINGS - WORD POSITION
+
+    def word_position
+      http_get("/indexes/#{@uid}/settings/word-position")
+    end
+
+    def update_word_position(new_word_position)
+      new_word_position = Utils.transform_attributes(new_word_position)
+
+      response = http_patch("/indexes/#{@uid}/settings/word-position", new_word_position)
+
+      Models::Task.new(response, task_endpoint)
+    end
+
+    def reset_word_position
+      response = http_delete("/indexes/#{@uid}/settings/word-position")
+
+      Models::Task.new(response, task_endpoint)
+    end
   end
 end
